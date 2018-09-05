@@ -1,0 +1,2 @@
+# othello
+AI game project
