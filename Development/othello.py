@@ -30,7 +30,7 @@ def insert_value(grid):
         correct = True
         row = 0
         try:
-            r1 = raw_input("Insert row number: ")
+            r1 = input("Insert row number: ")
             if len(r1) == 0:
                 print("row incorrect")
                 correct = False
@@ -47,7 +47,7 @@ def insert_value(grid):
 
         column = 0
         try:
-            c1 = raw_input("Insert column number: ")
+            c1 = input("Insert column number: ")
             if len(c1) == 0:
                 sys.stdout.write("column incorrect\n")
                 correct = False
