@@ -1,24 +1,8 @@
 import print_output
 import gridClass
 import constants
-import sys
 import validation
 import ai
-
-
-def game_finished(board):
-    player1 = 0
-    player2 = 0
-    for row in range(0, constants.GRID_SIZE):
-        for column in range(0, constants.GRID_SIZE):
-            if board[row][column] == 1:
-                player1 += 1
-            elif board[row][column] == 2:
-                player2 += 1
-    if player1 > player2:
-        print("Player 1 wins: " + str(player1))
-    else:
-        print("Player 2 wins: " + str(player2))
 
 
 def insert_value(grid):
@@ -40,7 +24,7 @@ def insert_value(grid):
             print("row incorrect")
             correct = False
             continue
-        if row < 0 or row > constants.GRID_SIZE - 1:
+        if row < 0 or row >= constants.GRID_SIZE:
             print("row not a number")
             correct = False
             continue
@@ -49,7 +33,7 @@ def insert_value(grid):
         try:
             c1 = input("Insert column number: ")
             if len(c1) == 0:
-                sys.stdout.write("column incorrect\n")
+                print("column incorrect")
                 correct = False
                 continue
             column = int(c1)
@@ -58,17 +42,17 @@ def insert_value(grid):
             correct = False
             continue
 
-        if column < 0 or column > constants.GRID_SIZE - 1:
-            sys.stdout.write("column incorrect\n")
+        if column < 0 or column >= constants.GRID_SIZE:
+            print("column incorrect")
             correct = False
             continue
         if grid.board[row][column] != 0:
             correct = False
-            sys.stdout.write("cell is not empty\n")
+            print("cell is not empty")
             continue
-        if not validation.valid_turn(grid, row, column, True):
+        if not validation.valid_turn(grid, row, column, True)[0]:
             correct = False
-            sys.stdout.write("no valid turn\n")
+            print("no valid turn")
 
     if grid.actual_player == constants.PLAYER_ONE:
         grid.board[row][column] = constants.PLAYER_ONE
@@ -92,14 +76,16 @@ def main():
     print_output.print_grid(grid.board)
     while not grid.grid_full() and validation.valid_cell_left(grid):
         if grid.actual_player == constants.PLAYER_ONE:
-            # insert_value(grid)
-            ai.ai_next_states(grid)
+            insert_value(grid)
+            # ai.solve(grid, constants.FORECAST_SEARCH)
         else:
-            ai.ai_next_states(grid)
+            # insert_value(grid)
+            ai.solve(grid, constants.FORECAST_SEARCH)
+            # ai.solve(grid, constants.BEST_SEARCH)
         grid.actual_player = grid.other_player()
         print_output.print_grid(grid.board)
     print("Finish")
-    game_finished(grid.board)
+    grid.game_finished()
 
 
 if __name__ == "__main__":

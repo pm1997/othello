@@ -41,7 +41,6 @@ def valid_horizontal_2(grid, row_nr, column_nr, change):
         for r in range(column_nr + 1, found_column, 1):
             cells_to_change += 1
         if change:
-            # sys.stdout.write( "valid horizontal2 " + str(column) + " \n" )
             for r in range(column_nr + 1, found_column, 1):
                 grid.reverse_cell(row_nr, r)
         return True, cells_to_change
@@ -64,7 +63,6 @@ def valid_vertical_1(grid, row_nr, column_nr, change):
         for r in range(row_nr - 1, found_row, - 1):
             cells_to_change += 1
         if change:
-            #sys.stdout.write("valid vertical \n")
             for r in range(row_nr - 1, found_row, - 1):
                 grid.reverse_cell(r, column_nr)
         return True, cells_to_change
@@ -222,10 +220,20 @@ def valid_turn(grid, row_nr, column_nr, change):
     return valid, cells_to_change
 
 
+def get_valid_cells(grid):
+    valid_cells = []
+    for row in range(0, constants.GRID_SIZE):
+        for column in range(0, constants.GRID_SIZE):
+            results = valid_turn(grid, row, column, False)
+            if results[0]:
+                valid_cells.append([[row, column], results[1]])
+    return valid_cells
+
+
 def valid_cell_left(grid):
     for row in range(0, constants.GRID_SIZE):
         for column in range(0, constants.GRID_SIZE):
-            if valid_turn(grid, row, column, False):
+            if valid_turn(grid, row, column, False)[0]:
                 return True
     print("no valid turn left")
     return False
