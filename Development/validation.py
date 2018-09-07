@@ -1,4 +1,3 @@
-import gridClass
 import constants
 
 
@@ -160,11 +159,10 @@ def valid_diagonal_4(grid, row_nr, column_nr, change):
 
 def valid_turn(grid, row_nr, column_nr, change):
     valid = False
-    #TODO implement cells_to_change
     cells_to_change = 0
 
     if grid.board[row_nr][column_nr] != 0:
-        return False
+        return False, 0
 
     if row_nr - 1 >= 0:
         if grid.board[row_nr - 1][column_nr] == grid.other_player():
@@ -175,39 +173,53 @@ def valid_turn(grid, row_nr, column_nr, change):
 
     if row_nr + 1 < constants.GRID_SIZE:
         if grid.board[row_nr + 1][column_nr] == grid.other_player():
-            if valid_vertical_2(grid, row_nr, column_nr, change)[0]:
+            results = valid_vertical_2(grid, row_nr, column_nr, change)
+            if results[0]:
                 valid = True
+                cells_to_change += results[1]
 
         if column_nr + 1 < constants.GRID_SIZE:
             if grid.board[row_nr + 1][column_nr + 1] == grid.other_player():
-                if valid_diagonal_3(grid, row_nr, column_nr, change)[0]:
+                results = valid_diagonal_3(grid, row_nr, column_nr, change)
+                if results[0]:
                     valid = True
+                    cells_to_change += results[1]
 
         if column_nr - 1 >= 0:
             if grid.board[row_nr + 1][column_nr - 1] == grid.other_player():
-                if valid_diagonal_4(grid, row_nr, column_nr, change)[0]:
+                results = valid_diagonal_4(grid, row_nr, column_nr, change)
+                if results[0]:
                     valid = True
+                    cells_to_change += results[1]
 
     if column_nr + 1 < constants.GRID_SIZE:
         if grid.board[row_nr][column_nr + 1] == grid.other_player():
-            if valid_horizontal_2(grid, row_nr, column_nr, change)[0]:
+            results = valid_horizontal_2(grid, row_nr, column_nr, change)
+            if results[0]:
                 valid = True
+                cells_to_change += results[1]
 
         if row_nr - 1 >= 0:
             if grid.board[row_nr - 1][column_nr + 1] == grid.other_player():
-                if valid_diagonal_2(grid, row_nr, column_nr, change)[0]:
+                results = valid_diagonal_2(grid, row_nr, column_nr, change)
+                if results[0]:
                     valid = True
+                    cells_to_change += results[1]
 
     if column_nr - 1 >= 0:
         if grid.board[row_nr][column_nr - 1] == grid.other_player():
-            if valid_horizontal_1(grid, row_nr, column_nr, change)[0]:
+            results = valid_horizontal_1(grid, row_nr, column_nr, change)
+            if results[0]:
                 valid = True
+                cells_to_change += results[1]
 
         if row_nr - 1 >= 0:
             if grid.board[row_nr - 1][column_nr - 1] == grid.other_player():
-                if valid_diagonal_1(grid, row_nr, column_nr, change)[0]:
+                results = valid_diagonal_1(grid, row_nr, column_nr, change)
+                if results[0]:
                     valid = True
-    return [valid, cells_to_change]
+                    cells_to_change += results[1]
+    return valid, cells_to_change
 
 
 def valid_cell_left(grid):

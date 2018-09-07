@@ -92,7 +92,8 @@ def main():
     print_output.print_grid(grid.board)
     while not grid.grid_full() and validation.valid_cell_left(grid):
         if grid.actual_player == constants.PLAYER_ONE:
-            insert_value(grid)
+            # insert_value(grid)
+            ai.ai_next_states(grid)
         else:
             ai.ai_next_states(grid)
         grid.actual_player = grid.other_player()
