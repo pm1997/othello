@@ -5,3 +5,7 @@ class Error(Exception):
 class PlayerInvalidError(Error):
     def __init__(self, message):
         self.message = message
+
+class InvalidTurnError(Error):
+    def __init__(self, message):
+        self.message = message
