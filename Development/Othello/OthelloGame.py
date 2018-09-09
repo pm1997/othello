@@ -9,29 +9,30 @@ from Player import Player
 class OthelloGame:
 
     def __init__(self, boardsize=8):
+        # input validation
         if not isinstance(boardsize, int):
             raise NonIntegerBoardSizeError("Only integer board sizes allowed!")
         elif boardsize % 2 != 0:
             raise OddBoardSizeError("No odd board sizes allowed!")
         elif boardsize < 4:
             raise BoardToSmallError("Only boards larger than 3 allowed.")
-
+        # create and init object parameter
         self._board = [[None for row in range(boardsize)] for column in range(boardsize)]
         self._player = []
         self._player_print_symbol = {0: "W", 1: "B"}
         self._turn_number = 0
         self._number_of_passes = 0
         self._stones_to_turn = dict()
-
+        # welcome user
         print("Welcome to Othello!")
-
+        # initialize board
         self._set_initial_stones()
-
+        # add the two players
         for x in range(2):
             self.add_player()
-
+        # print the board for the first time
         self.print_board()
-
+        # start the gameplay
         self.play()
 
     def _add_player(self, player):
