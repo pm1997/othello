@@ -7,4 +7,5 @@ class OthelloGameState:
         self.stones_to_turn = stones_to_turn
 
     def copy(self):
-        return OthelloGameState(int(self.turn_number), self.board.copy(), self.available_moves.copy(), self.stones_to_turn.copy())
+        return OthelloGameState(int(self.turn_number), self.board.copy(), self.available_moves.copy(),
+                                self.stones_to_turn.copy())
