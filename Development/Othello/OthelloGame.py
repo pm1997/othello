@@ -45,16 +45,26 @@ class OthelloGame:
 
     def add_player(self):
         player_to_add = None
-        print("Avaliable Players:")
-        print(" 0: Human Player")
-        print(" 1: Random AI")
-        selection = int(input("Please enter the number for the Player Type to add\n"))
-        if selection == 0:
-            import PlayerHuman
-            player_to_add = PlayerHuman.PlayerHuman(self)
-        elif selection == 1:
-            import PlayerAiRandom
-            player_to_add = PlayerAiRandom.PlayerAiRandom(self)
+        valid_selection = 0
+        while not valid_selection:
+            print("Avaliable Players:")
+            print(" 0: Human Player")
+            print(" 1: Random AI")
+            try:
+                selection = int(input("Please enter the number for the Player Type to add\n"))
+                valid_selection = 1
+            except ValueError:
+                print("Invalid selection! Please enter an integer.")
+                continue
+            if selection == 0:
+                import PlayerHuman
+                player_to_add = PlayerHuman.PlayerHuman(self)
+            elif selection == 1:
+                import PlayerAiRandom
+                player_to_add = PlayerAiRandom.PlayerAiRandom(self)
+            else:
+                valid_selection = 0
+                print("Invalid selection! Please enter one of the values listed!")
 
         self._add_player(player_to_add)
 
@@ -125,6 +135,7 @@ class OthelloGame:
     def set_stone(self, position_pair):
         if position_pair in self.get_available_moves():
             (x, y) = position_pair
+            print(f"Stone is set to ({x+1}, {y+1})")
             self._board[x][y] = self._turn_number % 2
             for stone_to_turn in self._stones_to_turn[position_pair]:
                 (turn_x, turn_y) = stone_to_turn
