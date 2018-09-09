@@ -193,25 +193,27 @@ class OthelloGame:
         for row in range(len(board)):
             for column in range(len(board[row])):
                 current_position = (row, column)
-                if board[row][column] is None and OthelloGame.get_number_of_occupied_neighbors(current_position, board) > 0:
+                if board[row][column] is None and OthelloGame.get_number_of_occupied_neighbors(current_position,
+                                                                                               board) > 0:
                     positions_to_test.add(current_position)
         return positions_to_test
 
-    def _compute_moves_and_stones_to_turn(self):
+    @staticmethod
+    def _compute_moves_and_stones_to_turn(board, turn_number):
         available_moves = set()
         stones_to_turn = dict()
         directions = OthelloGame.get_directions()
-        own_symbol = self._turn_number % 2
-        for current_position in OthelloGame.get_positions_to_test(self._board):
+        own_symbol = turn_number % 2
+        for current_position in OthelloGame.get_positions_to_test(board):
             # print("working on: " + str(current_position))
             this_position_turns = set()
             for direction in directions:
                 # print("    working on direction: " + str(direction))
-                next_position = OthelloGame.next_step(current_position, direction, len(self._board))
+                next_position = OthelloGame.next_step(current_position, direction, len(board))
                 stones_in_this_direction = set()
                 while next_position is not None:
                     new_current_position = (current_x, current_y) = next_position
-                    current_value = self._board[current_x][current_y]
+                    current_value = board[current_x][current_y]
                     if current_value is None:
                         # print("        encountered empty neighbor")
                         break
@@ -224,19 +226,19 @@ class OthelloGame:
                         # print("            " + str(stones_in_this_direction))
                         # print("            this_position_turns: " + str(this_position_turns))
                         break
-                    next_position = OthelloGame.next_step(new_current_position, direction, len(self._board))
+                    next_position = OthelloGame.next_step(new_current_position, direction, len(board))
             if len(this_position_turns) > 0:
                 available_moves.add(current_position)
                 stones_to_turn[current_position] = this_position_turns
                 # print("  position turns " + str(this_position_turns))
             # else:
             #     print("  no turns for this position")
-        self._last_state_backup = OthelloGameState(self._turn_number, self._board.copy(), available_moves,
-                                                   stones_to_turn)
+        return OthelloGameState(turn_number, board, available_moves, stones_to_turn)
 
     def get_available_moves(self):
         if self._turn_number != self._last_state_backup.turn_number:
-            self._compute_moves_and_stones_to_turn()
+            self._last_state_backup = OthelloGame._compute_moves_and_stones_to_turn(self._board.copy(),
+                                                                                    int(self._turn_number))
         return self._last_state_backup.available_moves
 
     def get_board(self):
@@ -244,10 +246,12 @@ class OthelloGame:
 
     def get_stones_to_turn(self):
         if self._turn_number != self._last_state_backup.turn_number:
-            self._compute_moves_and_stones_to_turn()
+            self._last_state_backup = OthelloGame._compute_moves_and_stones_to_turn(self._board.copy(),
+                                                                                    int(self._turn_number))
         return self._last_state_backup.stones_to_turn
 
     def get_game_info(self):
         if self._turn_number != self._last_state_backup.turn_number:
-            self._compute_moves_and_stones_to_turn()
+            self._last_state_backup = OthelloGame._compute_moves_and_stones_to_turn(self._board.copy(),
+                                                                                    int(self._turn_number))
         return self._last_state_backup.copy()
