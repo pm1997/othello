@@ -6,6 +6,7 @@ from Error import NonIntegerBoardSizeError
 from Error import ToManyPlayersError
 from Player import Player
 from OthelloGameState import OthelloGameState
+from operator import itemgetter
 
 
 class OthelloGame:
@@ -110,25 +111,38 @@ class OthelloGame:
                 print(self._player_print_symbol[current_player] + " had to pass. "
                                                                   "There were no possible positions for her.")
             self.print_board()
-        stats = self.get_stats()
-        print(self._player_print_symbol[0] + " : " + str(stats[0])
-              + " | " + self._player_print_symbol[1] + " : " + str(stats[1]))
-        if max(stats) == stats[0]:
-            print(self._player_print_symbol[0], end="")
-        else:
-            print(self._player_print_symbol[1], end="")
-        print(" wins!")
+        OthelloGame.print_stats(self._board, self._player_print_symbol)
+        OthelloGame.print_winner(self._board, self._player_print_symbol)
+        print(3 * "\n", end="")
 
-    def get_stats(self):
-        counter_a, counter_b = 0, 0
-        for row in range(len(self._board)):
-            for column in range(len(self._board[row])):
-                field_value = self._board[row][column]
+    @staticmethod
+    def get_stats(board):
+        points_dict = {0: 0, 1: 0}
+        for row in range(len(board)):
+            for column in range(len(board)):
+                field_value = board[row][column]
                 if field_value == 0:
-                    counter_a += 1
+                    points_dict[0] += 1
                 elif field_value == 1:
-                    counter_b += 1
-        return (counter_a, counter_b)
+                    points_dict[1] += 1
+        return points_dict
+
+    @staticmethod
+    def print_stats(board, player_print_symbol):
+        stats = OthelloGame.get_stats(board)
+        print("Statistics:")
+        for player_no in stats:
+            print(f"{player_print_symbol[player_no]}: {stats[player_no]}")
+
+    @staticmethod
+    def get_winner(board):
+        stats = OthelloGame.get_stats(board)
+        return max(stats.items(), key=itemgetter(1))
+
+    @staticmethod
+    def print_winner(board, player_print_symbol):
+        winner_data = OthelloGame.get_winner(board)
+        print(f"{player_print_symbol[winner_data[0]]} wins with {winner_data[1]} points!")
 
     def set_stone(self, position_pair):
         if position_pair in self.get_available_moves():
@@ -142,8 +156,8 @@ class OthelloGame:
         else:
             raise InvalidTurnError("The given Turn is not allowed!")
 
-    def _next_step(self, position_pair, direction_pair):
-        board_size = len(self._board)
+    @staticmethod
+    def next_step(position_pair, direction_pair, board_size):
         (x, y), (x_step, y_step) = position_pair, direction_pair
         new_position = (new_x, new_y) = (x + x_step, y + y_step)
         if 0 <= new_x < board_size and 0 <= new_y < board_size:
@@ -151,19 +165,21 @@ class OthelloGame:
         else:
             return None
 
-    def get_neighbors(self, position):
+    @staticmethod
+    def get_neighbors(position, board):
         neighbors = set()
         directions = OthelloGame.get_directions()
         for direction in directions:
-            next_step = self._next_step(position, direction)
+            next_step = OthelloGame.next_step(position, direction, len(board))
             if next_step is not None:
                 neighbors.add(next_step)
         return neighbors
 
-    def get_number_of_occupied_neighbors(self, position):
+    @staticmethod
+    def get_number_of_occupied_neighbors(position, board):
         number_of_occupied_neighbors = 0
-        for (x, y) in self.get_neighbors(position):
-            if self._board[x][y] is not None:
+        for (x, y) in OthelloGame.get_neighbors(position, board):
+            if board[x][y] is not None:
                 number_of_occupied_neighbors += 1
         return number_of_occupied_neighbors
 
@@ -171,12 +187,13 @@ class OthelloGame:
     def get_directions():
         return [(x, y) for x in [-1, 0, 1] for y in [-1, 0, 1] if (x, y) not in [(0, 0)]]
 
-    def get_positions_to_test(self):
+    @staticmethod
+    def get_positions_to_test(board):
         positions_to_test = set()
-        for row in range(len(self._board)):
-            for column in range(len(self._board[row])):
+        for row in range(len(board)):
+            for column in range(len(board[row])):
                 current_position = (row, column)
-                if self._board[row][column] is None and self.get_number_of_occupied_neighbors(current_position) > 0:
+                if board[row][column] is None and OthelloGame.get_number_of_occupied_neighbors(current_position, board) > 0:
                     positions_to_test.add(current_position)
         return positions_to_test
 
@@ -185,12 +202,12 @@ class OthelloGame:
         stones_to_turn = dict()
         directions = OthelloGame.get_directions()
         own_symbol = self._turn_number % 2
-        for current_position in self.get_positions_to_test():
+        for current_position in OthelloGame.get_positions_to_test(self._board):
             # print("working on: " + str(current_position))
             this_position_turns = set()
             for direction in directions:
                 # print("    working on direction: " + str(direction))
-                next_position = self._next_step(current_position, direction)
+                next_position = OthelloGame.next_step(current_position, direction, len(self._board))
                 stones_in_this_direction = set()
                 while next_position is not None:
                     new_current_position = (current_x, current_y) = next_position
@@ -207,7 +224,7 @@ class OthelloGame:
                         # print("            " + str(stones_in_this_direction))
                         # print("            this_position_turns: " + str(this_position_turns))
                         break
-                    next_position = self._next_step(new_current_position, direction)
+                    next_position = OthelloGame.next_step(new_current_position, direction, len(self._board))
             if len(this_position_turns) > 0:
                 available_moves.add(current_position)
                 stones_to_turn[current_position] = this_position_turns
