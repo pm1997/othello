@@ -9,3 +9,15 @@ class PlayerInvalidError(Error):
 class InvalidTurnError(Error):
     def __init__(self, message):
         self.message = message
+
+class OddBoardSizeError(Error):
+    def __init__(self, message):
+        self.message = message
+
+class BoardToSmallError(Error):
+    def __init__(self, message):
+        self.message = message
+
+class NonIntegerBoardSizeError(Error):
+    def __init__(self, message):
+        self.message = message
