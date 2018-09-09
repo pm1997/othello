@@ -52,6 +52,7 @@ class OthelloGame:
             print("Avaliable Players:")
             print(" 0: Human Player")
             print(" 1: Random AI")
+            print(" 2: Most Inversions AI")
             try:
                 selection = int(input("Please enter the number for the Player Type to add\n"))
                 valid_selection = 1
@@ -64,6 +65,9 @@ class OthelloGame:
             elif selection == 1:
                 import PlayerAiRandom
                 player_to_add = PlayerAiRandom.PlayerAiRandom(self)
+            elif selection == 2:
+                import PlayerAiInvertMost
+                player_to_add = PlayerAiInvertMost.PlayerAiInvertMost(self)
             else:
                 valid_selection = 0
                 print("Invalid selection! Please enter one of the values listed!")
