@@ -26,3 +26,7 @@ class BoardToSmallError(Error):
 class NonIntegerBoardSizeError(Error):
     def __init__(self, message):
         self.message = message
+
+class ToManyPlayersError(Error):
+    def __init__(self, message):
+        self.message = message

@@ -3,6 +3,7 @@ from Error import PlayerInvalidError
 from Error import OddBoardSizeError
 from Error import BoardToSmallError
 from Error import NonIntegerBoardSizeError
+from Error import ToManyPlayersError
 from Player import Player
 from OthelloGameState import OthelloGameState
 
@@ -37,13 +38,15 @@ class OthelloGame:
         self._play()
 
     def _add_player(self, player):
-        if isinstance(player, Player):
-            self._player.append(player)
-            print("Player Added")
-        else:
+        if not isinstance(player, Player):
             print(player)
             print(player.__class__)
-            raise PlayerInvalidError("Tried to add unknown Type of Player")
+            raise PlayerInvalidError("Tried to add unknown Type of Player!")
+        elif len(self._player) >= 2:
+            raise ToManyPlayersError("Number of Players is not allowed to exceed 2!")
+        else:
+            self._player.append(player)
+            print("Player Added")
 
     def add_player(self):
         player_to_add = None
