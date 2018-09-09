@@ -1,5 +1,4 @@
 from Player import Player
-import random
 
 class PlayerHuman(Player):
     def __init__(self, game_reference):

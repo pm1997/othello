@@ -1,4 +1,3 @@
-import PlayerHuman
 from Error import InvalidTurnError
 from Error import PlayerInvalidError
 from Error import OddBoardSizeError
@@ -48,9 +47,14 @@ class OthelloGame:
         player_to_add = None
         print("Avaliable Players:")
         print(" 0: Human Player")
+        print(" 1: Random AI")
         selection = int(input("Please enter the number for the Player Type to add\n"))
         if selection == 0:
+            import PlayerHuman
             player_to_add = PlayerHuman.PlayerHuman(self)
+        elif selection == 1:
+            import PlayerAiRandom
+            player_to_add = PlayerAiRandom.PlayerAiRandom(self)
 
         self._add_player(player_to_add)
 
@@ -96,7 +100,7 @@ class OthelloGame:
                 self._number_of_passes += 1
                 self._turn_number += 1
                 print(self._player_print_symbol[current_player] + " had to pass. "
-                                                                         "There were no possible positions for her.")
+                                                                  "There were no possible positions for her.")
             self.print_board()
         stats = self.get_stats()
         print(self._player_print_symbol[0] + " : " + str(stats[0])
@@ -143,7 +147,7 @@ class OthelloGame:
         directions = OthelloGame.get_directions()
         for direction in directions:
             next_step = self._next_step(position, direction)
-            if next_step != None:
+            if next_step is not None:
                 neighbors.add(next_step)
         return neighbors
 
@@ -163,7 +167,7 @@ class OthelloGame:
         for row in range(len(self._board)):
             for column in range(len(self._board[row])):
                 current_position = (row, column)
-                if self._board[row][column] == None and self.get_number_of_occupied_neighbors(current_position) > 0:
+                if self._board[row][column] is None and self.get_number_of_occupied_neighbors(current_position) > 0:
                     positions_to_test.add(current_position)
         return positions_to_test
 
