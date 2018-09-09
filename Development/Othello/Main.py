@@ -1,3 +1,4 @@
 from OthelloGame import OthelloGame
 
-test = OthelloGame()
+while 1:
+    OthelloGame()
