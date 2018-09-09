@@ -10,6 +10,7 @@ class PlayerHuman(Player):
         valid_selection = 0
         while not valid_selection:
             print("Possible positions:")
+            print("Coordinates are (row, column)")
             for i in range(len(possible_moves)):
                 (x, y) = possible_moves[i]
                 print(f"{i}: ({x+1}, {y+1})")

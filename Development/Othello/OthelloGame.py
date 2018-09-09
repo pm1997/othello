@@ -4,6 +4,7 @@ from Error import OddBoardSizeError
 from Error import BoardToSmallError
 from Error import NonIntegerBoardSizeError
 from Player import Player
+from OthelloGameState import OthelloGameState
 
 
 class OthelloGame:
@@ -21,8 +22,8 @@ class OthelloGame:
         self._player = []
         self._player_print_symbol = {0: "W", 1: "B"}
         self._turn_number = 0
+        self._last_state_backup = OthelloGameState()
         self._number_of_passes = 0
-        self._stones_to_turn = dict()
         # welcome user
         print("Welcome to Othello!")
         # initialize board
@@ -33,7 +34,7 @@ class OthelloGame:
         # print the board for the first time
         self.print_board()
         # start the gameplay
-        self.play()
+        self._play()
 
     def _add_player(self, player):
         if isinstance(player, Player):
@@ -76,17 +77,6 @@ class OthelloGame:
         self._board[pivot_pos][pivot_pos - 1] = 1
         self._board[pivot_pos][pivot_pos] = 0
 
-    def get_board(self):
-        return self._board.copy()
-
-    # def _get_available_moves(self):
-    #     return_list = []
-    #     for row in range(len(self._board)):
-    #         for column in range(len(self._board[row])):
-    #             if self._board[row][column] is None:
-    #                 return_list.append((row, column))
-    #     return return_list
-
     def print_board(self):
         print("    ", end="")
         for i in range(len(self._board)):
@@ -101,7 +91,7 @@ class OthelloGame:
             print("\n", end="")
             print("   +" + len(self._board) * "---+")
 
-    def play(self):
+    def _play(self):
         while self._number_of_passes < 2:
             current_player = self._turn_number % 2
             print(f"{self._player_print_symbol[current_player]}'s turn")
@@ -138,7 +128,7 @@ class OthelloGame:
             (x, y) = position_pair
             print(f"Stone is set to ({x+1}, {y+1})")
             self._board[x][y] = self._turn_number % 2
-            for stone_to_turn in self._stones_to_turn[position_pair]:
+            for stone_to_turn in self.get_stones_to_turn()[position_pair]:
                 (turn_x, turn_y) = stone_to_turn
                 self._board[turn_x][turn_y] = self._turn_number % 2
             self._turn_number += 1
@@ -183,7 +173,7 @@ class OthelloGame:
                     positions_to_test.add(current_position)
         return positions_to_test
 
-    def get_available_moves(self):
+    def _compute_moves_and_stones_to_turn(self):
         available_moves = set()
         stones_to_turn = dict()
         directions = OthelloGame.get_directions()
@@ -217,5 +207,23 @@ class OthelloGame:
                 # print("  position turns " + str(this_position_turns))
             # else:
             #     print("  no turns for this position")
-        self._stones_to_turn = stones_to_turn
-        return available_moves
+        self._last_state_backup = OthelloGameState(self._turn_number, self._board.copy(), available_moves,
+                                                   stones_to_turn)
+
+    def get_available_moves(self):
+        if self._turn_number != self._last_state_backup.turn_number:
+            self._compute_moves_and_stones_to_turn()
+        return self._last_state_backup.available_moves
+
+    def get_board(self):
+        return self._board.copy()
+
+    def get_stones_to_turn(self):
+        if self._turn_number != self._last_state_backup.turn_number:
+            self._compute_moves_and_stones_to_turn()
+        return self._last_state_backup.stones_to_turn
+
+    def get_game_info(self):
+        if self._turn_number != self._last_state_backup.turn_number:
+            self._compute_moves_and_stones_to_turn()
+        return self._last_state_backup.copy()
