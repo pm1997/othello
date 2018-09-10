@@ -15,7 +15,7 @@ from Constants import INVALID_CELL
 
 class OthelloGame:
 
-    def __init__(self, board_size=BOARD_SIZE):
+    def __init__(self, board_size=BOARD_SIZE, ai=False):
         # input validation
         if not isinstance(board_size, int):
             raise NonIntegerBoardSizeError("Only integer board sizes allowed!")
@@ -31,6 +31,8 @@ class OthelloGame:
         self._last_state_backup = OthelloGameState()
         self._number_of_passes = 0
         # welcome user
+        if ai:
+            return
         print("Welcome to Othello!")
         # initialize board
         self._set_initial_stones()
@@ -41,6 +43,9 @@ class OthelloGame:
         self.print_board()
         # start the game play
         self._play()
+
+    def get_turn_number(self):
+        return self._turn_number
 
     def _add_player(self, player):
         if not isinstance(player, Player):
@@ -53,6 +58,9 @@ class OthelloGame:
             self._player.append(player)
             print("Player Added")
 
+    def set_board(self, board):
+        self._board = board
+
     def add_player(self):
         player_to_add = None
         valid_selection = 0
@@ -61,6 +69,7 @@ class OthelloGame:
             print(" 0: Human Player")
             print(" 1: Random AI")
             print(" 2: Most Inversions AI")
+            print(" 3: Forecast Turns AI")
             try:
                 selection = int(input("Please enter the number for the Player Type to add\n"))
                 valid_selection = 1
@@ -76,6 +85,9 @@ class OthelloGame:
             elif selection == 2:
                 import PlayerAiInvertMost
                 player_to_add = PlayerAiInvertMost.PlayerAiInvertMost(self)
+            elif selection == 3:
+                import PlayerAiForecastTurns
+                player_to_add = PlayerAiForecastTurns.PlayerAiForecastTurns(self)
             else:
                 valid_selection = 0
                 print("Invalid selection! Please enter one of the values listed!")
@@ -145,17 +157,17 @@ class OthelloGame:
 
     @staticmethod
     def print_winner(board, player_print_symbol):
-        winner_data = OthelloGame.get_winner(board)
-        print(f"{player_print_symbol[winner_data[0]]} wins with {winner_data[1]} points!")
+        (player, points) = OthelloGame.get_winner(board)
+        print(f"{player_print_symbol[player]} wins with {points} points!")
 
     def set_stone(self, position_pair):
         if position_pair in self.get_available_moves():
             (x, y) = position_pair
             print(f"Stone is set to ({x+1}, {y+1})")
-            self._board[x][y] = self._turn_number % 2
+            self._board[int(x)][y] = self._turn_number % 2
             for stone_to_turn in self.get_stones_to_turn()[position_pair]:
                 (turn_x, turn_y) = stone_to_turn
-                self._board[turn_x][turn_y] = self._turn_number % 2
+                self._board[int(turn_x)][turn_y] = self._turn_number % 2
             self._turn_number += 1
         else:
             raise InvalidTurnError("The given Turn is not allowed!")
@@ -197,8 +209,8 @@ class OthelloGame:
         for row in range(len(board)):
             for column in range(len(board[row])):
                 current_position = (row, column)
-                if board[row][column] == INVALID_CELL and OthelloGame.get_number_of_occupied_neighbors(current_position,
-                                                                                               board) > 0:
+                if board[row][column] == INVALID_CELL \
+                        and OthelloGame.get_number_of_occupied_neighbors(current_position, board) > 0:
                     positions_to_test.add(current_position)
         return positions_to_test
 
