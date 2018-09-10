@@ -1,0 +1,7 @@
+BOARD_SIZE = 8
+
+# Player
+PLAYER_ONE = 0
+PLAYER_TWO = 1
+
+INVALID_CELL = 2
