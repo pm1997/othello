@@ -1,3 +1,5 @@
-*.pyc
+*pyc
 
-.idea/
+/Development/Othello/.idea
+/Development/Othello/_pycache_
+/Development/Othello/venv
