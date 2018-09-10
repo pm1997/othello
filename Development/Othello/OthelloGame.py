@@ -11,16 +11,16 @@ from operator import itemgetter
 
 class OthelloGame:
 
-    def __init__(self, boardsize=8):
+    def __init__(self, board_size=8):
         # input validation
-        if not isinstance(boardsize, int):
+        if not isinstance(board_size, int):
             raise NonIntegerBoardSizeError("Only integer board sizes allowed!")
-        elif boardsize % 2 != 0:
+        elif board_size % 2 != 0:
             raise OddBoardSizeError("No odd board sizes allowed!")
-        elif boardsize < 4:
+        elif board_size < 4:
             raise BoardToSmallError("Only boards larger than 3 allowed.")
         # create and init object parameter
-        self._board = [[None for row in range(boardsize)] for column in range(boardsize)]
+        self._board = [[None for _ in range(board_size)] for _ in range(board_size)]
         self._player = []
         self._player_print_symbol = {0: "W", 1: "B"}
         self._turn_number = 0
@@ -35,7 +35,7 @@ class OthelloGame:
             self.add_player()
         # print the board for the first time
         self.print_board()
-        # start the gameplay
+        # start the game play
         self._play()
 
     def _add_player(self, player):
@@ -53,7 +53,7 @@ class OthelloGame:
         player_to_add = None
         valid_selection = 0
         while not valid_selection:
-            print("Avaliable Players:")
+            print("Available Players:")
             print(" 0: Human Player")
             print(" 1: Random AI")
             print(" 2: Most Inversions AI")

@@ -1,13 +1,16 @@
 from Player import Player
 
+
 class PlayerHuman(Player):
     def __init__(self, game_reference):
+        Player.__init__(self, game_reference)
         self._game_reference = game_reference
         print("Created new Human Player")
 
     def play(self):
         possible_moves = list(self._game_reference.get_available_moves())
         valid_selection = 0
+        user_input = -1
         while not valid_selection:
             print("Possible positions:")
             print("Coordinates are (row, column)")
