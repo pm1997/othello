@@ -7,11 +7,15 @@ from Error import ToManyPlayersError
 from Player import Player
 from OthelloGameState import OthelloGameState
 from operator import itemgetter
+from Constants import BOARD_SIZE
+from Constants import PLAYER_ONE
+from Constants import PLAYER_TWO
+from Constants import INVALID_CELL
 
 
 class OthelloGame:
 
-    def __init__(self, board_size=8):
+    def __init__(self, board_size=BOARD_SIZE):
         # input validation
         if not isinstance(board_size, int):
             raise NonIntegerBoardSizeError("Only integer board sizes allowed!")
@@ -20,7 +24,7 @@ class OthelloGame:
         elif board_size < 4:
             raise BoardToSmallError("Only boards larger than 3 allowed.")
         # create and init object parameter
-        self._board = [[None for _ in range(board_size)] for _ in range(board_size)]
+        self._board = [[INVALID_CELL for _ in range(board_size)] for _ in range(board_size)]
         self._player = []
         self._player_print_symbol = {0: "W", 1: "B"}
         self._turn_number = 0
@@ -80,10 +84,10 @@ class OthelloGame:
 
     def _set_initial_stones(self):
         pivot_pos = int(len(self._board) / 2)
-        self._board[pivot_pos - 1][pivot_pos - 1] = 0
-        self._board[pivot_pos - 1][pivot_pos] = 1
-        self._board[pivot_pos][pivot_pos - 1] = 1
-        self._board[pivot_pos][pivot_pos] = 0
+        self._board[pivot_pos - 1][pivot_pos - 1] = PLAYER_ONE
+        self._board[pivot_pos - 1][pivot_pos] = PLAYER_TWO
+        self._board[pivot_pos][pivot_pos - 1] = PLAYER_TWO
+        self._board[pivot_pos][pivot_pos] = PLAYER_ONE
 
     def print_board(self):
         print("    ", end="")
@@ -95,7 +99,7 @@ class OthelloGame:
             print(f" {row+1} | ", end="")
             for column in range(len(self._board[row])):
                 field_value = self._board[row][column]
-                print((" " if field_value is None else self._player_print_symbol[field_value]) + " | ", end="")
+                print((" " if field_value == INVALID_CELL else self._player_print_symbol[field_value]) + " | ", end="")
             print("\n", end="")
             print("   +" + len(self._board) * "---+")
 
@@ -179,7 +183,7 @@ class OthelloGame:
     def get_number_of_occupied_neighbors(position, board):
         number_of_occupied_neighbors = 0
         for (x, y) in OthelloGame.get_neighbors(position, board):
-            if board[x][y] is not None:
+            if board[x][y] != INVALID_CELL:
                 number_of_occupied_neighbors += 1
         return number_of_occupied_neighbors
 
@@ -193,7 +197,7 @@ class OthelloGame:
         for row in range(len(board)):
             for column in range(len(board[row])):
                 current_position = (row, column)
-                if board[row][column] is None and OthelloGame.get_number_of_occupied_neighbors(current_position,
+                if board[row][column] == INVALID_CELL and OthelloGame.get_number_of_occupied_neighbors(current_position,
                                                                                                board) > 0:
                     positions_to_test.add(current_position)
         return positions_to_test
@@ -214,7 +218,7 @@ class OthelloGame:
                 while next_position is not None:
                     new_current_position = (current_x, current_y) = next_position
                     current_value = board[current_x][current_y]
-                    if current_value is None:
+                    if current_value == INVALID_CELL:
                         # print("        encountered empty neighbor")
                         break
                     elif current_value != own_symbol:
