@@ -271,3 +271,11 @@ class OthelloGame:
             self._last_state_backup = OthelloGame._compute_moves_and_stones_to_turn(self._board.copy(),
                                                                                     int(self._turn_number))
         return self._last_state_backup.copy()
+
+    @staticmethod
+    def copy_board(old_board):
+        new_board = [[INVALID_CELL for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
+        for row in range(BOARD_SIZE):
+            for column in range(BOARD_SIZE):
+                new_board[row][column] = old_board[row][column]
+        return new_board
