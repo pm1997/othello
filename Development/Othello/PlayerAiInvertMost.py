@@ -4,6 +4,7 @@ from operator import itemgetter
 
 class PlayerAiInvertMost(Player):
     def __init__(self, game_reference):
+        Player.__init__(self, game_reference)
         self._game_reference = game_reference
         print("Created new Invert Most AI Player")
 
