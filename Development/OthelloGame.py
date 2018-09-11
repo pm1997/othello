@@ -121,6 +121,7 @@ class OthelloGame:
             print(f"{self._player_print_symbol[current_player]}'s turn")
             if (len(self.get_available_moves())) > 0:
                 self._player[current_player].play()
+                self._number_of_passes = 0
             else:
                 self._number_of_passes += 1
                 self._turn_number += 1
