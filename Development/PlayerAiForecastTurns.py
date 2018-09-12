@@ -14,7 +14,7 @@ class PlayerAiForecastTurns(Player):
         new_board = OthelloGame.copy_board(old_board)
         self.new_othello.set_board(new_board)
         self.new_othello.set_turn_number(game_reference.get_turn_number())
-        self.state_tree = StateForecastTree(self.new_othello.get_turn_number(), None)
+        self.state_root_tree = StateForecastTree(self.new_othello.get_turn_number(), None)
 
         print("Created new Forecast Turns AI Player")
 
@@ -22,13 +22,13 @@ class PlayerAiForecastTurns(Player):
 
         turn_number = self._game_reference.get_turn_number()
 
-        tree = self.state_tree.search_node(turn_number)
-        if tree is None:
-            tree = StateForecastTree(turn_number, None)
-        tree.parent = None
+        self.state_root_tree = self.state_root_tree.search_node(turn_number)
+        if self.state_root_tree is None:
+            self.state_root_tree = StateForecastTree(turn_number, None)
+        self.state_root_tree.parent = None
         limit = turn_number + MAX_FORECAST
         turn_number -= 1
-        tree = self.find_next_moves(tree, turn_number, limit, self.new_othello)
+        tree = self.find_next_moves(self.state_root_tree, turn_number, limit, self.new_othello)
         StateForecastTree.update_stats(tree)
 
         StateForecastTree.print_tree(tree)
@@ -66,6 +66,8 @@ class PlayerAiForecastTurns(Player):
             temp_othello.set_board(temp_board)
             temp_othello.set_turn_number(turn_number)
             temp_othello.set_stone((x, y))
+            tree.x = x
+            tree.y = y
             # temp_othello.print_board()
             tree.add_node(turn_number, x, y, None, None)
 
