@@ -195,6 +195,8 @@ class OthelloGame:
                 self._board[int(turn_x)][turn_y] = self._turn_number % 2
             self._turn_number += 1
         else:
+            print(f"{self._player_print_symbol[self.get_turn_number() % 2]}'s turn")
+            OthelloGame.print_board(self)
             raise InvalidTurnError("The given Turn is not allowed!" + str(position_pair[0]) + "  " + str(position_pair[1]))
 
     @staticmethod
