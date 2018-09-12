@@ -90,8 +90,9 @@ class StateForecastTree:
         tree.loss = 0
         tree.paths = 0
         for node in tree.nodes:
-            tree.wins += node.wins
-            tree.loss += node.loss
-            tree.paths += node.paths
-        if tree.parent is not None:
-            StateForecastTree.update_stats(tree.parent)
+            data = StateForecastTree.update_stats(node)
+            tree.wins += data[0]
+            tree.loss += data[1]
+            tree.paths += data[2]
+        return tree.wins, tree.loss, tree.paths
+
