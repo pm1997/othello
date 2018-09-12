@@ -44,6 +44,9 @@ class OthelloGame:
         # start the game play
         self._play()
 
+    def set_turn_number(self, turn_number):
+        self._turn_number = turn_number
+
     def get_turn_number(self):
         return self._turn_number
 
@@ -192,7 +195,7 @@ class OthelloGame:
                 self._board[int(turn_x)][turn_y] = self._turn_number % 2
             self._turn_number += 1
         else:
-            raise InvalidTurnError("The given Turn is not allowed!")
+            raise InvalidTurnError("The given Turn is not allowed!" + str(position_pair[0]) + "  " + str(position_pair[1]))
 
     @staticmethod
     def next_step(position_pair, direction_pair, board_size):
