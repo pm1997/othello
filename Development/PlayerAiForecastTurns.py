@@ -56,13 +56,44 @@ class PlayerAiForecastTurns(Player):
 
         if len(tree.nodes) != 0:
 
-            positions_to_turn = self.new_othello.get_stones_to_turn()
-            number_inversions = [(position, len(positions_to_turn[position])) for position in positions_to_turn]
+            best_row = tree.nodes[0].row
+            best_column = tree.nodes[0].column
 
-            (best_row, best_column) = max(number_inversions, key=itemgetter(1))[0]
+            # best_row2 = best_row
+            # best_column2 = best_column
 
-            # best_row = tree.nodes[0].row
-            # best_column = tree.nodes[0].column
+            max_win = 0
+            min_loss = 2000
+            max_points = 0
+            for node in tree.nodes:
+                if node.wins > max_win:
+                    max_win = node.wins
+                    best_row = node.row
+                    best_column = node.column
+
+                if node.loss <= min_loss and node.max_points > max_points:
+                    max_points = node.max_points
+                    min_loss = node.loss
+                    # best_row2 = node.row
+                    # best_column2 = node.column
+
+            if max_win > 0:
+                self._game_reference.set_stone((best_row, best_column))
+                return
+
+            # if min_loss < 10:
+            #    self._game_reference.set_stone((best_row2, best_column2))
+            #    return
+
+            # print("use almost old code -------------------------------------------")
+
+            # positions_to_turn = self.new_othello.get_stones_to_turn()
+            # number_inversions = [(position, len(positions_to_turn[position])) for position in positions_to_turn]
+
+            # (best_row, best_column) = max(number_inversions, key=itemgetter(1))[0]
+
+            best_row = tree.nodes[0].row
+            best_column = tree.nodes[0].column
             max_points = tree.nodes[0].max_points
             for node in tree.nodes:
                 if node.max_points > max_points:
