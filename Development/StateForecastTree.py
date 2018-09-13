@@ -72,22 +72,21 @@ class StateForecastTree:
     def delete_nodes(node, stop_node_value):
         return node.delete(stop_node_value)
 
-    def search_node(self, turn_number):
-        if self.turn_number == turn_number:
-            return self
-        if self.turn_number > turn_number:
-            if self.parent is not None:
-                return self.parent.search_node(turn_number)
-        else:
-            node_count = len(self.nodes)
-            i = 0
-            if node_count > 0:
-                result = self.nodes[i].search_node(turn_number)
-                while result is None and i + 1 < node_count:
-                    i += 1
-                    result = self.nodes[i].search_node(turn_number)
-                return result
+    def search_node(self, turn_number, available_moves):
+        if self.turn_number % 2 == turn_number % 2:
+            if self.game_state is not None:
+                print(available_moves)
+                print(self.game_state.available_moves)
+                print("+++++++++++++++")
+                print(" ")
+                if self.game_state.available_moves == available_moves:
+                    return self
+        if self.turn_number + 3 > turn_number:
             return None
+        for node in self.nodes:
+            result = node.search_node(turn_number, available_moves)
+            if result is not None:
+                return self
 
     @staticmethod
     def update_stats(tree, player):
