@@ -10,7 +10,7 @@ from operator import itemgetter
 from Constants import BOARD_SIZE
 from Constants import PLAYER_ONE
 from Constants import PLAYER_TWO
-from Constants import INVALID_CELL
+from Constants import EMPTY_CELL
 
 
 class OthelloGame:
@@ -24,7 +24,7 @@ class OthelloGame:
         elif board_size < 4:
             raise BoardToSmallError("Only boards larger than 3 allowed.")
         # create and init object parameter
-        self._board = [[INVALID_CELL for _ in range(board_size)] for _ in range(board_size)]
+        self._board = [[EMPTY_CELL for _ in range(board_size)] for _ in range(board_size)]
         self._player = []
         self._player_print_symbol = {0: "W", 1: "B"}
         self._turn_number = 0
@@ -43,6 +43,9 @@ class OthelloGame:
         self.print_board()
         # start the game play
         self._play()
+
+    def set_turn_number(self, turn_number):
+        self._turn_number = turn_number
 
     def get_turn_number(self):
         return self._turn_number
@@ -111,7 +114,7 @@ class OthelloGame:
             print(f" {row+1} | ", end="")
             for column in range(len(self._board[row])):
                 field_value = self._board[row][column]
-                print((" " if field_value == INVALID_CELL else self._player_print_symbol[field_value]) + " | ", end="")
+                print((" " if field_value == EMPTY_CELL else self._player_print_symbol[field_value]) + " | ", end="")
             print("\n", end="")
             print("   +" + len(self._board) * "---+")
 
@@ -119,6 +122,10 @@ class OthelloGame:
         while self._number_of_passes < 2:
             current_player = self._turn_number % 2
             print(f"{self._player_print_symbol[current_player]}'s turn")
+            if self.game_ends():
+                self.print_board()
+                print("end of game")
+                break
             if (len(self.get_available_moves())) > 0:
                 self._player[current_player].play()
                 self._number_of_passes = 0
@@ -131,6 +138,24 @@ class OthelloGame:
         OthelloGame.print_stats(self._board, self._player_print_symbol)
         OthelloGame.print_winner(self._board, self._player_print_symbol)
         print(3 * "\n", end="")
+
+    def game_ends(self):
+        board_full = True  # whole board is full
+        for row in self._board:
+            if EMPTY_CELL in row:
+                board_full = False
+        if board_full:
+            return True
+
+        # check whether both player passes
+        if (len(self.get_available_moves())) > 0:
+            return False
+        else:
+            self._turn_number += 1
+            if (len(self.get_available_moves())) > 0:
+                return False
+            else:
+                return True
 
     @staticmethod
     def get_stats(board):
@@ -161,17 +186,20 @@ class OthelloGame:
         (player, points) = OthelloGame.get_winner(board)
         print(f"{player_print_symbol[player]} wins with {points} points!")
 
-    def set_stone(self, position_pair):
+    def set_stone(self, position_pair, ai=False):
         if position_pair in self.get_available_moves():
             (x, y) = position_pair
-            print(f"Stone is set to ({x+1}, {y+1})")
+            if not ai:
+                print(f"Stone is set to ({x+1}, {y+1})")
             self._board[int(x)][y] = self._turn_number % 2
             for stone_to_turn in self.get_stones_to_turn()[position_pair]:
                 (turn_x, turn_y) = stone_to_turn
                 self._board[int(turn_x)][turn_y] = self._turn_number % 2
             self._turn_number += 1
         else:
-            raise InvalidTurnError("The given Turn is not allowed!")
+            print(f"{self._player_print_symbol[self.get_turn_number() % 2]}'s turn")
+            OthelloGame.print_board(self)
+            raise InvalidTurnError("The given Turn is not allowed!" + str(position_pair[0]) + "  " + str(position_pair[1]))
 
     @staticmethod
     def next_step(position_pair, direction_pair, board_size):
@@ -196,7 +224,7 @@ class OthelloGame:
     def get_number_of_occupied_neighbors(position, board):
         number_of_occupied_neighbors = 0
         for (x, y) in OthelloGame.get_neighbors(position, board):
-            if board[x][y] != INVALID_CELL:
+            if board[x][y] != EMPTY_CELL:
                 number_of_occupied_neighbors += 1
         return number_of_occupied_neighbors
 
@@ -210,7 +238,7 @@ class OthelloGame:
         for row in range(len(board)):
             for column in range(len(board[row])):
                 current_position = (row, column)
-                if board[row][column] == INVALID_CELL \
+                if board[row][column] == EMPTY_CELL \
                         and OthelloGame.get_number_of_occupied_neighbors(current_position, board) > 0:
                     positions_to_test.add(current_position)
         return positions_to_test
@@ -231,7 +259,7 @@ class OthelloGame:
                 while next_position is not None:
                     new_current_position = (current_x, current_y) = next_position
                     current_value = board[current_x][current_y]
-                    if current_value == INVALID_CELL:
+                    if current_value == EMPTY_CELL:
                         # print("        encountered empty neighbor")
                         break
                     elif current_value != own_symbol:
@@ -275,7 +303,7 @@ class OthelloGame:
 
     @staticmethod
     def copy_board(old_board):
-        new_board = [[INVALID_CELL for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
+        new_board = [[EMPTY_CELL for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
         for row in range(BOARD_SIZE):
             for column in range(BOARD_SIZE):
                 new_board[row][column] = old_board[row][column]

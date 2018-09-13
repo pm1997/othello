@@ -1,110 +1,133 @@
 from Player import Player
-from operator import itemgetter
 from OthelloGame import OthelloGame
-from Constants import BOARD_SIZE
+from StateForecastTree import StateForecastTree
+from Constants import MAX_FORECAST
+from Error import InvalidTurnError
 
 
 class PlayerAiForecastTurns(Player):
     def __init__(self, game_reference):
         Player.__init__(self, game_reference)
-        self.state_storage = list()
         self._game_reference = game_reference
+        self.new_othello = None
+        self.state_root_tree = StateForecastTree(game_reference.get_turn_number(), None)
+
         print("Created new Forecast Turns AI Player")
 
     def play(self):
 
-        new_othello = OthelloGame(BOARD_SIZE, True)
+        turn_number = self._game_reference.get_turn_number()
+
+        # self.state_root_tree = self.state_root_tree.search_node(turn_number)
+        # if self.state_root_tree is None:
+        self.state_root_tree = StateForecastTree(turn_number, None)
+        self.state_root_tree.parent = None
+
+        turn_number -= 1
+        limit = turn_number + MAX_FORECAST
+
         old_board = self._game_reference.get_board()
+        self.new_othello = OthelloGame(len(old_board), True)
         new_board = OthelloGame.copy_board(old_board)
-        new_board[0][0] = 0
-        new_othello.set_board(new_board)
+        self.new_othello.set_board(new_board)
+        self.new_othello.set_turn_number(self._game_reference.get_turn_number())
 
-        print("old board:")
-        self._game_reference.print_board()
+        tree = self.find_next_moves(self.state_root_tree, turn_number, limit, self.new_othello)
+        StateForecastTree.update_stats(tree, (turn_number + 1) % 2)
 
-        print("new instance:")
-        new_othello.print_board()
+        # StateForecastTree.print_tree(tree)
 
-        tree = StateForecastTree(1, None, None)
+        # print("global min: " + str(tree.min_points) + " max: " + str(tree.max_points))
 
-        tree.add_node(2, None)
-        print("Tree2")
-        tree.add_node(3, None)
+        # for node in tree.nodes:
+        #    print("----------------")
+        #    print(node.turn_number)
+        #    print("row:" + str(node.row + 1) + " column:" + str(node.column + 1))
+        #    print("min: " + str(node.min_points) + " max: " + str(node.max_points))
+        #    print("win: " + str(node.wins) + " lose: " + str(node.loss))
+        #    print("paths: " + str(node.paths))
+        #    print("----------------")
+        #    print(" + ")
 
-        tree.nodes[1].add_node(5, None)
+        if len(tree.nodes) != 0:
 
-        print(tree.value)
-        print("++")
-        tree.print_tree(tree.get_root_node())
+            best_row = tree.nodes[0].row
+            best_column = tree.nodes[0].column
 
-        tree = StateForecastTree.delete_parent(tree, tree.nodes[1])
+            best_row2 = best_row
+            best_column2 = best_column
 
-        print("Finished")
+            max_win = 0
+            min_loss = 2000
+            max_points = 0
+            for node in tree.nodes:
+                if node.wins > max_win:
+                    max_win = node.wins
+                    best_row = node.row
+                    best_column = node.column
 
-        print(tree.value)
-        print("++")
-        tree.print_tree(tree.get_root_node())
+                if node.loss <= min_loss and node.max_points > max_points:
+                    max_points = node.max_points
+                    min_loss = node.loss
+                    best_row2 = node.row
+                    best_column2 = node.column
 
-        # old code
+            if max_win > 0:
+                self._game_reference.set_stone((best_row, best_column))
+                return
 
-        positions_to_turn = self._game_reference.get_stones_to_turn()
-        number_inversions = [(position, len(positions_to_turn[position])) for position in positions_to_turn]
+            if min_loss < 10:
+                self._game_reference.set_stone((best_row2, best_column2))
+                return
 
-        position_with_most_inversions = max(number_inversions, key=itemgetter(1))[0]
-        self._game_reference.set_stone(position_with_most_inversions)
+            print("use almost old code -------------------------------------------")
 
-    def find_next_moves(self):
-        pass
+            # positions_to_turn = self.new_othello.get_stones_to_turn()
+            # number_inversions = [(position, len(positions_to_turn[position])) for position in positions_to_turn]
 
+            # (best_row, best_column) = max(number_inversions, key=itemgetter(1))[0]
 
-class StateForecastTree:
-    def __init__(self, value, game_state, parent=None):
-        self.value = value
-        self.nodes = []
-        self.parent = parent
-        self.game_state = game_state
+            best_row = tree.nodes[0].row
+            best_column = tree.nodes[0].column
+            max_points = tree.nodes[0].max_points
+            for node in tree.nodes:
+                if node.max_points > max_points:
+                    best_row = node.row
+                    best_column = node.column
 
-    def delete(self, stop_node):
-        self.parent = None
-        if self is stop_node:
-            print("stop node reached" + str(self.value))
-            return self
+            self._game_reference.set_stone((best_row, best_column))
 
-        val = None
-        for nodes in self.nodes:
-            val2 = nodes.delete(stop_node)
-            if val2 is not None:
-                val = val2
-        del self
-        return val
+    def find_next_moves(self, tree, turn_number, limit, new_othello):
+        if tree.turn_number == limit:
+            # print("limit reached-----------------")
+            tree.paths = 1
+            return
+            # return tree.get_root_node()
+        turn_number += 1
+        new_othello.set_turn_number(turn_number)
+        tree.game_state = OthelloGame._compute_moves_and_stones_to_turn(new_othello.get_board(), turn_number)
 
-    def add_node(self, node, game_state):
-        self.nodes.append(StateForecastTree(node, game_state, self))
+        if len(tree.game_state.available_moves) == 0:
+            # print("turn end reached--------------")
+            winner = OthelloGame.get_winner(new_othello.get_board())
+            if turn_number % 2 == winner:
+                tree.wins = 1
+            else:
+                tree.loss = 1
+            return
 
-    def get_depth(self):
-        if self.parent is None:
-            return 1
-        return self.parent.get_depth() + 1
+        for (row, column) in tree.game_state.available_moves:
 
-    def delete_parent(self, actual_node):
-        if self.parent is not None:
-            return self.parent.delete_parent(actual_node)
+            temp_othello = OthelloGame(len(new_othello.get_board()), True)
+            temp_board = OthelloGame.copy_board(new_othello.get_board())
+            temp_othello.set_board(temp_board)
+            temp_othello.set_turn_number(turn_number)
+            temp_othello.set_stone((row, column), True)
 
-        # top level reached
-        return StateForecastTree.delete_nodes(self, actual_node)
+            # temp_othello.print_board()
 
-    def get_root_node(self):
-        if self.parent is not None:
-            return self.parent.get_root_node()
-        return self
+            tree.add_node(turn_number, row, column,
+                          OthelloGame._compute_moves_and_stones_to_turn(temp_othello.get_board(), turn_number))
 
-    @staticmethod
-    def print_tree(root):
-        for node in root.nodes:
-            print(node.value)
-            print("--")
-            StateForecastTree.print_tree(node)
-
-    @staticmethod
-    def delete_nodes(node, stop_node):
-        return node.delete(stop_node)
+            self.find_next_moves(tree.nodes[len(tree.nodes) - 1], turn_number, limit, temp_othello)
+        return tree
