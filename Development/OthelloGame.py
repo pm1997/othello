@@ -185,10 +185,11 @@ class OthelloGame:
         (player, points) = OthelloGame.get_winner(board)
         print(f"{player_print_symbol[player]} wins with {points} points!")
 
-    def set_stone(self, position_pair):
+    def set_stone(self, position_pair, ai=False):
         if position_pair in self.get_available_moves():
             (x, y) = position_pair
-            print(f"Stone is set to ({x+1}, {y+1})")
+            if not ai:
+                print(f"Stone is set to ({x+1}, {y+1})")
             self._board[int(x)][y] = self._turn_number % 2
             for stone_to_turn in self.get_stones_to_turn()[position_pair]:
                 (turn_x, turn_y) = stone_to_turn
