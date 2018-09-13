@@ -127,7 +127,7 @@ class PlayerAiForecastTurns(Player):
             temp_board = OthelloGame.copy_board(new_othello.get_board())
             temp_othello.set_board(temp_board)
             temp_othello.set_turn_number(turn_number)
-            temp_othello.set_stone((row, column))
+            temp_othello.set_stone((row, column), True)
 
             # temp_othello.print_board()
 
