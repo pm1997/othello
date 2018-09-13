@@ -121,19 +121,17 @@ class OthelloGame:
     def _play(self):
         while self._number_of_passes < 2:
             current_player = self._turn_number % 2
-            print(f"{self._player_print_symbol[current_player]}'s turn")
-            if self.game_ends():
-                self.print_board()
-                print("end of game")
-                break
+            print(f"{self._player_print_symbol[current_player]}'s turn: " + str(self._player[current_player].__class__))
             if (len(self.get_available_moves())) > 0:
                 self._player[current_player].play()
+                self._number_of_passes = 0
             else:
                 self._number_of_passes += 1
                 self._turn_number += 1
                 print(self._player_print_symbol[current_player] + " had to pass. "
                                                                   "There were no possible positions for her.")
             self.print_board()
+        print("end of game")
         OthelloGame.print_stats(self._board, self._player_print_symbol)
         OthelloGame.print_winner(self._board, self._player_print_symbol)
         print(3 * "\n", end="")
@@ -198,7 +196,8 @@ class OthelloGame:
         else:
             print(f"{self._player_print_symbol[self.get_turn_number() % 2]}'s turn")
             OthelloGame.print_board(self)
-            raise InvalidTurnError("The given Turn is not allowed!" + str(position_pair[0]) + "  " + str(position_pair[1]))
+            raise InvalidTurnError("The given Turn is not allowed!" + str(position_pair[0]) + "  " +
+                                   str(position_pair[1]))
 
     @staticmethod
     def next_step(position_pair, direction_pair, board_size):
