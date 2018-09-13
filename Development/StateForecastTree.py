@@ -3,7 +3,7 @@ from OthelloGame import OthelloGame
 
 
 class StateForecastTree:
-    def __init__(self, turn_number, game_state=None, parent=None):
+    def __init__(self, turn_number, size, game_state=None, parent=None):
         self.turn_number = turn_number
         self.row = 0  # int(BOARD_SIZE / 2)
         self.column = 0  # int(BOARD_SIZE / 2)
@@ -11,7 +11,7 @@ class StateForecastTree:
         self.wins = 0
         self.loss = 0
         self.max_points = 0
-        self.min_points = int(BOARD_SIZE * BOARD_SIZE)
+        self.min_points = int(size * size)
         self.nodes = []
         self.parent = parent
         self.game_state = game_state
@@ -30,8 +30,8 @@ class StateForecastTree:
         # del self
         return val
 
-    def add_node(self, turn_number, row, column, game_state=None):
-        self.nodes.append(StateForecastTree(turn_number, game_state, self))
+    def add_node(self, turn_number, row, column, size, game_state=None):
+        self.nodes.append(StateForecastTree(turn_number, size, game_state, self))
         self.nodes[len(self.nodes) - 1].row = row
         self.nodes[len(self.nodes) - 1].column = column
 

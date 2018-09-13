@@ -2,7 +2,6 @@ from Player import Player
 from OthelloGame import OthelloGame
 from StateForecastTree import StateForecastTree
 from Constants import MAX_FORECAST
-from Error import InvalidTurnError
 
 
 class PlayerAiForecastTurns(Player):
@@ -10,23 +9,23 @@ class PlayerAiForecastTurns(Player):
         Player.__init__(self, game_reference)
         self._game_reference = game_reference
         self.new_othello = None
-        self.state_root_tree = StateForecastTree(game_reference.get_turn_number(), None)
+        self.state_root_tree = StateForecastTree(game_reference.get_turn_number(),
+                                                 len(game_reference.get_board()), None)
 
         print("Created new Forecast Turns AI Player")
 
     def play(self):
 
         turn_number = self._game_reference.get_turn_number()
-
+        old_board = self._game_reference.get_board()
         # self.state_root_tree = self.state_root_tree.search_node(turn_number)
         # if self.state_root_tree is None:
-        self.state_root_tree = StateForecastTree(turn_number, None)
+        self.state_root_tree = StateForecastTree(turn_number, len(old_board), None)
         self.state_root_tree.parent = None
 
         turn_number -= 1
         limit = turn_number + MAX_FORECAST
 
-        old_board = self._game_reference.get_board()
         self.new_othello = OthelloGame(len(old_board), True)
         new_board = OthelloGame.copy_board(old_board)
         self.new_othello.set_board(new_board)
@@ -49,53 +48,8 @@ class PlayerAiForecastTurns(Player):
         #    print("----------------")
         #    print(" + ")
 
-        if len(tree.nodes) != 0:
-
-            best_row = tree.nodes[0].row
-            best_column = tree.nodes[0].column
-
-            best_row2 = best_row
-            best_column2 = best_column
-
-            max_win = 0
-            min_loss = 2000
-            max_points = 0
-            for node in tree.nodes:
-                if node.wins > max_win:
-                    max_win = node.wins
-                    best_row = node.row
-                    best_column = node.column
-
-                if node.loss <= min_loss and node.max_points > max_points:
-                    max_points = node.max_points
-                    min_loss = node.loss
-                    best_row2 = node.row
-                    best_column2 = node.column
-
-            if max_win > 0:
-                self._game_reference.set_stone((best_row, best_column))
-                return
-
-            if min_loss < 10:
-                self._game_reference.set_stone((best_row2, best_column2))
-                return
-
-            print("use almost old code -------------------------------------------")
-
-            # positions_to_turn = self.new_othello.get_stones_to_turn()
-            # number_inversions = [(position, len(positions_to_turn[position])) for position in positions_to_turn]
-
-            # (best_row, best_column) = max(number_inversions, key=itemgetter(1))[0]
-
-            best_row = tree.nodes[0].row
-            best_column = tree.nodes[0].column
-            max_points = tree.nodes[0].max_points
-            for node in tree.nodes:
-                if node.max_points > max_points:
-                    best_row = node.row
-                    best_column = node.column
-
-            self._game_reference.set_stone((best_row, best_column))
+        (best_row, best_column) = PlayerAiForecastTurns.get_best_move(tree)
+        self._game_reference.set_stone((best_row, best_column))
 
     def find_next_moves(self, tree, turn_number, limit, new_othello):
         if tree.turn_number == limit:
@@ -107,7 +61,7 @@ class PlayerAiForecastTurns(Player):
         new_othello.set_turn_number(turn_number)
         tree.game_state = OthelloGame._compute_moves_and_stones_to_turn(new_othello.get_board(), turn_number)
 
-        if len(tree.game_state.available_moves) == 0:
+        if len(tree.game_state.available_moves) == 0 and new_othello.game_ends():
             # print("turn end reached--------------")
             winner = OthelloGame.get_winner(new_othello.get_board())
             if turn_number % 2 == winner:
@@ -115,6 +69,16 @@ class PlayerAiForecastTurns(Player):
             else:
                 tree.loss = 1
             return
+        elif len(tree.game_state.available_moves) == 0:
+            temp_othello = OthelloGame(len(new_othello.get_board()), True)
+            temp_board = OthelloGame.copy_board(new_othello.get_board())
+            temp_othello.set_board(temp_board)
+            temp_othello.set_turn_number(turn_number)
+
+            tree.add_node(turn_number, -1, -1, len(temp_board),
+                          OthelloGame._compute_moves_and_stones_to_turn(temp_othello.get_board(), turn_number))
+
+            self.find_next_moves(tree.nodes[0], turn_number, limit, temp_othello)
 
         for (row, column) in tree.game_state.available_moves:
 
@@ -126,8 +90,42 @@ class PlayerAiForecastTurns(Player):
 
             # temp_othello.print_board()
 
-            tree.add_node(turn_number, row, column,
+            tree.add_node(turn_number, row, column, len(temp_board),
                           OthelloGame._compute_moves_and_stones_to_turn(temp_othello.get_board(), turn_number))
 
             self.find_next_moves(tree.nodes[len(tree.nodes) - 1], turn_number, limit, temp_othello)
         return tree
+
+    @staticmethod
+    def get_best_move(tree):
+        if len(tree.nodes) != 0:
+
+            best_row = tree.nodes[0].row
+            best_column = tree.nodes[0].column
+
+            best_row2 = best_row
+            best_column2 = best_column
+
+            max_win = 0
+            min_loss = 2000
+            max_points = 0
+            paths = None
+            # paths2 = None
+            for node in tree.nodes:
+                if node.wins >= max_win and (paths is None or node.paths < paths):
+                    max_win = node.wins
+                    best_row = node.row
+                    best_column = node.column
+                    paths = node.paths
+
+                if node.loss <= min_loss and node.max_points >= max_points:
+                        # (paths2 is None or node.paths * 3 < paths2 * 2):
+                    max_points = node.max_points
+                    min_loss = node.loss
+                    best_row2 = node.row
+                    best_column2 = node.column
+                    # paths2 = node.paths
+
+            if max_win > 0:
+                return best_row, best_column
+            return best_row2, best_column2
