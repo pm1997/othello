@@ -5,8 +5,8 @@ from OthelloGame import OthelloGame
 class StateForecastTree:
     def __init__(self, turn_number, game_state=None, parent=None):
         self.turn_number = turn_number
-        self.row = int(BOARD_SIZE / 2)
-        self.column = int(BOARD_SIZE / 2)
+        self.row = 0  # int(BOARD_SIZE / 2)
+        self.column = 0  # int(BOARD_SIZE / 2)
         self.paths = 0
         self.wins = 0
         self.loss = 0

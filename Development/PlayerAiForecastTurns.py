@@ -1,5 +1,4 @@
 from Player import Player
-from operator import itemgetter
 from OthelloGame import OthelloGame
 from StateForecastTree import StateForecastTree
 from Constants import MAX_FORECAST
@@ -10,12 +9,8 @@ class PlayerAiForecastTurns(Player):
     def __init__(self, game_reference):
         Player.__init__(self, game_reference)
         self._game_reference = game_reference
-        old_board = game_reference.get_board()
-        self.new_othello = OthelloGame(len(old_board), True)
-        new_board = OthelloGame.copy_board(old_board)
-        self.new_othello.set_board(new_board)
-        self.new_othello.set_turn_number(game_reference.get_turn_number())
-        self.state_root_tree = StateForecastTree(self.new_othello.get_turn_number(), None)
+        self.new_othello = None
+        self.state_root_tree = StateForecastTree(game_reference.get_turn_number(), None)
 
         print("Created new Forecast Turns AI Player")
 
@@ -23,9 +18,9 @@ class PlayerAiForecastTurns(Player):
 
         turn_number = self._game_reference.get_turn_number()
 
-        self.state_root_tree = self.state_root_tree.search_node(turn_number)
-        if self.state_root_tree is None:
-            self.state_root_tree = StateForecastTree(turn_number, None)
+        # self.state_root_tree = self.state_root_tree.search_node(turn_number)
+        # if self.state_root_tree is None:
+        self.state_root_tree = StateForecastTree(turn_number, None)
         self.state_root_tree.parent = None
 
         turn_number -= 1
@@ -59,8 +54,8 @@ class PlayerAiForecastTurns(Player):
             best_row = tree.nodes[0].row
             best_column = tree.nodes[0].column
 
-            # best_row2 = best_row
-            # best_column2 = best_column
+            best_row2 = best_row
+            best_column2 = best_column
 
             max_win = 0
             min_loss = 2000
@@ -74,18 +69,18 @@ class PlayerAiForecastTurns(Player):
                 if node.loss <= min_loss and node.max_points > max_points:
                     max_points = node.max_points
                     min_loss = node.loss
-                    # best_row2 = node.row
-                    # best_column2 = node.column
+                    best_row2 = node.row
+                    best_column2 = node.column
 
             if max_win > 0:
                 self._game_reference.set_stone((best_row, best_column))
                 return
 
-            # if min_loss < 10:
-            #    self._game_reference.set_stone((best_row2, best_column2))
-            #    return
+            if min_loss < 10:
+                self._game_reference.set_stone((best_row2, best_column2))
+                return
 
-            # print("use almost old code -------------------------------------------")
+            print("use almost old code -------------------------------------------")
 
             # positions_to_turn = self.new_othello.get_stones_to_turn()
             # number_inversions = [(position, len(positions_to_turn[position])) for position in positions_to_turn]
