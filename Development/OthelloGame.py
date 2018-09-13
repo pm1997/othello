@@ -11,6 +11,7 @@ from Constants import BOARD_SIZE
 from Constants import PLAYER_ONE
 from Constants import PLAYER_TWO
 from Constants import EMPTY_CELL
+from time import time
 
 
 class OthelloGame:
@@ -42,7 +43,12 @@ class OthelloGame:
         # print the board for the first time
         self.print_board()
         # start the game play
+        t = time()
         self._play()
+        diff_time = (time() * 1000 - t * 1000)
+        print("duration in milli seconds: " + str(diff_time))
+        print("duration in seconds: " + str(diff_time / 1000))
+        print("duration in minutes: " + str(diff_time / (1000 * 60)))
 
     def set_turn_number(self, turn_number):
         self._turn_number = turn_number
