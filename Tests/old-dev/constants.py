@@ -1,0 +1,10 @@
+# General
+GRID_SIZE = 8
+PLAYER_ONE = 1
+PLAYER_TWO = 2
+
+# Search algorithms
+BEST_SEARCH = 0
+FORECAST_SEARCH = 1
+
+MAX_FORECAST = 3

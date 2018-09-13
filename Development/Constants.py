@@ -1,0 +1,10 @@
+BOARD_SIZE = 8
+
+# Player
+PLAYER_ONE = 0
+PLAYER_TWO = 1
+
+EMPTY_CELL = 2
+
+# AI
+MAX_FORECAST = 3
