@@ -12,7 +12,7 @@ class PlayerAiForecastTurns(Player):
         self.new_othello = None
         self.state_root_tree = StateForecastTree(game_reference.get_turn_number(), None)
 
-        print("Created new Forecast Turns AI Player")
+        print("Created new AI Player - Forecast Turns")
 
     def play(self):
 
