@@ -11,7 +11,9 @@ from Constants import BOARD_SIZE
 from Constants import PLAYER_ONE
 from Constants import PLAYER_TWO
 from Constants import EMPTY_CELL
+from Constants import MAX_FORECAST
 from Constants import INVALID_CELL
+from Constants import MAX_THREADS
 from time import time
 
 
@@ -50,6 +52,8 @@ class OthelloGame:
         print("duration in milli seconds: " + str(diff_time))
         print("duration in seconds: " + str(diff_time / 1000))
         print("duration in minutes: " + str(diff_time / (1000 * 60)))
+        print("MAX_FORECAST = " + str(MAX_FORECAST))
+        print("MAX_THREADS = " + str(MAX_THREADS))
 
     def set_turn_number(self, turn_number):
         self._turn_number = turn_number
