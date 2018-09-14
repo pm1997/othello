@@ -1,5 +1,5 @@
-from Constants import BOARD_SIZE
-from OthelloGame import OthelloGame
+from constants import BOARD_SIZE
+from othelloGame import OthelloGame
 
 
 class UtilTreeForecastTurns:

@@ -1,5 +1,6 @@
 # from OthelloGame import OthelloGame
-from Constants import EMPTY_CELL
+from constants import EMPTY_CELL
+
 
 class OthelloGameState:
 

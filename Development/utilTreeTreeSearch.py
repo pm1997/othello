@@ -1,8 +1,8 @@
 from operator import itemgetter
 
-from Constants import MAX_FORECAST
-from OthelloGameState import OthelloGameState
-from OthelloGame import OthelloGame
+from constants import MAX_FORECAST
+from othelloGameUtilState import OthelloGameState
+from othelloGame import OthelloGame
 from random import shuffle
 
 

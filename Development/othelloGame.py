@@ -1,15 +1,15 @@
-from Error import InvalidTurnError
-from Error import PlayerInvalidError
-from Error import OddBoardSizeError
-from Error import BoardToSmallError
-from Error import NonIntegerBoardSizeError
-from Error import ToManyPlayersError
-from Player import Player
-from OthelloGameState import OthelloGameState
-from Constants import BOARD_SIZE
-from Constants import PLAYER_ONE
-from Constants import PLAYER_TWO
-from Constants import EMPTY_CELL
+from error import InvalidTurnError
+from error import PlayerInvalidError
+from error import OddBoardSizeError
+from error import BoardToSmallError
+from error import NonIntegerBoardSizeError
+from error import ToManyPlayersError
+from player import Player
+from othelloGameUtilState import OthelloGameState
+from constants import BOARD_SIZE
+from constants import PLAYER_ONE
+from constants import PLAYER_TWO
+from constants import EMPTY_CELL
 import timeit
 
 
@@ -84,23 +84,23 @@ class OthelloGame:
                 print("Invalid selection! Please enter an integer.")
                 continue
             if selection == 0:
-                import PlayerHuman
-                player_to_add = PlayerHuman.PlayerHuman(self)
+                import playerHuman
+                player_to_add = playerHuman.PlayerHuman(self)
             elif selection == 1:
-                import PlayerAiRandom
-                player_to_add = PlayerAiRandom.PlayerAiRandom(self)
+                import playerAiRandom
+                player_to_add = playerAiRandom.PlayerAiRandom(self)
             elif selection == 2:
-                import PlayerAiInvertMost
-                player_to_add = PlayerAiInvertMost.PlayerAiInvertMost(self)
+                import playerAiInvertMost
+                player_to_add = playerAiInvertMost.PlayerAiInvertMost(self)
             elif selection == 3:
-                import PlayerAiForecastTurns
-                player_to_add = PlayerAiForecastTurns.PlayerAiForecastTurns(self)
+                import playerAiForecastTurns
+                player_to_add = playerAiForecastTurns.PlayerAiForecastTurns(self)
             elif selection == 4:
-                import PlayerAiInvertMostImproved
-                player_to_add = PlayerAiInvertMostImproved.PlayerAiInvertMostImpoved(self)
+                import playerAiInvertMostImproved
+                player_to_add = playerAiInvertMostImproved.PlayerAiInvertMostImpoved(self)
             elif selection == 5:
-                import PlayerAiTreeSearch
-                player_to_add = PlayerAiTreeSearch.PlayerAiTreeSearch(self)
+                import playerAiTreeSearch
+                player_to_add = playerAiTreeSearch.PlayerAiTreeSearch(self)
             else:
                 valid_selection = 0
                 print("Invalid selection! Please enter one of the values listed!")
