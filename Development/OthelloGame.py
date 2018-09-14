@@ -6,7 +6,6 @@ from Error import NonIntegerBoardSizeError
 from Error import ToManyPlayersError
 from Player import Player
 from OthelloGameState import OthelloGameState
-from operator import itemgetter
 from Constants import BOARD_SIZE
 from Constants import PLAYER_ONE
 from Constants import PLAYER_TWO
