@@ -10,6 +10,7 @@ from Constants import BOARD_SIZE
 from Constants import PLAYER_ONE
 from Constants import PLAYER_TWO
 from Constants import EMPTY_CELL
+import timeit
 
 
 class OthelloGame:
@@ -26,6 +27,8 @@ class OthelloGame:
         self._board = [[EMPTY_CELL for _ in range(board_size)] for _ in range(board_size)]
         self._player = []
         self._player_print_symbol = {0: "W", 1: "B"}
+        self._player_time = {0: 0, 1: 0}
+        self._start_time = 0
         self._turn_number = 0
         self._last_state_backup = OthelloGameState()
         self._number_of_passes = 0
@@ -134,6 +137,7 @@ class OthelloGame:
                 print("end of game")
                 break
             if (len(self.get_available_moves())) > 0:
+                self._start_time = timeit.default_timer()
                 self._player[current_player].play()
                 self._number_of_passes = 0
             else:
@@ -142,6 +146,7 @@ class OthelloGame:
                 print(self._player_print_symbol[current_player] + " had to pass. "
                                                                   "There were no possible positions for her.")
             self.print_board()
+        self.print_timing()
         OthelloGame.print_stats(self._board, self._player_print_symbol)
         OthelloGame.print_winner(self._board, self._player_print_symbol)
         print(3 * "\n", end="")
@@ -204,10 +209,19 @@ class OthelloGame:
         else:
             print("There is no winner. It is a draw!\nWhy don't you play again to settle the matter?")
 
+    def print_timing(self):
+        print("Computation time needed:")
+        for player_no in self._player_time:
+            print(f"{self._player_print_symbol[player_no]}: {self._player_time[player_no]}")
+
     def set_stone(self, position_pair, ai=False):
+        stop = timeit.default_timer()
         if position_pair in self.get_available_moves():
             (x, y) = position_pair
             if not ai:
+                time_diff = stop - self._start_time
+                self._player_time[self._turn_number % 2] += time_diff
+                print("It took " + str(time_diff) + " to calculate this move.")
                 print(f"Stone is set to ({x+1}, {y+1})")
             self._board[int(x)][y] = self._turn_number % 2
             for stone_to_turn in self.get_stones_to_turn()[position_pair]:
