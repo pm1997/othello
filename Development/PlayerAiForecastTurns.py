@@ -1,6 +1,6 @@
 from Player import Player
 from OthelloGame import OthelloGame
-from StateForecastTree import StateForecastTree
+from UtilTreeForecastTurns import UtilTreeForecastTurns
 from Constants import MAX_FORECAST
 from Error import InvalidTurnError
 
@@ -10,7 +10,7 @@ class PlayerAiForecastTurns(Player):
         Player.__init__(self, game_reference)
         self._game_reference = game_reference
         self.new_othello = None
-        self.state_root_tree = StateForecastTree(game_reference.get_turn_number(), None)
+        self.state_root_tree = UtilTreeForecastTurns(game_reference.get_turn_number(), None)
 
         print("Created new AI Player - Forecast Turns")
 
@@ -20,7 +20,7 @@ class PlayerAiForecastTurns(Player):
 
         # self.state_root_tree = self.state_root_tree.search_node(turn_number)
         # if self.state_root_tree is None:
-        self.state_root_tree = StateForecastTree(turn_number, None)
+        self.state_root_tree = UtilTreeForecastTurns(turn_number, None)
         self.state_root_tree.parent = None
 
         turn_number -= 1
@@ -33,7 +33,7 @@ class PlayerAiForecastTurns(Player):
         self.new_othello.set_turn_number(self._game_reference.get_turn_number())
 
         tree = self.find_next_moves(self.state_root_tree, turn_number, limit, self.new_othello)
-        StateForecastTree.update_stats(tree, (turn_number + 1) % 2)
+        UtilTreeForecastTurns.update_stats(tree, (turn_number + 1) % 2)
 
         # StateForecastTree.print_tree(tree)
 
