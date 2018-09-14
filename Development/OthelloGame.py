@@ -190,8 +190,12 @@ class OthelloGame:
 
     @staticmethod
     def print_winner(board, player_print_symbol):
-        (player, points) = OthelloGame.get_winner(board)
-        print(f"{player_print_symbol[player]} wins with {points} points!")
+        winner = OthelloGame.get_winner(board)
+        if winner is not None:
+            (player, points) = winner
+            print(f"{player_print_symbol[player]} wins with {points} points!")
+        else:
+            print("There is no winner. It is a draw!\nWhy don't you play again to settle the matter?")
 
     def set_stone(self, position_pair, ai=False):
         if position_pair in self.get_available_moves():
