@@ -2,6 +2,7 @@ from Player import Player
 from OthelloGame import OthelloGame
 from StateForecastTree import StateForecastTree
 from Constants import MAX_FORECAST
+from Constants import INVALID_CELL
 
 
 class PlayerAiForecastTurns(Player):
@@ -20,6 +21,7 @@ class PlayerAiForecastTurns(Player):
         old_board = self._game_reference.get_board()
 
         turn_number -= 1
+
         limit = turn_number + MAX_FORECAST
 
         self.new_othello = OthelloGame(len(old_board), True)
@@ -27,19 +29,15 @@ class PlayerAiForecastTurns(Player):
         self.new_othello.set_board(new_board)
         self.new_othello.set_turn_number(self._game_reference.get_turn_number())
 
-        # self.new_othello.print_board()
-        # available_moves = OthelloGame._compute_moves_and_stones_to_turn(new_board, turn_number + 1).available_moves
-        # self.state_root_tree = self.state_root_tree.search_node(turn_number, available_moves)
-        self.state_root_tree = None
+        self.state_root_tree = self.state_root_tree.search_node(new_board, turn_number)
         if self.state_root_tree is None:
-            # print("none+++++++++++++++++++++++++")
             self.state_root_tree = StateForecastTree(turn_number, len(old_board), None)
         self.state_root_tree.parent = None
 
         self.state_root_tree = self.find_next_moves(self.state_root_tree, turn_number, limit, self.new_othello)
         StateForecastTree.update_stats(self.state_root_tree, (turn_number + 1) % 2)
 
-        # StateForecastTree.print_tree(tree)
+        # StateForecastTree.print_tree(self.state_root_tree)
 
         # print("global min: " + str(tree.min_points) + " max: " + str(tree.max_points))
 
@@ -57,6 +55,7 @@ class PlayerAiForecastTurns(Player):
         self._game_reference.set_stone((best_row, best_column))
 
     def find_next_moves(self, tree, turn_number, limit, new_othello):
+
         if tree.turn_number == limit:
             # print("limit reached-----------------")
             tree.paths = 1
@@ -80,32 +79,33 @@ class PlayerAiForecastTurns(Player):
             temp_board = OthelloGame.copy_board(new_othello.get_board())
             temp_othello.set_board(temp_board)
             temp_othello.set_turn_number(turn_number)
+            temp_othello.set_stone(INVALID_CELL, True)
 
-            tree.add_node(turn_number, -1, -1, len(temp_board),
+            tree.add_node(turn_number, INVALID_CELL[0], INVALID_CELL[1], len(temp_board),
                           OthelloGame._compute_moves_and_stones_to_turn(temp_othello.get_board(), turn_number))
 
             self.find_next_moves(tree.nodes[0], turn_number, limit, temp_othello)
-        if len(tree.nodes) == len(tree.game_state.available_moves):
+        elif len(tree.nodes) == len(tree.game_state.available_moves):
             for node in tree.nodes:
                 temp_othello = OthelloGame(len(new_othello.get_board()), True)
                 temp_board = OthelloGame.copy_board(node.game_state.board)
                 temp_othello.set_board(temp_board)
                 temp_othello.set_turn_number(turn_number)
+                self.find_next_moves(node, turn_number, limit, temp_othello)
+        else:
+            for (row, column) in tree.game_state.available_moves:
+                temp_othello = OthelloGame(len(new_othello.get_board()), True)
+                temp_board = OthelloGame.copy_board(new_othello.get_board())
+                temp_othello.set_board(temp_board)
+                temp_othello.set_turn_number(turn_number)
+                temp_othello.set_stone((row, column), True)
+
+                # OthelloGame.print_board(temp_othello._board, temp_othello._player_print_symbol)
+
+                tree.add_node(turn_number, row, column, len(temp_board),
+                              OthelloGame._compute_moves_and_stones_to_turn(temp_othello.get_board(), turn_number))
+
                 self.find_next_moves(tree.nodes[len(tree.nodes) - 1], turn_number, limit, temp_othello)
-        for (row, column) in tree.game_state.available_moves:
-
-            temp_othello = OthelloGame(len(new_othello.get_board()), True)
-            temp_board = OthelloGame.copy_board(new_othello.get_board())
-            temp_othello.set_board(temp_board)
-            temp_othello.set_turn_number(turn_number)
-            temp_othello.set_stone((row, column), True)
-
-            # temp_othello.print_board()
-
-            tree.add_node(turn_number, row, column, len(temp_board),
-                          OthelloGame._compute_moves_and_stones_to_turn(temp_othello.get_board(), turn_number))
-
-            self.find_next_moves(tree.nodes[len(tree.nodes) - 1], turn_number, limit, temp_othello)
         return tree
 
     @staticmethod
