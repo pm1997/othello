@@ -1,6 +1,6 @@
-from Player import Player
-from UtilTreeTreeSearch import UtilTreeTreeSearch
-from Constants import MAX_FORECAST
+from player import Player
+from utilTreeTreeSearch import UtilTreeTreeSearch
+from constants import MAX_FORECAST
 
 
 class PlayerAiTreeSearch(Player):

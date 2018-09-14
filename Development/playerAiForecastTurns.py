@@ -1,8 +1,8 @@
-from Player import Player
-from OthelloGame import OthelloGame
-from UtilTreeForecastTurns import UtilTreeForecastTurns
-from Constants import MAX_FORECAST
-from Error import InvalidTurnError
+from player import Player
+from othelloGame import OthelloGame
+from utilTreeForecastTurns import UtilTreeForecastTurns
+from constants import MAX_FORECAST
+from error import InvalidTurnError
 
 
 class PlayerAiForecastTurns(Player):
