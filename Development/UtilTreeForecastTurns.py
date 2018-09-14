@@ -2,7 +2,7 @@ from Constants import BOARD_SIZE
 from OthelloGame import OthelloGame
 
 
-class StateForecastTree:
+class UtilTreeForecastTurns:
     def __init__(self, turn_number, game_state=None, parent=None):
         self.turn_number = turn_number
         self.row = 0  # int(BOARD_SIZE / 2)
@@ -31,7 +31,7 @@ class StateForecastTree:
         return val
 
     def add_node(self, turn_number, row, column, game_state=None):
-        self.nodes.append(StateForecastTree(turn_number, game_state, self))
+        self.nodes.append(UtilTreeForecastTurns(turn_number, game_state, self))
         self.nodes[len(self.nodes) - 1].row = row
         self.nodes[len(self.nodes) - 1].column = column
 
@@ -45,7 +45,7 @@ class StateForecastTree:
             return self.parent.delete_parent(stop_node_value)
 
         # top level reached
-        return StateForecastTree.delete_nodes(self, stop_node_value)
+        return UtilTreeForecastTurns.delete_nodes(self, stop_node_value)
 
     def get_root_node(self):
         if self.parent is not None:
@@ -66,7 +66,7 @@ class StateForecastTree:
             print("win: " + str(node.wins) + " lose: " + str(node.loss))
             print("----------------")
             print(" + ")
-            StateForecastTree.print_tree(node)
+            UtilTreeForecastTurns.print_tree(node)
 
     @staticmethod
     def delete_nodes(node, stop_node_value):
@@ -106,7 +106,7 @@ class StateForecastTree:
 
             tree.paths = 1
         for node in tree.nodes:
-            data = StateForecastTree.update_stats(node, player)
+            data = UtilTreeForecastTurns.update_stats(node, player)
             # if data[4] == 0:
             #    tree.max_points = OthelloGame.get_stats(tree.game_state.board)[tree.turn_number % 2]
             #    tree.min_points = OthelloGame.get_stats(tree.game_state.board)[tree.turn_number % 2]
