@@ -1,5 +1,6 @@
 from Constants import BOARD_SIZE
 from OthelloGame import OthelloGame
+from Constants import EMPTY_CELL
 
 
 class StateForecastTree:
@@ -72,21 +73,23 @@ class StateForecastTree:
     def delete_nodes(node, stop_node_value):
         return node.delete(stop_node_value)
 
-    def search_node(self, turn_number, available_moves):
-        if self.turn_number % 2 == turn_number % 2:
-            if self.game_state is not None:
-                print(available_moves)
-                print(self.game_state.available_moves)
-                print("+++++++++++++++")
-                print(" ")
-                if self.game_state.available_moves == available_moves:
-                    return self
-        if self.turn_number + 3 > turn_number:
-            return None
+    def search_node(self, board, turn_number):
         for node in self.nodes:
-            result = node.search_node(turn_number, available_moves)
-            if result is not None:
-                return self
+            if node.game_state is not None:
+                if board == node.game_state.board and node.turn_number == turn_number:
+                    return node
+                if StateForecastTree.check_boards(board, node.game_state.board):
+                    return node.search_node(board, turn_number)
+        return None
+
+    @staticmethod
+    def check_boards(search_board, actual_board):
+        board_size = len(search_board)
+        for row in range(board_size):
+            for column in range(board_size):
+                if search_board[row][column] == EMPTY_CELL and actual_board[row][column] != EMPTY_CELL:
+                    return False
+        return True
 
     @staticmethod
     def update_stats(tree, player):

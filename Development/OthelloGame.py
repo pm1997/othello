@@ -11,6 +11,7 @@ from Constants import BOARD_SIZE
 from Constants import PLAYER_ONE
 from Constants import PLAYER_TWO
 from Constants import EMPTY_CELL
+from Constants import INVALID_CELL
 from time import time
 
 
@@ -41,7 +42,7 @@ class OthelloGame:
         for x in range(2):
             self.add_player()
         # print the board for the first time
-        self.print_board()
+        OthelloGame.print_board(self._board, self._player_print_symbol)
         # start the game play
         t = time()
         self._play()
@@ -110,19 +111,20 @@ class OthelloGame:
         self._board[pivot_pos][pivot_pos - 1] = PLAYER_TWO
         self._board[pivot_pos][pivot_pos] = PLAYER_ONE
 
-    def print_board(self):
+    @staticmethod
+    def print_board(board, player_print_symbol):
         print("    ", end="")
-        for i in range(len(self._board)):
+        for i in range(len(board)):
             print(f" {i+1}  ", end="")
         print("\n", end="")
-        print("   +" + len(self._board) * "---+")
-        for row in range(len(self._board)):
+        print("   +" + len(board) * "---+")
+        for row in range(len(board)):
             print(f" {row+1} | ", end="")
-            for column in range(len(self._board[row])):
-                field_value = self._board[row][column]
-                print((" " if field_value == EMPTY_CELL else self._player_print_symbol[field_value]) + " | ", end="")
+            for column in range(len(board[row])):
+                field_value = board[row][column]
+                print((" " if field_value == EMPTY_CELL else player_print_symbol[field_value]) + " | ", end="")
             print("\n", end="")
-            print("   +" + len(self._board) * "---+")
+            print("   +" + len(board) * "---+")
 
     def _play(self):
         while self._number_of_passes < 2:
@@ -136,7 +138,7 @@ class OthelloGame:
                 self._turn_number += 1
                 print(self._player_print_symbol[current_player] + " had to pass. "
                                                                   "There were no possible positions for her.")
-            self.print_board()
+            OthelloGame.print_board(self._board, self._player_print_symbol)
         print("end of game")
         OthelloGame.print_stats(self._board, self._player_print_symbol)
         OthelloGame.print_winner(self._board, self._player_print_symbol)
@@ -190,6 +192,7 @@ class OthelloGame:
         print(f"{player_print_symbol[player]} wins with {points} points!")
 
     def set_stone(self, position_pair, ai=False):
+
         if position_pair in self.get_available_moves():
             (x, y) = position_pair
             if not ai:
@@ -199,9 +202,11 @@ class OthelloGame:
                 (turn_x, turn_y) = stone_to_turn
                 self._board[int(turn_x)][turn_y] = self._turn_number % 2
             self._turn_number += 1
+        elif position_pair == INVALID_CELL:
+            self._turn_number += 1
         else:
             print(f"{self._player_print_symbol[self.get_turn_number() % 2]}'s turn")
-            OthelloGame.print_board(self)
+            OthelloGame.print_board(self._board, self._player_print_symbol)
             raise InvalidTurnError("The given Turn is not allowed!" + str(position_pair[0]) + "  " +
                                    str(position_pair[1]))
 
