@@ -70,9 +70,9 @@ class OthelloGame:
         while not valid_selection:
             print("Available Players:")
             print(" 0: Human Player")
-            print(" 1: Random AI")
-            print(" 2: Most Inversions AI")
-            print(" 3: Forecast Turns AI")
+            print(" 1: AI Player - Random")
+            print(" 2: AI Player - Most Inversions")
+            print(" 3: AI Player - Forecast Turns")
             try:
                 selection = int(input("Please enter the number for the Player Type to add\n"))
                 valid_selection = 1
@@ -179,7 +179,14 @@ class OthelloGame:
     @staticmethod
     def get_winner(board):
         stats = OthelloGame.get_stats(board)
-        return max(stats.items(), key=itemgetter(1))
+        points_player_one = stats[0]
+        points_player_two = stats[1]
+        if points_player_one == points_player_two:
+            return None
+        elif points_player_one > points_player_two:
+            return (0, points_player_one)
+        else:
+            return (1, points_player_two)
 
     @staticmethod
     def print_winner(board, player_print_symbol):
@@ -197,7 +204,7 @@ class OthelloGame:
                 self._board[int(turn_x)][turn_y] = self._turn_number % 2
             self._turn_number += 1
         else:
-            print(f"{self._player_print_symbol[self.get_turn_number() % 2]}'s turn")
+            print(f"ERROR:\n Currently {self._player_print_symbol[self.get_turn_number() % 2]}'s turn")
             OthelloGame.print_board(self)
             raise InvalidTurnError("The given Turn is not allowed!" + str(position_pair[0]) + "  " + str(position_pair[1]))
 

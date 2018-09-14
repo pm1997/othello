@@ -6,7 +6,7 @@ class PlayerAiInvertMost(Player):
     def __init__(self, game_reference):
         Player.__init__(self, game_reference)
         self._game_reference = game_reference
-        print("Created new Invert Most AI Player")
+        print("Created new Invert AI Player - Most Turns")
 
     def play(self):
         positions_to_turn = self._game_reference.get_stones_to_turn()
