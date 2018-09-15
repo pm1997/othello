@@ -5,8 +5,7 @@ from error import BoardToSmallError
 from error import NonIntegerBoardSizeError
 from error import ToManyPlayersError
 from player import Player
-from othelloGameState import OthelloGameState
-from operator import itemgetter
+from othelloGameUtilState import OthelloGameState
 from constants import BOARD_SIZE
 from constants import PLAYER_ONE
 from constants import PLAYER_TWO
@@ -15,7 +14,7 @@ from constants import MAX_FORECAST
 from constants import INVALID_CELL
 from constants import MAX_THREADS
 from time import time
-
+import timeit
 
 class OthelloGame:
 
@@ -31,6 +30,8 @@ class OthelloGame:
         self._board = [[EMPTY_CELL for _ in range(board_size)] for _ in range(board_size)]
         self._player = []
         self._player_print_symbol = {0: "W", 1: "B"}
+        self._player_time = {0: 0, 1: 0}
+        self._start_time = 0
         self._turn_number = 0
         self._last_state_backup = OthelloGameState()
         self._number_of_passes = 0
@@ -80,10 +81,13 @@ class OthelloGame:
         valid_selection = 0
         while not valid_selection:
             print("Available Players:")
-            print(" 0: Human Player")
-            print(" 1: Random AI")
-            print(" 2: Most Inversions AI")
-            print(" 3: Forecast Turns AI")
+            print(" 0: Human Player (Max)")
+            print(" 1: AI Player - Random (Max)")
+            print(" 2: AI Player - Most Inversions (Max)")
+            print(" 3: AI Player - Forecast Turns (Patrick)")
+            print(" 4: AI Player - Most Inversions - Improved (Max)")
+            print(" 5: AI Player - Tree search (Max)")
+            print(" 6: AI Player - Tree search multiprocessing (Max)")
             try:
                 selection = int(input("Please enter the number for the Player Type to add\n"))
                 valid_selection = 1
@@ -102,6 +106,15 @@ class OthelloGame:
             elif selection == 3:
                 import playerAiForecastTurns
                 player_to_add = playerAiForecastTurns.PlayerAiForecastTurns(self)
+            elif selection == 4:
+                import playerAiInvertMostImproved
+                player_to_add = playerAiInvertMostImproved.PlayerAiInvertMostImpoved(self)
+            elif selection == 5:
+                import playerAiTreeSearch
+                player_to_add = playerAiTreeSearch.PlayerAiTreeSearch(self)
+            elif selection == 6:
+                import playerAiTreeSearchMultiprocessing
+                player_to_add = playerAiTreeSearchMultiprocessing.PlayerAiTreeSearch(self)
             else:
                 valid_selection = 0
                 print("Invalid selection! Please enter one of the values listed!")
@@ -136,7 +149,6 @@ class OthelloGame:
             print(f"{self._player_print_symbol[current_player]}'s turn: " + str(self._player[current_player].__class__))
             if (len(self.get_available_moves())) > 0:
                 self._player[current_player].play()
-                self._number_of_passes = 0
             else:
                 self._number_of_passes += 1
                 self._turn_number += 1
@@ -188,18 +200,37 @@ class OthelloGame:
     @staticmethod
     def get_winner(board):
         stats = OthelloGame.get_stats(board)
-        return max(stats.items(), key=itemgetter(1))
+        points_player_one = stats[0]
+        points_player_two = stats[1]
+        if points_player_one == points_player_two:
+            return None
+        elif points_player_one > points_player_two:
+            return (0, points_player_one)
+        else:
+            return (1, points_player_two)
 
     @staticmethod
     def print_winner(board, player_print_symbol):
-        (player, points) = OthelloGame.get_winner(board)
-        print(f"{player_print_symbol[player]} wins with {points} points!")
+        winner = OthelloGame.get_winner(board)
+        if winner is not None:
+            (player, points) = winner
+            print(f"{player_print_symbol[player]} wins with {points} points!")
+        else:
+            print("There is no winner. It is a draw!\nWhy don't you play again to settle the matter?")
+
+    def print_timing(self):
+        print("Computation time needed:")
+        for player_no in self._player_time:
+            print(f"{self._player_print_symbol[player_no]}: {self._player_time[player_no]}")
 
     def set_stone(self, position_pair, ai=False):
-
+        stop = timeit.default_timer()
         if position_pair in self.get_available_moves():
             (x, y) = position_pair
             if not ai:
+                time_diff = stop - self._start_time
+                self._player_time[self._turn_number % 2] += time_diff
+                print("It took " + str(time_diff) + " to calculate this move.")
                 print(f"Stone is set to ({x+1}, {y+1})")
             self._board[int(x)][y] = self._turn_number % 2
             for stone_to_turn in self.get_stones_to_turn()[position_pair]:
@@ -210,9 +241,20 @@ class OthelloGame:
             self._turn_number += 1
         else:
             print(f"{self._player_print_symbol[self.get_turn_number() % 2]}'s turn")
-            OthelloGame.print_board(self._board, self._player_print_symbol)
-            raise InvalidTurnError("The given Turn is not allowed!" + str(position_pair[0]) + "  " +
-                                   str(position_pair[1]))
+            OthelloGame.print_board(self)
+            raise InvalidTurnError("The given Turn is not allowed!" + str(position_pair[0]) + "  " + str(position_pair[1]))
+
+    @staticmethod
+    def set_stone_static(board, turn_number, position_pair):
+        calculated_game_state = OthelloGame._compute_moves_and_stones_to_turn(board, turn_number)
+        if position_pair in calculated_game_state.available_moves:
+            (x, y) = position_pair
+            board[x][y] = turn_number % 2
+            for stone_to_turn in calculated_game_state.stones_to_turn[position_pair]:
+                (turn_x, turn_y) = stone_to_turn
+                board[int(turn_x)][turn_y] = turn_number % 2
+        else:
+            raise InvalidTurnError("The given Turn is not allowed!")
 
     @staticmethod
     def next_step(position_pair, direction_pair, board_size):
@@ -257,7 +299,7 @@ class OthelloGame:
         return positions_to_test
 
     @staticmethod
-    def _compute_moves_and_stones_to_turn(board, turn_number):
+    def _compute_moves_and_stones_to_turn(board, turn_number, number_of_passes=0):
         available_moves = set()
         stones_to_turn = dict()
         directions = OthelloGame.get_directions()
@@ -291,7 +333,7 @@ class OthelloGame:
                 # print("  position turns " + str(this_position_turns))
             # else:
             #     print("  no turns for this position")
-        return OthelloGameState(turn_number, board, available_moves, stones_to_turn)
+        return OthelloGameState(turn_number, number_of_passes, board, available_moves, stones_to_turn)
 
     def get_available_moves(self):
         if self._turn_number != self._last_state_backup.turn_number:
@@ -312,7 +354,7 @@ class OthelloGame:
         if self._turn_number != self._last_state_backup.turn_number:
             self._last_state_backup = OthelloGame._compute_moves_and_stones_to_turn(self._board.copy(),
                                                                                     int(self._turn_number))
-        return self._last_state_backup.copy()
+        return self._last_state_backup.copy_state()
 
     @staticmethod
     def copy_board(old_board):
