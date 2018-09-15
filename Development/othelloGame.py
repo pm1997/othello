@@ -16,6 +16,7 @@ from constants import MAX_THREADS
 from time import time
 import timeit
 
+
 class OthelloGame:
 
     def __init__(self, board_size=BOARD_SIZE, test_mode=True):
@@ -81,13 +82,13 @@ class OthelloGame:
         valid_selection = 0
         while not valid_selection:
             print("Available Players:")
-            print(" 0: Human Player (Max)")
-            print(" 1: AI Player - Random (Max)")
-            print(" 2: AI Player - Most Inversions (Max)")
-            print(" 3: AI Player - Forecast Turns (Patrick)")
-            print(" 4: AI Player - Most Inversions - Improved (Max)")
-            print(" 5: AI Player - Tree search (Max)")
-            print(" 6: AI Player - Tree search multiprocessing (Max)")
+            print(" 0: Human Player")
+            print(" 1: AI Player - Random")
+            print(" 2: AI Player - Most Inversions")
+            print(" 3: AI Player - Most Inversions - Improved")
+            print(" 4: AI Player - Forecast Turns (Tree)")
+            print(" 5: AI Player - Tree search")
+            print(" 6: AI Player - Tree search multiprocessing")
             try:
                 selection = int(input("Please enter the number for the Player Type to add\n"))
                 valid_selection = 1
@@ -104,11 +105,11 @@ class OthelloGame:
                 import playerAiInvertMost
                 player_to_add = playerAiInvertMost.PlayerAiInvertMost(self)
             elif selection == 3:
-                import playerAiForecastTurns
-                player_to_add = playerAiForecastTurns.PlayerAiForecastTurns(self)
-            elif selection == 4:
                 import playerAiInvertMostImproved
                 player_to_add = playerAiInvertMostImproved.PlayerAiInvertMostImpoved(self)
+            elif selection == 4:
+                import playerAiForecastTurns
+                player_to_add = playerAiForecastTurns.PlayerAiForecastTurns(self)
             elif selection == 5:
                 import playerAiTreeSearch
                 player_to_add = playerAiTreeSearch.PlayerAiTreeSearch(self)
@@ -148,14 +149,16 @@ class OthelloGame:
             current_player = self._turn_number % 2
             print(f"{self._player_print_symbol[current_player]}'s turn: " + str(self._player[current_player].__class__))
             if (len(self.get_available_moves())) > 0:
+                self._start_time = timeit.default_timer()
                 self._player[current_player].play()
+                self._number_of_passes = 0
             else:
                 self._number_of_passes += 1
                 self._turn_number += 1
                 print(self._player_print_symbol[current_player] + " had to pass. "
                                                                   "There were no possible positions for her.")
             OthelloGame.print_board(self._board, self._player_print_symbol)
-        print("end of game")
+        self.print_timing()
         OthelloGame.print_stats(self._board, self._player_print_symbol)
         OthelloGame.print_winner(self._board, self._player_print_symbol)
         print(3 * "\n", end="")
@@ -205,9 +208,9 @@ class OthelloGame:
         if points_player_one == points_player_two:
             return None
         elif points_player_one > points_player_two:
-            return (0, points_player_one)
+            return 0, points_player_one
         else:
-            return (1, points_player_two)
+            return 1, points_player_two
 
     @staticmethod
     def print_winner(board, player_print_symbol):
@@ -241,8 +244,9 @@ class OthelloGame:
             self._turn_number += 1
         else:
             print(f"{self._player_print_symbol[self.get_turn_number() % 2]}'s turn")
-            OthelloGame.print_board(self)
-            raise InvalidTurnError("The given Turn is not allowed!" + str(position_pair[0]) + "  " + str(position_pair[1]))
+            OthelloGame.print_board(self._board, self._player_print_symbol)
+            raise InvalidTurnError("The given Turn is not allowed!" + str(position_pair[0]) + "  " +
+                                   str(position_pair[1]))
 
     @staticmethod
     def set_stone_static(board, turn_number, position_pair):
