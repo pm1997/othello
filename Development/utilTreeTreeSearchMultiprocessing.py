@@ -43,7 +43,7 @@ class UtilTreeTreeSearch:
         new_game_state = OthelloGame._compute_moves_and_stones_to_turn(new_board,
                                                                        game_state.turn_number + 1,
                                                                        0)
-        return (move, UtilTreeTreeSearch(player, new_game_state, self, limit - 1))
+        return move, UtilTreeTreeSearch(player, new_game_state, self, limit - 1)
 
     def _build_tree_multiprocessed(self, limit):
         number_of_processes = mp.cpu_count()

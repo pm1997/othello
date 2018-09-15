@@ -24,13 +24,16 @@ class UtilTreeTreeSearch:
                     new_board = OthelloGame.copy_board(self.othello_game_state.board)
                     OthelloGame.set_stone_static(new_board, self.othello_game_state.turn_number, possible_move)
                     new_game_state = OthelloGame._compute_moves_and_stones_to_turn(new_board,
-                                                                                   self.othello_game_state.turn_number + 1,
+                                                                                   self.othello_game_state.turn_number
+                                                                                   + 1,
                                                                                    0)
-                    self.child_nodes.append((possible_move, UtilTreeTreeSearch(self.player, new_game_state, self, limit - 1)))
+                    self.child_nodes.append((possible_move, UtilTreeTreeSearch(self.player, new_game_state,
+                                                                               self, limit - 1)))
             elif self.othello_game_state.number_of_passes < 2:
                 new_game_state = OthelloGame._compute_moves_and_stones_to_turn(self.othello_game_state.board,
                                                                                self.othello_game_state.turn_number + 1,
-                                                                               self.othello_game_state.number_of_passes + 1)
+                                                                               self.othello_game_state.number_of_passes
+                                                                               + 1)
                 self.child_nodes.append(((-1, -1), UtilTreeTreeSearch(self.player, new_game_state, self, limit - 1)))
             # else:
             #     print("Game finished. End of branch")
@@ -48,7 +51,7 @@ class UtilTreeTreeSearch:
             else:
                 information_dict["number_of_losses"] = 1
             information_dict["min_points"] = information_dict["max_points"] = \
-            OthelloGame.get_stats(self.othello_game_state.board)[self.player]
+                OthelloGame.get_stats(self.othello_game_state.board)[self.player]
             # print(information_dict)
             return information_dict
         elif self.parent is not None:
@@ -68,8 +71,8 @@ class UtilTreeTreeSearch:
             heuristic = list()
             for (decision, sub_tree) in self.child_nodes:
                 best_decision_sub_tree = sub_tree.get_best_decision()
-                heuristic.append((decision, best_decision_sub_tree["number_of_wins"] * 100 +  best_decision_sub_tree["max_points"]))
+                heuristic.append((decision, best_decision_sub_tree["number_of_wins"] * 100 +
+                                  best_decision_sub_tree["max_points"]))
             shuffle(heuristic)
             best_heuristic = max(heuristic, key=itemgetter(1))[0]
             return best_heuristic
-

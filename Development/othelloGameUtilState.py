@@ -1,4 +1,3 @@
-# from OthelloGame import OthelloGame
 from constants import EMPTY_CELL
 
 
@@ -18,7 +17,8 @@ class OthelloGameState:
         self.stones_to_turn = stones_to_turn
 
     def copy_state(self):
-        return OthelloGameState(int(self.turn_number), int(self.number_of_passes), OthelloGameState.copy_board(self.board),
+        return OthelloGameState(int(self.turn_number), int(self.number_of_passes),
+                                OthelloGameState.copy_board(self.board),
                                 self.available_moves.copy(),
                                 self.stones_to_turn.copy())
 
