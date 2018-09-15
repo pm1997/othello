@@ -163,20 +163,21 @@ class OthelloGame:
         OthelloGame.print_winner(self._board, self._player_print_symbol)
         print(3 * "\n", end="")
 
-    def game_ends(self):
+    @staticmethod
+    def game_ends(board, turn_number):
         board_full = True  # whole board is full
-        for row in self._board:
+        for row in board:
             if EMPTY_CELL in row:
                 board_full = False
         if board_full:
             return True
 
         # check whether both player passes
-        if (len(self.get_available_moves())) > 0:
+        if (len(OthelloGame._compute_moves_and_stones_to_turn(board, turn_number).available_moves)) > 0:
             return False
         else:
-            self._turn_number += 1
-            if (len(self.get_available_moves())) > 0:
+            turn_number += 1
+            if (len(OthelloGame._compute_moves_and_stones_to_turn(board, turn_number).available_moves)) > 0:
                 return False
             else:
                 return True
@@ -257,8 +258,13 @@ class OthelloGame:
             for stone_to_turn in calculated_game_state.stones_to_turn[position_pair]:
                 (turn_x, turn_y) = stone_to_turn
                 board[int(turn_x)][turn_y] = turn_number % 2
+            return board
         else:
-            raise InvalidTurnError("The given Turn is not allowed!")
+            player_print_symbol = {0: "W", 1: "B"}
+            print(f"{player_print_symbol[turn_number % 2]}'s turn")
+            OthelloGame.print_board(board, player_print_symbol)
+            raise InvalidTurnError("The given Turn is not allowed!" + str(position_pair[0]) + "  " +
+                                   str(position_pair[1]))
 
     @staticmethod
     def next_step(position_pair, direction_pair, board_size):
