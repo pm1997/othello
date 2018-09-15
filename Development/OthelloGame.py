@@ -19,7 +19,7 @@ from time import time
 
 class OthelloGame:
 
-    def __init__(self, board_size=BOARD_SIZE, ai=False):
+    def __init__(self, board_size=BOARD_SIZE, test_mode=True):
         # input validation
         if not isinstance(board_size, int):
             raise NonIntegerBoardSizeError("Only integer board sizes allowed!")
@@ -35,7 +35,7 @@ class OthelloGame:
         self._last_state_backup = OthelloGameState()
         self._number_of_passes = 0
         # welcome user
-        if ai:
+        if test_mode:
             return
         print("Welcome to Othello!")
         # initialize board
