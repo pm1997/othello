@@ -46,7 +46,9 @@ class UtilTreeTreeSearch:
         return (move, UtilTreeTreeSearch(player, new_game_state, self, limit - 1))
 
     def _build_tree_multiprocessed(self, limit):
-        pool= mp.Pool(processes=4)
+        number_of_processes = mp.cpu_count()
+        pool = mp.Pool(processes=number_of_processes)
+        print(f"Using {number_of_processes} processes")
         available_moves = self.othello_game_state.available_moves
         if len(available_moves) > 0:
             children = [pool.apply_async(self.calc_single_child_tree, args=(self.othello_game_state, move, self.player, limit))
