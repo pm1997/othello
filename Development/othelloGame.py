@@ -77,6 +77,7 @@ class OthelloGame:
             print(" 3: AI Player - Forecast Turns (Patrick)")
             print(" 4: AI Player - Most Inversions - Improved (Max)")
             print(" 5: AI Player - Tree search (Max)")
+            print(" 6: AI Player - Tree search multiprocessing (Max)")
             try:
                 selection = int(input("Please enter the number for the Player Type to add\n"))
                 valid_selection = 1
@@ -101,6 +102,9 @@ class OthelloGame:
             elif selection == 5:
                 import playerAiTreeSearch
                 player_to_add = playerAiTreeSearch.PlayerAiTreeSearch(self)
+            elif selection == 6:
+                import playerAiTreeSearchMultiprocessing
+                player_to_add = playerAiTreeSearchMultiprocessing.PlayerAiTreeSearch(self)
             else:
                 valid_selection = 0
                 print("Invalid selection! Please enter one of the values listed!")
@@ -132,10 +136,6 @@ class OthelloGame:
         while self._number_of_passes < 2:
             current_player = self._turn_number % 2
             print(f"{self._player_print_symbol[current_player]}'s turn")
-            if self.game_ends():
-                self.print_board()
-                print("end of game")
-                break
             if (len(self.get_available_moves())) > 0:
                 self._start_time = timeit.default_timer()
                 self._player[current_player].play()
