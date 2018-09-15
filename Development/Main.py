@@ -1,5 +1,12 @@
 from OthelloGame import OthelloGame
 from Constants import BOARD_SIZE
 
-while 1:
-    OthelloGame(BOARD_SIZE, False)
+
+def main():
+    while 1:
+        print("new game++++++++++++++++++++++++")
+        OthelloGame(BOARD_SIZE, False)
+
+
+if __name__ == "__main__":
+    main()
