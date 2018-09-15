@@ -31,7 +31,7 @@ class UtilTreeTreeSearch:
                 new_game_state = OthelloGame._compute_moves_and_stones_to_turn(self.othello_game_state.board,
                                                                                self.othello_game_state.turn_number + 1,
                                                                                self.othello_game_state.number_of_passes + 1)
-                self.child_nodes.append(((-1,-1), UtilTreeTreeSearch(self.player, new_game_state, self, limit - 1)))
+                self.child_nodes.append(((-1, -1), UtilTreeTreeSearch(self.player, new_game_state, self, limit - 1)))
             # else:
             #     print("Game finished. End of branch")
         # else:
