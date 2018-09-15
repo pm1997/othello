@@ -1,13 +1,14 @@
 from constants import BOARD_SIZE
 from othelloGame import OthelloGame
 from constants import EMPTY_CELL
+from constants import INVALID_CELL
 
 
 class UtilTreeForecastTurns:
-    def __init__(self, turn_number, size, game_state=None, parent=None):
+    def __init__(self, turn_number, size, row=INVALID_CELL[0], column=INVALID_CELL[1], game_state=None, parent=None):
         self.turn_number = turn_number
-        self.row = 0  # int(BOARD_SIZE / 2)
-        self.column = 0  # int(BOARD_SIZE / 2)
+        self.row = row
+        self.column = column
         self.paths = 0
         self.wins = 0
         self.loss = 0
@@ -17,49 +18,18 @@ class UtilTreeForecastTurns:
         self.parent = parent
         self.game_state = game_state
 
-    def delete(self, stop_node):
-        self.parent = None
-        if self.turn_number == stop_node:
-            print("stop node reached" + str(self.turn_number))
-            return self
-
-        val = None
-        for nodes in self.nodes:
-            val2 = nodes.delete(stop_node)
-            if val2 is not None:
-                val = val2
-        # del self
-        return val
-
     def add_node(self, turn_number, row, column, size, game_state=None):
-        self.nodes.append(UtilTreeForecastTurns(turn_number, size, game_state, self))
-        self.nodes[len(self.nodes) - 1].row = row
-        self.nodes[len(self.nodes) - 1].column = column
+        self.nodes.append(UtilTreeForecastTurns(turn_number, size, row, column, game_state, self))
 
     def set_nodes(self, nodes):
         self.nodes = nodes
         for node in self.nodes:
             node.parent = self
 
-    def get_depth(self):
-        if self.parent is None:
-            return 1
-        return self.parent.get_depth() + 1
-
-    def delete_parent(self, stop_node_value):
-        if self.parent is not None:
-            return self.parent.delete_parent(stop_node_value)
-
-        # top level reached
-        return UtilTreeForecastTurns.delete_nodes(self, stop_node_value)
-
     def get_root_node(self):
         if self.parent is not None:
             return self.parent.get_root_node()
         return self
-
-    def update_parent_node(self, data):
-        pass
 
     def add_tree(self, tree):
         self.nodes.append(tree)
@@ -77,10 +47,6 @@ class UtilTreeForecastTurns:
             print("----------------")
             print(" + ")
             UtilTreeForecastTurns.print_tree(node)
-
-    @staticmethod
-    def delete_nodes(node, stop_node_value):
-        return node.delete(stop_node_value)
 
     def search_node(self, board, turn_number):
         for node in self.nodes:
@@ -118,9 +84,6 @@ class UtilTreeForecastTurns:
             tree.paths = 1
         for node in tree.nodes:
             data = UtilTreeForecastTurns.update_stats(node, player)
-            # if data[4] == 0:
-            #    tree.max_points = OthelloGame.get_stats(tree.game_state.board)[tree.turn_number % 2]
-            #    tree.min_points = OthelloGame.get_stats(tree.game_state.board)[tree.turn_number % 2]
             tree.wins += data[0]
             tree.loss += data[1]
             tree.paths += data[2]
