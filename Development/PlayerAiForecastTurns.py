@@ -74,10 +74,8 @@ class PlayerAiForecastTurns(Player):
 
         turn_number += 1
         new_othello.set_turn_number(turn_number)
-        print("Treads used2")
         if len(tree.nodes) == 0:
             tree.game_state = OthelloGame._compute_moves_and_stones_to_turn(new_othello.get_board(), turn_number)
-        print("Treads used3")
         if len(tree.game_state.available_moves) == 0 and new_othello.game_ends():
             # print("turn end reached--------------")
             winner = OthelloGame.get_winner(new_othello.get_board())
@@ -87,7 +85,6 @@ class PlayerAiForecastTurns(Player):
                 tree.loss = 1
             return
         elif len(tree.game_state.available_moves) == 0:
-            print("Treads used4")
             temp_othello = OthelloGame(len(new_othello.get_board()), True)
             temp_board = OthelloGame.copy_board(new_othello.get_board())
             temp_othello.set_board(temp_board)
@@ -99,7 +96,6 @@ class PlayerAiForecastTurns(Player):
 
             PlayerAiForecastTurns.find_next_moves(tree.nodes[0], turn_number, limit, temp_othello, tread_number)
         elif len(tree.nodes) == len(tree.game_state.available_moves):
-            print("Treads used5")
             for node in tree.nodes:
                 temp_othello = OthelloGame(len(new_othello.get_board()), True)
                 temp_board = OthelloGame.copy_board(node.game_state.board)
@@ -108,16 +104,14 @@ class PlayerAiForecastTurns(Player):
                 PlayerAiForecastTurns.find_next_moves(node, turn_number, limit, temp_othello, tread_number)
         else:
             # threads_list = list()
-            print("Treads used6")
-            print("before init")
-            # a1 = []
-            p_pool = []
+            a1 = []
+            # p_pool = []
             # temp_othello = [OthelloGame(len(new_othello.get_board()), True) for _ in
             #                range(len(tree.game_state.available_moves))]
             print("array inited")
             # index = 0
             # res = None
-            pool = Pool(processes=4)
+            pool = Pool(processes=6)
             for (row, column) in tree.game_state.available_moves:
                 temp_othello = OthelloGame(len(new_othello.get_board()), True)
                 temp_board = OthelloGame.copy_board(new_othello.get_board())
@@ -130,9 +124,9 @@ class PlayerAiForecastTurns(Player):
                                                                             turn_number))
                 tread_number += 1
 
-                p_pool.append(pool.apply_async(PlayerAiForecastTurns.find_next_moves,
-                                               (tree, turn_number, limit, new_othello, tread_number)))
-                # a1.append((tree.nodes[len(tree.nodes) - 1], turn_number, limit, temp_othello, tread_number))
+                # p_pool.append(pool.apply_async(PlayerAiForecastTurns.find_next_moves,
+                #                               (tree, turn_number, limit, new_othello, tread_number)))
+                a1.append((tree.nodes[len(tree.nodes) - 1], turn_number, limit, temp_othello, tread_number))
 
                 # p = Process(target=PlayerAiForecastTurns.find_next_moves,
                 #            args=(tree.nodes[len(tree.nodes) - 1], turn_number, limit, temp_othello, tread_number))
@@ -151,14 +145,45 @@ class PlayerAiForecastTurns(Player):
             # print(a1)
 
             print("start pool")
+            #
+            # pool.close()
+            # print(a1)
+            # results = []
+            #results = pool.starmap(PlayerAiForecastTurns.find_next_moves, a1, 10)
+            # results.wait()
+            #pool.close()
+            #pool.join()
 
+            #pool.apply_async()
+
+            results = []
+            for i in range(0, len(a1)):
+                results.append(pool.apply_async(PlayerAiForecastTurns.find_next_moves, args=(a1[i][0], turn_number,
+                                                                                             limit, a1[i][3],
+                                                                                             tread_number)))
+
+
+            #pool.join()
+            # pool.wait()
+            results = [r.get() for r in results]
             pool.close()
-            print("start pool2")
-            pool.join()
-            print("start pool3")
-            # for p1 in p_pool:
-            #    p1.join()
+            tree.set_nodes([])
+            for subtree in results:
+                if subtree is not None:
+                    # StateForecastTree.print_tree(subtree)
+                    tree.add_tree(subtree)
 
+            # pool.join()
+            # for p1 in p_pool:
+            #     p1.join()
+            # t2 = p1.get()
+            #     print(p1)
+            #    #print(t2)
+            #    #print(t2.nodes)
+            #    #StateForecastTree.print_tree(t2)
+            # t1 = p_pool[0].get()
+            # print(t1)
+            # StateForecastTree.print_tree(t1)
             # print(res.get(timeout=3))  # prints "400"
             # pool.map(self.multi_process, a1)
             print("after pool")
@@ -180,15 +205,13 @@ class PlayerAiForecastTurns(Player):
         return PlayerAiForecastTurns.find_next_moves(tree, turn_number, limit, new_othello, tread_number)
 
     @staticmethod
-    def find_next_moves(tree, turn_number, limit, new_othello, tread_number):
-        print("Treads used13")
+    def find_next_moves_multi_processes(tree, turn_number, limit, new_othello, tread_number):
         if tree.turn_number == limit:
             # print("limit reached-----------------")
             tree.paths = 1
             return
             # return tree.get_root_node()
 
-        print("Treads used7")
         if limit - turn_number > 2 and tread_number < MAX_THREADS:
             print("use new process +++++++++")
             return PlayerAiForecastTurns.use_threads(tree, turn_number, limit, new_othello, tread_number)
@@ -196,12 +219,10 @@ class PlayerAiForecastTurns(Player):
         turn_number += 1
         new_othello.set_turn_number(turn_number)
         if len(tree.nodes) == 0:
-            print("Treads used8")
             tree.game_state = OthelloGame._compute_moves_and_stones_to_turn(new_othello.get_board(), turn_number)
 
         if len(tree.game_state.available_moves) == 0 and new_othello.game_ends():
             # print("turn end reached--------------")
-            print("Treads used9")
             winner = OthelloGame.get_winner(new_othello.get_board())
             if turn_number % 2 == winner:
                 tree.wins = 1
@@ -209,7 +230,6 @@ class PlayerAiForecastTurns(Player):
                 tree.loss = 1
             return
         elif len(tree.game_state.available_moves) == 0:
-            print("Treads used10")
             temp_othello = OthelloGame(len(new_othello.get_board()), True)
             temp_board = OthelloGame.copy_board(new_othello.get_board())
             temp_othello.set_board(temp_board)
@@ -221,7 +241,6 @@ class PlayerAiForecastTurns(Player):
 
             PlayerAiForecastTurns.find_next_moves(tree.nodes[0], turn_number, limit, temp_othello, tread_number)
         elif len(tree.nodes) == len(tree.game_state.available_moves):
-            print("Treads used11")
             for node in tree.nodes:
                 temp_othello = OthelloGame(len(new_othello.get_board()), True)
                 temp_board = OthelloGame.copy_board(node.game_state.board)
@@ -229,7 +248,66 @@ class PlayerAiForecastTurns(Player):
                 temp_othello.set_turn_number(turn_number)
                 PlayerAiForecastTurns.find_next_moves(node, turn_number, limit, temp_othello, tread_number)
         else:
-            print("Treads used12")
+            for (row, column) in tree.game_state.available_moves:
+                temp_othello = OthelloGame(len(new_othello.get_board()), True)
+                temp_board = OthelloGame.copy_board(new_othello.get_board())
+                temp_othello.set_board(temp_board)
+                temp_othello.set_turn_number(turn_number)
+                temp_othello.set_stone((row, column), True)
+
+                # OthelloGame.print_board(temp_othello._board, temp_othello._player_print_symbol)
+
+                tree.add_node(turn_number, row, column, len(temp_board),
+                              OthelloGame._compute_moves_and_stones_to_turn(temp_othello.get_board(), turn_number))
+
+                PlayerAiForecastTurns.find_next_moves(tree.nodes[len(tree.nodes) - 1], turn_number, limit,
+                                                      temp_othello, tread_number)
+        return tree
+
+    @staticmethod
+    def find_next_moves(tree, turn_number, limit, new_othello, tread_number):
+        if tree.turn_number == limit:
+            # print("limit reached-----------------")
+            tree.paths = 1
+            return
+            # return tree.get_root_node()
+
+        if limit - turn_number > 2 and tread_number < MAX_THREADS:
+            print("use new process +++++++++")
+            return PlayerAiForecastTurns.use_threads(tree, turn_number, limit, new_othello, tread_number)
+
+        turn_number += 1
+        new_othello.set_turn_number(turn_number)
+        if len(tree.nodes) == 0:
+            tree.game_state = OthelloGame._compute_moves_and_stones_to_turn(new_othello.get_board(), turn_number)
+
+        if len(tree.game_state.available_moves) == 0 and new_othello.game_ends():
+            # print("turn end reached--------------")
+            winner = OthelloGame.get_winner(new_othello.get_board())
+            if turn_number % 2 == winner:
+                tree.wins = 1
+            else:
+                tree.loss = 1
+            return
+        elif len(tree.game_state.available_moves) == 0:
+            temp_othello = OthelloGame(len(new_othello.get_board()), True)
+            temp_board = OthelloGame.copy_board(new_othello.get_board())
+            temp_othello.set_board(temp_board)
+            temp_othello.set_turn_number(turn_number)
+            temp_othello.set_stone(INVALID_CELL, True)
+
+            tree.add_node(turn_number, INVALID_CELL[0], INVALID_CELL[1], len(temp_board),
+                          OthelloGame._compute_moves_and_stones_to_turn(temp_othello.get_board(), turn_number))
+
+            PlayerAiForecastTurns.find_next_moves(tree.nodes[0], turn_number, limit, temp_othello, tread_number)
+        elif len(tree.nodes) == len(tree.game_state.available_moves):
+            for node in tree.nodes:
+                temp_othello = OthelloGame(len(new_othello.get_board()), True)
+                temp_board = OthelloGame.copy_board(node.game_state.board)
+                temp_othello.set_board(temp_board)
+                temp_othello.set_turn_number(turn_number)
+                PlayerAiForecastTurns.find_next_moves(node, turn_number, limit, temp_othello, tread_number)
+        else:
             for (row, column) in tree.game_state.available_moves:
                 temp_othello = OthelloGame(len(new_othello.get_board()), True)
                 temp_board = OthelloGame.copy_board(new_othello.get_board())
