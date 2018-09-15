@@ -36,6 +36,11 @@ class StateForecastTree:
         self.nodes[len(self.nodes) - 1].row = row
         self.nodes[len(self.nodes) - 1].column = column
 
+    def set_nodes(self, nodes):
+        self.nodes = nodes
+        for node in self.nodes:
+            node.parent = self
+
     def get_depth(self):
         if self.parent is None:
             return 1
@@ -55,6 +60,10 @@ class StateForecastTree:
 
     def update_parent_node(self, data):
         pass
+
+    def add_tree(self, tree):
+        self.nodes.append(tree)
+        self.nodes[len(self.nodes) - 1].parent = self
 
     @staticmethod
     def print_tree(root):

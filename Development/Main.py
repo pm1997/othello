@@ -3,9 +3,9 @@ from Constants import BOARD_SIZE
 
 
 def main():
-    while 1:
-        print("new game++++++++++++++++++++++++")
-        OthelloGame(BOARD_SIZE, False)
+    print("new game++++++++++++++++++++++++")
+    OthelloGame(BOARD_SIZE, False)
+    input("Press any key to exit")
 
 
 if __name__ == "__main__":
