@@ -1,9 +1,9 @@
-from Player import Player
-from OthelloGame import OthelloGame
-from StateForecastTree import StateForecastTree
-from Constants import MAX_FORECAST
-from Constants import INVALID_CELL
-from Constants import MAX_THREADS
+from player import Player
+from othelloGame import OthelloGame
+from stateForecastTree import StateForecastTree
+from constants import MAX_FORECAST
+from constants import INVALID_CELL
+from constants import MAX_THREADS
 # from threading import Thread
 # from queue import Queue
 from multiprocessing import Pool

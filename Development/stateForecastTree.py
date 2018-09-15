@@ -1,6 +1,6 @@
-from Constants import BOARD_SIZE
-from OthelloGame import OthelloGame
-from Constants import EMPTY_CELL
+from constants import BOARD_SIZE
+from othelloGame import OthelloGame
+from constants import EMPTY_CELL
 
 
 class StateForecastTree:
