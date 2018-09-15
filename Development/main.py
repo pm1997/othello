@@ -1,5 +1,5 @@
-from OthelloGame import OthelloGame
-from Constants import BOARD_SIZE
+from othelloGame import OthelloGame
+from constants import BOARD_SIZE
 
 
 def main():
