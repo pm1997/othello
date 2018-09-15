@@ -54,6 +54,7 @@ class UtilTreeTreeSearch:
             for child in children:
                 self.child_nodes.append(child.get())
             # print(str(self.child_nodes))
+            pool.close()
         elif self.othello_game_state.number_of_passes < 2:
             new_game_state = OthelloGame._compute_moves_and_stones_to_turn(self.othello_game_state.board,
                                                                            self.othello_game_state.turn_number + 1,
