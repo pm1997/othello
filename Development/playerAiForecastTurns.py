@@ -96,8 +96,8 @@ class PlayerAiForecastTurns(Player):
 
             a1.append((tree.nodes[len(tree.nodes) - 1], turn_number, limit, new_board, tread_number))
 
-        # pool = Pool(processes=len(a1))
-        pool = Pool(processes=8)
+        pool = Pool(processes=len(a1))
+        # pool = Pool(processes=8)
         results = []
         for i in range(0, len(a1)):
             results.append(pool.apply_async(PlayerAiForecastTurns.find_next_moves, args=(a1[i][0], turn_number,
