@@ -36,13 +36,14 @@ class OthelloGame:
         self._turn_number = 0
         self._last_state_backup = OthelloGameState()
         self._number_of_passes = 0
+        self._turns = []
         # welcome user
         if test_mode:
             return
         print("Welcome to Othello!")
         # initialize board
         self._set_initial_stones()
-        #load board?
+        # load board?
         print("Do you want to load a stored board?")
         self.load_board()
         # add the two players
@@ -59,6 +60,8 @@ class OthelloGame:
         print("duration in minutes: " + str(diff_time / (1000 * 60)))
         print("MAX_FORECAST = " + str(MAX_FORECAST))
         print("MAX_THREADS = " + str(MAX_THREADS))
+        print("Turns: ")
+        print(*self._turns)
 
     def set_turn_number(self, turn_number):
         self._turn_number = turn_number
@@ -105,13 +108,19 @@ class OthelloGame:
                 print("Start new game")
                 return
             print("load old board")
-            stored_data = input("Enter turns (eg f5 f6 ...):")
-            turns = stored_data.split()
-            for turn in turns:
-                print(turn)
-                column = OthelloGame.get_column_number(turn[0])
-                row = int(turn[1]) - 1
-                self.set_stone((row, column), False)
+            f = open("othelloBoard.txt", "r")
+            for stored_data in f:
+                # stored_data = input("Enter turns (eg f5 f6 ...):")
+                turns = stored_data.split()
+                for turn in turns:
+                    if turn == "--":
+                        self._turns.append("--")
+                        self._turn_number += 1
+                        continue
+                    print(turn)
+                    column = OthelloGame.get_column_number(turn[0])
+                    row = int(turn[1]) - 1
+                    self.set_stone((row, column), False)
 
         except ValueError:
             print("Invalid input. Start a new game...")
@@ -173,24 +182,10 @@ class OthelloGame:
 
     @staticmethod
     def get_column_name(column):
-        if column == 1:
-            return "a"
-        elif column == 2:
-            return "b"
-        elif column == 3:
-            return "c"
-        elif column == 4:
-            return "d"
-        elif column == 5:
-            return "e"
-        elif column == 6:
-            return "f"
-        elif column == 7:
-            return "g"
-        elif column == 8:
-            return "h"
-        else:
+        names = "aabcdefgh"
+        if column > len(names):
             return str(column)
+        return names[column]
 
     @staticmethod
     def print_board(board, player_print_symbol):
@@ -216,6 +211,7 @@ class OthelloGame:
                 self._player[current_player].play()
                 self._number_of_passes = 0
             else:
+                self._turns.append("--")
                 self._number_of_passes += 1
                 self._turn_number += 1
                 print(self._player_print_symbol[current_player] + " had to pass. "
@@ -293,18 +289,19 @@ class OthelloGame:
     def set_stone(self, position_pair, ai=False):
         stop = timeit.default_timer()
         if position_pair in self.get_available_moves():
-            (x, y) = position_pair
+            (row, column) = position_pair
             if not ai:
                 time_diff = stop - self._start_time
                 self._player_time[self._turn_number % 2] += time_diff
                 print("It took " + str(time_diff) + " to calculate this move.")
-                print(f"Stone is set to ({x+1}, {y+1})")
-            self._board[int(x)][y] = self._turn_number % 2
+                print(f"Stone is set to {OthelloGame.get_column_name(column + 1)}{row+1}")
+            self._board[int(row)][column] = self._turn_number % 2
             for stone_to_turn in self.get_stones_to_turn()[position_pair]:
                 (turn_x, turn_y) = stone_to_turn
                 self._board[int(turn_x)][turn_y] = self._turn_number % 2
             self._turn_number += 1
-        elif position_pair == INVALID_CELL:
+            self._turns.append(OthelloGame.get_column_name(column + 1) + str(row+1))
+        elif position_pair == INVALID_CELL and ai:
             self._turn_number += 1
         else:
             print(f"{self._player_print_symbol[self.get_turn_number() % 2]}'s turn")
@@ -436,3 +433,8 @@ class OthelloGame:
             for column in range(BOARD_SIZE):
                 new_board[row][column] = old_board[row][column]
         return new_board
+
+    def store_board(self):
+        f = open("othelloBoard.txt", "w")
+        string_turn = ' '.join(self._turns)
+        f.write(string_turn)
