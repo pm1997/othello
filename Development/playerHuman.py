@@ -12,6 +12,9 @@ class PlayerHuman(Player):
         possible_moves = list(self._game_reference.get_available_moves())
         valid_selection = 0
         user_input = -1
+        store = input("store board (y|n): ")
+        if store == "y" or store == "Y":
+            self._game_reference.store_board()
         while not valid_selection:
             print("Possible positions:")
             print("Coordinates are (row, column)")
