@@ -1,1 +1,0 @@
-Dies ist ein Beispielfile, damit der Ordner in Git angezeigt wird.
