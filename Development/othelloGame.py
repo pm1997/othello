@@ -42,6 +42,9 @@ class OthelloGame:
         print("Welcome to Othello!")
         # initialize board
         self._set_initial_stones()
+        #load board?
+        print("Do you want to load a stored board?")
+        self.load_board()
         # add the two players
         for x in range(2):
             self.add_player()
@@ -73,6 +76,45 @@ class OthelloGame:
         else:
             self._player.append(player)
             print("Player Added")
+
+    @staticmethod
+    def get_column_number(char):
+        if char == "a":
+            return 0
+        elif char == "b":
+            return 1
+        elif char == "c":
+            return 2
+        elif char == "d":
+            return 3
+        elif char == "e":
+            return 4
+        elif char == "f":
+            return 5
+        elif char == "g":
+            return 6
+        elif char == "h":
+            return 7
+        else:
+            return 0
+
+    def load_board(self):
+        try:
+            d = input("(y|n):")
+            if d != "y" and d != "Y":
+                print("Start new game")
+                return
+            print("load old board")
+            stored_data = input("Enter turns (eg f5 f6 ...):")
+            turns = stored_data.split()
+            for turn in turns:
+                print(turn)
+                column = OthelloGame.get_column_number(turn[0])
+                row = int(turn[1]) - 1
+                self.set_stone((row, column), False)
+
+        except ValueError:
+            print("Invalid input. Start a new game...")
 
     def set_board(self, board):
         self._board = board
