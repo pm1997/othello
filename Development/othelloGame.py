@@ -30,7 +30,7 @@ class OthelloGame:
         # create and init object parameter
         self._board = [[EMPTY_CELL for _ in range(board_size)] for _ in range(board_size)]
         self._player = []
-        self._player_print_symbol = {0: "W", 1: "B"}
+        self._player_print_symbol = {0: "B", 1: "W"}
         self._player_time = {0: 0, 1: 0}
         self._start_time = 0
         self._turn_number = 0
@@ -124,10 +124,10 @@ class OthelloGame:
 
     def _set_initial_stones(self):
         pivot_pos = int(len(self._board) / 2)
-        self._board[pivot_pos - 1][pivot_pos - 1] = PLAYER_ONE
-        self._board[pivot_pos - 1][pivot_pos] = PLAYER_TWO
-        self._board[pivot_pos][pivot_pos - 1] = PLAYER_TWO
-        self._board[pivot_pos][pivot_pos] = PLAYER_ONE
+        self._board[pivot_pos - 1][pivot_pos - 1] = PLAYER_TWO
+        self._board[pivot_pos - 1][pivot_pos] = PLAYER_ONE
+        self._board[pivot_pos][pivot_pos - 1] = PLAYER_ONE
+        self._board[pivot_pos][pivot_pos] = PLAYER_TWO
 
     @staticmethod
     def print_board(board, player_print_symbol):
