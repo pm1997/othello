@@ -130,10 +130,31 @@ class OthelloGame:
         self._board[pivot_pos][pivot_pos] = PLAYER_TWO
 
     @staticmethod
+    def get_column_name(column):
+        if column == 1:
+            return "a"
+        elif column == 2:
+            return "b"
+        elif column == 3:
+            return "c"
+        elif column == 4:
+            return "d"
+        elif column == 5:
+            return "e"
+        elif column == 6:
+            return "f"
+        elif column == 7:
+            return "g"
+        elif column == 8:
+            return "h"
+        else:
+            return str(column)
+
+    @staticmethod
     def print_board(board, player_print_symbol):
         print("    ", end="")
         for i in range(len(board)):
-            print(f" {i+1}  ", end="")
+            print(f" {OthelloGame.get_column_name(i+1)}  ", end="")
         print("\n", end="")
         print("   +" + len(board) * "---+")
         for row in range(len(board)):

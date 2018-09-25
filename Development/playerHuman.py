@@ -1,4 +1,5 @@
 from player import Player
+from othelloGame import OthelloGame
 
 
 class PlayerHuman(Player):
@@ -16,7 +17,7 @@ class PlayerHuman(Player):
             print("Coordinates are (row, column)")
             for i in range(len(possible_moves)):
                 (x, y) = possible_moves[i]
-                print(f"{i}: ({x+1}, {y+1})")
+                print(f"{i}: ({OthelloGame.get_column_name(y+1)}{x+1})")
 
             try:
                 user_input = int(input("Please enter the number of the position you want to play:\n"))
