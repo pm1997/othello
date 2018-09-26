@@ -15,6 +15,8 @@ from constants import INVALID_CELL
 from constants import MAX_THREADS
 from time import time
 import timeit
+from database import Database
+from gamePhase import GamePhase
 
 
 class OthelloGame:
@@ -60,14 +62,28 @@ class OthelloGame:
         print("duration in minutes: " + str(diff_time / (1000 * 60)))
         print("MAX_FORECAST = " + str(MAX_FORECAST))
         print("MAX_THREADS = " + str(MAX_THREADS))
+        self._turns = self._turns[:-2]
         print("Turns: ")
         print(*self._turns)
+        store = input("store board (y|n): ")
+        if store == "y" or store == "Y":
+            self.store_board()
+        db = Database()
+        db.test()
+        print("Finish")
 
     def set_turn_number(self, turn_number):
         self._turn_number = turn_number
 
     def get_turn_number(self):
         return self._turn_number
+
+    def get_game_phase(self):
+        if self._turn_number < 21:
+            return GamePhase.BEGINNING
+        elif self._turn_number < 41:
+            return GamePhase.MIDDLE
+        return GamePhase.END
 
     def _add_player(self, player):
         if not isinstance(player, Player):
