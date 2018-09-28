@@ -1,0 +1,47 @@
+Arbeit dient zur Vorbereitung der Bachelor Arbeit
+wichtig:
+	- Schriftliche Ausarbeitung:
+	- Einleitung: 1 Seite
+	- Wissenschaftliche Grundlagen: ca 10 Seiten (1/3)
+		- Spiel-Theorie
+		- Othello
+		- Russel und ... Pdf Kapitel 5
+			- Monte Carlo
+				- zufällig Spielen lassen => danach gewichten
+			- Tiefe / Iteration
+			- kleine Eröffnungsdatenbank anlegen
+	- Othello Kapitel
+		- Auswahl der Algorithmen
+			- Begründung Zustände ...
+	- Technische Durchführung
+		- nicht schnell sondern lesbarer Code steht im Vordergrund
+		- wesentliche Algorithmen beschreiben
+		- nur finallösung ausführlich
+		- ( auch Libraries einbinden )
+	- Evaluierung (optional): 3-4 Seiten
+		- Wie gut ist das Programm?
+		- eigene KI gegen andere KIs spielen lassen
+		- Schnittstellen zum Spielen verwenden (falls vorhanden)
+	- Fazit 1-2 Seiten
+		- was war gut / schlecht
+		- Ausblick / Verbesserungen
+		
+- Kommunikation über Discord
+- Grundlagen möglichst früh schreiben
+- Kapitel schreiben -> Feedback -> Korrektur -> nächstes schreiben ..
+- ca. alle 4 Wochen Termine vereinbaren (in Discord)
+- Arbeit in Latex schreiben
+- >= 30 eng formatierte Seiten insgesamt => gemeinsame Bewertung
+
+- !!! Code Lesbarkeit !!! Code Dokumentation
+- Code und Paper auf Github in einem Repo
+	- am Ende öffentlich machen
+
+- Ende: 29.04.2019 
+- Abgabe des Dokuments zur Frist (PDF)
+	- bei nachkommenden Anmerkungen
+		=> Bewertung der Korrektur
+	
+-------------- optional ---------------------
+- machine learning? neuronales Netz auf States
+- rechencluster der dh nutzen?
