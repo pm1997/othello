@@ -15,7 +15,7 @@ from constants import INVALID_CELL
 from constants import MAX_THREADS
 from time import time
 import timeit
-from database import Database
+# from database import Database
 from gamePhase import GamePhase
 
 
@@ -68,8 +68,8 @@ class OthelloGame:
         store = input("store board (y|n): ")
         if store == "y" or store == "Y":
             self.store_board()
-        db = Database()
-        db.test()
+        # db = Database()
+        # db.test()
         print("Finish")
 
     def set_turn_number(self, turn_number):

@@ -6,3 +6,8 @@
 _pycache_/
 venv
 /
+*.log
+*.aux
+*.synctex.gz
+*.toc
+*.out
