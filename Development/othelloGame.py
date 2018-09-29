@@ -16,6 +16,7 @@ from constants import EMPTY_CELL
 from constants import MAX_FORECAST
 from constants import INVALID_CELL
 from constants import MAX_THREADS
+from constants import PLAYER_PRINT_SYMBOL
 
 from gamePhase import GamePhase
 
@@ -39,7 +40,7 @@ class OthelloGame:
         # create and init object parameter
         self._board = [[EMPTY_CELL for _ in range(board_size)] for _ in range(board_size)]
         self._player = []
-        self._player_print_symbol = {0: "B", 1: "W"}
+        self._player_print_symbol = PLAYER_PRINT_SYMBOL
         self._player_time = {0: 0, 1: 0}
         self._start_time = 0
         self._turn_number = 0
@@ -89,6 +90,7 @@ class OthelloGame:
         if store == "y" or store == "Y":
             self.store_board()
 
+        # test database for saving states in future in db
         # db = Database()
         # db.test()
 
@@ -197,6 +199,7 @@ class OthelloGame:
             #     print("  no turns for this position")
         return OthelloGameState(turn_number, number_of_passes, board, available_moves, stones_to_turn)
 
+    # return a deep copy of board
     @staticmethod
     def copy_board(old_board):
         new_board = [[EMPTY_CELL for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
@@ -215,15 +218,12 @@ class OthelloGame:
             return True
 
         # check whether both player passes
-        if (len(OthelloGame.compute_moves_and_stones_to_turn(board, turn_number).available_moves)) > 0:
-            return False
-        else:
-            turn_number += 1
-            if (len(OthelloGame.compute_moves_and_stones_to_turn(board, turn_number).available_moves)) > 0:
-                return False
-            else:
-                return True
+        if (len(OthelloGame.compute_moves_and_stones_to_turn(board, turn_number).available_moves)) == 0 and \
+                (len(OthelloGame.compute_moves_and_stones_to_turn(board, turn_number + 1).available_moves)) == 0:
+            return True
+        return False
 
+    # used for print column name as char
     @staticmethod
     def get_column_name(column):
         names = {1: "a", 2: "b", 3: "c", 4: "d", 5: "e", 6: "f", 7: "g", 8: "h"}
@@ -360,7 +360,7 @@ class OthelloGame:
                 board[int(turn_x)][turn_y] = turn_number % 2
             return board
         else:
-            player_print_symbol = {0: "W", 1: "B"}
+            player_print_symbol = PLAYER_PRINT_SYMBOL
             print(f"{player_print_symbol[turn_number % 2]}'s turn")
             OthelloGame.print_board(board, player_print_symbol)
             raise InvalidTurnError("The given Turn is not allowed!" + str(position_pair[0]) + "  " +
