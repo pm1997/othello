@@ -33,10 +33,7 @@ class PlayerAiForecastTurns(Player):
 
         limit = turn_number + MAX_FORECAST
 
-        self.new_othello = OthelloGame(len(old_board), True)
         new_board = OthelloGame.copy_board(old_board)
-        self.new_othello.set_board(new_board)
-        self.new_othello.set_turn_number(self._game_reference.get_turn_number())
 
         self.state_root_tree = self.state_root_tree.search_node(new_board, turn_number)
         if self.state_root_tree is None:
@@ -44,14 +41,12 @@ class PlayerAiForecastTurns(Player):
         self.state_root_tree.parent = None
 
         self.state_root_tree = PlayerAiForecastTurns.use_threads(self.state_root_tree, turn_number, limit, new_board, 0)
-        UtilTreeForecastTurns.update_stats(self.state_root_tree, (turn_number + 1) % 2)
-
-        # print("Paths: " + str(self.state_root_tree.paths))
-        if self.state_root_tree.paths == 1:
-            UtilTreeForecastTurns.print_tree(self.state_root_tree)
-            print("Error")
         if self.state_root_tree is None:
             print("Error: tree is none")
+            # force cancel of game
+            self._game_reference.set_stone(INVALID_CELL)
+
+        UtilTreeForecastTurns.update_stats(self.state_root_tree, (turn_number + 1) % 2)
 
         (best_row, best_column) = PlayerAiForecastTurns.get_best_move(self.state_root_tree)
         self._game_reference.set_stone((best_row, best_column))
@@ -61,7 +56,6 @@ class PlayerAiForecastTurns(Player):
     @staticmethod
     def find_next_moves(tree, turn_number, limit, board, tread_number):
         if tree.turn_number == limit:
-            # print("limit reached-----------------")
             tree.paths = 1
             return
 
@@ -69,21 +63,21 @@ class PlayerAiForecastTurns(Player):
         if len(tree.nodes) == 0:
             tree.game_state = OthelloGame.compute_moves_and_stones_to_turn(board, turn_number)
 
-        if len(tree.game_state.available_moves) == 0 and OthelloGame.game_ends(board, turn_number):
-            # print("turn end reached--------------")
-            winner = OthelloGame.get_winner(board)
-            if turn_number % 2 == winner:
-                tree.wins = 1
+        if len(tree.game_state.available_moves) == 0:
+            if OthelloGame.game_ends(board, turn_number):
+                winner = OthelloGame.get_winner(board)
+                if turn_number % 2 == winner:
+                    tree.wins = 1
+                else:
+                    tree.loss = 1
+                return
             else:
-                tree.loss = 1
-            return
-        elif len(tree.game_state.available_moves) == 0:
-            new_board = OthelloGame.copy_board(board)
+                new_board = OthelloGame.copy_board(board)
 
-            tree.add_node(turn_number, INVALID_CELL[0], INVALID_CELL[1], len(new_board),
-                          OthelloGame.compute_moves_and_stones_to_turn(new_board, turn_number))
+                tree.add_node(turn_number, INVALID_CELL[0], INVALID_CELL[1], len(new_board),
+                              OthelloGame.compute_moves_and_stones_to_turn(new_board, turn_number))
 
-            PlayerAiForecastTurns.find_next_moves(tree.nodes[0], turn_number, limit, new_board, tread_number)
+                PlayerAiForecastTurns.find_next_moves(tree.nodes[0], turn_number, limit, new_board, tread_number)
         elif len(tree.nodes) == len(tree.game_state.available_moves):
             for node in tree.nodes:
                 new_board = OthelloGame.copy_board(node.game_state.board)
@@ -91,11 +85,6 @@ class PlayerAiForecastTurns(Player):
         else:
             for (row, column) in tree.game_state.available_moves:
                 new_board = OthelloGame.set_stone_static(OthelloGame.copy_board(board), turn_number, (row, column))
-
-                tree.add_node(turn_number, row, column, len(new_board),
-                              OthelloGame.compute_moves_and_stones_to_turn(new_board, turn_number))
-
-                # OthelloGame.print_board(temp_othello._board, temp_othello._player_print_symbol)
 
                 tree.add_node(turn_number, row, column, len(new_board),
                               OthelloGame.compute_moves_and_stones_to_turn(new_board, turn_number))
@@ -118,7 +107,6 @@ class PlayerAiForecastTurns(Player):
             min_loss = 2000
             max_points = 0
             paths = None
-            # paths2 = None
             for node in tree.nodes:
                 if node.wins >= max_win and (paths is None or node.paths < paths):
                     max_win = node.wins
@@ -127,12 +115,10 @@ class PlayerAiForecastTurns(Player):
                     paths = node.paths
 
                 if node.loss <= min_loss and node.max_points >= max_points:
-                        # (paths2 is None or node.paths * 3 < paths2 * 2):
                     max_points = node.max_points
                     min_loss = node.loss
                     best_row2 = node.row
                     best_column2 = node.column
-                    # paths2 = node.paths
 
             if max_win > 0:
                 return best_row, best_column
@@ -157,11 +143,10 @@ class PlayerAiForecastTurns(Player):
 
     @staticmethod
     def use_threads(tree, turn_number, limit, board, tread_number):
-        # print("Treads used")
         if tree.turn_number == limit:
-            # print("limit reached-----------------")
             tree.paths = 1
-            return
+            print("Error: limit must be bigger than 0!")
+            return None
 
         turn_number += 1
         tree.game_state = OthelloGame.compute_moves_and_stones_to_turn(board, turn_number)
