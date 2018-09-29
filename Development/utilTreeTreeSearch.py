@@ -1,8 +1,10 @@
-from operator import itemgetter
+from othelloGame import OthelloGame
+
+from othelloGameUtilState import OthelloGameState
 
 from constants import MAX_FORECAST
-from othelloGameUtilState import OthelloGameState
-from othelloGame import OthelloGame
+
+from operator import itemgetter
 from random import shuffle
 
 
@@ -23,17 +25,17 @@ class UtilTreeTreeSearch:
                 for possible_move in self.othello_game_state.available_moves:
                     new_board = OthelloGame.copy_board(self.othello_game_state.board)
                     OthelloGame.set_stone_static(new_board, self.othello_game_state.turn_number, possible_move)
-                    new_game_state = OthelloGame._compute_moves_and_stones_to_turn(new_board,
-                                                                                   self.othello_game_state.turn_number
-                                                                                   + 1,
-                                                                                   0)
+                    new_game_state = OthelloGame.compute_moves_and_stones_to_turn(new_board,
+                                                                                  self.othello_game_state.turn_number
+                                                                                  + 1,
+                                                                                  0)
                     self.child_nodes.append((possible_move, UtilTreeTreeSearch(self.player, new_game_state,
                                                                                self, limit - 1)))
             elif self.othello_game_state.number_of_passes < 2:
-                new_game_state = OthelloGame._compute_moves_and_stones_to_turn(self.othello_game_state.board,
-                                                                               self.othello_game_state.turn_number + 1,
-                                                                               self.othello_game_state.number_of_passes
-                                                                               + 1)
+                new_game_state = OthelloGame.compute_moves_and_stones_to_turn(self.othello_game_state.board,
+                                                                              self.othello_game_state.turn_number + 1,
+                                                                              self.othello_game_state.number_of_passes
+                                                                              + 1)
                 self.child_nodes.append(((-1, -1), UtilTreeTreeSearch(self.player, new_game_state, self, limit - 1)))
             # else:
             #     print("Game finished. End of branch")

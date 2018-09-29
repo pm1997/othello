@@ -1,9 +1,10 @@
 from player import Player
+
 from operator import itemgetter
 from random import shuffle
 
 
-class PlayerAiInvertMostImpoved(Player):
+class PlayerAiInvertMostImproved(Player):
     def __init__(self, game_reference):
         Player.__init__(self, game_reference)
         self._game_reference = game_reference
