@@ -1,9 +1,11 @@
-from operator import itemgetter
-import multiprocessing as mp
+from othelloGame import OthelloGame
+
+from othelloGameUtilState import OthelloGameState
 
 from constants import MAX_FORECAST
-from othelloGameUtilState import OthelloGameState
-from othelloGame import OthelloGame
+
+from operator import itemgetter
+import multiprocessing as mp
 from random import shuffle
 
 
@@ -16,7 +18,7 @@ class UtilTreeTreeSearch:
         self.player = player
 
         if parent is None:
-            self._build_tree_multiprocessed(limit)
+            self._build_tree_multiprocessing(limit)
         else:
             self._build_tree(limit)
 
@@ -28,24 +30,16 @@ class UtilTreeTreeSearch:
                     self.child_nodes.append(
                         self.calc_single_child_tree(self.othello_game_state, possible_move, self.player, limit))
             elif self.othello_game_state.number_of_passes < 2:
-                new_game_state = OthelloGame._compute_moves_and_stones_to_turn(self.othello_game_state.board,
-                                                                               self.othello_game_state.turn_number + 1,
-                                                                               self.othello_game_state.number_of_passes + 1)
+                new_game_state = OthelloGame.compute_moves_and_stones_to_turn(self.othello_game_state.board,
+                                                                              self.othello_game_state.turn_number + 1,
+                                                                              self.othello_game_state.number_of_passes + 1)
                 self.child_nodes.append(((-1, -1), UtilTreeTreeSearch(self.player, new_game_state, self, limit - 1)))
             # else:
             #     print("Game finished. End of branch")
         # else:
         #    print("End of branch reached!")
 
-    def calc_single_child_tree(self, game_state, move, player, limit):
-        new_board = OthelloGame.copy_board(game_state.board)
-        OthelloGame.set_stone_static(new_board, game_state.turn_number, move)
-        new_game_state = OthelloGame._compute_moves_and_stones_to_turn(new_board,
-                                                                       game_state.turn_number + 1,
-                                                                       0)
-        return move, UtilTreeTreeSearch(player, new_game_state, self, limit - 1)
-
-    def _build_tree_multiprocessed(self, limit):
+    def _build_tree_multiprocessing(self, limit):
         number_of_processes = mp.cpu_count()
         pool = mp.Pool(processes=number_of_processes)
         print(f"Using {number_of_processes} processes")
@@ -58,10 +52,18 @@ class UtilTreeTreeSearch:
             # print(str(self.child_nodes))
             pool.close()
         elif self.othello_game_state.number_of_passes < 2:
-            new_game_state = OthelloGame._compute_moves_and_stones_to_turn(self.othello_game_state.board,
-                                                                           self.othello_game_state.turn_number + 1,
-                                                                           self.othello_game_state.number_of_passes + 1)
+            new_game_state = OthelloGame.compute_moves_and_stones_to_turn(self.othello_game_state.board,
+                                                                          self.othello_game_state.turn_number + 1,
+                                                                          self.othello_game_state.number_of_passes + 1)
             self.child_nodes.append(((-1, -1), UtilTreeTreeSearch(self.player, new_game_state, self, limit - 1)))
+
+    def calc_single_child_tree(self, game_state, move, player, limit):
+        new_board = OthelloGame.copy_board(game_state.board)
+        OthelloGame.set_stone_static(new_board, game_state.turn_number, move)
+        new_game_state = OthelloGame.compute_moves_and_stones_to_turn(new_board,
+                                                                      game_state.turn_number + 1,
+                                                                      0)
+        return move, UtilTreeTreeSearch(player, new_game_state, self, limit - 1)
 
     def get_best_decision(self):
         information_dict = dict()
@@ -98,4 +100,3 @@ class UtilTreeTreeSearch:
             shuffle(heuristic)
             best_heuristic = max(heuristic, key=itemgetter(1))[0]
             return best_heuristic
-

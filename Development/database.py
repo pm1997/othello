@@ -3,7 +3,8 @@ import sqlite3
 
 class Database:
 
-    def test(self):
+    @staticmethod
+    def test():
         conn = sqlite3.connect('othello.db')
         c = conn.cursor()
 
@@ -12,7 +13,7 @@ class Database:
         c.execute("CREATE TABLE if not exists stocks (date text, trans text, symbol text, qty real, price real)")
 
         # Insert a row of data
-        c.execute("INSERT INTO stocks VALUES ('2006-01-05','BUY','RHAT',100,35.14)")
+        c.execute("INSERT INTO stocks VALUES ('2006-01-05','BUY','Test',100,35.14)")
 
         # Save (commit) the changes
         conn.commit()
@@ -21,13 +22,13 @@ class Database:
         # Just be sure any changes have been committed or they will be lost.
         #conn.close()
 
-        t = ('RHAT',)
+        t = ('Test',)
         c.execute('SELECT * FROM stocks WHERE symbol=?', t)
         print(c.fetchone())
 
         # Larger example that inserts many records at a time
         purchases = [('2006-03-28', 'BUY', 'IBM', 1000, 45.00),
-                     ('2006-04-05', 'BUY', 'MSFT', 1000, 72.00),
+                     ('2006-04-05', 'BUY', 'DELL', 1000, 72.00),
                      ('2006-04-06', 'SELL', 'IBM', 500, 53.00),
                     ]
         c.executemany('INSERT INTO stocks VALUES (?,?,?,?,?)', purchases)

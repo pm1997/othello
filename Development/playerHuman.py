@@ -1,4 +1,5 @@
 from player import Player
+
 from othelloGame import OthelloGame
 
 

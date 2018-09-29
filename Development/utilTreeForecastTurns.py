@@ -1,5 +1,6 @@
-from constants import BOARD_SIZE
 from othelloGame import OthelloGame
+
+from constants import BOARD_SIZE
 from constants import EMPTY_CELL
 from constants import INVALID_CELL
 
@@ -21,19 +22,39 @@ class UtilTreeForecastTurns:
     def add_node(self, turn_number, row, column, size, game_state=None):
         self.nodes.append(UtilTreeForecastTurns(turn_number, size, row, column, game_state, self))
 
-    def set_nodes(self, nodes):
-        self.nodes = nodes
-        for node in self.nodes:
-            node.parent = self
+    def add_tree(self, tree):
+        self.nodes.append(tree)
+        self.nodes[len(self.nodes) - 1].parent = self
 
     def get_root_node(self):
         if self.parent is not None:
             return self.parent.get_root_node()
         return self
 
-    def add_tree(self, tree):
-        self.nodes.append(tree)
-        self.nodes[len(self.nodes) - 1].parent = self
+    def search_node(self, board, turn_number):
+        for node in self.nodes:
+            if node.game_state is not None:
+                if board == node.game_state.board and node.turn_number == turn_number:
+                    return node
+                if UtilTreeForecastTurns.check_boards(board, node.game_state.board):
+                    return node.search_node(board, turn_number)
+        return None
+
+    def set_nodes(self, nodes):
+        self.nodes = nodes
+        for node in self.nodes:
+            node.parent = self
+
+    # static methods ------------------------------------------------------------------------------------------
+
+    @staticmethod
+    def check_boards(search_board, actual_board):
+        board_size = len(search_board)
+        for row in range(board_size):
+            for column in range(board_size):
+                if search_board[row][column] == EMPTY_CELL and actual_board[row][column] != EMPTY_CELL:
+                    return False
+        return True
 
     @staticmethod
     def print_tree(root):
@@ -47,24 +68,6 @@ class UtilTreeForecastTurns:
             print("----------------")
             print(" + ")
             UtilTreeForecastTurns.print_tree(node)
-
-    def search_node(self, board, turn_number):
-        for node in self.nodes:
-            if node.game_state is not None:
-                if board == node.game_state.board and node.turn_number == turn_number:
-                    return node
-                if UtilTreeForecastTurns.check_boards(board, node.game_state.board):
-                    return node.search_node(board, turn_number)
-        return None
-
-    @staticmethod
-    def check_boards(search_board, actual_board):
-        board_size = len(search_board)
-        for row in range(board_size):
-            for column in range(board_size):
-                if search_board[row][column] == EMPTY_CELL and actual_board[row][column] != EMPTY_CELL:
-                    return False
-        return True
 
     @staticmethod
     def update_stats(tree, player):

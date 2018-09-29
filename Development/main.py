@@ -1,4 +1,5 @@
 from othelloGame import OthelloGame
+
 from constants import BOARD_SIZE
 
 
