@@ -1,4 +1,6 @@
-from Player import Player
+from player import Player
+
+from othelloGame import OthelloGame
 
 
 class PlayerHuman(Player):
@@ -11,12 +13,15 @@ class PlayerHuman(Player):
         possible_moves = list(self._game_reference.get_available_moves())
         valid_selection = 0
         user_input = -1
+        store = input("store board (y|n): ")
+        if store == "y" or store == "Y":
+            self._game_reference.store_board()
         while not valid_selection:
             print("Possible positions:")
             print("Coordinates are (row, column)")
             for i in range(len(possible_moves)):
                 (x, y) = possible_moves[i]
-                print(f"{i}: ({x+1}, {y+1})")
+                print(f"{i}: ({OthelloGame.get_column_name(y+1)}{x+1})")
 
             try:
                 user_input = int(input("Please enter the number of the position you want to play:\n"))
