@@ -1,4 +1,5 @@
-from Player import Player
+from player import Player
+
 import random
 
 
@@ -6,7 +7,7 @@ class PlayerAiRandom(Player):
     def __init__(self, game_reference):
         Player.__init__(self, game_reference)
         self._game_reference = game_reference
-        print("Created new Random AI Player")
+        print("Created new AI Player - Random")
 
     def play(self):
         possible_moves = list(self._game_reference.get_available_moves())

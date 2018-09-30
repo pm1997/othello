@@ -1,0 +1,1 @@
+d3 c5 b6 c3 f5 a7 b5 b4 a5 d6 c7 b7 a3 d7 b8 g5 h5 f6 d2 h4 f4 f3 g2 d1 e1 b2 c1 h6 f7 g4 c2 a1 d8 e7 a2 e6 g6 g7 h8 b3 f8 h7 h3 b1 g8 f1 e8 a4 c8 e3 a6 c6 c4 g3 h2 a8 e2 f2 -- h1 g1
