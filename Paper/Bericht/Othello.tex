@@ -1,6 +1,6 @@
 \documentclass{report}
-%\usepackage{fleqn}
 \input{fleqn.clo}
+\usepackage[ngerman]{babel}
 \usepackage{graphicx}
 \usepackage{epstopdf}
 \usepackage{epsfig}
@@ -69,61 +69,6 @@
 % font-source: http://leonardo-m.livejournal.com/77079.html
 %\renewcommand{\encodingdefault}{T1}
 %\renewcommand{\ttdefault}{inconsolatag}
-
-\newcommand{\exercise}{\vspace*{0.2cm}
-\stepcounter{exercise}
-\noindent
-\textbf{Exercise \arabic{exercise}}: }
-
-\newcommand{\exerciseStar}{\vspace*{0.2cm}
-\stepcounter{exercise}
-\noindent
-\textbf{Exercise \arabic{exercise}$^*$}: }
-
-\newcommand{\homework}{\vspace*{0.2cm}
-\stepcounter{exercise}
-\noindent
-\textbf{Homework \arabic{exercise}}: }
-
-\newcommand{\proof}{\vspace*{0.2cm}
-\noindent
-\textbf{Proof}: }
-
-\newcommand{\hint}{\vspace*{0.2cm}
-\noindent
-\textbf{Hint}: }
-
-\newcommand{\remark}{\vspace*{0.2cm}
-\noindent
-\textbf{Remark}: }
-
-\newcommand{\solution}{\vspace*{0.2cm}
-\noindent
-\textbf{Solution}: }
-
-\newcommand{\example}{\vspace*{0.2cm}
-\noindent
-\textbf{Example}: \ }
-
-\newcommand{\examples}{\vspace*{0.2cm}
-\noindent
-\textbf{Examples}: \ }
-
-\newcommand{\eod}{\hspace*{\fill} $\diamond$
-\vspace*{0.2cm}
-
-}
-\newcommand{\eox}{\hspace*{\fill} $\diamond$
-\vspace*{0.2cm}
-
-}
-\newcommand{\eoxs}{\hspace*{\fill} $\diamond$
-
-}
-\newcommand{\qed}{\hspace*{\fill} $\Box$
-\vspace*{0.2cm}
-
-}
 
 \newcommand{\ds}{\displaystyle}
 \newcommand{\AI}{\textsc{Ai}}
@@ -194,7 +139,13 @@
 }
 %------------------------------------------------------------------------------------------------------------
 
-
+% todo definieren ----------------------------------------------------
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\newcommand{\unsure}[1]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red]{#1}}
+\newcommand{\change}[1]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue]{#1}}
+\newcommand{\info}[1]{\todo[linecolor=green,backgroundcolor=green!25,bordercolor=green]{#1}}
+\newcommand{\improvement}[1]{\todo[linecolor=lime,backgroundcolor=lime!25,bordercolor=lime]{#1}}
+\newcommand{\thiswillnotshow}[1]{\todo[disable]{#1}}
 
 %----Wörter formatieren-----------------------------------
 \newcommand{\ot}{\textit{Othello}}
@@ -217,59 +168,32 @@
 
 \newcounter{exercise}
 
-%\title{\epsfig{file=Figures/dhbw-logo.pdf, scale=1.5}\\[0.3cm]
-%      An Introduction to Artificial Intelligence \\[0.3cm]
-%      --- Lecture Notes in Progress ---}
 \title{Othello \\[0.3cm]
-      --- Lecture Notes in Progress ---}
+      --- Entwicklung einer KI für das Spiel ---}
 \author{Max Zepnik, Patrick Müller}
-\date{\today \\[0.5cm]
-\noindent
-\begin{minipage}[t]{1.0\linewidth}
-These lecture notes, their \LaTeX\ sources, and the programs discussed in these lecture notes are all available at
-\\[0.2cm]
-\hspace*{1.3cm}
-todo
-\hspace*{1.3cm}
-\href{mailto:todo.de}{\texttt{todo.de}}.
-\end{minipage}
-}
+\date{\today}
 
+% später entfernen!! ---------------------------------------
+\setlength {\marginparwidth }{2cm}
+% ----------------------------------------------------------
 
 \begin{document}
 \maketitle
 \tableofcontents
 
-\chapter{Einleitung}
-test1
-\chapter{Grundlagen}
-\section{Spieltheorie}
-test2 \cite{json}
+\include{einleitung}
+\include{grundlagen}
+\include{othello-chapter}
+\include{implementierung}
+\include{evaluierung}
+\include{fazit}
 
-%\bibliographystyle{alpha}
-%\bibliography{test}
+% später entfernen!! ----------------------------------------
+\newpage
+\listoftodos[Notes]
+% -----------------------------------------------------------
 
-
-\begin{thebibliography}{}
-\addcontentsline{toc}{section}{Literaturverzeichnis}
-\fancyhead[L]{\nouppercase{ \bfseries \textcolor{mxBlue} \leftmark}}
-\begin{footnotesize}
-\begin{spacing}{1.1}
-
-\bibitem{jpeg-about} JPEG: About JPEG, https://jpeg.org/about.html, o.J., Einsichtnahme: 22.06.2018
-
-\bibitem{heise-jpeg} Trinkwalder, Andrea: JPEG: 25 Jahre und kein bisschen alt, 
-\\https://www.heise.de/newsticker/meldung/JPEG-25-Jahre-und-kein-bisschen-alt-3342519.html, \\07.10.2016, Einsichtnahme: 22.06.2018
-
-\bibitem{json} o.V.: Introducing JSON, https://www.json.org/, o. J.,\\ Einsichtnahme:  17.08.2018
-
-\end{spacing}
-\end{footnotesize}
-\end{thebibliography}
+\bibliographystyle{alpha}
+\bibliography{quellen}
 
 \end{document}
-
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: t
-%%% End:
