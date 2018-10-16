@@ -11,3 +11,7 @@ venv
 *.synctex.gz
 *.toc
 *.out
+*.dvi
+*.tdo
+*.bbl
+*.blg
