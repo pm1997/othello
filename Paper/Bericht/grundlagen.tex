@@ -1,7 +1,7 @@
 \chapter{Grundlagen}
 \section{Spieltheorie}
-
-\begin{Definition}[Game]
+\info{Einleitung fehlt}
+\begin{Definition}[Spiel (Game)]
 Ein \blue{Game} besteht aus einem Tupel der Form \\[0.2cm]
   \hspace*{1.3cm}
   $\mathcal{G} = \langle S\textsubscript{0},\mathtt{player}, \mathtt{actions}, \mathtt{result}, \mathtt{terminalTest}, \mathtt{utility} \rangle$
@@ -12,6 +12,7 @@ Ein \blue{Game} besteht aus einem Tupel der Form \\[0.2cm]
 \\\textsc{terminalTest} prüft ob ein Zustand s ein Terminalzustand, also Endzustand, darstellt.
 \\\textsc{utility} gibt einen Zahlenwert aus den Eingabenwerten s ( Terminalzustand) und p (Spieler) zurück. \\Positive Werte stellen einen Gewinn, negative Werte einen Verlust dar.
 \info{quelle S.162}
+\info{Definition States davor}
 \end{Definition}
 Eine spezielle Art von Spielen sind \blue{Nullsummenspiele}.
 \begin{Definition}[Nullsummenspiele]
@@ -29,6 +30,19 @@ Ein \blue{Suchbaum} ist ein Teil des Spielbaums.
 \section{Spielstrategien}
 Es gibt verschiedene Spielstrategien. Im Folgenden werden diese kurz erläutert und anschließend verglichen.
 \subsection{Min-Max}
+\info{Patrick}
 Der erste hier erläuterte Strategie ist der Min-Max Algorithmus. Dieser ist folgendermaßen definiert:
+\\\Tree [.A [.B [.C eins ] [.D zwei ] ].B [.E {3 und 4} ] ].A
 \subsection{Alpha-Beta Pruning}
+\info{Max}
 Das \abp\ ist eine Weiterentwicklung des Min-Max Algorithmus.
+
+\subsection{imperfect real time-time decisions}
+\subsubsection{Evaluation functions}
+\info{max}
+\subsubsection{Cutting off search}
+\info{max}
+\subsubsection{Forward pruning}
+\info{patrick}
+\subsubsection{Search versus lookup}
+\info{patrick}
