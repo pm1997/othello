@@ -35,7 +35,16 @@ Der erste hier erläuterte Strategie ist der Min-Max Algorithmus. Dieser ist fol
 \\\Tree [.A [.B [.C eins ] [.D zwei ] ].B [.E {3 und 4} ] ].A
 \subsection{Alpha-Beta Pruning}
 \info{Max}
-Das \abp\ ist eine Weiterentwicklung des Min-Max Algorithmus.
+Der Min-Max Algorithmus berechnet nach dem Prinzip "depth-first" stets den kompletten Gametree. Bei der Betrachtung des Entscheidungsverhaltens des Algorithmus fällt jedoch schnell auf, dass ein nicht unerheblicher Teil aller möglichen Züge gar nicht erst in betracht gezogen wird. Dies geschieht aufgrund der Tatsache, dass diese Züge in einem schlechteren Ergebnis resultieren würden als die letzendlich ausgewählten.\newline
+Dem \abp\ Algorithmus liegt der Gedanke zugrunde, dass die Zustände, die in einem realen Spiel nie auftreten würden auch nicht berechnet werden müssen. Damit steht die dafür regulär erforderliche Rechenzeit und der entsprechende Speicher dafür zur Verfügung andere, vielversprechendere Zweige zu verfolgen.
+\subsubsection{Umsetzung}
+Um die Umsetzung zu verdeutlcihen betrachten wir den folgenden, einfachen, Gametree. Unterhalb des Knotennamens wird jeweils das Ergebnis der MinMax-Funktion des Min-Max Algorithmus dargestellt.
+\begin{figure}[h]
+\caption[]{Beispielhafter Gametree}
+\Tree [.{A\\a} [.{B\\5} [.{E\\5} ].{E\\5} [.{F\\13} ].{F\\13} [.{G\\8} ].{G\\8} ].{B\\5} [.{C\\6} [.{H\\h} ].{H\\h} [.{I\\i} ].{I\\i} [.{J\\j} ].{J\\j} ].{C\\c} [.{D\\d} [.{K\\k} ].{K\\k} [.{L\\l} ].{L\\l} [.{M\\m} ].{M\\m} ].{D\\d} ].{A\\a}
+\end{figure}
+\subsubsection{Ordnung der Züge}
+
 
 \subsection{imperfect real time-time decisions}
 \subsubsection{Evaluation functions}
