@@ -37,12 +37,146 @@ Der erste hier erläuterte Strategie ist der Min-Max Algorithmus. Dieser ist fol
 \info{Max}
 Der Min-Max Algorithmus berechnet nach dem Prinzip "depth-first" stets den kompletten Gametree. Bei der Betrachtung des Entscheidungsverhaltens des Algorithmus fällt jedoch schnell auf, dass ein nicht unerheblicher Teil aller möglichen Züge gar nicht erst in betracht gezogen wird. Dies geschieht aufgrund der Tatsache, dass diese Züge in einem schlechteren Ergebnis resultieren würden als die letzendlich ausgewählten.\newline
 Dem \abp\ Algorithmus liegt der Gedanke zugrunde, dass die Zustände, die in einem realen Spiel nie auftreten würden auch nicht berechnet werden müssen. Damit steht die dafür regulär erforderliche Rechenzeit und der entsprechende Speicher dafür zur Verfügung andere, vielversprechendere Zweige zu verfolgen.
-\subsubsection{Umsetzung}
-Um die Umsetzung zu verdeutlcihen betrachten wir den folgenden, einfachen, Gametree. Unterhalb des Knotennamens wird jeweils das Ergebnis der MinMax-Funktion des Min-Max Algorithmus dargestellt.
+\subsubsection{Demonstration an einem Beispiel}
 \begin{figure}[h]
 \caption[]{Beispielhafter Gametree}
-\Tree [.{A\\a} [.{B\\5} [.{E\\5} ].{E\\5} [.{F\\13} ].{F\\13} [.{G\\8} ].{G\\8} ].{B\\5} [.{C\\6} [.{H\\h} ].{H\\h} [.{I\\i} ].{I\\i} [.{J\\j} ].{J\\j} ].{C\\c} [.{D\\d} [.{K\\k} ].{K\\k} [.{L\\l} ].{L\\l} [.{M\\m} ].{M\\m} ].{D\\d} ].{A\\a}
+\Tree 
+[.{A} 
+	[.{B} 
+		[.{E\\5} ].{E\\5} 
+		[.{F\\13} ].{F\\13} 
+		[.{G\\7} ].{G\\7} 
+	].{B} 
+	[.{C} 
+		[.{H\\3} ].{H\\3}
+		[.{I\\24} ].{I\\24}
+		[.{J\\42} ].{J\\42} 
+	].{C}
+	[.{D} 
+		[.{K\\42} ].{K\\42}
+		[.{L\\6} ].{L\\6}
+		[.{M\\1} ].{M\\1} 
+	].{D} 
+].{A}
+\\\Tree 
+[.{A\\$\alpha = -\infty$ $\beta = +\infty$} 
+	[.{B\\$\alpha = -\infty$ $\beta = 5$} 
+		[.{E\\5} ].{E\\5} 
+		[.{F\\\grey{13}} ].{F\\\grey{13}} 
+		[.{G\\\grey{7}} ].{G\\\grey{7}} 
+	].{B\\$\alpha = -\infty$ $\beta = 5$} 
+	[.{C\\\grey{$\alpha = ?$ $\beta = ?$}} 
+		[.{H\\\grey{3}} ].{H\\\grey{3}}
+		[.{I\\\grey{24}} ].{I\\\grey{24}}
+		[.{J\\\grey{42}} ].{J\\\grey{42}} 
+	].{C\\\grey{$\alpha = ?$ $\beta = ?$}}
+	[.{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
+		[.{K\\\grey{42}} ].{K\\\grey{42}}
+		[.{L\\\grey{6}} ].{L\\\grey{6}}
+		[.{M\\\grey{1}} ].{M\\\grey{1}} 
+	].{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
+].{A\\$\alpha = -\infty$ $\beta = +\infty$}
+\Tree 
+[.{A\\$\alpha = -\infty$ $\beta = +\infty$} 
+	[.{B\\$\alpha = -\infty$ $\beta = 5$} 
+		[.{E\\5} ].{E\\5} 
+		[.{F\\13} ].{F\\13} 
+		[.{G\\\grey{7}} ].{G\\\grey{7}} 
+	].{B\\$\alpha = -\infty$ $\beta = 5$} 
+	[.{C\\\grey{$\alpha = ?$ $\beta = ?$}} 
+		[.{H\\\grey{3}} ].{H\\\grey{3}}
+		[.{I\\\grey{24}} ].{I\\\grey{24}}
+		[.{J\\\grey{42}} ].{J\\\grey{42}} 
+	].{C\\\grey{$\alpha = ?$ $\beta = ?$}}
+	[.{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
+		[.{K\\\grey{42}} ].{K\\\grey{42}}
+		[.{L\\\grey{6}} ].{L\\\grey{6}}
+		[.{M\\\grey{1}} ].{M\\\grey{1}} 
+	].{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
+].{A\\$\alpha = -\infty$ $\beta = +\infty$}
+\\\Tree 
+[.{A\\$\alpha = 5$ $\beta = +\infty$} 
+	[.{B\\$\alpha = 5$ $\beta = 5$} 
+		[.{E\\5} ].{E\\5} 
+		[.{F\\13} ].{F\\13} 
+		[.{G\\7} ].{G\\7} 
+	].{B\\$\alpha = 5$ $\beta = 5$} 
+	[.{C\\\grey{$\alpha = ?$ $\beta = ?$}} 
+		[.{H\\\grey{3}} ].{H\\\grey{3}}
+		[.{I\\\grey{24}} ].{I\\\grey{24}}
+		[.{J\\\grey{42}} ].{J\\\grey{42}} 
+	].{C\\\grey{$\alpha = ?$ $\beta = ?$}}
+	[.{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
+		[.{K\\\grey{42}} ].{K\\\grey{42}}
+		[.{L\\\grey{6}} ].{L\\\grey{6}}
+		[.{M\\\grey{1}} ].{M\\\grey{1}} 
+	].{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
+].{A\\$\alpha = 5$ $\beta = +\infty$}
+\Tree 
+[.{A\\$\alpha = 5$ $\beta = +\infty$} 
+	[.{B\\$\alpha = 5$ $\beta = 5$} 
+		[.{E\\5} ].{E\\5} 
+		[.{F\\13} ].{F\\13} 
+		[.{G\\7} ].{G\\7} 
+	].{B\\$\alpha = 5$ $\beta = 5$} 
+	[.{C\\$\alpha = -\infty$ $\beta = 3$} 
+		[.{H\\3} ].{H\\3}
+		[.{I\\\grey{24}} ].{I\\\grey{24}}
+		[.{J\\\grey{42}} ].{J\\\grey{42}} 
+	].{C\\$\alpha = -\infty$ $\beta = 3$}
+	[.{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
+		[.{K\\\grey{42}} ].{K\\\grey{42}}
+		[.{L\\\grey{6}} ].{L\\\grey{6}}
+		[.{M\\\grey{1}} ].{M\\\grey{1}} 
+	].{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
+].{A\\$\alpha = 5$ $\beta = +\infty$}
+\\\Tree 
+[.{A\\$\alpha = 5$ $\beta = 42$} 
+	[.{B\\$\alpha = 5$ $\beta = 5$} 
+		[.{E\\5} ].{E\\5} 
+		[.{F\\13} ].{F\\13} 
+		[.{G\\7} ].{G\\7} 
+	].{B\\$\alpha = 5$ $\beta = 5$} 
+	[.{C\\$\alpha = -\infty$ $\beta = 3$} 
+		[.{H\\3} ].{H\\3}
+		[.{I\\\grey{24}} ].{I\\\grey{24}}
+		[.{J\\\grey{42}} ].{J\\\grey{42}} 
+	].{C\\$\alpha = -\infty$ $\beta = 3$}
+	[.{D\\$\alpha = -\infty$ $\beta = 42$} 
+		[.{K\\42} ].{K\\42}
+		[.{L\\\grey{6}} ].{L\\\grey{6}}
+		[.{M\\\grey{1}} ].{M\\\grey{1}} 
+	].{D\\$\alpha = -\infty$ $\beta = 42$}  
+].{A\\$\alpha = 5$ $\beta = 42$}
+\Tree 
+[.{A\\$\alpha = 5$ $\beta = 5$} 
+	[.{B\\$\alpha = 5$ $\beta = 5$} 
+		[.{E\\5} ].{E\\5} 
+		[.{F\\13} ].{F\\13} 
+		[.{G\\7} ].{G\\7} 
+	].{B\\$\alpha = 5$ $\beta = 5$} 
+	[.{C\\$\alpha = -\infty$ $\beta = 3$} 
+		[.{H\\3} ].{H\\3}
+		[.{I\\\grey{24}} ].{I\\\grey{24}}
+		[.{J\\\grey{42}} ].{J\\\grey{42}} 
+	].{C\\$\alpha = -\infty$ $\beta = 3$}
+	[.{D\\$\alpha = 1$ $\beta = 1$} 
+		[.{K\\42} ].{K\\42}
+		[.{L\\6} ].{L\\6}
+		[.{M\\1} ].{M\\1} 
+	].{D\\$\alpha = 1$ $\beta = 1$}  
+].{A\\$\alpha = 5$ $\beta = 5$}
 \end{figure}
+Um den Algorithmus zu verdeutlichen betrachten wir das, an \improvement{Quelle Norvig Hinzufügen, Verweis auf Abbildung einfügen} XXX angelehnte, folgende Beispiel. Das Dargestellte Spiel besteht aus lediglich zwei Zügen, die abwechselnd durch die Spieler gewählt werden. An den Knoten der untersten Ebene des GameTree werden die Werte der Zustände gemäß der \textsc{utility} Funktion angegeben. Die Werte $\alpha$ und $\beta$ geben den schlechtmöglichsten bzw. den bestmöglichen Spielausgang für einen Zweig, immer aus der Sicht des beginnenden Spielers, an. Die ausgegrauten Knoten wurden noch nicht betrachtet.\\
+Betrachten wir nun den linken Baum in der zweiten Zeile: Der algorithmus beginnt damit alle möglichen Folgezustände bei der Wahl von B als Folgezustand zu evaluieren. Dabei wird zunächst der Knoten E betrachtet und damit der Wert 5 ermittelt. Dies ist der Bisher beste Wert. Er wird als $\beta$ gespeichert. Eine Aussage\improvement{Warum} über den schlechtesten Wert kann noch nicht getroffen werden.\\
+Im nachfolgenden Game Tree wird der nächste Schritt verdeutlicht. Es wird der Knoten F betrachtet. Dieser hat einen Wert von 13. Am Zuge ist jedoch der zweite Spieler. Dieser wird, geht man davon aus, dass er ideal spielt, jedoch keinen Zug wählen der ein besseres Ergebnis für den Gegner bringt als unbedingt nötig. Der bestmögliche Wert für den ersten Spieler bleibt damit 5.\\
+Nach der Auswertung des Knotens G steht fest, dass es keinen besseren und keinen schlechteren Wert aus Sicht des ersten Spielers gibt. Daraufhin wird die 5 auch als schlechtester Wert in $\alpha$ gespeichert. Ausgehend von A  ist der schlechteste Wert damit 5 ggf. kann jedoch noch ein besseres Ergebnis herbeigeführt werden. $\alpha$ wird entsprechend gesetzt und $\beta$ verbleibt undefiniert.\\
+Nun werden die Kindknoten von C betrachtet. Mit einem Wert von 3 wäre der Knoten H das bisher beste Ergebnis für die Wahl von C. Der Wert wird entsprechend gespeichert. Würde C gewählt gäbe man dem Gegenspieler die Chance ein im Vergleich zu der Wahl des Knotens B schlechteres Ergebnis herbeizuführen. Da Ziel des Spielers jedoch ist die eigenen Punkte zu maximieren gilt es diese Chance gar nicht erst zu gewähren. Entsprechend werden die Auswertung der weiteren Knoten abgebrochen.\\
+Der Kindknoten K des Knotens D ist mit einem Wert von 42 vielversprechend und wird in $\beta$ gespeichert. Da dieser Wert größer ist als die gespeicherten 5 wird auch der entsprechende Wert von A aktualisert. Der anschließend ausgewertete Knoten L ermöglicht nun ein schlechteres Ergebnis von 6 $\beta$ muss also aktualisiert werden. Der Knoten M liefert schließlich den schlechtesten Wert von 1. Da der Gegenspieler im Zweifel diesen Wert wählen würde bleibt der bisher beste Wert das Ergebis in E. In A wird der Spieler daher B auswählen
+\paragraph{}  
+Dieses einfache Beispiel zeigt bereits recht gut wie die Auswertung von weiteren Zweigen vermieden werden kann. In der Praktischen Anwendung befinden sich die wegfallenden Zustände häufig nicht nur in den Blättern des Baumes sondern auch auf höheren Ebenen. Der eingesparte Aufwand wird dadurch häufig noch größer.  
+
+\subsubsection{Implementierung}
 \subsubsection{Ordnung der Züge}
 
 
