@@ -237,3 +237,8 @@ Viele Spiele kann man in 3 Haupt-Spielabschnitte einteilen:
 \end{itemize}
 In der Eröffnungsphase und in der Endphase gibt es im Vergleich zum Mittelspiel wenige Zugmöglichkeiten. Dadurch sinkt der Verzweigungsfaktor und die generelle Anzahl der states. In diesen Phasen können die optimalen Spielzüge einfacher berechnet werden. Eine weitere Möglichkeit besteht aus dem Nachschlagen des \states\ aus einer Lookup-Tabelle.
 Dies ist sinnvoll, da gewöhnlicherweise sehr viel Literatur über die Spieleröffnung des jeweiligen Spiels existiert. Auch über die Endzustände in der Schlussphase des Spiels findet sich Literatur. Das Mittelspiel jedoch hat zu viele Zugmöglichkeiten, um eine Tabelle der möglichen Spielzüge bis zum Spielende aufstellen zu können.
+\section{Ermittlung einer Heuristik}
+Allen zuvor genannten Spielstrategien ist gemein, dass sie eineHeuristik, also eine Funktion zur Bewertung eines Spielzustandes, benötigen. Auf die Gewinnaussichten haben jedoch verschiedene Faktoren Einfluss. Eine Beschreibung dieser Faktoren findet sich im nachfolgenden Kapitel. Die Frage ist nun wie die einzelnen Faktoren zu gewichten sind. Eine Möglichkeit um die optimale Gewichtung zu ermitteln besteht darin die Faktoren iterativ zu bestimmen.\\
+Dabei werden zunächst alle Faktoren gleich gewichtet. Mit dieser Heuristik wird dann der Spielbaum bis zu einer zuvor festgelegten Tiefe berechnet. Jene Faktoren die die Wahl des demnach besten Zuges nahelegen werden daraufhin stärker gewichtet. Die Heuristik mit den neuen Faktoren ist dann der Ausgangspunkt für weitere Iterationen.\\
+Bei einer entsprechend großen Anzahl von Iterationen konvergieren die Faktoren zu einer optimalen Gewichtung.
+\section{Monte Carlo Methode}
