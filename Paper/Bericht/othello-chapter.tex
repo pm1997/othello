@@ -1,4 +1,26 @@
 \chapter{Othello}
+\label{othello-chapter}
 \info{Othello erklären}
-
+Von Othello gibt verschiedene Varianten. Eine Variante ist Reversi.
+\info{weiter}
+\\Othello wird auf einem 8x8 Spielbrett mit zwei Spielern gespielt. Es gibt je 64 Spielsteine, welche auf einer Seite schwarz, auf der anderen weiß sind. Der Startzustand besteht aus einem leeren Spielbrett, in welchem sich in der Mitte ein 2x2 Quadrat aus abwechselnd weißen und schwarzen Steinen befindet. Anschließend beginnt der Spieler mit den schwarzen Steinen.
+\section{Spielregeln}
+Othello besitzt einfache Spielregeln, welche im Spielverlauf aber auch taktisches oder strategisches Geschick erfordern. Jeder Spieler legt abwechselnd einen Stein auf das Spielbrett. Dabei sind folgende Spielregeln zu beachten:
+\begin{itemize}
+\item Ein Stein darf nur in ein leeres Feld gelegt werden.
+\item Auf mindestens einer Seite des Steines (vertikal, horizontal oder diagonal) muss ein gegnerischer Stein durch diesen Stein umschlossen werden. Dies bedeutet, dass nach dem angrenzenden gegnerischen Stein beliebig viele generische Steine folgen und durch einen eigenen Stein abgeschlossen werden. Es dürfen sich keine leere Felder dazwischen befinden.
+\item Die umschlossenen generischen Steine werden umgedreht, sodass alle Steine die eigene Farbe besitzen.
+\item Ist für beide Spieler kein Zug mehr möglich, ist das Spiel beendet. Der Spieler mit den meisten Steinen seiner Farbe gewinnt das Spiel.
+\end{itemize}
+\section{Spielverlauf}
+Das Spiel wird in drei Abschnitte eingeteilt:
+\begin{itemize}
+\item Eröffnungsphase
+\item Mittelspiel
+\item Endspiel
+\end{itemize}
+Diese Abschnitte sind jeweils 20 Spielzüge lang.
+Im Eröffnungs- und Endspiel stehen zum Mittelspiel wenige Zugmöglichkeiten zur Verfügung, da entweder nur wenige Steine auf dem Spielbrett existieren oder das Spielbrett fast gefüllt ist und nur noch einzelne Lücken übrig sind. Im Mittelspiel existieren sehr viele Möglichkeiten, da sich schon mindestens 20 Steine auf dem Spielbrett befinden und diese sehr gute Anlegemöglichkeiten bieten. 
+\section{Spielstrategien}
+\section{Eröffnungszüge}
 \info{Algo erklären}
