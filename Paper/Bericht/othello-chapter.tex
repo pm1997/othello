@@ -4,6 +4,15 @@
 Von Othello gibt verschiedene Varianten. Eine Variante ist Reversi.
 \info{weiter}
 \\Othello wird auf einem 8x8 Spielbrett mit zwei Spielern gespielt. Es gibt je 64 Spielsteine, welche auf einer Seite schwarz, auf der anderen weiß sind. Der Startzustand besteht aus einem leeren Spielbrett, in welchem sich in der Mitte ein 2x2 Quadrat aus abwechselnd weißen und schwarzen Steinen befindet. Anschließend beginnt der Spieler mit den schwarzen Steinen.
+Die Spielfelder werden in verschiedene Kategorien eingeteilt (siehe Abbildung \info{Abbildung}):
+\begin{itemize}
+\item Randfelder: äußere Felder
+\item C-Felder: Felder, welche ein Feld horizontal oder vertikal von den Ecken entfernt sind
+\item X-Felder: Felder, welche ein Feld diagonal von den Ecken entfernt sind
+\item Zentrum: innerste Felder von C3 bis F6
+\item Zentralfelder: Felder D4 bis E5
+\end{itemize}
+Diese Kategorien sind für die spätere Strategie wichtig.
 \section{Spielregeln}
 Othello besitzt einfache Spielregeln, welche im Spielverlauf aber auch taktisches oder strategisches Geschick erfordern. Jeder Spieler legt abwechselnd einen Stein auf das Spielbrett. Dabei sind folgende Spielregeln zu beachten:
 \begin{itemize}
@@ -22,5 +31,37 @@ Das Spiel wird in drei Abschnitte eingeteilt:
 Diese Abschnitte sind jeweils 20 Spielzüge lang.
 Im Eröffnungs- und Endspiel stehen zum Mittelspiel wenige Zugmöglichkeiten zur Verfügung, da entweder nur wenige Steine auf dem Spielbrett existieren oder das Spielbrett fast gefüllt ist und nur noch einzelne Lücken übrig sind. Im Mittelspiel existieren sehr viele Möglichkeiten, da sich schon mindestens 20 Steine auf dem Spielbrett befinden und diese sehr gute Anlegemöglichkeiten bieten. 
 \section{Spielstrategien}
+Wie in anderen Spielen gibt es auch in Othello verschiedene Strategien. Dabei kann beispielsweise offensiv gespielt werden, indem versucht wird möglichst viele Steine in einem Zug zu drehen. Es gibt auch defensive \mxZitat{stille} Züge. Ein \mxZitat{stiller} Zug dreht keinen Frontstein um und dreht möglichst nur wenige innere Steine um (vgl. \cite{Ortiz.}).
+\\ Generell ist eine häufig genutzte Strategie die eigene Mobilität zu erhöhen und die Mobilität des Gegners zu verringern. Mit dem Begriff Mobilität sind die möglichen Zugmöglichkeiten gemeint. Durch das Einschränken der gegnerischen Mobilität hat dieser weniger Zugmöglichkeiten und muss so ggf. strategisch schlechtere Züge durchführen.
+\\Die Position der Steine auf dem Spielbrett sollte ebenfalls nicht vernachlässigt werden.
+beispielsweise sollen Züge auf X-Felder vermieden werden, da der Gegner dadurch Zugang zu den Ecken bekommt. Dadurch können ggf. die beiden Ränder und die Diagonale gedreht werden und in den Besitz des Gegners gelangen.
+\\In der Eröffnungsphase sollten die Randfelder ebenfalls vermieden werden, da diese in dieser frühen Phase des Spiels noch gedreht werden können und der taktische Vorteil in einen strategischen Nachteil umgewandelt wird.
 \section{Eröffnungszüge}
-\info{Algo erklären}
+In der nachfolgenden Tabelle \ref{tab:eroeffnungen} sind verschiedene Spieleröffnungen und deren Häufigkeit in Spielen aufgelistet. Spielzüge werden in Othello durch eine Angabe der Position, auf welche der Stein gesetzt wird, dargestellt. Ein vollständiges Spiel lässt sich deshalb in einer Reihe von maximal 60 Positionen darstellen.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{| c | c | c |}
+    \hline
+     Name & Häufigkeit & Spielzüge \\ \hline
+     Tiger  &   47\%   & f5 d6 c3 d3 c4 \\ \hline
+     Rose &   13\%   & f5 d6 c5 f4 e3 c6 d3 f6 e6 d7 \\ \hline
+     Buffalo &  8\%    & f5 f6 e6 f4 c3 \\ \hline
+     Heath  &  6\%    &  f5 f6 e6 f4 g5 \\ \hline
+     Inoue &   5\%   &  f5 d6 c5 f4 e3 c6 e6\\ \hline
+     Shaman &   3\%   & f5 d6 c5 f4 e3 c6 f3 \\ \hline
+  \end{tabular}
+  \caption{Liste von Othelloeröffnungen \cite{Ortiz.}}
+  \label{tab:eroeffnungen}
+\end{table}
+\cite{Ortiz.} gibt folgende weitere Tipps für Eröffnungen:
+\begin{itemize}
+\item Versuche weniger Steinchen zu haben als dein Gegner.
+\item Versuche das Zentrum zu besetzen.
+\item Vermeide zu viele Frontsteine umzudrehen.
+\item Versuche deine Steinchen in einem Haufen zu sammeln statt einige verstreute isolierte Steinchen zu haben.
+\item Vermeide vor dem Mittelspiel auf die Kantenfelder zu setzen.
+\end{itemize}
+\unsure{Zitatweise ok?}
+Frontsteine sind die äußersten Steine auf dem Spielbrett um das Zentrum.
+Viele dieser Tipps können auch im späteren Spielverlauf verwendet werden.
