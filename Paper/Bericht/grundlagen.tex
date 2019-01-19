@@ -244,7 +244,7 @@ Unglücklicherweise verfügen nicht alle dieser Zustände über die gleiche Auss
 \section{Monte Carlo Tree Search}
 Die sogenannte Monte-Carlo Tree Search (MCTS - Monte-Carlo Baumsuche) befarf im Gegensatz zu den bisher gezeigten Startegien in ihrer Reinform keine Heuristik. Dabei werden zufällige Spiele gespielt. Aus einem einzigen solchen Spiel lässt sich kaum eine Erkenntnis ableiten; aus einer Vielzahl von zufälligen Spielen lässt sich jedch bei einer ausreichend großen Anzahl die optimale Lösung bestimmen.
 \subsection{Funktionsweise}
-{Chaslot, G., Bakkes, S., Szita, I., & Spronck, P. (2008, October). Monte-Carlo Tree Search: A New Framework for Game AI. In AIIDE.} beschreiben das Verfaren als einen vierstufigen Prozess zum Aufbau eines Game Trees
+\cite{chaslot2008monte} beschreiben das Verfaren als einen vierstufigen Prozess zum Aufbau eines Game Trees
 \subsubsection{Selection}
 Ist der Ausgangszustand bereits bekannt, also bereits im Game Tree enthalten, so wird der Folgezustand aufgrund der vorhandenen Daten gewählt. In der Regel stehen hier solche Folgezustände zu denen bereits Daten vorhanden sind und solche die bisher unbekannt sind zur Verfügung. Die Schwierigkeit liegt nun darin zu entscheiden, ob jener Folgezustand der am vielversprechendsden ist (exploitation) oder ein bisher unbekannter Zustand der unter Umständen ein besseres Ergebnis liefern könnte (exploration) gewählt wird. Die bei der Auswahl angewandte Strategie wird als Selection Policy bezeichnet.
 \subsubsection{Expansion}
@@ -255,5 +255,5 @@ Nun werden bis zum erreichen eines Terminalzustandes zufällige Züge durchgefü
 Im letzten Schritt werden dann die gespeicherten Informationen durch Backpropagation angepasst. Dabei wird die Häufigkeit des Besuchs eines Zustandes, sowie jeweils die Häufigkeit eines Gewinn bzw. Verlusts bei der Wahl dieses Zustandes gespeichert. Der Wert des Zustandes kann nun durch die Anzahl der Gewinne bei Wahl der Aktion durch die Besuchshäufigkeit angenähert werden.\\
 Nach dem dearartigen Aufbau des Gametrees wurde aufrgund der Auswahlbedingung im Selection-Schritt jener Folgezustand am häufigsten erkundet der am Erfolgversprechendsden ist. Im tatsächlichen Spiel wird daher der Zug durchgeführt der beim Aufbau des Baumes am häufigsten durchgeführt wurde.
 \section{Die Selection Policy}
-{BROWNE, Cameron B., et al. A survey of monte carlo tree search methods. IEEE Transactions on Computational Intelligence and AI in games, 2012, 4. Jg., Nr. 1, S. 1-43.}\\
+weiter \cite{browne2012survey} \\
 \info{Brauchen wir das tiefer?}
