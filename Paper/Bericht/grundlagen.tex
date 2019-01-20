@@ -1,0 +1,279 @@
+\chapter{Grundlagen}
+\section{Spieltheorie}
+In dem folgenden Unterkapitel werden grundlegende Definitionen eingeführt. Diese sind an \cite{Russell.2016} angelehnt.
+\begin{Definition}[Spiel (Game)(vgl. \cite{Russell.2016} S. 162)]
+Ein \blue{Game} besteht aus einem Tupel der Form \\[0.2cm]
+  \hspace*{1.3cm}
+  $\mathcal{G} = \langle S\textsubscript{0},\mathtt{player}, \mathtt{actions}, \mathtt{result}, \mathtt{terminalTest}, \mathtt{utility} \rangle$
+\\\so\ beschreibt den Startzustand des Spiels.
+\\\textsc{player} ist auf der Menge der Spieler definiert und gibt den aktuellen Spieler zurück.
+\\\textsc{actions} gibt die validen Folgezustände eines gegeben Zustands zurück.
+\\\textsc{result} definiert das Resultat einer durchgeführten Aktion a und in einem Zustand s.
+\\\textsc{terminalTest} prüft ob ein Zustand s ein Terminalzustand, also Endzustand, darstellt.
+\\\textsc{utility} gibt einen Zahlenwert aus den Eingabenwerten s ( Terminalzustand) und p (Spieler) zurück. \\Positive Werte stellen einen Gewinn, negative Werte einen Verlust dar.
+\info{Definition States davor}
+\end{Definition}
+Eine spezielle Art von Spielen sind \blue{Nullsummenspiele}.
+\begin{Definition}[Nullsummenspiele (vgl. \cite{Russell.2016} S. 161)]
+In einem \blue{Nullsummenspiel} ist die Summe der utility Funktion eines Zustands über alle Spieler 0. Dies bedeutet, dass wenn ein Spieler gewinnt mindestens ein Gegenspieler verliert.
+\end{Definition}
+Durch den Startzustand \so\ und der Funktion \textsc{action} wird ein \blue{Spielbaum (\gtree)} aufgespannt.
+\begin{Definition}[Spielbaum (\gtree)(vgl. \cite{Russell.2016} S. 162)]
+Ein \blue{Spielbaum} besteht aus einer einzigen \\Wurzel, welche einen bestimmten Zustand (meistens \so) darstellt. Die Kindknoten der Wurzel stellen die durch \textsc{actions} erzeugten Zustände dar. Die Kanten zwischen der Wurzel und den Kindknoten stellen jeweils die durchgeführte Aktion dar, die ausgeführt wurde um vom State s zum Kindknoten zu gelangen.
+\end{Definition}
+\begin{Definition}[Suchbaum (Search Tree)(vgl. \cite{Russell.2016} S. 163)]
+Ein \blue{Suchbaum} ist ein Teil des Spielbaums.
+\end{Definition}
+\info{Überleitung einfügen}
+\section{Spielstrategien}
+Es gibt verschiedene Spielstrategien. Im Folgenden werden diese kurz erläutert und anschließend verglichen.
+\subsection{Min-Max}
+\improvement{Zitat einfügen}
+Der erste hier erläuterte Strategie ist der Min-Max Algorithmus. Dieser ist folgendermaßen definiert:
+\\$MinMax(s) = \begin{cases} Utility(s)$; wenn TerminalTest(s) == true $\\max(\{a\textsubscript{e Actions(s)} MinMax(Result(s,a)\})$; wenn Spieler am Zug$\\min(\{a\textsubscript{e Actions(s)} MinMax(Result(s,a)\})$; wenn Gegner am Zug$\end{cases}$
+\\Der Spieler sucht den bestmöglichen Zug aus \textsc{actions}, der ihm einen für seine Züge einen Vorteil schafft aber gleichzeitig nur \mxZitat{schlechte} Zugmöglichkeiten für den Gegner generiert. Der Gegner kann dadurch aus allen ehemals möglichen Zügen nicht den optimalen Zug spielen, da dieser in den aktuell enthaltenen Zügen nicht vorhanden ist. Er  wählt aus den verfügbaren \textsc{actions} nach den gleichen Vorgaben seinen besten Zug aus.
+\\ Die Strategie ist eine Tiefensuche und erkundet jeden Knoten zuerst bis zu den einzelnen Blättern bevor ein Nachbarknoten ausgewählt wird. Dies setzt das mindestens einmalige Durchlaufen des gesamten Search Trees voraus. Bei einem durchschnittlichen Verzweigungsfaktor von $f$ bei einer Tiefe von $d$ resultiert daraus eine Komplexität von $O(d\textsuperscript{f})$. Bei einem einmaligen Erkunden der Knoten können die Werte aus den Blättern rekursiv von den Blättern zu den Knoten aktualisiert werden. Dadurch muss im nächsten Zug nur das Minimum aus \textsc{actions} ermittelt werden, da alle Kindknoten schon evaluiert wurden. Für übliche Spiele kann die Min-Max-Strategie allerdings nicht verwendet werden, da die Komplexität zu hoch für eine akzeptable Antwortzeit ist und der benötigte Speicherplatz für die berechneten Zustände sehr schnell wächst.
+%\\\Tree [.A [.B [.C eins ] [.D zwei ] ].B [.E {3 und 4} ] ].A
+\subsection{Alpha-Beta Pruning}
+Der Min-Max Algorithmus berechnet nach dem Prinzip \mxZitat{depth-first} stets den kompletten \gtree. Bei der Betrachtung des Entscheidungsverhaltens des Algorithmus fällt jedoch schnell auf, dass ein nicht unerheblicher Teil aller möglichen Züge gar nicht erst in Betracht gezogen wird. Dies geschieht aufgrund der Tatsache, dass diese Züge in einem schlechteren Ergebnis resultieren würden als die letztendlich ausgewählten.\newline
+Dem \abp\ Algorithmus liegt der Gedanke zugrunde, dass die Zustände, die in einem realen Spiel nie auftreten würden auch nicht berechnet werden müssen. Damit steht die dafür regulär erforderliche Rechenzeit und der entsprechende Speicher dafür zur Verfügung andere, vielversprechendere Zweige zu verfolgen.
+\subsubsection{Demonstration an einem Beispiel}
+\begin{figure}[ht!]
+\caption[]{Beispielhafter \gtree}
+\Tree 
+[.{A} 
+	[.{B} 
+		[.{E\\5} ].{E\\5} 
+		[.{F\\13} ].{F\\13} 
+		[.{G\\7} ].{G\\7} 
+	].{B} 
+	[.{C} 
+		[.{H\\3} ].{H\\3}
+		[.{I\\24} ].{I\\24}
+		[.{J\\42} ].{J\\42} 
+	].{C}
+	[.{D} 
+		[.{K\\42} ].{K\\42}
+		[.{L\\6} ].{L\\6}
+		[.{M\\1} ].{M\\1} 
+	].{D} 
+].{A}
+\\\Tree 
+[.{A\\$\alpha = -\infty$ $\beta = +\infty$} 
+	[.{B\\$\alpha = -\infty$ $\beta = 5$} 
+		[.{E\\5} ].{E\\5} 
+		[.{F\\\grey{13}} ].{F\\\grey{13}} 
+		[.{G\\\grey{7}} ].{G\\\grey{7}} 
+	].{B\\$\alpha = -\infty$ $\beta = 5$} 
+	[.{C\\\grey{$\alpha = ?$ $\beta = ?$}} 
+		[.{H\\\grey{3}} ].{H\\\grey{3}}
+		[.{I\\\grey{24}} ].{I\\\grey{24}}
+		[.{J\\\grey{42}} ].{J\\\grey{42}} 
+	].{C\\\grey{$\alpha = ?$ $\beta = ?$}}
+	[.{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
+		[.{K\\\grey{42}} ].{K\\\grey{42}}
+		[.{L\\\grey{6}} ].{L\\\grey{6}}
+		[.{M\\\grey{1}} ].{M\\\grey{1}} 
+	].{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
+].{A\\$\alpha = -\infty$ $\beta = +\infty$}
+\Tree 
+[.{A\\$\alpha = -\infty$ $\beta = +\infty$} 
+	[.{B\\$\alpha = -\infty$ $\beta = 5$} 
+		[.{E\\5} ].{E\\5} 
+		[.{F\\13} ].{F\\13} 
+		[.{G\\\grey{7}} ].{G\\\grey{7}} 
+	].{B\\$\alpha = -\infty$ $\beta = 5$} 
+	[.{C\\\grey{$\alpha = ?$ $\beta = ?$}} 
+		[.{H\\\grey{3}} ].{H\\\grey{3}}
+		[.{I\\\grey{24}} ].{I\\\grey{24}}
+		[.{J\\\grey{42}} ].{J\\\grey{42}} 
+	].{C\\\grey{$\alpha = ?$ $\beta = ?$}}
+	[.{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
+		[.{K\\\grey{42}} ].{K\\\grey{42}}
+		[.{L\\\grey{6}} ].{L\\\grey{6}}
+		[.{M\\\grey{1}} ].{M\\\grey{1}} 
+	].{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
+].{A\\$\alpha = -\infty$ $\beta = +\infty$}
+\\\Tree 
+[.{A\\$\alpha = 5$ $\beta = +\infty$} 
+	[.{B\\$\alpha = 5$ $\beta = 5$} 
+		[.{E\\5} ].{E\\5} 
+		[.{F\\13} ].{F\\13} 
+		[.{G\\7} ].{G\\7} 
+	].{B\\$\alpha = 5$ $\beta = 5$} 
+	[.{C\\\grey{$\alpha = ?$ $\beta = ?$}} 
+		[.{H\\\grey{3}} ].{H\\\grey{3}}
+		[.{I\\\grey{24}} ].{I\\\grey{24}}
+		[.{J\\\grey{42}} ].{J\\\grey{42}} 
+	].{C\\\grey{$\alpha = ?$ $\beta = ?$}}
+	[.{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
+		[.{K\\\grey{42}} ].{K\\\grey{42}}
+		[.{L\\\grey{6}} ].{L\\\grey{6}}
+		[.{M\\\grey{1}} ].{M\\\grey{1}} 
+	].{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
+].{A\\$\alpha = 5$ $\beta = +\infty$}
+\Tree 
+[.{A\\$\alpha = 5$ $\beta = +\infty$} 
+	[.{B\\$\alpha = 5$ $\beta = 5$} 
+		[.{E\\5} ].{E\\5} 
+		[.{F\\13} ].{F\\13} 
+		[.{G\\7} ].{G\\7} 
+	].{B\\$\alpha = 5$ $\beta = 5$} 
+	[.{C\\$\alpha = -\infty$ $\beta = 3$} 
+		[.{H\\3} ].{H\\3}
+		[.{I\\\grey{24}} ].{I\\\grey{24}}
+		[.{J\\\grey{42}} ].{J\\\grey{42}} 
+	].{C\\$\alpha = -\infty$ $\beta = 3$}
+	[.{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
+		[.{K\\\grey{42}} ].{K\\\grey{42}}
+		[.{L\\\grey{6}} ].{L\\\grey{6}}
+		[.{M\\\grey{1}} ].{M\\\grey{1}} 
+	].{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
+].{A\\$\alpha = 5$ $\beta = +\infty$}
+\\\Tree 
+[.{A\\$\alpha = 5$ $\beta = 42$} 
+	[.{B\\$\alpha = 5$ $\beta = 5$} 
+		[.{E\\5} ].{E\\5} 
+		[.{F\\13} ].{F\\13} 
+		[.{G\\7} ].{G\\7} 
+	].{B\\$\alpha = 5$ $\beta = 5$} 
+	[.{C\\$\alpha = -\infty$ $\beta = 3$} 
+		[.{H\\3} ].{H\\3}
+		[.{I\\\grey{24}} ].{I\\\grey{24}}
+		[.{J\\\grey{42}} ].{J\\\grey{42}} 
+	].{C\\$\alpha = -\infty$ $\beta = 3$}
+	[.{D\\$\alpha = -\infty$ $\beta = 42$} 
+		[.{K\\42} ].{K\\42}
+		[.{L\\\grey{6}} ].{L\\\grey{6}}
+		[.{M\\\grey{1}} ].{M\\\grey{1}} 
+	].{D\\$\alpha = -\infty$ $\beta = 42$}  
+].{A\\$\alpha = 5$ $\beta = 42$}
+\Tree 
+[.{A\\$\alpha = 5$ $\beta = 5$} 
+	[.{B\\$\alpha = 5$ $\beta = 5$} 
+		[.{E\\5} ].{E\\5} 
+		[.{F\\13} ].{F\\13} 
+		[.{G\\7} ].{G\\7} 
+	].{B\\$\alpha = 5$ $\beta = 5$} 
+	[.{C\\$\alpha = -\infty$ $\beta = 3$} 
+		[.{H\\3} ].{H\\3}
+		[.{I\\\grey{24}} ].{I\\\grey{24}}
+		[.{J\\\grey{42}} ].{J\\\grey{42}} 
+	].{C\\$\alpha = -\infty$ $\beta = 3$}
+	[.{D\\$\alpha = 1$ $\beta = 1$} 
+		[.{K\\42} ].{K\\42}
+		[.{L\\6} ].{L\\6}
+		[.{M\\1} ].{M\\1} 
+	].{D\\$\alpha = 1$ $\beta = 1$}  
+].{A\\$\alpha = 5$ $\beta = 5$}
+\end{figure}
+Um den Algorithmus zu verdeutlichen betrachten wir das, an \cite{Russell.2016} angelehnte, folgende Beispiel. Das dargestellte Spiel besteht aus lediglich zwei Zügen, die abwechselnd durch die Spieler gewählt werden. An den Knoten der untersten Ebene des \gtree\ werden die Werte der Zustände gemäß der \textsc{utility} Funktion angegeben. Die Werte $\alpha$ und $\beta$ geben den schlecht möglichsten bzw. den bestmöglichen Spielausgang für einen Zweig, immer aus der Sicht des beginnenden Spielers, an. Die ausgegrauten Knoten wurden noch nicht betrachtet.\\
+Betrachten wir nun den linken Baum in der zweiten Zeile: Der Algorithmus beginnt damit alle möglichen Folgezustände bei der Wahl von B als Folgezustand zu evaluieren. Dabei wird zunächst der Knoten E betrachtet und damit der Wert 5 ermittelt. Dies ist der bisher beste Wert. Er wird als $\beta$ gespeichert. Eine Aussage\improvement{Warum} über den schlechtesten Wert kann noch nicht getroffen werden.\\
+Im nachfolgenden \gtree\ wird der nächste Schritt verdeutlicht. Es wird der Knoten F betrachtet. Dieser hat einen Wert von 13. Am Zuge ist jedoch der zweite Spieler. Dieser wird, geht man davon aus, dass er ideal spielt, jedoch keinen Zug wählen der ein besseres Ergebnis für den Gegner bringt als unbedingt nötig. Der bestmögliche Wert für den ersten Spieler bleibt damit 5.\\
+Nach der Auswertung des Knotens G steht fest, dass es keinen besseren und keinen schlechteren Wert aus Sicht des ersten Spielers gibt. Daraufhin wird die 5 auch als schlechtester Wert in $\alpha$ gespeichert. Ausgehend von A  ist der schlechteste Wert damit 5 ggf. kann jedoch noch ein besseres Ergebnis herbeigeführt werden. $\alpha$ wird entsprechend gesetzt und $\beta$ verbleibt undefiniert.\\
+Nun werden die Kindknoten von C betrachtet. Mit einem Wert von 3 wäre der Knoten H das bisher beste Ergebnis für die Wahl von C. Der Wert wird entsprechend gespeichert. Würde C gewählt gäbe man dem Gegenspieler die Chance ein im Vergleich zu der Wahl des Knotens B schlechteres Ergebnis herbeizuführen. Da Ziel des Spielers jedoch ist die eigenen Punkte zu maximieren gilt es diese Chance gar nicht erst zu gewähren. Entsprechend werden die Auswertung der weiteren Knoten abgebrochen.\\
+Der Kindknoten K des Knotens D ist mit einem Wert von 42 vielversprechend und wird in $\beta$ gespeichert. Da dieser Wert größer ist als die gespeicherten 5 wird auch der entsprechende Wert von A aktualisiert. Der anschließend ausgewertete Knoten L ermöglicht nun ein schlechteres Ergebnis von 6 $\beta$ muss also aktualisiert werden. Der Knoten M liefert schließlich den schlechtesten Wert von 1. Da der Gegenspieler im Zweifel diesen Wert wählen würde bleibt der bisher beste Wert das Ergebnis in E. In A wird der Spieler daher B auswählen
+\paragraph{}  
+Dieses einfache Beispiel zeigt bereits recht gut wie die Auswertung von weiteren Zweigen vermieden werden kann. In der Praktischen Anwendung befinden sich die wegfallenden Zustände häufig nicht nur in den Blättern des Baumes sondern auch auf höheren Ebenen. Der eingesparte Aufwand wird dadurch häufig noch größer.  
+
+\subsubsection{Implementierung}
+Nachfolgend wird eine Pseudoimplementierung des um Alpha-Beta Pruning erweiterten MinMax Algorithmus angegeben (siehe Listing \ref{lst:abprun}):
+\begin{footnotesize}
+\begin{lstlisting}[caption = {Pseudoimplementierung von Alpha-Beta Pruning}, language = cpp, captionpos = t , numbers=left, label={lst:abprun}]
+global Suchtiefe
+int minMax(Spiel AktuellerZustand, int Spieler, int Tiefe, int alpha, int beta) {
+	if (Tiefe == 0) {
+		return Utility(AktuellerZustand, Spieler);	
+	}
+	int bisherigerMaximalWert = alpha
+	Zuege = mengeDerFolgezuege(aktuellerZustand);
+	for (Zug z in Zuege) {
+		Spiel NeuerZustand = waehleZug(Aktueller Zustand, z)
+		wert = -minMax(NeuerZustand, anderer(Spieler), Tiefe-1, -beta, -bisherigerMaximalWert)
+		if (wert > bisherigerMaximalWert) {
+			bisherigerMaximalWert = wert
+			if (bisherigerMaximalWert >= beta) {
+				break;
+			}
+			if (Tiefe = Suchtiefe) {
+				speichereZug(z)
+			}
+		}
+	}
+	return bisherigerMaximalwert;		
+} 
+\end{lstlisting}
+\end{footnotesize}
+Es handelt sich um eine rekursive Implementierung. Im Basisfall ist der \gtree\ bereits bis in die angegebene Suchtiefe erforscht (Zeile 3). In diesem Fall wird der Wert der Utility Funktion für den aktuellen Spieler bei dem aktuellen Zustand zurückgegeben (Zeile 4).
+
+Handelt es sich nicht um einen solchen Fall werden alle möglichen Folgezüge berechnet (Zeile 7) und dann einzeln betrachtet in dem er ausgeführt wird. (Zeile 8f). Zuvor wird dazu jedoch der bisherige Maximalwert gespeichert (Zeile 6).
+Um den Wert des Zuges zu bestimmen wird rekursiv die minMax-Methode erneut aufgerufen. Dabei wird entsprechend der Neue Zustand, der andere Spieler und eine um die um eins verringerte Tiefe übergeben. Der beste Wert für den anderen Spieler ist der schlechteste Wert für den ersten Spieler. Daher wird der bisherige Wert von beta als alpha übergeben. Der bisher beste Wert ist aus Sicht des anderen Spielers der schlechteste daher wird dieser als neues beta Übergeben. Da die Utility Funktion so implementiert ist, dass die Summe der Wertigkeiten eines Zustandes Null ergibt muss noch das Vorzeichen geändert werden (Zeile 9).\\
+Ist der neue Wert größer als der bisherige Maximalwert (Zeile 11) so wird dieser aktualisiert (Zeile 12).
+Da der zweite Spieler versucht die Punktzahl des Gegners zu maximieren bricht dieser die Auswertung aller Zweige ab, bei denen ein Ergebnis, welches besser ist als das bisher schlechteste Ergebnis, möglich wird (Zeile 13f).
+Abschließend wird der ausgewertete Zug gespeichert um ihn später ausführen zu können (Zeile 16).
+\subsubsection{Ordnung der Züge}
+Wie in obigen Beispiel an den Zweigen unter dem Knoten C zu sehen war kann, je nach der Reihenfolge in der die Folgezüge untersucht werden, die Auswertung eines Folgezustandes früher oder später abgebrochen werden. Optimalerweise werden die besten Züge, also jene Züge die einen möglichst frühen Abbruch der Betrachtung eines Knotens herbeiführen zuerst betrachtet. Um dies Abschätzen zu können bedient man sich in der Praxis einer Heuristik die Aussagen über die Güte eines Zuges im Vergleich zu den übrigen Zügen zulässt. Anhand dieser Heuristik kann dann die Reihenfolge der Auswertung einzelner Folgezustände dynamisch angepasst werden.
+
+\subsection{Suboptimale Echtzeitentscheidungen}
+Selbst die gezeigten Verbesserung des MinMax-Algorithmus besitzt noch einen wesentlichen Nachteil. Da es sich um einen "depth-first" Algorithmus handelt muss jeder Pfad bis zu einem Endzustand betrachtet werden um eine Aussage über den Wert des Zuges treffen zu können. Dem steht jedoch die Tatsache entgegen, dass in der Praxis eine Entscheidung möglichst schnell, idealer Weise innerhalb weniger Minuten, getroffen werden soll. Hinzu kommt, dass je nach der verwendeten Datenstruktur für ein Spiel bei entsprechend hohem Verzweigungsfaktor und einer großen Anzahl von Zügen der Hauptspeicher eines handelsüblichen Computers nicht mehr ausreicht um diese zu fassen\\
+Es gilt also eine Möglichkeit zu finden, die Auswertung des kompletten Baumes zu vermeiden.
+
+\subsubsection{Heuristiken}
+Dieses Problem lösen sogenannte Heuristiken. Dabei handelt es sich um eine Funktion die den Wert eines Spielzustandes annähert.
+\improvement{admissible?}
+\\
+\improvement{consistent?}
+Die Nutzung der Heuristik wird vereinfacht, wenn Sie so definiert ist, dass sie, sofern es sich um einen Endzustand handelt den Wert der Utility Funktion zurückgibt. Der Vorteil dieses Verhaltens wird im nächsten Abschnitt betrachtet.\\
+Kommt eine Heuristik zur Anwendung so ist die Genauigkeit mit der diese den tatsächlichen Wert approximiert der wesentliche Aspekt der die Qualität des Spiel-Algorithmus ausmacht. Um zu verhindern, das versehentlich die besten Züge nicht betrachtet werden, ist es essentiell, dass eine Heuristik den tatsächlichen Wert eines Zustandes nie überschätzt. Das unterschätzen des Wertes hingegen ist möglich darf im Sinne der Genauigkeit der Heuristik jedoch nicht allzu ungleichmäßig Auftreten.
+
+\subsubsection{Abschnittskriterium der Suche}
+Gibt die Heuristik im Falle eines Endzustandes den Wert der Utility Funktion zurück, so kann die oben gezeigte Implementierung so angepasst werden, dass statt der Utility Funktion einfach die Heuristik ausgewertet wird. Dadurch muss nicht mehr der Vollständige Zweig durchsucht werden und das Abbrechen nach einer gewissen Suchtiefe wird möglich.
+ 
+\subsubsection{Forward pruning}
+Forward pruning durchsucht nicht den kompletten \gtree , sondern durchsucht nur einen Teil. Eine Mög-lichkeit ist eine Strahlensuche, welche nur die \mxZitat{besten} Züge durchsucht (vgl. \cite{Russell.2016} S. 175). Die Züge mit einer geringen Erfolgswahrscheinlichkeit werden abgeschnitten und nicht bis zum Blattknoten evaluiert. Durch die Wahl des jeweils wahrscheinlichsten Zuges können aber auch sehr gute bzw. schlechte Züge nicht berücksichtigt werden, da sie eine geringe Wahrscheinlichkeit besitzen. Durch das Abschneiden von Teilen des \gtree\ wird die Suchgeschwindigkeit deutlich erhöht. Der in dem \ot -Programm \mxZitat{Logistello} verwendete \mxZitat{Probcut} erzielt außerdem eine Gewinnwahrscheinlichkeit von 64\% gegenüber der ursprünglichen Version ohne Forward pruning (vgl. \cite{Russell.2016} S. 175).
+\subsubsection{Search versus lookup}
+Viele Spiele kann man in 3 Haupt-Spielabschnitte einteilen:
+\begin{itemize}
+\item Eröffnungsphase
+\item Mittelspiel
+\item Endphase
+\end{itemize}
+In der Eröffnungsphase und in der Endphase gibt es im Vergleich zum Mittelspiel wenige Zugmöglichkeiten. Dadurch sinkt der Verzweigungsfaktor und die generelle Anzahl der states. In diesen Phasen können die optimalen Spielzüge einfacher berechnet werden. Eine weitere Möglichkeit besteht aus dem Nachschlagen des \states\ aus einer Lookup-Tabelle.
+\\Dies ist sinnvoll, da gewöhnlicherweise sehr viel Literatur über die Spieleröffnung des jeweiligen Spiels existiert.% Auch über die Endzustände in der Schlussphase des Spiels findet sich Literatur. 
+Das Mittelspiel jedoch hat zu viele Zugmöglichkeiten, um eine Tabelle der möglichen Spielzüge bis zum Spielende aufstellen zu können. In dem Kapitel \ref{othello-eroff} werden die bekanntesten Eröffnungsstrategien aufgelistet.
+\\Viele Spielstrategien wie beispielsweise die Min-Max-Strategie setzen den kompletten oder wenigstens einen großen Teil des Spielbaums voraus. Dieser kann entweder berechnet werden oder aus einer Lookup-Tabelle gelesen werden. Je nach Verzweigungsfaktor der einzelnen Spielzüge kann diese allerdings sehr groß sein. Selbst im späten Spielverlauf gibt es verschiedene Spiele, welche einen großen Spielbaum besitzen.
+\\Beispielsweise existieren für das Endspiel in Schach mit einem König, Läufer und Springer gegen einen König 3.494.568 mögliche Positionen (vgl. \cite{Russell.2016} S.176).
+\\Dies sind zu viele Möglichkeiten um alle speichern zu können, da noch sehr viel mehr Endspiel-Kombinationen als diese existieren.
+\\Anstatt die Spielzustände also zu speichern können auch die verbleibenden Spielzustände berechnet werden. \ot\ besitzt gegenüber Schach den Vorteil, dass die Anzahl der Spielzüge auf 60 bzw. 64 Züge begrenzt sind. Dadurch kann in der Endphase des Spiel ggf. der komplette verbleibende \gtree\ berechnet werden, da die Anzahl der möglichen Zugmöglichkeiten eingeschränkt wird.
+\\Bei der Berechnung der Spielzüge sind die Suchtiefe und der Verzweigungsfaktor entscheidend für die Berechnungsdauer. Aus diesem Grund können im Mittelspiel keine Min-Max-Algorithmen bis zu den Blattknoten des \gtrees\ ausgeführt werden, da die Menge des benötigten Speicherplatzes außerhalb jeglicher Grenzen eines Arbeits- oder Gamingscomputers liegen.
+%\section{Ermittlung einer Heuristik}
+%Allen zuvor genannten Spielstrategien ist gemein, dass sie eine Heuristik, also eine Funktion zur Bewertung eines Spielzustandes, benötigen. Mit Ausahme der Terminalzustände ist eine Aussage über die Wertigkeit jedoch nicht so einfach möglich. Es gibt jedoch Faktoren die Anhaltspunkte dafür geben können. Diese Faktoren sind spezifisch für jedes Spiel, basieren häufig auf menschlischer Erfahrung und können alle Eigenschaften eines Spielzustandes betreffen. Derartige Faktoren für das Spiel werden im nächsten Kapitel beschrieben.\\
+%Unglücklicherweise verfügen nicht alle dieser Zustände über die gleiche Aussagekraft und damit nicht über die gleiche Relevanz. Außerdem kann es vorkommen, dass zwei Zuständ unter Betrachtung eines Faktors gleichwertig sind, jedoch einer der beiden Zustände erfolgsversrechender ist. Es gilt daher eine Möglichkeit zu finden relevante Faktoren zu ermitteln und eine Gewichtung zur Kombination dieser Faktoren zu bestimmen.\\
+\section{Monte Carlo Tree Search}
+Die sogenannte Monte-Carlo Tree Search (MCTS - Monte-Carlo Baumsuche) bedarf im Gegensatz zu den bisher gezeigten Strategien in ihrer Reinform keine Heuristik. Dabei werden zufällige Spiele gespielt. Aus einem einzigen solchen Spiel lässt sich kaum eine Erkenntnis ableiten; aus einer Vielzahl von zufälligen Spielen lässt sich jedoch bei einer ausreichend großen Anzahl die optimale Lösung bestimmen.
+\subsection{Funktionsweise}
+\cite{chaslot2008monte} beschreiben das Verfahren als einen vierstufigen Prozess zum Aufbau eines \gtrees .
+\subsubsection{Selection}
+Ist der Ausgangszustand bereits bekannt, also bereits im \gtree\ enthalten, so wird der Folgezustand aufgrund der vorhandenen Daten gewählt. In der Regel stehen hier solche Folgezustände zu denen bereits Daten vorhanden sind und solche die bisher unbekannt sind zur Verfügung. Die Schwierigkeit liegt nun darin zu entscheiden, ob jener Folgezustand der am vielversprechendsten ist (exploitation) oder ein bisher unbekannter Zustand der unter Umständen ein besseres Ergebnis liefern könnte (exploration) gewählt wird. Die bei der Auswahl angewandte Strategie wird als Selection Policy bezeichnet. Genauer wird diese Problemstellung im Abschnitt \ref{Chapter.SelectionPolicy} behandelt.
+\subsubsection{Expansion}
+Wenn ein Zustand erreicht wird, der bisher nicht im \gtree\ enthalten ist, so wird dieser hinzugefügt. Durch die folgenden beiden Schritte werden dann Informationen zu diesem Zustand gespeichert.
+\subsubsection{Simulation}
+Nun werden bis zum erreichen eines Terminalzustandes zufällige Züge durchgeführt. In weiteren Optimierungen kann hier eine Heuristik eingeführt werden um vielversprechende Züge zuerst zu erkunden.
+\subsubsection{Backpropagation}
+Im letzten Schritt werden dann die gespeicherten Informationen durch Backpropagation angepasst. Dabei wird die Häufigkeit des Besuchs eines Zustandes, sowie jeweils die Häufigkeit eines Gewinn bzw. Verlusts bei der Wahl dieses Zustandes gespeichert. Der Wert des Zustandes kann nun durch die Anzahl der Gewinne bei Wahl der Aktion durch die Besuchshäufigkeit angenähert werden.\\
+Nach dem derartigen Aufbau des \gtrees\ wurde aufgrund der Auswahlbedingung im Selection-Schritt jener Folgezustand am häufigsten erkundet der am Erfolgversprechendsten ist. Im tatsächlichen Spiel wird daher der Zug durchgeführt der beim Aufbau des Baumes am häufigsten durchgeführt wurde.
+\subsection{Die Selection Policy}
+\label{Chapter.SelectionPolicy}
+Das Problem des Auswählens des durchzuführenden Zuges ist analog zu dem sogenannten K-Armed Bandit Problem. Dabei spielt der Spieler an einem mehrarmigen Banditen, also einem Glücksspielautomaten. Bei der Wahl eines Armes wird mit einer bestimmten Wahrscheinlichkeit ein Gewinn ausgeschüttet. Damit steht der Spieler vor jedem Zug vor der Wahl: Er kann entweder den Arm betätigen der nach seinem Wissen den höchsten Gewinn verspricht, geht dabei aber das Risiko ein einen Arm der einen bedeutend höheren Gewinn ermöglicht nicht zu betätigen, oder er kann einen Arm zu dem ihm bisher noch keine Informationen vorliegen spielen um ggf. einen Arm mit besseren Chancen zu finden. In der Literatur wird dieses Problem als Exploration-Exploitation Dilemma bezeichnet.\\
+Das Problem kann als eine Reihe von unabhängigen Zufallsvariablen \(X_{ i, n }\) betrachtet werden. Dabei steht \( 1 \leq i \leq K\) für den Arm des Banditen und \(n \geq 1 \) für den Zug. Das Spielen eines Armes \(i\) ergeben die Gewinne \(X_{ i, 1}, X_{ i, 2}, ..., X_{i, n}\)die gemäß einer zunächst unbekannten Vorschrift mit dem Erwartungswert \(\mu_{i}\) berechnet wird. \cite{browne2012survey}\\
+Nachfolgend finden sich einige Strategien um die Wahl des Armes bzw. Folgezustandes vorzunehmen:
+\subsubsection{$\epsilon$-Greedy}
+Die $\epsilon$-greedy Policy ist eine vergleichsweise einfache Variante zur Lösung des Problems. Um der exploration Rechnung zu tragen wird dabei mit einer festen Wahrscheinlichkeit $\epsilon$ ein zufälliger Zug ausgewählt. Andernfalls kommt jener Zug zum Einsatz der den nach aktuellem Wissensstand höchsten Gewinn verspricht. In einer angepassten Variante, vorgeschlagen durch \cite{Tokic.2010}, wird die Wahrscheinlichkeit $\epsilon$ je nach Wissenstand des Spielers angepasst. Zu beginn ist sie damit bspw. vglw. hoch während sie bei zunehmender Sicherheit verringert wird.
+\subsubsection{Regret}
+Die Regret-Policy versucht den Verlust durch die Wahl eines anderen als den nach derzeitigem Stand optimalen Schrittes so gering wie möglich zu halten. Dieser Verlust wird für $n$ Durchgänge wie folgt berechnet:\\
+$R_{N} = \mu^{*}n-\mu_{j} \sum\limits_{j=1}^{K} E[T_{j}(n)]$\\
+Dabei steht $\mu^{*}$ für den erwarteten Maximalgewinn und $E[T_{j}(n)]$ für die erwartete Anzahl der Züge bei denen der Arm $j$ gewählt wurde.
+\subsubsection{Upper Confidence Bound}
+\cite{Auer.2002} haben gezeigt, dass es eine Strategie, von ihnen Upper Confidence Bound 1 (UCB1) genannt, gibt, die ein logarithmisches Wachstum des Regretts über n ermöglicht, ohne dass dazu weitere Informationen bezüglich der Gewinnverteilung bekannt sein müssen, sobald die Belohnungen zwischen 0 und 1 liegen. Die Strategie spielt dabei jenen Arm j, der UCB1 maximiert, mit:\\
+$UCB1 = \overline{X_{j}}+\sqrt{\frac{2*ln*n}{n_{j}}}$\\
+Dabei ist $\overline{X_{j}}$ der durchschnittliche Gewinn beim Spielen des Armes j, $n_{j}$ die Anzahl der Male zu denen j gewählt wurde und n die Anzahl der insgesamt gespielten Durchgänge. Der linke Term ist der durchschnittliche Gewinn und stellt damit die Exploitation sicher, während sich der rechte Term für selten gewählte Arme stetig erhöht und die Exploration sicherstellt.
