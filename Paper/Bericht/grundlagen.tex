@@ -30,6 +30,7 @@ Ein \blue{Suchbaum} ist ein Teil des Spielbaums.
 \section{Spielstrategien}
 Es gibt verschiedene Spielstrategien. Im Folgenden werden diese kurz erläutert und anschließend verglichen.
 \subsection{Min-Max}
+\improvement{Zitat einfügen}
 Der erste hier erläuterte Strategie ist der Min-Max Algorithmus. Dieser ist folgendermaßen definiert:
 \\$MinMax(s) = \begin{cases} Utility(s)$; wenn TerminalTest(s) == true $\\max(\{a\textsubscript{e Actions(s)} MinMax(Result(s,a)\})$; wenn Spieler am Zug$\\min(\{a\textsubscript{e Actions(s)} MinMax(Result(s,a)\})$; wenn Gegner am Zug$\end{cases}$
 \\Der Spieler sucht den bestmöglichen Zug aus \textsc{actions}, der ihm einen für seine Züge einen Vorteil schafft aber gleichzeitig nur \mxZitat{schlechte} Zugmöglichkeiten für den Gegner generiert. Der Gegner kann dadurch aus allen ehemals möglichen Zügen nicht den optimalen Zug spielen, da dieser in den aktuell enthaltenen Zügen nicht vorhanden ist. Er  wählt aus den verfügbaren \textsc{actions} nach den gleichen Vorgaben seinen besten Zug aus.
@@ -178,8 +179,9 @@ Der Kindknoten K des Knotens D ist mit einem Wert von 42 vielversprechend und wi
 Dieses einfache Beispiel zeigt bereits recht gut wie die Auswertung von weiteren Zweigen vermieden werden kann. In der Praktischen Anwendung befinden sich die wegfallenden Zustände häufig nicht nur in den Blättern des Baumes sondern auch auf höheren Ebenen. Der eingesparte Aufwand wird dadurch häufig noch größer.  
 
 \subsubsection{Implementierung}
-Nachfolgend wird eine Pseudoimplementierung des um Alpha-Beta Pruning erweiterten MinMax Algorithmus angegeben.:
-\begin{lstlisting}
+Nachfolgend wird eine Pseudoimplementierung des um Alpha-Beta Pruning erweiterten MinMax Algorithmus angegeben (siehe Listing \ref{lst:abprun}):
+\begin{footnotesize}
+\begin{lstlisting}[caption = {Pseudoimplementierung von Alpha-Beta Pruning}, language = cpp, captionpos = t , numbers=left, label={lst:abprun}]
 global Suchtiefe
 int minMax(Spiel AktuellerZustand, int Spieler, int Tiefe, int alpha, int beta) {
 	if (Tiefe == 0) {
@@ -203,6 +205,7 @@ int minMax(Spiel AktuellerZustand, int Spieler, int Tiefe, int alpha, int beta) 
 	return bisherigerMaximalwert;		
 } 
 \end{lstlisting}
+\end{footnotesize}
 Es handelt sich um eine rekursive Implementierung. Im Basisfall ist der \gtree\ bereits bis in die angegebene Suchtiefe erforscht. In diesem Fall wird der Wert der Utility Funktion für den aktuellen Spieler bei dem aktuellen Zustand zurückgegeben.
 
 Handelt es sich nicht um einen solchen Fall werden alle möglichen Folgezüge betrachtet.
@@ -227,7 +230,7 @@ Kommt eine Heuristik zur Anwendung so ist die Genauigkeit mit der diese den tats
 Gibt die Heuristik im Falle eines Endzustandes den Wert der Utility Funktion zurück, so kann die oben gezeigte Implementierung so angepasst werden, dass statt der Utility Funktion einfach die Heuristik ausgewertet wird. Dadurch muss nicht mehr der Vollständige Zweig durchsucht werden und das Abbrechen nach einer gewissen Suchtiefe wird möglich.
  
 \subsubsection{Forward pruning}
-Forward pruning durchsucht nicht den kompletten \gtree , sondern durchsucht nur einen Teil. Eine Mög-lichkeit ist eine Strahlensuche, welche nur die \mxZitat{besten} Züge durchsucht. Die Züge mit einer geringen Erfolgswahrscheinlichkeit werden abgeschnitten und nicht bis zum Blattknoten evaluiert. Durch die Wahl des jeweils wahrscheinlichsten Zuges können aber auch sehr gute bzw. schlechte Züge nicht berücksichtigt werden, da sie eine geringe Wahrscheinlichkeit besitzen. Durch das Abschneiden von Teilen des \gtree\ wird die Suchgeschwindigkeit deutlich erhöht. Der in dem Othello-Programm \mxZitat{Logistello} verwendete \mxZitat{Probcut} erzielt außerdem eine Gewinnwahrscheinlichkeit von 64\% gegenüber der ursprünglichen Version ohne Forward pruning.
+Forward pruning durchsucht nicht den kompletten \gtree , sondern durchsucht nur einen Teil. Eine Mög-lichkeit ist eine Strahlensuche, welche nur die \mxZitat{besten} Züge durchsucht. Die Züge mit einer geringen Erfolgswahrscheinlichkeit werden abgeschnitten und nicht bis zum Blattknoten evaluiert. Durch die Wahl des jeweils wahrscheinlichsten Zuges können aber auch sehr gute bzw. schlechte Züge nicht berücksichtigt werden, da sie eine geringe Wahrscheinlichkeit besitzen. Durch das Abschneiden von Teilen des \gtree\ wird die Suchgeschwindigkeit deutlich erhöht. Der in dem Othello-Programm \mxZitat{Logistello} verwendete \mxZitat{Probcut} erzielt außerdem eine Gewinnwahrscheinlichkeit von 64\% gegenüber der ursprünglichen Version ohne Forward pruning. \improvement{Cite}
 \subsubsection{Search versus lookup}
 Viele Spiele kann man in 3 Haupt-Spielabschnitte einteilen:
 \begin{itemize}
@@ -236,7 +239,7 @@ Viele Spiele kann man in 3 Haupt-Spielabschnitte einteilen:
 \item Endphase
 \end{itemize}
 In der Eröffnungsphase und in der Endphase gibt es im Vergleich zum Mittelspiel wenige Zugmöglichkeiten. Dadurch sinkt der Verzweigungsfaktor und die generelle Anzahl der states. In diesen Phasen können die optimalen Spielzüge einfacher berechnet werden. Eine weitere Möglichkeit besteht aus dem Nachschlagen des \states\ aus einer Lookup-Tabelle.
-\\Dies ist sinnvoll, da gewöhnlicherweise sehr viel Literatur über die Spieleröffnung des jeweiligen Spiels existiert. Auch über die Endzustände in der Schlussphase des Spiels findet sich Literatur. Das Mittelspiel jedoch hat zu viele Zugmöglichkeiten, um eine Tabelle der möglichen Spielzüge bis zum Spielende aufstellen zu können.In dem Kapitel \ref{othello-eroff} werden die bekanntesten Eröffnungsstrategien aufgelistet.
+\\Dies ist sinnvoll, da gewöhnlicherweise sehr viel Literatur über die Spieleröffnung des jeweiligen Spiels existiert. Auch über die Endzustände in der Schlussphase des Spiels findet sich Literatur. Das Mittelspiel jedoch hat zu viele Zugmöglichkeiten, um eine Tabelle der möglichen Spielzüge bis zum Spielende aufstellen zu können. In dem Kapitel \ref{othello-eroff} werden die bekanntesten Eröffnungsstrategien aufgelistet. \improvement{ausführlicher Motivation dauer wenig züge speichern ..}
 %\section{Ermittlung einer Heuristik}
 %Allen zuvor genannten Spielstrategien ist gemein, dass sie eine Heuristik, also eine Funktion zur Bewertung eines Spielzustandes, benötigen. Mit Ausahme der Terminalzustände ist eine Aussage über die Wertigkeit jedoch nicht so einfach möglich. Es gibt jedoch Faktoren die Anhaltspunkte dafür geben können. Diese Faktoren sind spezifisch für jedes Spiel, basieren häufig auf menschlischer Erfahrung und können alle Eigenschaften eines Spielzustandes betreffen. Derartige Faktoren für das Spiel werden im nächsten Kapitel beschrieben.\\
 %Unglücklicherweise verfügen nicht alle dieser Zustände über die gleiche Aussagekraft und damit nicht über die gleiche Relevanz. Außerdem kann es vorkommen, dass zwei Zuständ unter Betrachtung eines Faktors gleichwertig sind, jedoch einer der beiden Zustände erfolgsversrechender ist. Es gilt daher eine Möglichkeit zu finden relevante Faktoren zu ermitteln und eine Gewichtung zur Kombination dieser Faktoren zu bestimmen.\\
