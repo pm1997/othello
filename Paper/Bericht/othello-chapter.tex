@@ -1,10 +1,11 @@
 \chapter{Othello}
 \label{othello-chapter}
-\info{Othello erklären}
 Von Othello gibt verschiedene Varianten. Eine Variante ist Reversi.
 \info{weiter}
 \\Othello wird auf einem 8x8 Spielbrett mit zwei Spielern gespielt. Es gibt je 64 Spielsteine, welche auf einer Seite schwarz, auf der anderen weiß sind. Der Startzustand besteht aus einem leeren Spielbrett, in welchem sich in der Mitte ein 2x2 Quadrat aus abwechselnd weißen und schwarzen Steinen befindet. Anschließend beginnt der Spieler mit den schwarzen Steinen.
-Die Spielfelder werden in verschiedene Kategorien eingeteilt (siehe Abbildung \info{Abbildung}):
+%\mxPicture{5cm}{kategorie}{Koeffizientenmatrix }{Koeffizientenmatrix Q}{fig:quantisierung1}{}
+Die Spielfelder werden in verschiedene Kategorien eingeteilt (siehe Abbildung
+ \info{Abbildung}):
 \begin{itemize}
 \item Randfelder: äußere Felder
 \item C-Felder: Felder, welche ein Feld horizontal oder vertikal von den Ecken entfernt sind
@@ -37,6 +38,7 @@ Wie in anderen Spielen gibt es auch in Othello verschiedene Strategien. Dabei ka
 beispielsweise sollen Züge auf X-Felder vermieden werden, da der Gegner dadurch Zugang zu den Ecken bekommt. Dadurch können ggf. die beiden Ränder und die Diagonale gedreht werden und in den Besitz des Gegners gelangen.
 \\In der Eröffnungsphase sollten die Randfelder ebenfalls vermieden werden, da diese in dieser frühen Phase des Spiels noch gedreht werden können und der taktische Vorteil in einen strategischen Nachteil umgewandelt wird.
 \section{Eröffnungszüge}
+\label{othello-eroff}
 In der nachfolgenden Tabelle \ref{tab:eroeffnungen} sind verschiedene Spieleröffnungen und deren Häufigkeit in Spielen aufgelistet. Spielzüge werden in Othello durch eine Angabe der Position, auf welche der Stein gesetzt wird, dargestellt. Ein vollständiges Spiel lässt sich deshalb in einer Reihe von maximal 60 Positionen darstellen.
 
 \begin{table}[h]
