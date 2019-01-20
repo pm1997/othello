@@ -179,7 +179,7 @@ Dieses einfache Beispiel zeigt bereits recht gut wie die Auswertung von weiteren
 
 \subsubsection{Implementierung}
 Nachfolgend wird eine Pseudoimplementierung des um Alpha-Beta Pruning erweiterten MinMax Algorithmus angegeben.:
-\begin{lstlisting}
+\begin{lstlisting}[caption={Pseudoimplementierung Alpha-Beta Pruning},captionpos=b]
 global Suchtiefe
 int minMax(Spiel AktuellerZustand, int Spieler, int Tiefe, int alpha, int beta) {
 	if (Tiefe == 0) {
@@ -203,13 +203,13 @@ int minMax(Spiel AktuellerZustand, int Spieler, int Tiefe, int alpha, int beta) 
 	return bisherigerMaximalwert;		
 } 
 \end{lstlisting}
-Es handelt sich um eine rekursive Implementierung. Im Basisfall ist der \gtree\ bereits bis in die angegebene Suchtiefe erforscht. In diesem Fall wird der Wert der Utility Funktion für den aktuellen Spieler bei dem aktuellen Zustand zurückgegeben.
+Es handelt sich um eine rekursive Implementierung. Im Basisfall ist der \gtree\ bereits bis in die angegebene Suchtiefe erforscht (Zeile 3). In diesem Fall wird der Wert der Utility Funktion für den aktuellen Spieler bei dem aktuellen Zustand zurückgegeben (Zeile 4).
 
-Handelt es sich nicht um einen solchen Fall werden alle möglichen Folgezüge betrachtet.
-Um den Wert des Zuges zu bestimmen wird rekursiv die minMax-Methode erneut aufgerufen. Dabei wird entsprechend der Neue Zustand, der andere Spieler und eine um die um eins verringerte Tiefe übergeben. Der beste Wert für den anderen Spieler ist der schlechteste Wert für den ersten Spieler. Daher wird der bisherige Wert von beta als alpha übergeben. Der bisher beste Wert ist aus Sicht des anderen Spielers der schlechteste daher wird dieser als neues beta Übergeben. Da die Utility Funktion so implementiert ist, dass die Summe der Wertigkeiten eines Zustandes Null ergibt muss noch das Vorzeichen geändert werden.\\
-Ist der neue Wert größer als der bisherige Maximalwert so wird dieser aktualisiert.
-Da der zweite Spieler versucht die Punktzahl des Gegners zu maximieren bricht dieser die Auswertung aller Zweige ab, bei der ein Ergebnis, welches besser ist als das bisher schlechteste Ergebnis, möglich wird.
-Abschließend wird der ausgewertete Zug gespeichert um ihn später ausführen zu können.
+Handelt es sich nicht um einen solchen Fall werden alle möglichen Folgezüge berechnet (Zeile 7) und dann einzeln betrachtet in dem er ausgeführt wird. (Zeile 8f). Zuvor wird dazu jedoch der bisherige Maximalwert gespeichert (Zeile 6).
+Um den Wert des Zuges zu bestimmen wird rekursiv die minMax-Methode erneut aufgerufen. Dabei wird entsprechend der Neue Zustand, der andere Spieler und eine um die um eins verringerte Tiefe übergeben. Der beste Wert für den anderen Spieler ist der schlechteste Wert für den ersten Spieler. Daher wird der bisherige Wert von beta als alpha übergeben. Der bisher beste Wert ist aus Sicht des anderen Spielers der schlechteste daher wird dieser als neues beta Übergeben. Da die Utility Funktion so implementiert ist, dass die Summe der Wertigkeiten eines Zustandes Null ergibt muss noch das Vorzeichen geändert werden (Zeile 9).\\
+Ist der neue Wert größer als der bisherige Maximalwert (Zeile 11) so wird dieser aktualisiert (Zeile 12).
+Da der zweite Spieler versucht die Punktzahl des Gegners zu maximieren bricht dieser die Auswertung aller Zweige ab, bei denen ein Ergebnis, welches besser ist als das bisher schlechteste Ergebnis, möglich wird (Zeile 13f).
+Abschließend wird der ausgewertete Zug gespeichert um ihn später ausführen zu können (Zeile 16).
 \subsubsection{Ordnung der Züge}
 Wie in obigen Beispiel an den Zweigen unter dem Knoten C zu sehen war kann, je nach der Reihenfolge in der die Folgezüge untersucht werden, die Auswertung eines Folgezustandes früher oder später abgebrochen werden. Optimalerweise werden die besten Züge, also jene Züge die einen möglichst frühen Abbruch der Betrachtung eines Knotens herbeiführen zuerst betrachtet. Um dies Abschätzen zu können bedient man sich in der Praxis einer Heuristik die Aussagen über die Güte eines Zuges im Vergleich zu den übrigen Zügen zulässt. Anhand dieser Heuristik kann dann die Reihenfolge der Auswertung einzelner Folgezustände dynamisch angepasst werden.
 
