@@ -17,6 +17,8 @@
 \usepackage{amsmath}
 \usepackage{qtree}
 
+\usepackage{caption}
+
 \usepackage{hyperref}
 \usepackage[all]{hypcap}
 \hypersetup{
@@ -150,7 +152,7 @@
 \newcommand{\thiswillnotshow}[1]{\todo[disable]{#1}}
 
 %----Wörter formatieren-----------------------------------
-\newcommand{\ot}{\textit{Othello}}
+\newcommand{\ot}{Othello}
 \newcommand{\gtheorie}{Spieltheorie}
 \newcommand{\board}{Board}
 \newcommand{\state}{Spielzustand}
@@ -164,7 +166,7 @@
 
 \newcommand{\mxPicture}[5]{\XPicture{#1}{#2}{#3}{#4}{#5}}
 
-\newcommand{\XPicture}[5]{\mxMinipage{\centering \vspace*{10pt} \XGraphic{#1}{#2} \captionof{figure}[#3]{#4} \vspace*{10pt} \label{#5} \vspace*{20pt} }}
+\newcommand{\XPicture}[5]{\mxMinipage{\centering \XGraphic{#1}{#2} \captionof{figure}[#3]{#4} \vspace*{10pt} \label{#5} \vspace*{20pt} }}
 \newcommand{\mxMinipage}[1]{\begin{minipage}{\textwidth} #1 \end{minipage}}
 \newcommand{\XGraphic}[2]{\includegraphics[width=#1]{#2}}
 
