@@ -1,0 +1,43 @@
+25. Januar 2019 14:00 Uhr
+Feedbackmeeting Studienarbeit
+
+Zunächst Betrachtung des bisherigen Standes:
+- Einleitender Absatz des Kapitels 2 fehlt (auch gerne ohne das finale Kapitel)
+- Denglisch vermeiden, stattdessen nach erstmaliger Einführung des Begriffs konsequent die Deutschen Begriffe verwenden.
+- Definition im Kapitel 2 (bspw. des Spiels) explizit auf Othello beziehen (keine Allgemeingültige Definition erforderlich). Definition des Spiels korrigieren.
+- Signatur der Funktion Player anpassen.
+- Durchgängig gleiche Schrift (keine verschiedenen Schriftarten (mathtt & textsc) und keine Kapitälchen - Empfehlung: mathtt)
+- Utility Funktion mit Wertebereich Z, bzw. {-1, 0, 1} definieren.
+- Nullsummenspiel kann enthalten bleiben. Definition dann als Mathematische Formel. Dabei auf Definitionsbereich der Utility-Fkt. achten (Nur für Terminalstates definiert)
+- Menge Player ein für alle Mal als {W, S} o.ä. festlegen
+- Definition Spielbaumes ist zu ungenau. Stattdessen Formal definieren Wurzel und Rekursiv aufbauen. Jeder Knoten hat wieder Kinder. Wurzel ist immer S0. Definition mittels Graphen. Funktion NextStates. Kinder sind Ergebnis der NextstStates-Fkt. Spielbaum ist Gerichteter Graph.
+- Suchbaum: Unterschied zum Spielbaum herausarbeiten -> Ausgangszustand ist ein anderer.
+- Minimax Algo korrekt bezeichnen.
+- Bei MiniMax Funktion kommt Zahl raus. Eine Strategie wäre ist im Abschnitt erst beschrieben wenn dann der besten Wert gespielt wird. Dies noch ergänzen.
+- "a element actions" war ein LaTex Fehler. Klammern in der Definition anpassen
+- Minmax/Utility muss im Mathematik Modus speziell gesetzt werden, sonst wird der Text wie ein Produkt gesetzt. Konsistent die Fonts verwenden.
+- Für die O Schreibweise das O in Mathcal setzen
+- Alpha Beta Pruning -> Anpassung des bemängelten Abschnitts: Menschlicher Spieler würde nicht in Betracht ziehen
+- Baum Grafik: Anpassen zu Beginn müssen alle Knoten grau sein.
+- Spielbaum anstatt GameTree - Englische Begriffe beim einführen Nennen und dann konsequent in Deutsch weiter.
+- Kommafehler sind rot markiert. -> Kurz vor Abgabe der Arbeit wird nochmals nach Kommafehlern gesucht
+- Pseudoimplementierung: Englische Begriffe im Pseudocode verwenden (bringt Vorteil: Typ und Variable kann so unterschieden und im Fließtext einfacher referenziert werden). Spiel ist ein State. Ps
+- Aktueller Zustand zusammen schreiben
+- Im Skript invariante des MiniMax Algo. angegeben. Diese ist einfacher zu verstehen. -> Darauf Bezug nehmen (Entsprechend zitieren)
+- Bei Beschreibung von Code im Fließtext zeilenweiße, ohne Sprünge, vorgehen.
+- Heuristik Abschnitt korrigieren
+- Speicheraspekt bei Suboptimalen Echtzeitentscheidungen entfernen bzw. wenn dann im Zusammenhang mit der Lösbarkeit verwenden
+- Vorwärtsbeschneiden statt forward pruning - in diesem Abschnitt von Gewinnwahrscheinlichkeiten reden
+- Bei der Selection Policy der Monte-Carlo Baumsuche (MCBS) unterschied zw. Simulation und Zug hervorheben.
+- Bei der MCBS auf "Playing Othello Using Monte Carlo" von J.A.M. Nijssen. June 22, 2007 fokussieren.
+- Kapitel 3 vorziehen
+
+Zum Inhalt:
+- Ob etw. fehlt ist erst klar, wenn Implementierung vorhanden
+
+Weiteres Vorgehen:
+- Zunächst Theorieteil dann Implementierung verfolgen.
+
+Ziel:
+- Gut lesebares und verständliches Papier
+- Gewinnen gegen einen Weltmeister ist keine Anforderung. Es muss jedoch sichtbar werden, dass das Programm nicht "komplett blöd" ist.
