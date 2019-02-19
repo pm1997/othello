@@ -4,19 +4,19 @@ In dem folgenden Unterkapitel werden grundlegende Definitionen eingeführt. Dies
 \begin{Definition}[Spiel (Game)(vgl. \cite{Russell.2016} S. 162)]
 Ein \blue{Spiel} besteht aus einem Tupel der Form \\[0.2cm]
   \hspace*{1.3cm}
-  $\mathcal{G} = \langle S\textsubscript{0},\mathtt{player}, \mathtt{actions}, \mathtt{result}, \mathtt{terminalTest}, \mathtt{utility} \rangle$
+  $\mathtt{G} = \langle S\textsubscript{0},\mathtt{player}, \mathtt{actions}, \mathtt{result}, \mathtt{terminalTest}, \mathtt{utility} \rangle$
 \\Definiere $Q$ als die Menge aller Zustände im Spiel.
 \begin{itemize}
-\item $\textsc{Q}:$ Menge aller Spielzustände ($States$)
-\item $\so \in States$ beschreibt den Startzustand des Spiels.
-\item $\textsc{Players}:$ Menge aller Spieler
-\item $\textsc{player}: Players \rightarrow p \in Players$ ist auf der Menge der Spieler definiert und gibt den aktuellen Spieler p zurück.
-\item $\textsc{actions}: Q \rightarrow  2^Q$ gibt die validen Folgezustände eines gegeben Zustands zurück.
-\item $\textsc{result}:Q \times Q \rightarrow Q$ definiert das Resultat einer durchgeführten Aktion a und in einem Zustand s.
-\item $\textsc{terminalTest}: Q \rightarrow \mathbb{B}$ prüft ob ein Zustand s ein Terminalzustand, also Endzustand, darstellt.
-\\$ \textsc{terminalTest}(s) = \begin{cases} True | s \in TerminalStates$
-$\\False | \not\in TerminalStates \end{cases}$
-\item $\textsc{utility}: TerminalStates \times Players \rightarrow \mathbb{R}$ gibt einen Zahlenwert aus den Eingabenwerten s ( Terminalzustand) und p (Spieler) zurück. \\Positive Werte stellen einen Gewinn, negative Werte einen Verlust dar.
+\item $\mathtt{Q}:$ Menge aller Spielzustände ($States$)
+\item $\so\ \in States$ beschreibt den Startzustand des Spiels.
+\item $\mathtt{Players}:$ Menge aller Spieler: $\mathtt{Players} = \{0,1\}$
+\item $\mathtt{player}: Q \rightarrow p \in Players$ ist auf der Menge der Spieler definiert und gibt den aktuellen Spieler p zurück.
+\item $\mathtt{actions}: Q \rightarrow  2^Q$ gibt die validen Folgezustände eines gegeben Zustands zurück.
+\item $\mathtt{result}:Q \times Q \rightarrow Q$ definiert das Resultat einer durchgeführten Aktion a und in einem Zustand s.
+\item $\mathtt{terminalTest}: Q \rightarrow \mathbb{B}$ prüft ob ein Zustand s ein Terminalzustand, also Endzustand, darstellt.
+\\$ \mathtt{terminalTest}(s) = \begin{cases} \mathtt{True}\ | s \in \mathtt{TerminalStates}$ 
+$\\\mathtt{False}\ | \not\in \mathtt{TerminalStates} \end{cases}$
+\item $\mathtt{utility}: TerminalStates \times Players \rightarrow \mathbb{R}$ gibt einen Zahlenwert aus den Eingabenwerten s ( Terminalzustand) und p (Spieler) zurück. \\Positive Werte stellen einen Gewinn, negative Werte einen Verlust dar.
 \info{Definition States davor}
 \end{itemize}
 \end{Definition}
@@ -25,9 +25,9 @@ Eine spezielle Art von Spielen sind \blue{Nullsummenspiele}.
 In einem \blue{Nullsummenspiel} ist die Summe der utility Funktion eines Zustands über alle Spieler 0 ($\sum\limits_{p \in Players} utility(p) = 0$).
 \\Dies bedeutet, dass wenn ein Spieler gewinnt mindestens ein Gegenspieler verliert.
 \end{Definition}
-Durch den Startzustand \so\ und der Funktion \textsc{action} wird ein \blue{Spielbaum (\gtree)} aufgespannt.
+Durch den Startzustand $\so$ und der Funktion $\mathtt{action}$ wird ein \blue{Spielbaum (\gtree)} aufgespannt.
 \begin{Definition}[Spielbaum (Game Tree)(vgl. \cite{Russell.2016} S. 162)]
-Ein \blue{Spielbaum} besteht aus einer \\Wurzel, welche einen bestimmten Zustand (meistens \so) darstellt. Die Kindknoten der Wurzel stellen die durch \textsc{actions} erzeugten Zustände dar. Die Kanten zwischen der Wurzel und den Kindknoten stellen jeweils die durchgeführte Aktion dar, die ausgeführt wurde um vom State s zum Kindknoten zu gelangen. Diese Kindknoten können wiederum weitere Knoten enthalten oder ein Endpunkt des Baumes (Blatt) \improvement{umformulieren} darstellen.
+Ein \blue{Spielbaum} besteht aus einer \\Wurzel, welche einen bestimmten Zustand (meistens $\so$) darstellt. Die Kindknoten der Wurzel stellen die durch $\mathtt{actions}$ erzeugten Zustände dar. Die Kanten zwischen der Wurzel und den Kindknoten stellen jeweils die durchgeführte Aktion dar, die ausgeführt wurde um vom State s zum Kindknoten zu gelangen. Diese Kindknoten können wiederum weitere Knoten enthalten oder ein Endpunkt des Baumes (Blatt) \improvement{umformulieren} darstellen.
 \end{Definition}
 \begin{Definition}[Suchbaum (Search Tree)(vgl. \cite{Russell.2016} S. 163)]
 Ein \blue{Suchbaum} ist ein Teil des Spielbaums.
@@ -38,8 +38,8 @@ Es gibt verschiedene Spielstrategien. Im Folgenden werden diese kurz erläutert 
 \subsection{Min-Max}
 Der erste hier erläuterte Strategie ist der Min-Max Algorithmus. Dieser ist folgendermaßen definiert (siehe \cite{Russell.2016} S.164):
 \\$MinMax(s) = \begin{cases} Utility(s)$; wenn TerminalTest(s) $\\max(\{MinMax(Result(s,a) | a \in Actions(s)\})$; wenn Spieler am Zug$\\min(\{MinMax(Result(s,a) | a \in Actions(s) \})$; wenn Gegner am Zug$\end{cases}$
-\\Der Spieler sucht den bestmöglichen Zug aus \textsc{actions}, der ihm einen für seine Züge einen Vorteil schafft aber gleichzeitig nur \mxZitat{schlechte} Zugmöglichkeiten für den Gegner generiert. Der Gegner kann dadurch aus allen ehemals möglichen Zügen nicht den optimalen Zug spielen, da dieser in den aktuell enthaltenen Zügen nicht vorhanden ist. Er  wählt aus den verfügbaren \textsc{actions} nach den gleichen Vorgaben seinen besten Zug aus.
-\\ Die Strategie ist eine Tiefensuche und erkundet jeden Knoten zuerst bis zu den einzelnen Blättern bevor ein Nachbarknoten ausgewählt wird. Dies setzt das mindestens einmalige Durchlaufen des gesamten Search Trees voraus. Bei einem durchschnittlichen Verzweigungsfaktor von $f$ bei einer Tiefe von $d$ resultiert daraus eine Komplexität von $O(d\textsuperscript{f})$. Bei einem einmaligen Erkunden der Knoten können die Werte aus den Blättern rekursiv von den Blättern zu den Knoten aktualisiert werden. Dadurch muss im nächsten Zug nur das Minimum aus \textsc{actions} ermittelt werden, da alle Kindknoten schon evaluiert wurden. Für übliche Spiele kann die Min-Max-Strategie allerdings nicht verwendet werden, da die Komplexität zu hoch für eine akzeptable Antwortzeit ist und der benötigte Speicherplatz für die berechneten Zustände sehr schnell wächst.
+\\Der Spieler sucht den bestmöglichen Zug aus $\mathtt{actions}$, der ihm einen für seine Züge einen Vorteil schafft aber gleichzeitig nur \mxZitat{schlechte} Zugmöglichkeiten für den Gegner generiert. Der Gegner kann dadurch aus allen ehemals möglichen Zügen nicht den optimalen Zug spielen, da dieser in den aktuell enthaltenen Zügen nicht vorhanden ist. Er  wählt aus den verfügbaren $\mathtt{actions}$ nach den gleichen Vorgaben seinen besten Zug aus.
+\\ Die Strategie ist eine Tiefensuche und erkundet jeden Knoten zuerst bis zu den einzelnen Blättern bevor ein Nachbarknoten ausgewählt wird. Dies setzt das mindestens einmalige Durchlaufen des gesamten Search Trees voraus. Bei einem durchschnittlichen Verzweigungsfaktor von $f$ bei einer Tiefe von $d$ resultiert daraus eine Komplexität von $O(d\textsuperscript{f})$. Bei einem einmaligen Erkunden der Knoten können die Werte aus den Blättern rekursiv von den Blättern zu den Knoten aktualisiert werden. Dadurch muss im nächsten Zug nur das Minimum aus $\mathtt{actions}$ ermittelt werden, da alle Kindknoten schon evaluiert wurden. Für übliche Spiele kann die Min-Max-Strategie allerdings nicht verwendet werden, da die Komplexität zu hoch für eine akzeptable Antwortzeit ist und der benötigte Speicherplatz für die berechneten Zustände sehr schnell wächst.
 %\\\Tree [.A [.B [.C eins ] [.D zwei ] ].B [.E {3 und 4} ] ].A
 \subsection{Alpha-Beta Pruning}
 Der Min-Max Algorithmus berechnet nach dem Prinzip \mxZitat{depth-first} stets den kompletten \gtree. Bei der Betrachtung des Entscheidungsverhaltens des Algorithmus fällt jedoch schnell auf, dass ein nicht unerheblicher Teil aller möglichen Züge gar nicht erst in Betracht gezogen wird. Dies geschieht aufgrund der Tatsache, dass diese Züge in einem schlechteren Ergebnis resultieren würden als die letztendlich ausgewählten.\newline
@@ -174,7 +174,7 @@ Dem \abp\ Algorithmus liegt der Gedanke zugrunde, dass die Zustände, die in ein
 	].{D\\$\alpha = 1$ $\beta = 1$}  
 ].{A\\$\alpha = 5$ $\beta = 5$}
 \end{figure}
-Um den Algorithmus zu verdeutlichen betrachten wir das, an \cite{Russell.2016} angelehnte, folgende Beispiel. Das dargestellte Spiel besteht aus lediglich zwei Zügen, die abwechselnd durch die Spieler gewählt werden. An den Knoten der untersten Ebene des \gtree\ werden die Werte der Zustände gemäß der \textsc{utility} Funktion angegeben. Die Werte $\alpha$ und $\beta$ geben den schlecht möglichsten bzw. den bestmöglichen Spielausgang für einen Zweig, immer aus der Sicht des beginnenden Spielers, an. Die ausgegrauten Knoten wurden noch nicht betrachtet.\\
+Um den Algorithmus zu verdeutlichen betrachten wir das, an \cite{Russell.2016} angelehnte, folgende Beispiel. Das dargestellte Spiel besteht aus lediglich zwei Zügen, die abwechselnd durch die Spieler gewählt werden. An den Knoten der untersten Ebene des \gtree\ werden die Werte der Zustände gemäß der $\mathtt{utility}$ Funktion angegeben. Die Werte $\alpha$ und $\beta$ geben den schlecht möglichsten bzw. den bestmöglichen Spielausgang für einen Zweig, immer aus der Sicht des beginnenden Spielers, an. Die ausgegrauten Knoten wurden noch nicht betrachtet.\\
 Betrachten wir nun den linken Baum in der zweiten Zeile: Der Algorithmus beginnt damit alle möglichen Folgezustände bei der Wahl von B als Folgezustand zu evaluieren. Dabei wird zunächst der Knoten E betrachtet und damit der Wert 5 ermittelt. Dies ist der bisher beste Wert. Er wird als $\beta$ gespeichert. Eine Aussage\improvement{Warum} über den schlechtesten Wert kann noch nicht getroffen werden.\\
 Im nachfolgenden \gtree\ wird der nächste Schritt verdeutlicht. Es wird der Knoten F betrachtet. Dieser hat einen Wert von 13. Am Zuge ist jedoch der zweite Spieler. Dieser wird, geht man davon aus, dass er ideal spielt, jedoch keinen Zug wählen der ein besseres Ergebnis für den Gegner bringt als unbedingt nötig. Der bestmögliche Wert für den ersten Spieler bleibt damit 5.\\
 Nach der Auswertung des Knotens G steht fest, dass es keinen besseren und keinen schlechteren Wert aus Sicht des ersten Spielers gibt. Daraufhin wird die 5 auch als schlechtester Wert in $\alpha$ gespeichert. Ausgehend von A  ist der schlechteste Wert damit 5 ggf. kann jedoch noch ein besseres Ergebnis herbeigeführt werden. $\alpha$ wird entsprechend gesetzt und $\beta$ verbleibt undefiniert.\\
