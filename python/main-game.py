@@ -14,10 +14,12 @@ while True:
     available_players.append(("AI Player - Monte Carlo (simple)", PlayerMonteCarlo))
 
     selection_player_one = UtilMethods.select_one(available_players, f"Select Mode for Player {Othello.PRINT_SYMBOLS[Othello.PLAYER_ONE]}")
+    player_one = selection_player_one()
     selection_player_two = UtilMethods.select_one(available_players,
                                                   f"Select Mode for Player {Othello.PRINT_SYMBOLS[Othello.PLAYER_TWO]}")
+    player_two = selection_player_two()
 
-    players = {Othello.PLAYER_ONE: selection_player_one(), Othello.PLAYER_TWO: selection_player_two()}
+    players = {Othello.PLAYER_ONE: player_one, Othello.PLAYER_TWO: player_two}
 
     game = Othello()
     game.init_game()
