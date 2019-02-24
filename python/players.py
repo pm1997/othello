@@ -47,5 +47,4 @@ class PlayerMonteCarlo:
             winning_statistics[single_move] = games_won / times_played
 
         selected_move = max(winning_statistics.items(), key=operator.itemgetter(1))[0]
-        game_state.print()
         return selected_move
