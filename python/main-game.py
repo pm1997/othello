@@ -1,8 +1,8 @@
 from othello import Othello
 from util import UtilMethods
-from players import PlayerRandom
-from players import PlayerHuman
-from players import PlayerMonteCarlo
+from players import PlayerMonteCarlo, PlayerHuman, PlayerRandom
+import time
+
 
 print("Welcome to Othello")
 
@@ -26,12 +26,15 @@ while True:
 
     game.print_board()
 
+    start = time.time()
     while not game.game_is_over():
         current_player = game.get_current_player()
         player_object = players[current_player]
         move = player_object.get_move(game)
         game.play_position(move)
         game.print_board()
+    duration = time.time() - start
     print("Game is over")
+    print(f"Total duration: {duration} seconds")
     print(f"Winner is {Othello.PRINT_SYMBOLS[game.get_winner()]}")
     exit(0)
