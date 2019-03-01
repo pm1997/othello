@@ -1,5 +1,6 @@
 import copy
 
+
 class Othello:
     """Is the Othello Game class"""
     EMPTY_CELL = 0
