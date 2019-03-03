@@ -2,7 +2,7 @@
 Feedbackmeeting Studienarbeit
 
 Zunächst Betrachtung des bisherigen Standes:
-[ ] Einleitender Absatz des Kapitels 2 fehlt (auch gerne ohne das finale Kapitel)
+[X] Einleitender Absatz des Kapitels 2 fehlt (auch gerne ohne das finale Kapitel)
 [ ] Denglisch vermeiden, stattdessen nach erstmaliger Einführung des Begriffs konsequent die Deutschen Begriffe verwenden.
 [ ] Definition im Kapitel 2 (bspw. des Spiels) explizit auf Othello beziehen (keine Allgemeingültige Definition erforderlich). Definition des Spiels korrigieren.
 [ ] Signatur der Funktion Player anpassen.
