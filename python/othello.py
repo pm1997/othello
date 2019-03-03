@@ -99,7 +99,6 @@ class Othello:
     def get_board(self):
         return copy.deepcopy(self._board)
 
-
     def get_winner(self):
         stats = self.get_statistics()
         if stats[self.PLAYER_ONE] == stats[self.PLAYER_TWO]:
@@ -108,6 +107,15 @@ class Othello:
             return self.PLAYER_ONE
         else:
             return self.PLAYER_TWO
+
+    def utility(self, player):
+        winner = self.get_winner()
+        if winner is None:
+            return 0;
+        elif winner == player:
+            return 1;
+        else:
+            return -1
 
     @staticmethod
     def other_player(player):
