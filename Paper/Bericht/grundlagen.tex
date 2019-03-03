@@ -40,24 +40,35 @@ Durch den Startzustand $\so$ und der Funktion $\mathtt{actions}$ und $\mathtt{re
 \begin{Definition}[Spielbaum (Game Tree)(vgl. \cite{Russell.2016} S. 162)]
 Ein \blue{Spielbaum} besteht aus einer \\Wurzel, welche einen bestimmten Zustand (Startzustand $\so$) darstellt. Die Kindknoten der Wurzel stellen die durch $\mathtt{actions}$ erzeugten Zustände dar. Die Kanten zwischen der Wurzel und den Kindknoten stellen jeweils die durchgeführte Aktion dar, die ausgeführt wurde um vom Zustand $\mathtt{s}$ zum Kindknoten $\mathtt{s'}$ zu gelangen. Diese Kindknoten können wiederum weitere Knoten enthalten oder ein Endpunkt des Baumes (Blatt = Spielende) \improvement{umformulieren ?} darstellen.
 Die mathematische Definition wird rekursiv durchgeführt:
-\\$A = [s,\{\}] \in \mathtt{GameTree}$ : A, bestehend aus einem Zustand s, ist ein Blattknoten und ein Spielbaum.
-\\$B = [s,\{A\}] \in \mathtt{GameTree}$ : B, bestehend aus einem Zustand s und einem Kindknoten, ist ein Spielbaum.
-\\$C = [s,T] \in \mathtt{GameTree}$, wobei T eine Menge von Spielbäumen ist: C ist ein Spielbaum.
+\\$\mathtt{Spielbaum}: \mathtt{Q} \times \mathtt{List(actions)} \times \mathtt{List(Spielbaum)}$
+\\$\mathtt{Node}(S,M,T) \in \mathtt{Spielbaum}$ g.d.w:
+\begin{itemize}
+\item $S \in Q \cup \{\Omega\}$
+\item $M = [m\textsubscript{1}, .. , m \textsubscript{n}] \in \mathtt{List(actions)}$, wobei gilt:  $\forall i \in \{1 .. n\}: m\textsubscript{i} \in \mathtt{actions}(S) $
+\item $T = [t\textsubscript{1}, .. , t \textsubscript{n}] \in \mathtt{List(Spielbaum)}$, wobei gilt: $ \forall i \in \{1 .. n\}: t\textsubscript{i} = \mathtt{result}(S, m\textsubscript{i}) $
+\end{itemize}
+%\\$\mathtt{GameTree} : < \mathtt{states}, m, 2^\mathtt{GameTree}> | m \in \mathtt{moves}$
+%\\$A = < s, m, \{\} > \in \mathtt{GameTree}$, wobei $m \in \mathtt{moves}$ : A, bestehend aus einem Zustand s, ist ein Blattknoten und ein Spielbaum.
+%\\$B = < s, m,\{A\} > \in \mathtt{GameTree}$, wobei $m \in \mathtt{moves}$ : B, bestehend aus einem Zustand s und einem Kindknoten, ist ein Spielbaum.
+%\\$C = < s, m, T > \in \mathtt{GameTree}$, wobei $m \in \mathtt{moves}$ und T eine Menge von Spielbäumen ist: C ist ein Spielbaum.
 \end{Definition}
 \begin{Definition}[Suchbaum (Search Tree)(vgl. \cite{Russell.2016} S. 163)]
 Ein \blue{Suchbaum} ist ein Teil des Spielbaums. Die Wurzel des Spielbaums besteht aus dem aktuellen Spielzustand. Alle Kindknoten und Blätter entsprechen dem Spielbaum beginnend ab dem aktuellen Zustand. Es gilt also:
-\\ $B \in A \wedge B == A[s]$ mit $ A \in \mathtt{Spielbaum}, B \in \mathtt{Suchbaum}(s), s \in Q$
+\\ $B \in A \wedge B = A[s]$ mit $ A \in \mathtt{Spielbaum}, B \in \mathtt{Suchbaum}(s), s \in Q$
 \end{Definition}
 \info{Überleitung einfügen}
 \section{Spielstrategien}
 Es gibt verschiedene Spielstrategien. Im Folgenden werden diese kurz erläutert und anschließend verglichen.
 \subsection{MiniMax}
-Der erste hier erläuterte Strategie ist der MiniMax Algorithmus. Dieser ist folgendermaßen definiert (siehe \cite{Russell.2016} S.164):
-\\$MiniMax(s) = \begin{cases} Utility(s)$; wenn TerminalTest(s) $\\max(\{MiniMax(Result(s,a) | a \in actions(s)\})$; wenn Spieler am Zug$\\min(\{MiniMax(Result(s,a) | a \in actions(s) \})$; wenn Gegner am Zug$\end{cases}$
-\\$\mathtt{MiniMax}$ gibt in einem Endzustand einen Zahlenwert (-1,0,1) über das Spielende zurück.
-\\In allen anderen Zuständen gibt die Funktion eine Aktion zurück, welche den besten Spielzug darstellt.
-\\$MiniMax = \begin{cases} Q \rightarrow \{-1,0,1\}$; wenn $\mathtt{Q} \in \mathtt{TerminalStates} \\ Q \rightarrow \mathtt{actions}$ sonst $\end{cases}$
-\\Der Spieler sucht den bestmöglichen Zug aus den verfügbaren Zügen ($\mathtt{actions}$), der ihm einen für seine Züge einen Vorteil schafft aber gleichzeitig nur \mxZitat{schlechte} Zugmöglichkeiten für den Gegner generiert. Der Gegner kann dadurch aus allen ehemals möglichen Zügen nicht den optimalen Zug spielen, da dieser in den aktuell enthaltenen Zügen nicht vorhanden ist. Er  wählt aus den verfügbaren $\mathtt{actions}$ nach den gleichen Vorgaben seinen besten Zug aus.
+Die erste hier erläuterte Strategie ist der MiniMax Algorithmus. Dieser ist folgendermaßen definiert (siehe \cite{Russell.2016} S.164):
+\\$MiniMax(s,p) = \begin{cases} Utility(s,p)$; wenn TerminalTest(s) $\\max(\{MiniMax(result(s,a) | a \in actions(s)\},(p +1)\%2 )$; wenn Spieler am Zug$\\min(\{MiniMax(result(s,a) | a \in actions(s) \}, (p +1)\%2)$; wenn Gegner am Zug$\end{cases}$
+%\\$\mathtt{MiniMax}$ gibt in einem Endzustand einen Zahlenwert (-1,0,1) über das Spielende zurück.
+%\\In allen anderen Zuständen gibt die Funktion eine Aktion zurück, welche den besten Spielzug darstellt.
+%\\$MiniMax = \begin{cases} Q \times \mathtt{Player} \rightarrow \{-1,0,1\}$; wenn $\mathtt{Q} \in \mathtt{TerminalStates} \\ Q \times \mathtt{Player} \rightarrow \mathtt{actions}$ sonst $\end{cases}$
+\\$getBestMove: Q \times \{-1,0,1\} \rightarrow \mathtt{actions}$
+\\$getBestMove(s,score, p) =  \{ a | a \in \mathtt{actions} \wedge \mathtt{MiniMax}(\mathtt{result}(s,a), (p + 1) \% 2 ) == \mathtt{score}\}.\mathtt{any}()$
+\\Die Funktion $\mathtt{getBestMove}$ ermittelt eine Menge aller Züge, welche den von $\mathtt{MiniMax}$ zurückgegeben Wert besitzen und wählt aus dieser Menge einen Zug aus.
+\\Der Spieler sucht durch diese Funktion den bestmöglichen Zug aus den verfügbaren Zügen ($\mathtt{actions}$), der ihm einen für seine Züge einen Vorteil schafft aber gleichzeitig nur \mxZitat{schlechte} Zugmöglichkeiten für den Gegner generiert. Der Gegner kann dadurch aus allen ehemals möglichen Zügen nicht den optimalen Zug spielen, da dieser in den aktuell enthaltenen Zügen nicht vorhanden ist. Er  wählt aus den verfügbaren $\mathtt{actions}$ nach den gleichen Vorgaben seinen besten Zug aus.
 \\ Die Strategie ist eine Tiefensuche und erkundet jeden Knoten zuerst bis zu den einzelnen Blättern bevor ein Nachbarknoten ausgewählt wird. Dies setzt das mindestens einmalige Durchlaufen des gesamten Search Trees voraus. Bei einem durchschnittlichen Verzweigungsfaktor von $f$ bei einer Tiefe von $d$ resultiert daraus eine Komplexität von $\mathcal{O}(d\textsuperscript{f})$. Bei einem einmaligen Erkunden der Knoten können die Werte aus den Blättern rekursiv von den Blättern zu den Knoten aktualisiert werden. Dadurch muss im nächsten Zug nur das Minimum aus $\mathtt{actions}$ ermittelt werden, da alle Kindknoten schon evaluiert wurden. Für übliche Spiele kann die MiniMax-Strategie allerdings nicht verwendet werden, da die Komplexität zu hoch für eine akzeptable Antwortzeit ist und der benötigte Speicherplatz für die berechneten Zustände sehr schnell wächst.
 %\\\Tree [.A [.B [.C eins ] [.D zwei ] ].B [.E {3 und 4} ] ].A
 \subsection{Alpha-Beta Abscheiden}
@@ -70,56 +81,56 @@ Dem Alpha-Beta Abschneiden (Alpha-Beta Pruning) Algorithmus liegt der Gedanke zu
 \Tree 
 [.{A} 
 	[.{B} 
-		[.{E\\\grey{5}} ].{E\\\grey{5}} 
-		[.{F\\\grey{13}} ].{F\\\grey{13}} 
-		[.{G\\\grey{7}} ].{G\\\grey{7}} 
-	].{B} 
-	[.{C} 
-		[.{H\\\grey{3}} ].{H\\\grey{3}}
-		[.{I\\\grey{24}} ].{I\\\grey{24}}
-		[.{J\\\grey{42}} ].{J\\\grey{42}} 
+		[.{E\\\color{grey}5} ].{E\\\color{grey}5} 
+		[.{F\\\color{grey}13} ].{F\\\color{grey}13} 
+		[.{G\\\color{grey}7} ].{G\\\color{grey}7} 
+	].{B}
+	[.{C}
+		[.{H\\\color{grey}3} ].{H\\\color{grey}3}
+		[.{I\\\color{grey}24} ].{I\\\color{grey}24}
+		[.{J\\\color{grey}42} ].{J\\\color{grey}42} 
 	].{C}
 	[.{D} 
-		[.{K\\\grey{42}} ].{K\\\grey{42}}
-		[.{L\\\grey{6}} ].{L\\\grey{6}}
-		[.{M\\\grey{1}} ].{M\\\grey{1}} 
+		[.{K\\\color{grey}42} ].{K\\\color{grey}42}
+		[.{L\\\color{grey}6} ].{L\\\color{grey}6}
+		[.{M\\\color{grey}1} ].{M\\\color{grey}1} 
 	].{D} 
 ].{A}
 \\\Tree 
 [.{A\\$\alpha = -\infty$ $\beta = +\infty$} 
 	[.{B\\$\alpha = -\infty$ $\beta = 5$} 
 		[.{E\\5} ].{E\\5} 
-		[.{F\\\grey{13}} ].{F\\\grey{13}} 
-		[.{G\\\grey{7}} ].{G\\\grey{7}} 
+		[.{F\\\color{grey}13} ].{F\\\color{grey}13} 
+		[.{G\\\color{grey}7} ].{G\\\color{grey}7} 
 	].{B\\$\alpha = -\infty$ $\beta = 5$} 
-	[.{C\\\grey{$\alpha = ?$ $\beta = ?$}} 
-		[.{H\\\grey{3}} ].{H\\\grey{3}}
-		[.{I\\\grey{24}} ].{I\\\grey{24}}
-		[.{J\\\grey{42}} ].{J\\\grey{42}} 
-	].{C\\\grey{$\alpha = ?$ $\beta = ?$}}
-	[.{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
-		[.{K\\\grey{42}} ].{K\\\grey{42}}
-		[.{L\\\grey{6}} ].{L\\\grey{6}}
-		[.{M\\\grey{1}} ].{M\\\grey{1}} 
-	].{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
+	[.{C\\\color{grey}$\alpha = ?$ $\beta = ?$} 
+		[.{H\\\color{grey}3} ].{H\\\color{grey}3}
+		[.{I\\\color{grey}24} ].{I\\\color{grey}24}
+		[.{J\\\color{grey}42} ].{J\\\color{grey}42} 
+	].{C\\\color{grey}$\alpha = ?$ $\beta = ?$}
+	[.{D\\\color{grey}$\alpha = ?$ $\beta = ?$} 
+		[.{K\\\color{grey}42} ].{K\\\color{grey}42}
+		[.{L\\\color{grey}6} ].{L\\\color{grey}6}
+		[.{M\\\color{grey}1} ].{M\\\color{grey}1} 
+	].{D\\\color{grey}$\alpha = ?$ $\beta = ?$} 
 ].{A\\$\alpha = -\infty$ $\beta = +\infty$}
 \Tree 
 [.{A\\$\alpha = -\infty$ $\beta = +\infty$} 
 	[.{B\\$\alpha = -\infty$ $\beta = 5$} 
 		[.{E\\5} ].{E\\5} 
 		[.{F\\13} ].{F\\13} 
-		[.{G\\\grey{7}} ].{G\\\grey{7}} 
+		[.{G\\\color{grey}7} ].{G\\\color{grey}7} 
 	].{B\\$\alpha = -\infty$ $\beta = 5$} 
-	[.{C\\\grey{$\alpha = ?$ $\beta = ?$}} 
-		[.{H\\\grey{3}} ].{H\\\grey{3}}
-		[.{I\\\grey{24}} ].{I\\\grey{24}}
-		[.{J\\\grey{42}} ].{J\\\grey{42}} 
-	].{C\\\grey{$\alpha = ?$ $\beta = ?$}}
-	[.{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
-		[.{K\\\grey{42}} ].{K\\\grey{42}}
-		[.{L\\\grey{6}} ].{L\\\grey{6}}
-		[.{M\\\grey{1}} ].{M\\\grey{1}} 
-	].{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
+	[.{C\\\color{grey}$\alpha = ?$ $\beta = ?$} 
+		[.{H\\\color{grey}3} ].{H\\\color{grey}3}
+		[.{I\\\color{grey}24} ].{I\\\color{grey}24}
+		[.{J\\\color{grey}42} ].{J\\\color{grey}42} 
+	].{C\\\color{grey}$\alpha = ?$ $\beta = ?$}
+	[.{D\\\color{grey}$\alpha = ?$ $\beta = ?$} 
+		[.{K\\\color{grey}42} ].{K\\\color{grey}42}
+		[.{L\\\color{grey}6} ].{L\\\color{grey}6}
+		[.{M\\\color{grey}1} ].{M\\\color{grey}1} 
+	].{D\\\color{grey}$\alpha = ?$ $\beta = ?$} 
 ].{A\\$\alpha = -\infty$ $\beta = +\infty$}
 \\\Tree 
 [.{A\\$\alpha = 5$ $\beta = +\infty$} 
@@ -128,16 +139,16 @@ Dem Alpha-Beta Abschneiden (Alpha-Beta Pruning) Algorithmus liegt der Gedanke zu
 		[.{F\\13} ].{F\\13} 
 		[.{G\\7} ].{G\\7} 
 	].{B\\$\alpha = 5$ $\beta = 5$} 
-	[.{C\\\grey{$\alpha = ?$ $\beta = ?$}} 
-		[.{H\\\grey{3}} ].{H\\\grey{3}}
-		[.{I\\\grey{24}} ].{I\\\grey{24}}
-		[.{J\\\grey{42}} ].{J\\\grey{42}} 
-	].{C\\\grey{$\alpha = ?$ $\beta = ?$}}
-	[.{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
-		[.{K\\\grey{42}} ].{K\\\grey{42}}
-		[.{L\\\grey{6}} ].{L\\\grey{6}}
-		[.{M\\\grey{1}} ].{M\\\grey{1}} 
-	].{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
+	[.{C\\\color{grey}$\alpha = ?$ $\beta = ?$} 
+		[.{H\\\color{grey}3} ].{H\\\color{grey}3}
+		[.{I\\\color{grey}24} ].{I\\\color{grey}24}
+		[.{J\\\color{grey}42} ].{J\\\color{grey}42} 
+	].{C\\\color{grey}$\alpha = ?$ $\beta = ?$}
+	[.{D\\\color{grey}$\alpha = ?$ $\beta = ?$} 
+		[.{K\\\color{grey}42} ].{K\\\color{grey}42}
+		[.{L\\\color{grey}6} ].{L\\\color{grey}6}
+		[.{M\\\color{grey}1} ].{M\\\color{grey}1} 
+	].{D\\\color{grey}$\alpha = ?$ $\beta = ?$} 
 ].{A\\$\alpha = 5$ $\beta = +\infty$}
 \Tree 
 [.{A\\$\alpha = 5$ $\beta = +\infty$} 
@@ -148,14 +159,14 @@ Dem Alpha-Beta Abschneiden (Alpha-Beta Pruning) Algorithmus liegt der Gedanke zu
 	].{B\\$\alpha = 5$ $\beta = 5$} 
 	[.{C\\$\alpha = -\infty$ $\beta = 3$} 
 		[.{H\\3} ].{H\\3}
-		[.{I\\\grey{24}} ].{I\\\grey{24}}
-		[.{J\\\grey{42}} ].{J\\\grey{42}} 
+		[.{I\\\color{grey}24} ].{I\\\color{grey}24}
+		[.{J\\\color{grey}42} ].{J\\\color{grey}42} 
 	].{C\\$\alpha = -\infty$ $\beta = 3$}
-	[.{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
-		[.{K\\\grey{42}} ].{K\\\grey{42}}
-		[.{L\\\grey{6}} ].{L\\\grey{6}}
-		[.{M\\\grey{1}} ].{M\\\grey{1}} 
-	].{D\\\grey{$\alpha = ?$ $\beta = ?$}} 
+	[.{D\\\color{grey}$\alpha = ?$ $\beta = ?$} 
+		[.{K\\\color{grey}42} ].{K\\\color{grey}42}
+		[.{L\\\color{grey}6} ].{L\\\color{grey}6}
+		[.{M\\\color{grey}1} ].{M\\\color{grey}1} 
+	].{D\\\color{grey}$\alpha = ?$ $\beta = ?$} 
 ].{A\\$\alpha = 5$ $\beta = +\infty$}
 \\\Tree 
 [.{A\\$\alpha = 5$ $\beta = 42$} 
@@ -166,13 +177,13 @@ Dem Alpha-Beta Abschneiden (Alpha-Beta Pruning) Algorithmus liegt der Gedanke zu
 	].{B\\$\alpha = 5$ $\beta = 5$} 
 	[.{C\\$\alpha = -\infty$ $\beta = 3$} 
 		[.{H\\3} ].{H\\3}
-		[.{I\\\grey{24}} ].{I\\\grey{24}}
-		[.{J\\\grey{42}} ].{J\\\grey{42}} 
+		[.{I\\\color{grey}24} ].{I\\\color{grey}24}
+		[.{J\\\color{grey}42} ].{J\\\color{grey}42} 
 	].{C\\$\alpha = -\infty$ $\beta = 3$}
 	[.{D\\$\alpha = -\infty$ $\beta = 42$} 
 		[.{K\\42} ].{K\\42}
-		[.{L\\\grey{6}} ].{L\\\grey{6}}
-		[.{M\\\grey{1}} ].{M\\\grey{1}} 
+		[.{L\\\color{grey}6} ].{L\\\color{grey}6}
+		[.{M\\\color{grey}1} ].{M\\\color{grey}1} 
 	].{D\\$\alpha = -\infty$ $\beta = 42$}  
 ].{A\\$\alpha = 5$ $\beta = 42$}
 \Tree 
@@ -184,8 +195,8 @@ Dem Alpha-Beta Abschneiden (Alpha-Beta Pruning) Algorithmus liegt der Gedanke zu
 	].{B\\$\alpha = 5$ $\beta = 5$} 
 	[.{C\\$\alpha = -\infty$ $\beta = 3$} 
 		[.{H\\3} ].{H\\3}
-		[.{I\\\grey{24}} ].{I\\\grey{24}}
-		[.{J\\\grey{42}} ].{J\\\grey{42}} 
+		[.{I\\\color{grey}24} ].{I\\\color{grey}24}
+		[.{J\\\color{grey}42} ].{J\\\color{grey}42} 
 	].{C\\$\alpha = -\infty$ $\beta = 3$}
 	[.{D\\$\alpha = 1$ $\beta = 1$} 
 		[.{K\\42} ].{K\\42}
@@ -224,7 +235,7 @@ alphaBeta(State, player, alpha = -1, beta = 1) {
 Bei der angegebenen Implementierung handelt es sich um eine rekursive Umsetzung. Nachfolgend sei das Programm erleutert:
 \begin{enumerate}
 \item Im Basisfall wurde bereits ein Blatt des Spielbaumes erreicht. Damit ist das Spiel bereits beendet. In diesem Fall kann mit $utility$ der Wert des Zustands $State$ für den entsprechenden Spieler $player$ zurückgegeben werden.
-\item In der Variable $val$ wird der maximale Wert aller von $State$ erreichbaren Zustände, sofern $player$ einen Zug ausführt gespeicher.\\
+\item In der Variable $val$ wird der maximale Wert aller von $State$ erreichbaren Zustände, sofern $player$ einen Zug ausführt, gespeichert.\\
 Da der Algorithmus per Definition alle Wertigkeiten kleiner $alpha$ ausschließen soll kann die Variable mit $alpha$ initialisiert werden.
 \item Nun wird über alle Folgezustände $ns$ aus der Menge $nextStates(State, player)$ iteriert.
 \item Nun wird rekursiv jeder Zustand $ns$ ausgewertet. An dieser Stelle ist jedoch der andere Spieler an der Reihe. Entsprechend erfolgt dies für den anderen Spieler. Da es sich um ein Nullsummenspiel handelt ist der Wert eines Zustandes aus Sicht des Gegners von $player$ genau der negative Wert der Wertigkeit für $player$. Aus diesem Grund müssen die Rollen von $alpha$ und $beta$ vertauscht und außerdem die Vorzeichen invertiert werden.
@@ -248,7 +259,7 @@ Kommt eine Heuristik zur Anwendung, so ist die Genauigkeit, mit der diese den ta
 Gibt die Heuristik im Falle eines Endzustandes den Wert der Utility Funktion zurück, so kann die oben gezeigte Implementierung so angepasst werden, dass statt der Utility Funktion einfach die Heuristik ausgewertet wird. Dadurch muss nicht mehr der Vollständige Zweig durchsucht werden und das Abbrechen nach einer gewissen Suchtiefe wird möglich.
  
 \subsubsection{Vorwärtsabschneiden}
-Vorwärtsabschneiden (Forward Pruning) durchsucht nicht den kompletten \gtree , sondern durchsucht nur einen Teil. Eine Mög-lichkeit ist eine Strahlensuche, welche nur die \mxZitat{besten} Züge durchsucht (vgl. \cite{Russell.2016} S. 175). Die Züge mit einer geringen Erfolgswahrscheinlichkeit werden abgeschnitten und nicht bis zum Blattknoten evaluiert. Durch die Wahl des jeweiligen Zuges mit der höchsten Gewinnwahrscheinlichkeit können aber auch sehr gute bzw. schlechte Züge nicht berücksichtigt werden, wenn diese eine geringe Wahrscheinlichkeit besitzen. Durch das Abschneiden von Teilen des \gtree\ wird die Suchgeschwindigkeit deutlich erhöht. Der in dem \ot -Programm \mxZitat{Logistello} verwendete \mxZitat{Probcut} erzielt außerdem eine Gewinnwahrscheinlichkeit von 64\% gegenüber der ursprünglichen Version ohne Vorwärtsabschneiden (vgl. \cite{Russell.2016} S. 175).
+Vorwärtsabschneiden (Forward Pruning) durchsucht nicht den kompletten \gtree , sondern durchsucht nur einen Teil. Eine Möglichkeit ist eine Strahlensuche, welche nur die \mxZitat{besten} Züge durchsucht (vgl. \cite{Russell.2016} S. 175). Die Züge mit einer geringen Erfolgswahrscheinlichkeit werden abgeschnitten und nicht bis zum Blattknoten evaluiert. Durch die Wahl des jeweiligen Zuges mit der höchsten Gewinnwahrscheinlichkeit können aber auch sehr gute bzw. schlechte Züge nicht berücksichtigt werden, wenn diese eine geringe Wahrscheinlichkeit besitzen. Durch das Abschneiden von Teilen des \gtree\ wird die Suchgeschwindigkeit deutlich erhöht. Der in dem \ot -Programm \mxZitat{Logistello} verwendete \mxZitat{Probcut} erzielt außerdem eine Gewinnwahrscheinlichkeit von 64\% gegenüber der ursprünglichen Version ohne Vorwärtsabschneiden (vgl. \cite{Russell.2016} S. 175).
 \subsubsection{Suche gegen Nachschlagen}
 Viele Spiele kann man in 3 Haupt-Spielabschnitte einteilen:
 \begin{itemize}
@@ -262,7 +273,7 @@ Das Mittelspiel jedoch hat zu viele Zugmöglichkeiten, um eine Tabelle der mögl
 \\Viele Spielstrategien wie beispielsweise die MiniMax-Strategie setzen den kompletten oder wenigstens einen großen Teil des Spielbaums voraus. Dieser kann entweder berechnet werden oder aus einer Lookup-Tabelle gelesen werden. Je nach Verzweigungsfaktor der einzelnen Spielzüge kann diese allerdings sehr groß sein. Selbst im späten Spielverlauf gibt es verschiedene Spiele, welche einen großen Spielbaum besitzen.
 \\Beispielsweise existieren für das Endspiel in Schach mit einem König, Läufer und Springer gegen einen König 3.494.568 mögliche Positionen (vgl. \cite{Russell.2016} S.176).
 \\Dies sind zu viele Möglichkeiten um alle speichern zu können, da noch sehr viel mehr Endspiel-Kombinationen als diese existieren.
-\\Anstatt die Spielzustände also zu speichern können auch die verbleibenden Spielzustände berechnet werden. \ot\ besitzt gegenüber Schach den Vorteil, dass die Anzahl der Spielzüge auf 60 bzw. 64 Züge begrenzt sind. Dadurch kann in der Endphase des Spiel ggf. der komplette verbleibende \gtree\ berechnet werden, da die Anzahl der möglichen Zugmöglichkeiten eingeschränkt wird.
+\\Anstatt die Spielzustände also zu speichern, können auch die verbleibenden Spielzustände berechnet werden. \ot\ besitzt gegenüber Schach den Vorteil, dass die Anzahl der Spielzüge auf 60 bzw. 64 Züge begrenzt sind. Dadurch kann in der Endphase des Spiel ggf. der komplette verbleibende \gtree\ berechnet werden, da die Anzahl der möglichen Zugmöglichkeiten eingeschränkt wird.
 \\Bei der Berechnung der Spielzüge sind die Suchtiefe und der Verzweigungsfaktor entscheidend für die Berechnungsdauer. Aus diesem Grund können im Mittelspiel keine MiniMax-Algorithmen bis zu den Blattknoten des \gtrees\ ausgeführt werden, da die Menge des benötigten Speicherplatzes außerhalb jeglicher Grenzen eines Arbeits- oder Gamingscomputers liegen.
 %\section{Ermittlung einer Heuristik}
 %Allen zuvor genannten Spielstrategien ist gemein, dass sie eine Heuristik, also eine Funktion zur Bewertung eines Spielzustandes, benötigen. Mit Ausahme der Terminalzustände ist eine Aussage über die Wertigkeit jedoch nicht so einfach möglich. Es gibt jedoch Faktoren die Anhaltspunkte dafür geben können. Diese Faktoren sind spezifisch für jedes Spiel, basieren häufig auf menschlischer Erfahrung und können alle Eigenschaften eines Spielzustandes betreffen. Derartige Faktoren für das Spiel werden im nächsten Kapitel beschrieben.\\
