@@ -10,6 +10,7 @@ B_FIELDS = {(0, 3), (0, 4), (3, 0), (3, 7), (4, 0), (4, 7), (7, 3), (7, 4)}
 EDGES = C_FIELDS | A_FIELDS | B_FIELDS
 OTHER_FIELDS = ALL_FIELDS - CENTRAL_FIELDS - CORNERS - EDGES - X_FIELDS
 
+
 def get_sign(current_player, field_value):
     if field_value == current_player:
         return 1
