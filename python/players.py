@@ -1,4 +1,5 @@
 from othello import Othello
+from heuristics import Nijssen07Heuristic
 from util import UtilMethods
 import random
 import sys
@@ -56,3 +57,43 @@ class PlayerMonteCarlo:
 
         selected_move = max(winning_statistics.items(), key=operator.itemgetter(1))[0]
         return selected_move
+
+
+class PlayerAlphaBetaPruning:
+    # Compare https://github.com/karlstroetmann/Artificial-Intelligence/blob/master/SetlX/game-alpha-beta.stlx
+    def __init__(self, search_depth = None):
+        if search_depth is None:
+            self.search_depth = UtilMethods.get_integer_selection("Select Search depth", 1, 10)
+        else:
+            self.search_depth = search_depth
+
+    @staticmethod
+    def value(game_state: Othello, depth, alpha=-1, beta=1):
+        if game_state.game_is_over():
+            return game_state.utility(game_state.get_winner()) * 1000
+        if depth == 0:
+            return Nijssen07Heuristic.heuristic(game_state.get_current_player(), game_state)
+            print("bottom")
+        val = alpha
+        for move in game_state.get_available_moves():
+            next_state = game_state.deepcopy()
+            next_state.play_position(move)
+            val = max({val, -1 * PlayerAlphaBetaPruning.value(next_state, depth-1, -beta, -alpha)})
+            if val >= beta:
+                return val
+            alpha = max({val, alpha})
+        return val
+
+    def get_move(self, game_state: Othello):
+        best_val = PlayerAlphaBetaPruning.value(game_state, self.search_depth)
+        print(f"Best Val: {best_val}")
+        next_states = dict()
+        for move in game_state.get_available_moves():
+            next_state = game_state.deepcopy()
+            next_state.play_position(move)
+            next_states[move] = next_state
+        good_moves = list()
+        for move in next_states.keys():
+            if -1 * PlayerAlphaBetaPruning.value(next_states[move], self.search_depth) == best_val:
+                good_moves.append(move)
+        return good_moves[random.randrange(len(good_moves))]
