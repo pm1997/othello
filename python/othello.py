@@ -96,6 +96,10 @@ class Othello:
                 points_dict[self._board[row][col]] += 1
         return points_dict
 
+    def get_board(self):
+        return copy.deepcopy(self._board)
+
+
     def get_winner(self):
         stats = self.get_statistics()
         if stats[self.PLAYER_ONE] == stats[self.PLAYER_TWO]:
@@ -104,6 +108,15 @@ class Othello:
             return self.PLAYER_ONE
         else:
             return self.PLAYER_TWO
+
+    @staticmethod
+    def other_player(player):
+        if player == Othello.PLAYER_ONE:
+            return Othello.PLAYER_TWO
+        elif player == Othello.PLAYER_TWO:
+            return Othello.PLAYER_ONE
+        else:
+            return None
 
     def _next_player(self):
         if self._current_player == self.PLAYER_ONE:
