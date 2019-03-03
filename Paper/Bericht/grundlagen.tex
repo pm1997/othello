@@ -6,16 +6,19 @@ In dem folgenden Unterkapitel werden grundlegende Definitionen eingeführt. Dies
 \begin{Definition}[Spiel (Game)(vgl. \cite{Russell.2016} S. 162)]
 Ein \blue{Spiel} besteht aus einem Tupel der Form \\[0.2cm]
   \hspace*{1.3cm}
-  $\mathtt{G} = \langle S\textsubscript{0},\mathtt{player}, \mathtt{actions}, \mathtt{result}, \mathtt{terminalTest}, \mathtt{utility} \rangle$
+  $\mathtt{G} = \langle Q, S\textsubscript{0},\mathtt{player}, \mathtt{actions}, \mathtt{result}, \mathtt{terminalTest}, \mathtt{utility} \rangle$
 \\Definiere $Q$ als die Menge aller Zustände im Spiel. Ein Spielzustand besteht aus dem aktuellen Spielbrett, der Zugnummer, dem aktiven Spieler und weiteren Parametern, welche zur genauen Darstellung eines Spielzustands führen.
 \begin{itemize}
 \item $\mathtt{Q}:$ Menge aller Spielzustände ($states$)
-\item $\so\ \in States$ beschreibt den Startzustand des Spiels.
-\item $\mathtt{Players}:$ Menge aller Spieler: $\mathtt{Players} = \{0,1\}$
-\item $\mathtt{player}: \mathtt{Q} \rightarrow p \in \mathtt{Players}$ ist auf der Menge der Spieler definiert und gibt den aktuellen Spieler p zurück.
-\item $\mathtt{actions}: \mathtt{Q} \rightarrow  \mathtt{moves}$ gibt die validen Zugmöglichkeiten (moves) eines gegeben Zustands zurück.
+\item $\so\ \in \mathtt{Q}$ beschreibt den Startzustand des Spiels.
+\item $\mathtt{Players}:$ Menge aller Spieler: $\mathtt{Players} = \{S,W\}$
+\item $\mathtt{player}: \mathtt{Q} \rightarrow \mathtt{Players}$ ist auf der Menge der Spielzustände definiert und gibt den aktuellen Spieler p zurück.
+\item $\mathtt{actions}: \mathtt{Q} \rightarrow 2^\mathtt{moves}$ gibt die Menge der validen Zugmöglichkeiten  eines gegeben Zustands zurück. 
+\\$\mathtt{moves}$ ist die Menge aller Zugmöglichkeiten.
+\\$\mathtt{moves} = \{ <X, Y> | X \in \{0 .. 7\} \wedge Y \in \{ 0 .. 7 \} \} $
+\\Diese geben die Koordinate der Zugposition des neuen Steines auf dem Spielbrett an. 
 \item $\mathtt{result}:\mathtt{Q} \times \mathtt{actions} \rightarrow \mathtt{Q}$ definiert das Resultat einer durchgeführten Aktion a und in einem Zustand s.
-\item $\mathtt{terminalTest}: \mathtt{Q} \rightarrow \mathbb{B}$ prüft ob ein Zustand s ein Terminalzustand, also Endzustand, darstellt.
+\item $\mathtt{terminalTest}: \mathtt{Q} \rightarrow \mathbb{B}$ prüft ob ein Zustand s ein Terminalzustand ($s \in \mathtt{terminalStates}$), also Endzustand, darstellt.
 \\$ \mathtt{terminalTest}(s) = \begin{cases} \mathtt{True}\ | s \in \mathtt{terminalStates}$ 
 $\\\mathtt{False}\ | s \not\in \mathtt{terminalStates} \end{cases}$
 \item $\mathtt{utility}: \mathtt{terminalStates} \times \mathtt{Players} \rightarrow \{-1, 0, 1 \}$ gibt einen Zahlenwert aus den Eingabenwerten\\ s (Terminalzustand) und p (Spieler) zurück. \\Positive Werte stellen einen Gewinn, negative Werte einen Verlust dar. \mxZitat{0} stellt ein Unentschieden dar.
@@ -23,20 +26,21 @@ $\\\mathtt{False}\ | s \not\in \mathtt{terminalStates} \end{cases}$
 \end{Definition}
 Eine spezielle Art von Spielen sind \blue{Nullsummenspiele}.
 \begin{Definition}[Nullsummenspiele (vgl. \cite{Russell.2016} S. 161)]
-In einem \blue{Nullsummenspiel} ist die Summe der utility Funktion eines Endzustandes ($\mathtt{terminalState}$) über alle Spieler 0 ($\sum\limits_{p \in Players} utility(p) = 0$).
-\\Dies bedeutet, dass wenn ein Spieler gewinnt mindestens ein Gegenspieler verliert.
-\\In Othello spielen zwei Spieler gegeneinander. Es gibt als nur die drei Möglichkeiten:
+In einem \blue{Nullsummenspiel} ist die Summe der utility Funktion eines Endzustandes ($\mathtt{terminalState}$) über alle Spieler 0. Es gilt also:
+\\$\forall s \in \mathtt{terminalStates}: \sum\limits_{p \in Players} utility(s, p) = 0$
+%\\Dies bedeutet, dass wenn ein Spieler gewinnt mindestens ein Gegenspieler verliert.
+\\In Othello spielen zwei Spieler gegeneinander. Es gibt also nur die drei Möglichkeiten:
 \begin{itemize}
 \item Weiß gewinnt, Schwarz verliert
 \item Schwarz gewinnt, Weiß verliert
 \item Unentschieden
 \end{itemize}
 \end{Definition}
-Durch den Startzustand $\so$ und der Funktion $\mathtt{actions}$ wird ein \blue{Spielbaum (Game Tree)} aufgespannt.
+Durch den Startzustand $\so$ und der Funktion $\mathtt{actions}$ und $\mathtt{result}$ wird ein \blue{Spielbaum (Game Tree)} aufgespannt.
 \begin{Definition}[Spielbaum (Game Tree)(vgl. \cite{Russell.2016} S. 162)]
 Ein \blue{Spielbaum} besteht aus einer \\Wurzel, welche einen bestimmten Zustand (Startzustand $\so$) darstellt. Die Kindknoten der Wurzel stellen die durch $\mathtt{actions}$ erzeugten Zustände dar. Die Kanten zwischen der Wurzel und den Kindknoten stellen jeweils die durchgeführte Aktion dar, die ausgeführt wurde um vom Zustand $\mathtt{s}$ zum Kindknoten $\mathtt{s'}$ zu gelangen. Diese Kindknoten können wiederum weitere Knoten enthalten oder ein Endpunkt des Baumes (Blatt = Spielende) \improvement{umformulieren ?} darstellen.
 Die mathematische Definition wird rekursiv durchgeführt:
-\\$A = [s,\{\}] \in \mathtt{GameTree}$ : A, bestehend aus einem Zustand, ist ein Spielbaum.
+\\$A = [s,\{\}] \in \mathtt{GameTree}$ : A, bestehend aus einem Zustand s, ist ein Blattknoten und ein Spielbaum.
 \\$B = [s,\{A\}] \in \mathtt{GameTree}$ : B, bestehend aus einem Zustand s und einem Kindknoten, ist ein Spielbaum.
 \\$C = [s,T] \in \mathtt{GameTree}$, wobei T eine Menge von Spielbäumen ist: C ist ein Spielbaum.
 \end{Definition}
