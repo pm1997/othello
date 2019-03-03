@@ -6,13 +6,15 @@ import operator
 
 
 class PlayerRandom:
-    def get_move(self, game_state: Othello):
+    @staticmethod
+    def get_move(game_state: Othello):
         possible_moves = game_state.get_available_moves()
         return possible_moves[random.randrange(len(possible_moves))]
 
 
 class PlayerHuman:
-    def get_move(self, game_state: Othello):
+    @staticmethod
+    def get_move(game_state: Othello):
         possibilities = []
         for move in game_state.get_available_moves():
             (row, col) = move
@@ -26,18 +28,16 @@ class PlayerMonteCarlo:
         self.big_n = UtilMethods.get_integer_selection("Select Number of Simulated Games", 100, sys.maxsize)
 
     @staticmethod
-    def make_single_turn(random_player, own_symbol, simulated_game, winning_statistics):
-
-            first_move = random_player.get_move(simulated_game)
-            simulated_game.play_position(first_move)
-            (won_games, times_played) = winning_statistics[first_move]
-            while not simulated_game.game_is_over():
-                move = random_player.get_move(simulated_game)
-                simulated_game.play_position(move)
-            winning_statistics[first_move] = (won_games + (1 if simulated_game.get_winner() == own_symbol else 0), times_played + 1)
+    def play_random_game(own_symbol, simulated_game):
+        first_move = PlayerRandom.get_move(simulated_game)
+        simulated_game.play_position(first_move)
+        while not simulated_game.game_is_over():
+            move = PlayerRandom.get_move(simulated_game)
+            simulated_game.play_position(move)
+        won = 1 if simulated_game.get_winner() == own_symbol else 0
+        return first_move, won
 
     def get_move(self, game_state: Othello):
-        random_player = PlayerRandom()
         winning_statistics = dict()
         own_symbol = game_state.get_current_player()
         possible_moves = game_state.get_available_moves()
@@ -46,7 +46,9 @@ class PlayerMonteCarlo:
 
         for i in range(self.big_n):
             simulated_game = game_state.deepcopy()
-            self.make_single_turn(random_player, own_symbol, simulated_game, winning_statistics)
+            first_played_move, won = self.play_random_game(own_symbol, simulated_game)
+            (won_games, times_played) = winning_statistics[first_played_move]
+            winning_statistics[first_played_move] = (won_games + won, times_played + 1)
 
         for single_move in winning_statistics:
             (games_won, times_played) = winning_statistics[single_move]
