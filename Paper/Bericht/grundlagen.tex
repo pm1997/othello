@@ -42,28 +42,28 @@ Der erste hier erläuterte Strategie ist der MiniMax Algorithmus. Dieser ist fol
 \\Der Spieler sucht den bestmöglichen Zug aus den verfügbaren Zügen ($\mathtt{actions}$), der ihm einen für seine Züge einen Vorteil schafft aber gleichzeitig nur \mxZitat{schlechte} Zugmöglichkeiten für den Gegner generiert. Der Gegner kann dadurch aus allen ehemals möglichen Zügen nicht den optimalen Zug spielen, da dieser in den aktuell enthaltenen Zügen nicht vorhanden ist. Er  wählt aus den verfügbaren \textsc{actions} nach den gleichen Vorgaben seinen besten Zug aus.
 \\ Die Strategie ist eine Tiefensuche und erkundet jeden Knoten zuerst bis zu den einzelnen Blättern bevor ein Nachbarknoten ausgewählt wird. Dies setzt das mindestens einmalige Durchlaufen des gesamten Search Trees voraus. Bei einem durchschnittlichen Verzweigungsfaktor von $f$ bei einer Tiefe von $d$ resultiert daraus eine Komplexität von $\mathcal{O}(d\textsuperscript{f})$. Bei einem einmaligen Erkunden der Knoten können die Werte aus den Blättern rekursiv von den Blättern zu den Knoten aktualisiert werden. Dadurch muss im nächsten Zug nur das Minimum aus \textsc{actions} ermittelt werden, da alle Kindknoten schon evaluiert wurden. Für übliche Spiele kann die MiniMax-Strategie allerdings nicht verwendet werden, da die Komplexität zu hoch für eine akzeptable Antwortzeit ist und der benötigte Speicherplatz für die berechneten Zustände sehr schnell wächst.
 %\\\Tree [.A [.B [.C eins ] [.D zwei ] ].B [.E {3 und 4} ] ].A
-\subsection{Alpha-Beta Pruning}
-Der MiniMax Algorithmus berechnet nach dem Prinzip \mxZitat{depth-first} stets den kompletten \gtree. Bei der Betrachtung des Entscheidungsverhaltens des Algorithmus fällt jedoch schnell auf, dass ein nicht unerheblicher Teil aller möglichen Züge gar nicht erst in Betracht gezogen wird. Dies geschieht aufgrund der Tatsache, dass diese Züge in einem schlechteren Ergebnis resultieren würden als die letztendlich ausgewählten.\newline
-Dem \abp\ Algorithmus liegt der Gedanke zugrunde, dass die Zustände, die in einem realen Spiel nie auftreten würden auch nicht berechnet werden müssen. Damit steht die dafür regulär erforderliche Rechenzeit und der entsprechende Speicher dafür zur Verfügung andere, vielversprechendere Zweige zu verfolgen.
+\subsection{Alpha-Beta Abscheiden}
+Der MiniMax Algorithmus berechnet nach dem Prinzip \mxZitat{depth-first} stets den kompletten \gtree. Bei der Betrachtung des Entscheidungsverhaltens des Algorithmus fällt jedoch schnell auf, dass ein nicht unerheblicher Teil aller möglichen Züge durch einen menschlichen Spieler gar nicht erst in Betracht gezogen wird. Dies geschieht aufgrund der Tatsache, dass diese Züge in einem schlechteren Ergebnis resultieren würden als ein anderer, letztendlich ausgewählter, Zug.\newline
+Dem Alpha-Beta Abschneiden (Alpha-Beta Pruning) Algorithmus liegt der Gedanke zugrunde, dass die Zustände, die in einem realen Spiel nie ausgewählt würden auch nicht berechnet werden müssen. Damit steht die dafür regulär erforderliche Rechenzeit und der entsprechende Speicher dafür zur Verfügung andere, vielversprechendere Zweige zu verfolgen.
 \subsubsection{Demonstration an einem Beispiel}
 \begin{figure}[ht!]
 \caption[]{Beispielhafter \gtree}
 \Tree 
 [.{A} 
 	[.{B} 
-		[.{E\\5} ].{E\\5} 
-		[.{F\\13} ].{F\\13} 
-		[.{G\\7} ].{G\\7} 
+		[.{E\\\grey{5}} ].{E\\\grey{5}} 
+		[.{F\\\grey{13}} ].{F\\\grey{13}} 
+		[.{G\\\grey{7}} ].{G\\\grey{7}} 
 	].{B} 
 	[.{C} 
-		[.{H\\3} ].{H\\3}
-		[.{I\\24} ].{I\\24}
-		[.{J\\42} ].{J\\42} 
+		[.{H\\\grey{3}} ].{H\\\grey{3}}
+		[.{I\\\grey{24}} ].{I\\\grey{24}}
+		[.{J\\\grey{42}} ].{J\\\grey{42}} 
 	].{C}
 	[.{D} 
-		[.{K\\42} ].{K\\42}
-		[.{L\\6} ].{L\\6}
-		[.{M\\1} ].{M\\1} 
+		[.{K\\\grey{42}} ].{K\\\grey{42}}
+		[.{L\\\grey{6}} ].{L\\\grey{6}}
+		[.{M\\\grey{1}} ].{M\\\grey{1}} 
 	].{D} 
 ].{A}
 \\\Tree 
@@ -185,58 +185,52 @@ Der Kindknoten K des Knotens D ist mit einem Wert von 42 vielversprechend und wi
 Dieses einfache Beispiel zeigt bereits recht gut wie die Auswertung von weiteren Zweigen vermieden werden kann. In der Praktischen Anwendung befinden sich die wegfallenden Zustände häufig nicht nur in den Blättern des Baumes sondern auch auf höheren Ebenen. Der eingesparte Aufwand wird dadurch häufig noch größer.  
 
 \subsubsection{Implementierung}
-Nachfolgend wird eine Pseudoimplementierung des um Alpha-Beta Pruning erweiterten MiniMax Algorithmus angegeben (siehe Listing \ref{lst:abprun}):
-\begin{footnotesize}
-\begin{lstlisting}[caption = {Pseudoimplementierung von Alpha-Beta Pruning}, language = cpp, captionpos = t , numbers=left, label={lst:abprun}]
-global Suchtiefe
-int miniMax(State AktuellerZustand, int Spieler, int Tiefe, int alpha, int beta) {
-	if (Tiefe == 0) {
-		return Utility(AktuellerZustand, Spieler);	
-	}
-	int bisherigerMaximalWert = alpha
-	Zuege = mengeDerFolgezuege(aktuellerZustand);
-	for (Zug z in Zuege) {
-		State NeuerZustand = waehleZug(Aktueller Zustand, z)
-		wert = -miniMax(NeuerZustand, anderer(Spieler), Tiefe-1, -beta, -bisherigerMaximalWert)
-		if (wert > bisherigerMaximalWert) {
-			bisherigerMaximalWert = wert
-			if (bisherigerMaximalWert >= beta) {
-				break;
-			}
-			if (Tiefe = Suchtiefe) {
-				speichereZug(z)
-			}
-		}
-	}
-	return bisherigerMaximalwert;		
-} 
+Nachfolgend wird eine Pseudoimplementierung einer Invariante des Alpha-Beta Abschneiden Algorithmus angegeben (siehe Listing \ref{lst:abprun}). Es handelt sich um eine angepasste Version von \info{Quelle Stroetmann}:
+\begin{lstlisting}[caption = {Pseudoimplementierung von Alpha-Beta Abschneiden}, language = cpp, captionpos = t , numbers=left, label={lst:abprun}]
+alphaBeta(State, player, alpha = -1, beta = 1) {
+        if (finished(State)) {
+            return utility(State, player)
+        }
+        val := alpha
+        for (ns in nextStates(State, player)) {
+            val = max({ val, -alphaBeta(ns, other(player), -beta, -alpha) })
+            if (val >= beta) {
+                return val
+            }
+            alpha = max({ val, alpha })
+        }
+        return val
+}
 \end{lstlisting}
-\end{footnotesize}
-Es handelt sich um eine rekursive Implementierung. Im Basisfall ist der \gtree\ bereits bis in die angegebene Suchtiefe erforscht (Zeile 3). In diesem Fall wird der Wert der Utility Funktion für den aktuellen Spieler bei dem aktuellen Zustand zurückgegeben (Zeile 4).
+Bei der angegebenen Implementierung handelt es sich um eine rekursive Umsetzung. Nachfolgend sei das Programm erleutert:
+\begin{enumerate}
+\item Im Basisfall wurde bereits ein Blatt des Spielbaumes erreicht. Damit ist das Spiel bereits beendet. In diesem Fall kann mit $utility$ der Wert des Zustands $State$ für den entsprechenden Spieler $player$ zurückgegeben werden.
+\item In der Variable $val$ wird der maximale Wert aller von $State$ erreichbaren Zustände, sofern $player$ einen Zug ausführt gespeicher.\\
+Da der Algorithmus per Definition alle Wertigkeiten kleiner $alpha$ ausschließen soll kann die Variable mit $alpha$ initialisiert werden.
+\item Nun wird über alle Folgezustände $ns$ aus der Menge $nextStates(State, player)$ iteriert.
+\item Nun wird rekusriv jeder Zustand $ns$ ausgewertet. An dieser Stelle ist jedoch der andere Spieler an der Reihe. Entsprechend erfolgt dies für den anderen Spieler. Da es sich um ein Nullsummenspiel handelt ist der Wert eines Zustandes aus Sicht des Gegners von $player$ genau der negative Wert der Wertigkeit für $player$. Aus diesem Grund müssen die Rollen von $alpha$ und $beta$ vertauscht und außerdem die Vorzeichen invertiert werden.
+\item Da laut der Spezifikation des Algorithmusses nur die Wertigkeit von Zuständen berechnet werden sollen in denen diese kleiner oder gleich $beta$ ist, wird die Auswertung aller Folgezustände mit einem $val$ der größer oder gleich $beta$ ist abgebrochen. In diesem Fall wird $val$ zurückgegeben.
+\item Sobald ein Folgezustand mit einem größeren Wert als $alpha$ gefunden wurde kann $alpha$ auf den entsprechenden Wert erhöht werden. Sobald klar ist, dass der Wert $val$ erreicht werden kann, so sind Werte kleiner als $val$ nicht mehr relevant.  
+ 
+\end{enumerate}
 
-Handelt es sich nicht um einen solchen Fall werden alle möglichen Folgezüge berechnet (Zeile 7) und diese dann durch sequenzielle Ausführung bewertet(Zeile 8f). Zuvor wird dazu jedoch der bisherige Maximalwert gespeichert (Zeile 6).
-Um den Wert des Zuges zu bestimmen wird rekursiv die miniMax-Methode erneut aufgerufen. Dabei wird entsprechend der Neue Zustand, der andere Spieler und eine um die um eins verringerte Tiefe übergeben. Der beste Wert für den anderen Spieler ist der schlechteste Wert für den ersten Spieler. Daher wird der bisherige Wert von beta als alpha übergeben. Der bisher beste Wert ist aus Sicht des anderen Spielers der schlechteste daher wird dieser als neues beta übergeben. Da die Utility Funktion so implementiert ist, dass die Summe der Wertigkeiten eines Zustandes Null ergibt muss noch das Vorzeichen geändert werden (Zeile 9).\\
-Ist der neue Wert größer als der bisherige Maximalwert (Zeile 11) so wird dieser aktualisiert (Zeile 12).
-Da der zweite Spieler versucht die Punktzahl des Gegners zu maximieren bricht dieser die Auswertung aller Zweige ab, bei denen ein Ergebnis, welches besser ist als das bisher schlechteste Ergebnis, möglich wird (Zeile 13f).
-Abschließend wird der ausgewertete Zug gespeichert um ihn später ausführen zu können (Zeile 16).
 \subsubsection{Ordnung der Züge}
 Wie in obigen Beispiel an den Zweigen unter dem Knoten C zu sehen war kann, je nach der Reihenfolge in der die Folgezüge untersucht werden, die Auswertung eines Folgezustandes früher oder später abgebrochen werden. Optimalerweise werden die besten Züge, also jene Züge die einen möglichst frühen Abbruch der Betrachtung eines Knotens herbeiführen zuerst betrachtet. Um dies Abschätzen zu können bedient man sich in der Praxis einer Heuristik die Aussagen über die Güte eines Zuges im Vergleich zu den übrigen Zügen zulässt. Anhand dieser Heuristik kann dann die Reihenfolge der Auswertung einzelner Folgezustände dynamisch angepasst werden.
 
 \subsection{Suboptimale Echtzeitentscheidungen}
-Selbst die gezeigten Verbesserung des MiniMax-Algorithmus besitzt noch einen wesentlichen Nachteil. Da es sich um einen \mxZitat{depth-first} Algorithmus handelt muss jeder Pfad bis zu einem Endzustand betrachtet werden um eine Aussage über den Wert des Zuges treffen zu können. Dem steht jedoch die Tatsache entgegen, dass in der Praxis eine Entscheidung möglichst schnell, idealer Weise innerhalb weniger Minuten, getroffen werden soll. Hinzu kommt, dass je nach der verwendeten Datenstruktur für ein Spiel bei entsprechend hohem Verzweigungsfaktor und einer großen Anzahl von Zügen der Hauptspeicher eines handelsüblichen Computers nicht mehr ausreicht um diese zu fassen\\
+Selbst die gezeigten Verbesserung des MiniMax-Algorithmus besitzt noch einen wesentlichen Nachteil. Da es sich um einen \mxZitat{depth-first} Algorithmus handelt muss jeder Pfad bis zu einem Endzustand betrachtet werden um eine Aussage über den Wert des Zuges treffen zu können. Dem steht jedoch die Tatsache entgegen, dass in der Praxis eine Entscheidung möglichst schnell, idealer Weise innerhalb weniger Minuten, getroffen werden soll. Hinzu kommt die Tatsache, dass viele Spiele unter Verwendung von derzeit erhältlicher Hardware (noch) nicht lösbar sind.\\
 Es gilt also eine Möglichkeit zu finden, die Auswertung des kompletten Baumes zu vermeiden.
 
 \subsubsection{Heuristiken}
-Dieses Problem lösen sogenannte Heuristiken. Dabei handelt es sich um eine Funktion die den Wert eines Spielzustandes annähert.
-\\Die Nutzung der Heuristik wird vereinfacht, wenn Sie so definiert ist, dass sie, sofern es sich um einen Endzustand handelt den Wert der Utility Funktion zurückgibt. Der Vorteil dieses Verhaltens wird im nächsten Abschnitt betrachtet.\\
-Kommt eine Heuristik zur Anwendung so ist die Genauigkeit mit der diese den tatsächlichen Wert approximiert der wesentliche Aspekt der die Qualität des Spiel-Algorithmus ausmacht. Um zu verhindern, das versehentlich die besten Züge nicht betrachtet werden, ist es essentiell, dass eine Heuristik den tatsächlichen Wert eines Zustandes nie überschätzt. Das unterschätzen des Wertes hingegen ist möglich darf im Sinne der Genauigkeit der Heuristik jedoch nicht allzu ungleichmäßig Auftreten.
+Dieses Problem lösen sogenannte Heuristiken. Dabei handelt es sich um eine Funktion die versucht den Wert eines Spielzustandes anhand einzelner Eigenschaften des Zusatndes anzunähern. Wie in Kapitel \todo{Referenz} erläutert hat ein Spieler der eine Ecke des Feldes besetzt in der Regel einen Vorteil. Ein solcher Zustand würde durch die Heuristik entsprechend besser bewertet werden.\\
+Kommt eine Heuristik zur Anwendung so ist die Genauigkeit mit der diese den tatsächlichen Wert approximiert der wesentliche Aspekt der die Qualität des Spiel-Algorithmus ausmacht. Jedoch wird die Berechnung der Heuristik mit steigender Genauigkeit meist komplizierter und somit auch rechen- und damit zeitintensiver. Aus diesem Grund muss immer eine Abwägung aus Genauigkeit und Geschwindigkeit vorgenommen werden. 
 
 \subsubsection{Abschnittskriterium der Suche}
 Gibt die Heuristik im Falle eines Endzustandes den Wert der Utility Funktion zurück, so kann die oben gezeigte Implementierung so angepasst werden, dass statt der Utility Funktion einfach die Heuristik ausgewertet wird. Dadurch muss nicht mehr der Vollständige Zweig durchsucht werden und das Abbrechen nach einer gewissen Suchtiefe wird möglich.
  
-\subsubsection{Forward pruning}
-Forward pruning durchsucht nicht den kompletten \gtree , sondern durchsucht nur einen Teil. Eine Mög-lichkeit ist eine Strahlensuche, welche nur die \mxZitat{besten} Züge durchsucht (vgl. \cite{Russell.2016} S. 175). Die Züge mit einer geringen Erfolgswahrscheinlichkeit werden abgeschnitten und nicht bis zum Blattknoten evaluiert. Durch die Wahl des jeweiligen Zuges mit der höchsten Gewinnwahrscheinlichkeit können aber auch sehr gute bzw. schlechte Züge nicht berücksichtigt werden, wenn diese eine geringe Wahrscheinlichkeit besitzen. Durch das Abschneiden von Teilen des \gtree\ wird die Suchgeschwindigkeit deutlich erhöht. Der in dem \ot -Programm \mxZitat{Logistello} verwendete \mxZitat{Probcut} erzielt außerdem eine Gewinnwahrscheinlichkeit von 64\% gegenüber der ursprünglichen Version ohne Forward pruning (vgl. \cite{Russell.2016} S. 175).
-\subsubsection{Search versus lookup}
+\subsubsection{Vorwärtsabschneiden}
+Vorwärtsabschneiden (Forward Pruning) durchsucht nicht den kompletten \gtree , sondern durchsucht nur einen Teil. Eine Mög-lichkeit ist eine Strahlensuche, welche nur die \mxZitat{besten} Züge durchsucht (vgl. \cite{Russell.2016} S. 175). Die Züge mit einer geringen Erfolgswahrscheinlichkeit werden abgeschnitten und nicht bis zum Blattknoten evaluiert. Durch die Wahl des jeweiligen Zuges mit der höchsten Gewinnwahrscheinlichkeit können aber auch sehr gute bzw. schlechte Züge nicht berücksichtigt werden, wenn diese eine geringe Wahrscheinlichkeit besitzen. Durch das Abschneiden von Teilen des \gtree\ wird die Suchgeschwindigkeit deutlich erhöht. Der in dem \ot -Programm \mxZitat{Logistello} verwendete \mxZitat{Probcut} erzielt außerdem eine Gewinnwahrscheinlichkeit von 64\% gegenüber der ursprünglichen Version ohne Vorwärtsabschneiden (vgl. \cite{Russell.2016} S. 175).
+\subsubsection{Suche gegen Nachschlagen}
 Viele Spiele kann man in 3 Haupt-Spielabschnitte einteilen:
 \begin{itemize}
 \item Eröffnungsphase
@@ -266,3 +260,4 @@ Bisher spielt der Algorithmus auf gut Glück ohne sich jeglicher Informationen d
 Entweder kann mit $N_{S}$ eine feste Anzahl an best bewertetsten Züge ausgewählt werden oder alternativ eine variable Anzahl. Dies geschieht in dem der Durchschnitt aller Bewertungen bestimmt wird und nur jene Züge ausgewählt werden die eine Bewertung von $p_{s}$ Prozent des Durchschnittwertes haben.
 \paragraph{Pseudozufällige Zugauswahl}
 In der Standardversion des Monte Carlo-Algorithmus werden die simulierten Spiele nach der Wahl des ersten Zuges zufällig zu Ende gespielt. Diesem Asatz liegt die Idee zu Grunde auch in dieser Phase der Simulation einige Züge anderen gegenüber zu bevorzugen. Dies geschieht nach dem gleichen Prinzip wie im Abschnitt zur Vorverarbeitung beschrieben. Da es jedoch sehr zeitaufwändig ist, die Bewertung jedes einzelnen Spielzustandes innerhalb der Simulationen vorzunehmen, erfolgt dies nur bis zu einer Tiefe $N_{d}$.
+\subsection{Kombination von Monte-Carlo und Alpha-Beta Abschneiden}
