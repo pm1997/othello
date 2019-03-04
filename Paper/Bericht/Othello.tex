@@ -12,7 +12,7 @@
 %\usepackage[fleqn]{amsmath}
 \usepackage{stmaryrd}
 \usepackage{enumerate}
-\usepackage{color}
+\usepackage{xcolor}
 \usepackage{xfrac}
 \usepackage{amsmath}
 \usepackage{qtree}
@@ -179,7 +179,7 @@
 \author{Patrick Müller, Max Zepnik}
 \date{\today}
 
-\newcommand{\so}[0]{$S\textsubscript{0}$}
+\newcommand{\so}[0]{\mathtt{S\textsubscript{0}}}
 \newcommand{\abp}{Alpha-Beta Pruning}
 
 % später entfernen!! ---------------------------------------
@@ -191,8 +191,8 @@
 \tableofcontents
 
 \include{einleitung}
-\include{grundlagen}
 \include{othello-chapter}
+\include{grundlagen}
 \include{implementierung}
 \include{evaluierung}
 \include{fazit}
