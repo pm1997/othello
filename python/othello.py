@@ -19,6 +19,8 @@ class Othello:
 
     _fringe = set()
     _turning_stones = dict()
+    _taken_moves = dict()
+    _turn_nr = 0
 
     def deepcopy(self):
         copied_game = Othello()
@@ -111,9 +113,9 @@ class Othello:
     def utility(self, player):
         winner = self.get_winner()
         if winner is None:
-            return 0;
+            return 0
         elif winner == player:
-            return 1;
+            return 1
         else:
             return -1
 
@@ -147,8 +149,8 @@ class Othello:
 
     @staticmethod
     def _next_step(position, direction):
-        (x, y), (x_step, y_step) = position, direction
-        new_position = (new_x, new_y) = (x + x_step, y + y_step)
+        (y, x), (y_step, x_step) = position, direction
+        new_position = (new_y, new_x) = (y + y_step, x + x_step)
         if 0 <= new_x < 8 and 0 <= new_y < 8:
             return new_position
         else:
@@ -159,11 +161,15 @@ class Othello:
 
     def play_position(self, position):
         if position in self.get_available_moves():
-            (x, y) = position
+            (row, column) = position
             current_symbol = self._current_player
-            self._board[x][y] = current_symbol
-            for (x, y) in self._turning_stones[position]:
-                self._board[x][y] = current_symbol
+            self._board[row][column] = current_symbol
+            for (row2, column2) in self._turning_stones[position]:
+                self._board[row2][column2] = current_symbol
+            print(str(row) + ": " + str(column))
+            self._taken_moves[self._turn_nr] = self.COLUMN_NAMES[column] + str(row + 1)
+            self._turn_nr += 1
+            print(self._taken_moves)
             self._fringe.remove(position)
             self._update_fringe(position)
             self._prepare_next_turn()
