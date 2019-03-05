@@ -1,6 +1,7 @@
 import copy
 import numpy as np
 import pandas as pd
+from util import UtilMethods
 
 
 class Othello:
@@ -9,7 +10,7 @@ class Othello:
     PLAYER_ONE = 1
     PLAYER_TWO = 2
     PRINT_SYMBOLS = {EMPTY_CELL: " ", PLAYER_ONE: "B", PLAYER_TWO: "W", None: "None"}
-    COLUMN_NAMES = {0: "A", 1: "B", 2: "C", 3: "D", 4: "E", 5: "F", 6: "G", 7: "H"}
+    COLUMN_NAMES = {0: "A", 1: "B", 2: "C", 3: "D", 4: "E", 5: "F", 6: "G", 7: "H", 8: "I"}
 
     DIRECTIONS = {(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)}
 
@@ -29,6 +30,10 @@ class Othello:
     def init_start_tables(self):
         csv = pd.read_csv('start_moves.csv')
         self._start_tables = np.array(csv)
+        # ########################################################
+        # CAUTION: Call only once or on change of start tables ! #
+        # #  self.calculate_missing_start_moves()                #
+        # #########################################################
 
     def get_available_start_tables(self):
         if len(self._start_tables) == 0:
@@ -52,6 +57,45 @@ class Othello:
                         break
                 turn += 1
         return available_moves
+
+    def calculate_missing_start_moves(self):
+        if len(self._start_tables) == 0:
+            self.init_start_tables()
+
+        new_moves = list()
+        header_length = len(self._start_tables[0])
+        header = list()
+        for i in range(header_length):
+            header.append(str(i))
+        new_moves.append(header)
+
+        for game in self._start_tables:
+            new_moves.append(self._calculate_opposite_move(game))
+            new_moves.append(game)
+        print(f"games:{new_moves}")
+        with open('start_moves.csv', 'w') as f:
+            for row in new_moves:
+                csv_row = ""
+                for turn in row:
+                    if len(csv_row):
+                        csv_row += "," + turn
+                    else:
+                        csv_row = turn
+                f.write("%s\n" % csv_row)
+
+    def _calculate_opposite_move(self, moves):
+        new_turns = list()
+        for move in moves:
+            (row, column) = UtilMethods.translate_move_to_pair(move)
+            if column < 8 and row < 7:
+                row -= 7
+                row = abs(row) % 7
+                column -= 7
+                column = abs(column) % 7
+            new_turns.append(self.COLUMN_NAMES[column] + str(row +1 ))
+        print(f"old:{moves}")
+        print(f"new:{new_turns}")
+        return new_turns
 
     def deepcopy(self):
         copied_game = Othello()
