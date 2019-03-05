@@ -25,7 +25,7 @@ class Nijssen07Heuristic:
     for position in CORNERS:
         values[position] = 5
     for position in X_FIELDS:
-         values[position] = -2
+        values[position] = -2
     for position in C_FIELDS:
         values[position] = -1
     for position in CENTRAL_FIELDS:
