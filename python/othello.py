@@ -1,4 +1,6 @@
 import copy
+import numpy as np
+import pandas as pd
 
 
 class Othello:
@@ -21,6 +23,35 @@ class Othello:
     _turning_stones = dict()
     _taken_moves = dict()
     _turn_nr = 0
+
+    _start_tables = []
+
+    def init_start_tables(self):
+        csv = pd.read_csv('start_moves.csv')
+        self._start_tables = np.array(csv)
+
+    def get_available_start_tables(self):
+        if len(self._start_tables) == 0:
+            self.init_start_tables()
+
+        turn_nr = self.get_turn_nr()
+        available_moves = []
+        taken_mv = self.get_taken_mv()
+        for game in self._start_tables:
+            turn = 0
+            same = True
+            for move in game:
+                if turn < turn_nr:
+                    if taken_mv[turn] != move:
+                        break
+                else:  # turn == turn_nr
+                    if same and move != "I8":
+                        available_moves.append(move)
+                        break
+                    else:
+                        break
+                turn += 1
+        return available_moves
 
     def deepcopy(self):
         copied_game = Othello()
@@ -101,6 +132,12 @@ class Othello:
     def get_board(self):
         return copy.deepcopy(self._board)
 
+    def get_turn_nr(self):
+        return self._turn_nr
+
+    def get_taken_mv(self):
+        return copy.deepcopy(self._taken_moves)
+
     def get_winner(self):
         stats = self.get_statistics()
         if stats[self.PLAYER_ONE] == stats[self.PLAYER_TWO]:
@@ -135,7 +172,7 @@ class Othello:
             self._current_player = self.PLAYER_ONE
 
     def _update_fringe(self, position):
-        (x, y) = position
+        # (x, y) = position
         for direction in self.DIRECTIONS:
             next_step = Othello._next_step(position, direction)
             if next_step is not None:
@@ -166,10 +203,8 @@ class Othello:
             self._board[row][column] = current_symbol
             for (row2, column2) in self._turning_stones[position]:
                 self._board[row2][column2] = current_symbol
-            print(str(row) + ": " + str(column))
             self._taken_moves[self._turn_nr] = self.COLUMN_NAMES[column] + str(row + 1)
             self._turn_nr += 1
-            print(self._taken_moves)
             self._fringe.remove(position)
             self._update_fringe(position)
             self._prepare_next_turn()
