@@ -77,7 +77,7 @@ class PlayerMonteCarlo2:
         if game_state.get_turn_nr() < 10:  # check whether start move match
             moves = game_state.get_available_start_tables()
             if len(moves) > 0:
-                return UtilMethods.translate_move_to_pair(moves[0])
+                return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
         winning_statistics = dict()
         own_symbol = game_state.get_current_player()
         possible_moves = game_state.get_available_moves()
