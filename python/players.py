@@ -124,15 +124,28 @@ class PlayerAlphaBetaPruning:
         return val
 
     def get_move(self, game_state: Othello):
-        best_val = PlayerAlphaBetaPruning.value(game_state, self.search_depth)
-        print(f"Best Val: {best_val}")
-        next_states = dict()
+        best_moves = dict()
         for move in game_state.get_available_moves():
             next_state = game_state.deepcopy()
             next_state.play_position(move)
-            next_states[move] = next_state
-        good_moves = list()
-        for move in next_states.keys():
-            if -1 * PlayerAlphaBetaPruning.value(next_states[move], self.search_depth) == best_val:
-                good_moves.append(move)
-        return good_moves[random.randrange(len(good_moves))]
+            result = -PlayerAlphaBetaPruning.value(next_state, self.search_depth -1)
+            if result not in best_moves.keys():
+                best_moves[result] = []
+            best_moves[result].append(move)
+        #print(best_moves)
+
+        best_move = max(best_moves.keys())
+
+        return best_moves[best_move][random.randrange(len(best_moves[best_move]))]
+
+#        best_val = PlayerAlphaBetaPruning.value(game_state, self.search_depth)
+#         next_states = dict()
+#         for move in game_state.get_available_moves():
+#             next_state = game_state.deepcopy()
+#             next_state.play_position(move)
+#             next_states[move] = next_state
+#         good_moves = list()
+#         for move in next_states.keys():
+#             if (- PlayerAlphaBetaPruning.value(next_states[move], self.search_depth -1)) == best_val:
+#                 good_moves.append(move)
+#         return good_moves[random.randrange(len(good_moves))]
