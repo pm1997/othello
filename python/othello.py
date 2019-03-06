@@ -59,6 +59,7 @@ class Othello:
         return available_moves
 
     def calculate_missing_start_moves(self):
+        """calculate the point symmetric moves of whole database"""
         if len(self._start_tables) == 0:
             self._init_start_tables()
 
@@ -84,6 +85,7 @@ class Othello:
                 f.write("%s\n" % csv_row)
 
     def _calculate_opposite_move(self, moves):
+        """calculate the point symmetric moves of one given game"""
         new_turns = list()
         for move in moves:
             (row, column) = UtilMethods.translate_move_to_pair(move)
