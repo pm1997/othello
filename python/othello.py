@@ -10,7 +10,7 @@ class Othello:
     PLAYER_ONE = 1
     PLAYER_TWO = 2
     PRINT_SYMBOLS = {EMPTY_CELL: " ", PLAYER_ONE: "B", PLAYER_TWO: "W", None: "None"}
-    COLUMN_NAMES = {0: "A", 1: "B", 2: "C", 3: "D", 4: "E", 5: "F", 6: "G", 7: "H", 8: "I"}
+    COLUMN_NAMES = {0: "a", 1: "b", 2: "c", 3: "d", 4: "e", 5: "f", 6: "g", 7: "h", 8: "i"}
 
     DIRECTIONS = {(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)}
 
@@ -27,7 +27,7 @@ class Othello:
 
     _start_tables = []
 
-    def init_start_tables(self):
+    def _init_start_tables(self):
         csv = pd.read_csv('start_moves.csv')
         self._start_tables = np.array(csv)
         # ########################################################
@@ -37,7 +37,7 @@ class Othello:
 
     def get_available_start_tables(self):
         if len(self._start_tables) == 0:
-            self.init_start_tables()
+            self._init_start_tables()
 
         turn_nr = self.get_turn_nr()
         available_moves = []
@@ -50,7 +50,7 @@ class Othello:
                     if taken_mv[turn] != move:
                         break
                 else:  # turn == turn_nr
-                    if same and move != "I8":
+                    if same and move != "i8":
                         available_moves.append(move)
                         break
                     else:
@@ -60,7 +60,7 @@ class Othello:
 
     def calculate_missing_start_moves(self):
         if len(self._start_tables) == 0:
-            self.init_start_tables()
+            self._init_start_tables()
 
         new_moves = list()
         header_length = len(self._start_tables[0])
@@ -92,7 +92,7 @@ class Othello:
                 row = abs(row) % 7
                 column -= 7
                 column = abs(column) % 7
-            new_turns.append(self.COLUMN_NAMES[column] + str(row +1 ))
+            new_turns.append(self.COLUMN_NAMES[column] + str(row + 1))
         print(f"old:{moves}")
         print(f"new:{new_turns}")
         return new_turns
