@@ -1,4 +1,7 @@
 import copy
+import numpy as np
+import pandas as pd
+from util import UtilMethods
 
 
 class Othello:
@@ -7,7 +10,7 @@ class Othello:
     PLAYER_ONE = 1
     PLAYER_TWO = 2
     PRINT_SYMBOLS = {EMPTY_CELL: " ", PLAYER_ONE: "B", PLAYER_TWO: "W", None: "None"}
-    COLUMN_NAMES = {0: "A", 1: "B", 2: "C", 3: "D", 4: "E", 5: "F", 6: "G", 7: "H"}
+    COLUMN_NAMES = {0: "a", 1: "b", 2: "c", 3: "d", 4: "e", 5: "f", 6: "g", 7: "h", 8: "i"}
 
     DIRECTIONS = {(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)}
 
@@ -19,6 +22,80 @@ class Othello:
 
     _fringe = set()
     _turning_stones = dict()
+    _taken_moves = dict()
+    _turn_nr = 0
+
+    _start_tables = []
+
+    def _init_start_tables(self):
+        csv = pd.read_csv('start_moves.csv')
+        self._start_tables = np.array(csv)
+        # ########################################################
+        # CAUTION: Call only once or on change of start tables ! #
+        # #  self.calculate_missing_start_moves()                #
+        # #########################################################
+
+    def get_available_start_tables(self):
+        if len(self._start_tables) == 0:
+            self._init_start_tables()
+
+        turn_nr = self.get_turn_nr()
+        available_moves = []
+        taken_mv = self.get_taken_mv()
+        for game in self._start_tables:
+            turn = 0
+            same = True
+            for move in game:
+                if turn < turn_nr:
+                    if taken_mv[turn] != move:
+                        break
+                else:  # turn == turn_nr
+                    if same and move != "i8":
+                        available_moves.append(move)
+                        break
+                    else:
+                        break
+                turn += 1
+        return available_moves
+
+    def calculate_missing_start_moves(self):
+        if len(self._start_tables) == 0:
+            self._init_start_tables()
+
+        new_moves = list()
+        header_length = len(self._start_tables[0])
+        header = list()
+        for i in range(header_length):
+            header.append(str(i))
+        new_moves.append(header)
+
+        for game in self._start_tables:
+            new_moves.append(self._calculate_opposite_move(game))
+            new_moves.append(game)
+        print(f"games:{new_moves}")
+        with open('start_moves.csv', 'w') as f:
+            for row in new_moves:
+                csv_row = ""
+                for turn in row:
+                    if len(csv_row):
+                        csv_row += "," + turn
+                    else:
+                        csv_row = turn
+                f.write("%s\n" % csv_row)
+
+    def _calculate_opposite_move(self, moves):
+        new_turns = list()
+        for move in moves:
+            (row, column) = UtilMethods.translate_move_to_pair(move)
+            if column < 8 and row < 7:
+                row -= 7
+                row = abs(row) % 7
+                column -= 7
+                column = abs(column) % 7
+            new_turns.append(self.COLUMN_NAMES[column] + str(row + 1))
+        print(f"old:{moves}")
+        print(f"new:{new_turns}")
+        return new_turns
 
     def deepcopy(self):
         copied_game = Othello()
@@ -99,6 +176,12 @@ class Othello:
     def get_board(self):
         return copy.deepcopy(self._board)
 
+    def get_turn_nr(self):
+        return self._turn_nr
+
+    def get_taken_mv(self):
+        return copy.deepcopy(self._taken_moves)
+
     def get_winner(self):
         stats = self.get_statistics()
         if stats[self.PLAYER_ONE] == stats[self.PLAYER_TWO]:
@@ -111,9 +194,9 @@ class Othello:
     def utility(self, player):
         winner = self.get_winner()
         if winner is None:
-            return 0;
+            return 0
         elif winner == player:
-            return 1;
+            return 1
         else:
             return -1
 
@@ -133,7 +216,7 @@ class Othello:
             self._current_player = self.PLAYER_ONE
 
     def _update_fringe(self, position):
-        (x, y) = position
+        # (x, y) = position
         for direction in self.DIRECTIONS:
             next_step = Othello._next_step(position, direction)
             if next_step is not None:
@@ -147,8 +230,8 @@ class Othello:
 
     @staticmethod
     def _next_step(position, direction):
-        (x, y), (x_step, y_step) = position, direction
-        new_position = (new_x, new_y) = (x + x_step, y + y_step)
+        (y, x), (y_step, x_step) = position, direction
+        new_position = (new_y, new_x) = (y + y_step, x + x_step)
         if 0 <= new_x < 8 and 0 <= new_y < 8:
             return new_position
         else:
@@ -159,11 +242,13 @@ class Othello:
 
     def play_position(self, position):
         if position in self.get_available_moves():
-            (x, y) = position
+            (row, column) = position
             current_symbol = self._current_player
-            self._board[x][y] = current_symbol
-            for (x, y) in self._turning_stones[position]:
-                self._board[x][y] = current_symbol
+            self._board[row][column] = current_symbol
+            for (row2, column2) in self._turning_stones[position]:
+                self._board[row2][column2] = current_symbol
+            self._taken_moves[self._turn_nr] = self.COLUMN_NAMES[column] + str(row + 1)
+            self._turn_nr += 1
             self._fringe.remove(position)
             self._update_fringe(position)
             self._prepare_next_turn()
