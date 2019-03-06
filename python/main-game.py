@@ -1,17 +1,18 @@
 from othello import Othello
 from util import UtilMethods
-from players import PlayerMonteCarlo, PlayerHuman, PlayerRandom, PlayerAlphaBetaPruning
+from players import PlayerMonteCarlo, PlayerMonteCarlo2, PlayerMonteCarlo3, PlayerHuman, PlayerRandom, PlayerAlphaBetaPruning
 import time
-
 
 print("Welcome to Othello")
 
 while True:
 
-    available_players = []
+    available_players = list()
     available_players.append(("Human Player", PlayerHuman))
     available_players.append(("AI Player - Random", PlayerRandom))
     available_players.append(("AI Player - Monte Carlo (simple)", PlayerMonteCarlo))
+    available_players.append(("AI Player - Monte Carlo (improved)", PlayerMonteCarlo2))
+    available_players.append(("AI Player - Monte Carlo (machine learning)", PlayerMonteCarlo3))
     available_players.append(("AI Player - Alpha-Beta Pruning", PlayerAlphaBetaPruning))
 
     selection_player_one = UtilMethods.select_one(available_players, f"Select Mode for Player {Othello.PRINT_SYMBOLS[Othello.PLAYER_ONE]}")
