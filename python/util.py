@@ -1,42 +1,78 @@
+'''
+This file contains various utility methods.
+E.g. to ask the user for a certain selection
+'''
+
 class UtilMethods:
+	'''
+	Class contains static Utility Methods
+	'''
     @staticmethod
     def select_one(possibilities, description):
-        print(description)
+        '''
+		Asks the user to select one of the possibilities after displaying description as prompt
+		'''
+		# Print the description as prompt
+		print(description)
+		# Display all possibilities
+		# Iterate over the possibilities
         for i in range(len(possibilities)):
+			# Access the description to each possibility
             (object_description, _) = possibilities[i]
+			# Print it with the number it will be represented by
             print(f"{i}: {object_description}")
+		# Store whether there is already a valid selection
         valid_selection = False
+		# Store the selction value
         selection = -1  # invalid value
-        while not valid_selection:
+        # Continue to ask for a selection as long as there is no valid one
+		while not valid_selection:
             try:
-                selection = int(input("Please enter the number for your selection\n"))
+                # Prompt the user to enter a number representing her selection
+				selection = int(input("Please enter the number for your selection\n"))
             except ValueError:
-                print("Invalid selection! Please enter an Integer")
+                # Inform the user to enter an integer
+				print("Invalid selection! Please enter an Integer")
                 continue
 
-            if 0 <= selection < len(possibilities):
+            # The selction is valid if it is between 0 and the number of avaliable possibilities
+			if 0 <= selection < len(possibilities):
                 valid_selection = True
             else:
-                print("Invalid selection! Please enter one of the listed options")
+                # Inform the user on the fact, that his selction was invalid
+				print("Invalid selection! Please enter one of the listed options")
+		# Get the selcted Object
         (_, object1) = possibilities[selection]
+		# Return the Object
         return object1
 
     @staticmethod
     def get_integer_selection(description, min_value, max_value):
-        print(description)
+        '''
+		Asks the user to select an integer between min_value and max_value
+		'''
+		# Print the description as prompt
+		print(description)
+		# Initially there is no valid selection
         valid_selection = False
+		# Init the selection
         selection = min_value - 1  # invalid selection
-        while not valid_selection:
+        # Continue to prompt user while there is no valid selction
+		while not valid_selection:
             try:
-                selection = int(input(f"Please enter a number between {min_value} and {max_value}\n"))
+                # Ask the user for an Integer input
+				selection = int(input(f"Please enter a number between {min_value} and {max_value}\n"))
             except ValueError:
-                print("Invalid selection! Please enter an Integer")
+                # Inform the user on the fact, that the entered value was not an Integer
+				print("Invalid selection! Please enter an Integer")
                 continue
-            if min_value <= selection <= max_value:
+            # Check whether the given value is in the range
+			if min_value <= selection <= max_value:
                 valid_selection = True
             else:
                 print("Invalid selection! Number not between the specified bounds")
-        return selection
+        # Return the Selection
+		return selection
 
     @staticmethod
     def translate_move_to_pair(move):
