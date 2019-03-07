@@ -117,7 +117,7 @@ class Othello:
         print(f"old:{moves}")
         print(f"new:{new_turns}")
         return new_turns
-    
+
     def deepcopy(self):
         """
         Returns a deepcopy of the game.
@@ -195,7 +195,7 @@ class Othello:
         board_string += "\n"
         board_string += "  +" + 8 * "---+" + "\n"
         for row in range(8):
-            board_string += f"{row+1} |"
+            board_string += f"{row + 1} |"
             for col in range(8):
                 board_string += f" {self.PRINT_SYMBOLS[self._board[row][col]]} |"
             board_string += "\n"
