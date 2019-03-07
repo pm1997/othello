@@ -3,7 +3,6 @@ import math
 
 
 class Database:
-
     _data = list()
 
     def init_database(self):
@@ -25,7 +24,7 @@ class Database:
 
     @staticmethod
     def translate_move_to_array(move):
-        column_names = {"a": 0, "b": 1, "c": 2,  "d": 3, "e": 4, "f": 5, "g": 6, "h": 7, "i": 8}
+        column_names = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7, "i": 8}
         (row, column) = move
         position = 8 * row + column_names[column]
         return position
