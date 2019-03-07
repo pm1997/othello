@@ -1,3 +1,7 @@
+'''
+This file manges the main game.
+'''
+
 from othello import Othello
 from util import UtilMethods
 from players import PlayerMonteCarlo, PlayerMonteCarlo2, PlayerMonteCarlo3, PlayerHuman, PlayerRandom, PlayerAlphaBetaPruning
@@ -5,38 +9,59 @@ import time
 
 print("Welcome to Othello")
 
+# Continue to play while the user runs the programm
 while True:
 
-    available_players = list()
+    # Create a list of Player Types
+	available_players = list()
+	# Use pairs of the form (description: String, class: Player) to store a player type
     available_players.append(("Human Player", PlayerHuman))
     available_players.append(("AI Player - Random", PlayerRandom))
     available_players.append(("AI Player - Monte Carlo (simple)", PlayerMonteCarlo))
     available_players.append(("AI Player - Monte Carlo (improved)", PlayerMonteCarlo2))
     available_players.append(("AI Player - Monte Carlo (machine learning)", PlayerMonteCarlo3))
     available_players.append(("AI Player - Alpha-Beta Pruning", PlayerAlphaBetaPruning))
-
+	
+	# Ask the user to select a type of player as first player.
     selection_player_one = UtilMethods.select_one(available_players, f"Select Mode for Player {Othello.PRINT_SYMBOLS[Othello.PLAYER_ONE]}")
-    player_one = selection_player_one()
-    selection_player_two = UtilMethods.select_one(available_players,
+    # Initialize a new player of the selected type and store it.
+	player_one = selection_player_one()
+    # Ask the user to select a type of player as second player.
+	selection_player_two = UtilMethods.select_one(available_players,
                                                   f"Select Mode for Player {Othello.PRINT_SYMBOLS[Othello.PLAYER_TWO]}")
-    player_two = selection_player_two()
+    # Initialize a new player of the selected type and store it.
+	player_two = selection_player_two()
 
-    players = {Othello.PLAYER_ONE: player_one, Othello.PLAYER_TWO: player_two}
+    # Store the players in a dict with the internal player codes as key to allow easy access and maintaining the correct order
+	players = {Othello.PLAYER_ONE: player_one, Othello.PLAYER_TWO: player_two}
 
-    game = Othello()
+    # Create a new game state
+	game = Othello()
+	# Initialize it to start a new game
     game.init_game()
 
+	# Print the board
     game.print_board()
 
-    start = time.time()
+    # store the start time
+	start = time.time()
+	# While the game is still running cuntinue to make turns
     while not game.game_is_over():
+		# Get the symbol for the current player
         current_player = game.get_current_player()
+		# Get the Player object assigned to that player
         player_object = players[current_player]
+		# Ask the Player to calculate it's move based on the current state
         move = player_object.get_move(game)
+		# Play the move calculated by the player
         game.play_position(move)
+		# Print the new state of the board
         game.print_board()
+	# calculate the playing time
     duration = time.time() - start
+	# Inform the User on the fact that the game is over
     print("Game is over")
+	# Print the playing time
     print(f"Total duration: {duration} seconds")
+	# Print the winner of the game
     print(f"Winner is {Othello.PRINT_SYMBOLS[game.get_winner()]}")
-    exit(0)
