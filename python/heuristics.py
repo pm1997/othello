@@ -1,6 +1,6 @@
-'''
+"""
 This file contains heuristics used to evaluate a certain game state
-'''
+"""
 
 from othello import Othello
 
@@ -17,13 +17,13 @@ OTHER_FIELDS = ALL_FIELDS - CENTRAL_FIELDS - CORNERS - EDGES - X_FIELDS
 
 
 def get_sign(current_player, field_value):
-    '''
-	Returns 
-	  1: if the field value indicates the field is owned by the player
-	  0: if the field value is unknown
-	 -1: If the field value indicates the field is owned by the other player
-	'''
-	if field_value == current_player:
+    """
+    Returns 
+      1: if the field value indicates the field is owned by the player
+      0: if the field value is unknown
+     -1: If the field value indicates the field is owned by the other player
+    """
+    if field_value == current_player:
         return 1
     elif field_value == Othello.other_player(current_player):
         return -1
@@ -32,11 +32,11 @@ def get_sign(current_player, field_value):
 
 
 class Nijssen07Heuristic:
-	'''
-	Is the heuristic proposed by Nijssen's paper from 2007
-	'''
+    """
+    Is the heuristic proposed by Nijssen's paper from 2007
+    """
     # Create a dictionary and assign each field it's value
-	values = dict()
+    values = dict()
     for position in CORNERS:
         values[position] = 5
     for position in X_FIELDS:
@@ -50,18 +50,18 @@ class Nijssen07Heuristic:
 
     @staticmethod
     def heuristic(current_player, game_state: Othello):
-		'''
-		Calculates the value of game_state for current_player
-		'''
+        """
+        Calculates the value of game_state for current_player
+        """
         # Without any information the value is 0
-		value = 0
-		# Get the board
+        value = 0
+        # Get the board
         board = game_state.get_board()
-		# Get the values assigned to each field
+        # Get the values assigned to each field
         weight_dict = Nijssen07Heuristic.values
-		# Iterate over the fields with an assigned value
+        # Iterate over the fields with an assigned value
         for (x, y) in Nijssen07Heuristic.values.keys():
-			# Add the fields value to the heuristic value if it us owned by the current player. SUbtract it otherwise
+            # Add the fields value to the heuristic value if it us owned by the current player. Subtract it otherwise
             value += get_sign(current_player, board[x][y]) * weight_dict[(x, y)]
         # Return the Calculated value 
-		return value
+        return value
