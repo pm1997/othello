@@ -1,6 +1,6 @@
-'''
-This file contains the avaliable player AIs
-'''
+"""
+This file contains the available player AIs
+"""
 
 from othello import Othello
 from heuristics import Nijssen07Heuristic
@@ -12,106 +12,109 @@ from machine_learning import Database
 
 
 class PlayerRandom:
-	'''
-	The PlayerRandom plays a random move taken from the set of legal moves
-	'''
+    """
+    The PlayerRandom plays a random move taken from the set of legal moves
+    """
+
     @staticmethod
     def get_move(game_state: Othello):
-		'''
-		Return the selected move for the current state
-		'''
+        """
+        Return the selected move for the current state
+        """
         # Get the legal moves
-		possible_moves = game_state.get_available_moves()
-		# Return a Random move
+        possible_moves = game_state.get_available_moves()
+        # Return a Random move
         return possible_moves[random.randrange(len(possible_moves))]
 
 
 class PlayerHuman:
-	'''
-	The PlayerHuman asks the user to select each move
-	'''
+    """
+    The PlayerHuman asks the user to select each move
+    """
+
     @staticmethod
     def get_move(game_state: Othello):
-		'''
-		Asks the user for a move and returns the selection
-		'''
-        # Create a datastructure to use with UtilMethods.select_one
-		possibilities = []
+        """
+        Asks the user for a move and returns the selection
+        """
+        # Create a data structure to use with UtilMethods.select_one
+        possibilities = []
         for move in game_state.get_available_moves():
             (row, col) = move
-            description = f"({Othello.COLUMN_NAMES[col]}{row+1})"
+            description = f"({Othello.COLUMN_NAMES[col]}{row + 1})"
             possibilities.append((description, move))
-		# Return the users selection
+        # Return the users selection
         return UtilMethods.select_one(possibilities, "Select your move:")
 
 
 class PlayerMonteCarlo:
-	'''
-	The PlayerMonteCarlo determines the best move based on the simplest form of the MonteCarlo-Algorithm 
-	'''
+    """
+    The PlayerMonteCarlo determines the best move based on the simplest form of the MonteCarlo-Algorithm 
+    """
+
     def __init__(self):
-		'''
-		Initialize the Player
-		'''
+        """
+        Initialize the Player
+        """
         # Ask the user to enter the number of random games per tur
-		self.big_n = UtilMethods.get_integer_selection("Select Number of Simulated Games", 100, sys.maxsize)
+        self.big_n = UtilMethods.get_integer_selection("Select Number of Simulated Games", 100, sys.maxsize)
 
     @staticmethod
     def play_random_game(own_symbol, simulated_game):
-		'''
-		Play the given simulated_game to an end and return the first move and whether the game was won or not
-		'''
+        """
+        Play the given simulated_game to an end and return the first move and whether the game was won or not
+        """
         # Select a random move based on the RandomPlayer and store it
-		first_move = PlayerRandom.get_move(simulated_game)
+        first_move = PlayerRandom.get_move(simulated_game)
         # Play the selected move
-		simulated_game.play_position(first_move)
-		# Continue to Play until the game is over
+        simulated_game.play_position(first_move)
+        # Continue to Play until the game is over
         while not simulated_game.game_is_over():
             # Get a random move
-			move = PlayerRandom.get_move(simulated_game)
-			# Play the random move
+            move = PlayerRandom.get_move(simulated_game)
+            # Play the random move
             simulated_game.play_position(move)
         # Decide whether the game was won
-		won = 1 if simulated_game.get_winner() == own_symbol else 0
+        won = 1 if simulated_game.get_winner() == own_symbol else 0
         # Return the first move and whether the game was won or not
-		return first_move, won
+        return first_move, won
 
     def get_move(self, game_state: Othello):
-		'''
-		Get the player's selection
-		'''
+        """
+        Get the player's selection
+        """
         # Create a dictionary to store information on won/lost ratios
-		winning_statistics = dict()
+        winning_statistics = dict()
         # Get the own symbol
-		own_symbol = game_state.get_current_player()
-		# Get the set of legal moves
+        own_symbol = game_state.get_current_player()
+        # Get the set of legal moves
         possible_moves = game_state.get_available_moves()
         # Add a pair of (won_games, times_played) to the dictionary for each legal move
-		for move in possible_moves:
+        for move in possible_moves:
             winning_statistics[move] = (0, 1)  # set games played to 1 to avoid division by zero error
 
         # Simulate big_n games
-		for i in range(self.big_n):
+        for i in range(self.big_n):
             # Copy the current game state
-			simulated_game = game_state.deepcopy()
-			# Play one random game and access the returned information
+            simulated_game = game_state.deepcopy()
+            # Play one random game and access the returned information
             first_played_move, won = self.play_random_game(own_symbol, simulated_game)
-			# Access the statistics stored for the move selected in the random game
+            # Access the statistics stored for the move selected in the random game
             (won_games, times_played) = winning_statistics[first_played_move]
-			# Increment the counters accordingly
+            # Increment the counters accordingly
             winning_statistics[first_played_move] = (won_games + won, times_played + 1)
 
         # Reduce the pair of (won_games, times_played) to a winning probability
-		for single_move in winning_statistics:
+        for single_move in winning_statistics:
             # Access the values
-			(games_won, times_played) = winning_statistics[single_move]
-			# Calculate the fraction
+            (games_won, times_played) = winning_statistics[single_move]
+            # Calculate the fraction
             winning_statistics[single_move] = games_won / times_played
 
         # Select the move with the maximum probability of winning
-		selected_move = max(winning_statistics.items(), key=operator.itemgetter(1))[0]
+        selected_move = max(winning_statistics.items(), key=operator.itemgetter(1))[0]
         # Return the selected move
-		return selected_move
+        return selected_move
 
 
 class PlayerMonteCarlo2:
@@ -214,7 +217,7 @@ class PlayerAlphaBetaPruning:
         for move in game_state.get_available_moves():
             next_state = game_state.deepcopy()
             next_state.play_position(move)
-            val = max({val, -1 * PlayerAlphaBetaPruning.value(next_state, depth-1, -beta, -alpha)})
+            val = max({val, -1 * PlayerAlphaBetaPruning.value(next_state, depth - 1, -beta, -alpha)})
             if val >= beta:
                 return val
             alpha = max({val, alpha})
