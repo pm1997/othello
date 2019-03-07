@@ -16,6 +16,9 @@ class Database:
     #  ###################################################
     @staticmethod
     def _reset_database():
+        """
+        Reset stored weight factors to 0
+        """
         data = np.zeros(shape=(17, 64, 2))
 
         with open("ml_moves.csv", 'w') as outfile:
