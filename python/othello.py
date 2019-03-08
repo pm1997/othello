@@ -47,6 +47,10 @@ class Othello:
     _start_tables = []
 
     def _init_start_tables(self):
+        """
+        read start tables from csv file 'start_moves.csv'
+        and store them in _start_tables
+        """
         csv = pd.read_csv('start_moves.csv')
         self._start_tables = np.array(csv)
         # ########################################################
@@ -55,6 +59,10 @@ class Othello:
         # #########################################################
 
     def get_available_start_tables(self):
+        """
+        search moves with identical game tree and get next element of these start table game tree
+        :return: list of available moves
+        """
         if len(self._start_tables) == 0:
             self._init_start_tables()
 
@@ -63,13 +71,13 @@ class Othello:
         taken_mv = self.get_taken_mv()
         for game in self._start_tables:
             turn = 0
-            same = True
             for move in game:
                 if turn < turn_nr:
                     if taken_mv[turn] != move:
                         break
                 else:  # turn == turn_nr
-                    if same and move != "i8":
+                    # if start sequence is finished and shorter than longest sequence the gab is filled with "i8" fields
+                    if move != "i8":  # i8 = invalid field
                         available_moves.append(move)
                         break
                     else:
@@ -83,16 +91,22 @@ class Othello:
             self._init_start_tables()
 
         new_moves = list()
+
+        # add first row in new start table
+        # first row == header = 0,1,2, ..
         header_length = len(self._start_tables[0])
         header = list()
         for i in range(header_length):
             header.append(str(i))
         new_moves.append(header)
 
+        # calculate for all start sequences in start table
         for game in self._start_tables:
+            # add move and opposite move to new start table
             new_moves.append(self._calculate_opposite_move(game))
             new_moves.append(game)
-        print(f"games:{new_moves}")
+
+        # store new start table in file 'start_moves.csv'
         with open('start_moves.csv', 'w') as f:
             for row in new_moves:
                 csv_row = ""
@@ -107,8 +121,11 @@ class Othello:
         """calculate the point symmetric moves of one given game"""
         new_turns = list()
         for move in moves:
+            # move is a char and a int , eg. 'd3'
+            # translate this move to a x and y coordinate
             (row, column) = UtilMethods.translate_move_to_pair(move)
             if column < 8 and row < 7:
+                # mirror row and column at point 3.5,3.5 => middle of board
                 row -= 7
                 row = abs(row) % 7
                 column -= 7
@@ -238,9 +255,15 @@ class Othello:
         return copy.deepcopy(self._board)
 
     def get_turn_nr(self):
+        """
+        :return: actual turn number
+        """
         return self._turn_nr
 
     def get_taken_mv(self):
+        """
+        :return: deepcopy of list of taken moves like ["d2","e3"]
+        """
         return copy.deepcopy(self._taken_moves)
 
     def get_winner(self):
