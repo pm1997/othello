@@ -3,6 +3,8 @@ This file contains various utility methods.
 E.g. to ask the user for a certain selection
 """
 
+from constants import COLUMN_NUMBERS
+
 
 class UtilMethods:
     """
@@ -77,7 +79,29 @@ class UtilMethods:
         return selection
 
     @staticmethod
+    def get_boolean_selection(description):
+        """
+        Asks the user to enter a yes/no value
+        """
+        # Print the description as prompt
+        print(description)
+        # Continue to prompt user while there is no valid selection
+        while True:
+            # Ask the user for an String input of a boolean value
+            entered_string = input(f"Please enter y/n\n")
+            # Check whether the given value is in the range
+            if entered_string.lower() in {"yes", "y", "j", "ja", "1"}:
+                return True
+            elif entered_string.lower() in {"no", "n", "nein", "0"}:
+                return False
+            else:
+                print("Invalid selection! Enter yes / no")
+
+    @staticmethod
     def translate_move_to_pair(move):
-        column_numbers = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7, "i": 8}
-        result = (int(move[1]) - 1), column_numbers[move[0]]
+        """
+        :param move: given move like "a2"
+        :return: pair of row, column like 1, 0
+        """
+        result = (int(move[1]) - 1), COLUMN_NUMBERS[move[0]]
         return result
