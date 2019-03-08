@@ -121,16 +121,6 @@ class PlayerMonteCarlo2:
     def __init__(self):
         self.big_n = UtilMethods.get_integer_selection("Select Number of Simulated Games", 100, sys.maxsize)
 
-    @staticmethod
-    def play_random_game(own_symbol, simulated_game):
-        first_move = PlayerRandom.get_move(simulated_game)
-        simulated_game.play_position(first_move)
-        while not simulated_game.game_is_over():
-            move = PlayerRandom.get_move(simulated_game)
-            simulated_game.play_position(move)
-        won = 1 if simulated_game.get_winner() == own_symbol else 0
-        return first_move, won
-
     def get_move(self, game_state: Othello):
         if game_state.get_turn_nr() < 10:  # check whether start move match
             moves = game_state.get_available_start_tables()
@@ -144,7 +134,7 @@ class PlayerMonteCarlo2:
 
         for i in range(self.big_n):
             simulated_game = game_state.deepcopy()
-            first_played_move, won = self.play_random_game(own_symbol, simulated_game)
+            first_played_move, won = PlayerMonteCarlo.play_random_game(own_symbol, simulated_game)
             (won_games, times_played) = winning_statistics[first_played_move]
             winning_statistics[first_played_move] = (won_games + won, times_played + 1)
 
