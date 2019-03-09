@@ -1,7 +1,6 @@
 """
 This file contains the available player AIs
 """
-
 from othello import Othello
 from heuristics import Nijssen07Heuristic
 from util import UtilMethods
@@ -9,6 +8,8 @@ import random
 import sys
 import operator
 from machine_learning import Database
+from constants import COLUMN_NAMES
+from start_tables import StartTables
 
 
 class PlayerRandom:
@@ -41,7 +42,7 @@ class PlayerHuman:
         possibilities = []
         for move in game_state.get_available_moves():
             (row, col) = move
-            description = f"({Othello.COLUMN_NAMES[col]}{row + 1})"
+            description = f"({COLUMN_NAMES[col]}{row + 1})"
             possibilities.append((description, move))
         # Return the users selection
         return UtilMethods.select_one(possibilities, "Select your move:")
@@ -118,12 +119,15 @@ class PlayerMonteCarlo:
 
 
 class PlayerMonteCarlo2:
+
+    start_tables = StartTables()
+
     def __init__(self):
         self.big_n = UtilMethods.get_integer_selection("Select Number of Simulated Games", 100, sys.maxsize)
 
     def get_move(self, game_state: Othello):
         if game_state.get_turn_nr() < 10:  # check whether start move match
-            moves = game_state.get_available_start_tables()
+            moves = self.start_tables.get_available_start_tables(game_state)
             if len(moves) > 0:
                 return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
         winning_statistics = dict()
@@ -148,6 +152,7 @@ class PlayerMonteCarlo2:
 
 class PlayerMonteCarlo3:
     db = Database()
+    start_tables = StartTables()
 
     def __init__(self):
         self.big_n = UtilMethods.get_integer_selection("Select Number of Simulated Games", 100, sys.maxsize)
@@ -166,7 +171,7 @@ class PlayerMonteCarlo3:
 
     def get_move(self, game_state: Othello):
         if game_state.get_turn_nr() < 10:  # check whether start move match
-            moves = game_state.get_available_start_tables()
+            moves = self.start_tables.get_available_start_tables(game_state)
             if len(moves) > 0:
                 return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
         winning_statistics = dict()
