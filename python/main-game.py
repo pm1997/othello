@@ -7,6 +7,7 @@ from util import UtilMethods
 from players import PlayerMonteCarlo, PlayerMonteCarlo2, PlayerMonteCarlo3, PlayerHuman, PlayerRandom, \
     PlayerAlphaBetaPruning
 import time
+from constants import PLAYER_ONE, PLAYER_TWO, PRINT_SYMBOLS
 
 print("Welcome to Othello")
 
@@ -22,17 +23,17 @@ available_players.append(("AI Player - Alpha-Beta Pruning", PlayerAlphaBetaPruni
 
 # Ask the user to select a type of player as first player.
 selection_player_one = UtilMethods.select_one(available_players,
-                                              f"Select Mode for Player {Othello.PRINT_SYMBOLS[Othello.PLAYER_ONE]}")
+                                              f"Select Mode for Player {PRINT_SYMBOLS[PLAYER_ONE]}")
 # Initialize a new player of the selected type and store it.
 player_one = selection_player_one()
 # Ask the user to select a type of player as second player.
 selection_player_two = UtilMethods.select_one(available_players,
-                                              f"Select Mode for Player {Othello.PRINT_SYMBOLS[Othello.PLAYER_TWO]}")
+                                              f"Select Mode for Player {PRINT_SYMBOLS[PLAYER_TWO]}")
 # Initialize a new player of the selected type and store it.
 player_two = selection_player_two()
 
 # Store the players in a dict with the internal player codes as key to allow easy access and maintaining the correct order
-players = {Othello.PLAYER_ONE: player_one, Othello.PLAYER_TWO: player_two}
+players = {PLAYER_ONE: player_one, PLAYER_TWO: player_two}
 
 # Create a new game state
 game = Othello()
@@ -63,4 +64,4 @@ print("Game is over")
 # Print the playing time
 print(f"Total duration: {duration} seconds")
 # Print the winner of the game
-print(f"Winner is {Othello.PRINT_SYMBOLS[game.get_winner()]}")
+print(f"Winner is {PRINT_SYMBOLS[game.get_winner()]}")
