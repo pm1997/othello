@@ -150,7 +150,7 @@ class PlayerMonteCarlo2:
         return selected_move
 
 
-class PlayerMonteCarlo3:
+class PlayerMachineLearning:
     db = Database()
     start_tables = StartTables()
 
@@ -158,39 +158,55 @@ class PlayerMonteCarlo3:
         self.big_n = UtilMethods.get_integer_selection("Select Number of Simulated Games", 100, sys.maxsize)
         self.db.init_database()
 
-    @staticmethod
-    def play_weighted_random_game(own_symbol, simulated_game):
-        print(f"TODO: {own_symbol}, {simulated_game}")
-        # first_move = PlayerRandom.get_move(simulated_game)
-        # simulated_game.play_position(first_move)
-        # while not simulated_game.game_is_over():
-        #     move = PlayerRandom.get_move(simulated_game)
-        #     simulated_game.play_position(move)
-        # won = 1 if simulated_game.get_winner() == own_symbol else 0
-        # return first_move, won
+    def get_weighted_random(self, possible_moves, turn_nr):
+        prob_sum = 0.0
+        for move in possible_moves:
+            prob_sum += self.db.get_likelihood(move, turn_nr)
+
+        chose = random.uniform(0.0, prob_sum)
+
+        move_nr = 0
+        prob_sum = 0.0
+
+        for move in possible_moves:
+            move_nr += 1
+            prob_sum += self.db.get_likelihood(move, turn_nr)
+            if prob_sum >= chose:
+                return move
+        return possible_moves[-1]
+
+    def play_weighted_random_game(self, own_symbol, simulated_game):
+        possible_moves = simulated_game.get_available_moves()
+        first_move = self.get_weighted_random(possible_moves, simulated_game.get_turn_nr())
+        simulated_game.play_position(first_move)
+        while not simulated_game.game_is_over():
+            possible_moves2 = simulated_game.get_available_moves()
+            move = self.get_weighted_random(possible_moves2, simulated_game.get_turn_nr())
+            simulated_game.play_position(move)
+        won = 1 if simulated_game.get_winner() == own_symbol else 0
+        return won, simulated_game.get_taken_mv()
 
     def get_move(self, game_state: Othello):
-        if game_state.get_turn_nr() < 10:  # check whether start move match
-            moves = self.start_tables.get_available_start_tables(game_state)
-            if len(moves) > 0:
-                return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
-        winning_statistics = dict()
+        # if game_state.get_turn_nr() < 10:  # check whether start move match
+        #     moves = self.start_tables.get_available_start_tables(game_state)
+        #     if len(moves) > 0:
+        #         return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
         own_symbol = game_state.get_current_player()
         possible_moves = game_state.get_available_moves()
-        for move in possible_moves:
-            winning_statistics[move] = (0, 1)  # set games played to 1 to avoid division by zero error
+        turn_nr = game_state.get_turn_nr()
 
         for i in range(self.big_n):
             simulated_game = game_state.deepcopy()
-            first_played_move, won = PlayerMonteCarlo.play_random_game(own_symbol, simulated_game)
-            (won_games, times_played) = winning_statistics[first_played_move]
-            winning_statistics[first_played_move] = (won_games + won, times_played + 1)
+            won, played_moves = self.play_weighted_random_game(own_symbol, simulated_game)
+            self.db.update_all_weights(played_moves, won)
 
-        for single_move in winning_statistics:
-            (games_won, times_played) = winning_statistics[single_move]
-            winning_statistics[single_move] = games_won / times_played
+        self.db.store_database()
 
-        selected_move = max(winning_statistics.items(), key=operator.itemgetter(1))[0]
+        best_moves = dict()
+        for move in possible_moves:
+            best_moves[move] = self.db.get_likelihood(move, turn_nr)
+
+        selected_move = max(best_moves.items(), key=operator.itemgetter(1))[0]
         return selected_move
 
 
