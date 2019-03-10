@@ -259,6 +259,23 @@ class Othello:
         """
         return list(self._turning_stones.keys())
 
+    def set_available_moves(self, moves: list):
+        """
+        Function will set the list of Elements as long as they are in the set right now
+        """
+        # Create a temp dict
+        new_moves = dict()
+        # Iterate over the moves passed to the function
+        for move in moves:
+            # Check whether the move is a legal move right now
+            if move in self._turning_stones:
+                # Add it to the temp dict
+                new_moves[move] = self._turning_stones[move]
+        # Check whether there are any moves in new-moves
+        if len(new_moves) > 0:
+            # Set the moves
+            self._turning_stones = new_moves
+
     def play_position(self, position):
         """
         Play the given position as a move. Returns False if the move is illegal
