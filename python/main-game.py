@@ -8,7 +8,9 @@ from players import PlayerMonteCarlo, PlayerMonteCarlo2, PlayerMachineLearning, 
     PlayerAlphaBetaPruning
 import time
 from constants import PLAYER_ONE, PLAYER_TWO, PRINT_SYMBOLS
-
+# from machine_learning import Database
+# db = Database()
+# db._reset_database()
 print("Welcome to Othello")
 
 # Create a list of Player Types
