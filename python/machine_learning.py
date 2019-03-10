@@ -34,7 +34,7 @@ class Database:
         (row, column) = move
         if row in {"a", "b", "c", "d", "e", "f", "g", "h", "i"}:
             column_names = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7, "i": 8}
-            return 8 * column_names[row] + column_names - 1
+            return 8 * column_names[row] + column - 1
 
         position = 8 * row + column
         return position
@@ -60,7 +60,7 @@ class Database:
 
     def update_all_weights(self, moves, won):
         turn_nr = 0
-        for move in moves:
+        for _ in moves:
             m1 = UtilMethods.translate_move_to_pair(moves[turn_nr])
             position = self.translate_move_to_array(m1)
             self.update_weights(turn_nr, position, won)
