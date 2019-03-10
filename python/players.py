@@ -59,9 +59,31 @@ class PlayerMonteCarlo:
         """
         Initialize the Player
         """
-        # Ask the user to enter the number of random games per tur
-        self.big_n = UtilMethods.get_integer_selection("Select Number of Simulated Games", 100, sys.maxsize)
-        self.use_start_lib = UtilMethods.get_boolean_selection("Do you want to use the start library?")
+        # Ask the user to enter the number of random games per turn
+        self.big_n = UtilMethods.get_integer_selection("[Player MonteCarlo] Select Number of Simulated Games", 100, sys.maxsize)
+        # Ask the userto determine whether to use the start library
+        self.use_start_lib = UtilMethods.get_boolean_selection("[Player MonteCarlo] Do you want to use the start library?")
+        # Check whether to use the preprocessor
+        self.use_preprocessor_fixed = UtilMethods.get_boolean_selection("[Player MonteCarlo] Do you want to use the fixed length preprocessor?")
+        if self.use_preprocessor_fixed:
+            self.preprocessor_fixed_Ns = self.big_n = UtilMethods.get_integer_selection("[Player MonteCarlo]>>[FixedLen Preprocessor] Select Number of moves passing through preprocessor", 1, 64)
+
+    @staticmethod
+    def preprocess_fixed(game_state: Othello, number_of_elements):
+        # Create Dict to store the value of every move
+        ratings = dict()
+        # Iterate over the moves to calculate each moves's value
+        for move in game_state.get_available_moves():
+            # Create a copy of the game_state to be able to manipulate it without side effects
+            copy_of_state = game_state.deepcopy()
+            # Play the move to evaluate the value of the game after making the move
+            copy_of_state.play_position(move)
+            # Get the value of the current state
+            ratings[move] = Nijssen07Heuristic.heuristic(game_state.get_current_player(), copy_of_state)
+        # Sort the dict by value
+        ratings = sorted(ratings.items(), key=operator.itemgetter(1))
+        game_state.set_available_moves(ratings[:number_of_elements][0])
+
 
     @staticmethod
     def play_random_game(own_symbol, simulated_game):
@@ -96,6 +118,10 @@ class PlayerMonteCarlo:
         winning_statistics = dict()
         # Get the own symbol
         own_symbol = game_state.get_current_player()
+        # Check whether to preprocess the available moves
+        if self.use_preprocessor_fixed:
+            # Preprocess the avaliable moves
+            PlayerMonteCarlo.preprocess_fixed(game_state, self.preprocessor_fixed_Ns)
         # Get the set of legal moves
         possible_moves = game_state.get_available_moves()
         # Add a pair of (won_games, times_played) to the dictionary for each legal move

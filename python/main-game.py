@@ -4,7 +4,7 @@ This file manges the main game.
 
 from othello import Othello
 from util import UtilMethods
-from players import PlayerMonteCarlo, PlayerMonteCarlo2, PlayerMachineLearning, PlayerHuman, PlayerRandom, \
+from players import PlayerMonteCarlo, PlayerMachineLearning, PlayerHuman, PlayerRandom, \
     PlayerAlphaBetaPruning
 import time
 from constants import PLAYER_ONE, PLAYER_TWO, PRINT_SYMBOLS
@@ -16,10 +16,9 @@ available_players = list()
 # Use pairs of the form (description: String, class: Player) to store a player type
 available_players.append(("Human Player", PlayerHuman))
 available_players.append(("AI Player - Random", PlayerRandom))
-available_players.append(("AI Player - Monte Carlo (simple)", PlayerMonteCarlo))
-available_players.append(("AI Player - Monte Carlo (improved)", PlayerMonteCarlo2))
-available_players.append(("AI Player - Machine Learning", PlayerMachineLearning))
+available_players.append(("AI Player - Monte Carlo", PlayerMonteCarlo))
 available_players.append(("AI Player - Alpha-Beta Pruning", PlayerAlphaBetaPruning))
+available_players.append(("AI Player - Machine Learning", PlayerMachineLearning))
 
 # Ask the user to select a type of player as first player.
 selection_player_one = UtilMethods.select_one(available_players,
