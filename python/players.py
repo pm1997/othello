@@ -152,33 +152,42 @@ class PlayerMonteCarlo2:
 
 class PlayerMachineLearning:
     db = Database()
-    start_tables = StartTables()
 
     def __init__(self):
         self.big_n = UtilMethods.get_integer_selection("Select Number of Simulated Games", 100, sys.maxsize)
+        # init machine learning database
         self.db.init_database()
 
     def get_weighted_random(self, possible_moves, turn_nr):
         prob_sum = 0.0
+        # get sum of all chances in possible moves
         for move in possible_moves:
             prob_sum += self.db.get_likelihood(move, turn_nr)
 
+        # choose a random float between 0 and calculated sum
         chose = random.uniform(0.0, prob_sum)
 
         move_nr = 0
         prob_sum = 0.0
-
+        # iterate over possible move to get
         for move in possible_moves:
             move_nr += 1
             prob_sum += self.db.get_likelihood(move, turn_nr)
             if prob_sum >= chose:
+                # if prob_sum >= chose return move
                 return move
+        # return last possible move because it's the only remaining move
         return possible_moves[-1]
 
     def play_weighted_random_game(self, own_symbol, simulated_game):
+        # get possible moves
         possible_moves = simulated_game.get_available_moves()
+
+        # choose winning moves more times than loss moves
         first_move = self.get_weighted_random(possible_moves, simulated_game.get_turn_nr())
+        # play move
         simulated_game.play_position(first_move)
+        # play whole remaining game
         while not simulated_game.game_is_over():
             possible_moves2 = simulated_game.get_available_moves()
             move = self.get_weighted_random(possible_moves2, simulated_game.get_turn_nr())
@@ -187,25 +196,27 @@ class PlayerMachineLearning:
         return won, simulated_game.get_taken_mv()
 
     def get_move(self, game_state: Othello):
-        # if game_state.get_turn_nr() < 10:  # check whether start move match
-        #     moves = self.start_tables.get_available_start_tables(game_state)
-        #     if len(moves) > 0:
-        #         return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
+        # init variables
         own_symbol = game_state.get_current_player()
         possible_moves = game_state.get_available_moves()
         turn_nr = game_state.get_turn_nr()
 
+        # play big_n games
         for i in range(self.big_n):
+            # copy game and update database
             simulated_game = game_state.deepcopy()
             won, played_moves = self.play_weighted_random_game(own_symbol, simulated_game)
             self.db.update_all_weights(played_moves, won)
 
+        # save database to csv file
         self.db.store_database()
 
         best_moves = dict()
+        # store chance of winning of possible moves in dict
         for move in possible_moves:
             best_moves[move] = self.db.get_likelihood(move, turn_nr)
 
+        # select move with highest chance of winning
         selected_move = max(best_moves.items(), key=operator.itemgetter(1))[0]
         return selected_move
 
