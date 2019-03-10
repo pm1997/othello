@@ -48,6 +48,56 @@ class PlayerHuman:
         return UtilMethods.select_one(possibilities, "Select your move:")
 
 
+class PlayerAlphaBetaPruning:
+    # Compare https://github.com/karlstroetmann/Artificial-Intelligence/blob/master/SetlX/game-alpha-beta.stlx
+
+    start_tables = StartTables()
+
+    def __init__(self, search_depth=None):
+        if search_depth is None:
+            self.search_depth = UtilMethods.get_integer_selection("[Player AlphaBetaPruning] Select Search depth", 1, 10)
+        else:
+            self.search_depth = search_depth
+        # Ask the user to determine whether to use the start library
+        self.use_start_lib = UtilMethods.get_boolean_selection(
+                "[Player AlphaBetaPruning] Do you want to use the start library?")
+
+    @staticmethod
+    def value(game_state: Othello, depth, alpha=-1, beta=1):
+        if game_state.game_is_over():
+            return game_state.utility(game_state.get_winner()) * 1000
+        if depth == 0:
+            return Nijssen07Heuristic.heuristic(game_state.get_current_player(), game_state)
+        val = alpha
+        for move in game_state.get_available_moves():
+            next_state = game_state.deepcopy()
+            next_state.play_position(move)
+            val = max({val, -1 * PlayerAlphaBetaPruning.value(next_state, depth - 1, -beta, -alpha)})
+            if val >= beta:
+                return val
+            alpha = max({val, alpha})
+        return val
+
+    def get_move(self, game_state: Othello):
+        # Use start library if it is selected and still included
+        if self.use_start_lib and game_state.get_turn_nr() < 10:  # check whether start move match
+            moves = self.start_tables.get_available_start_tables(game_state)
+            if len(moves) > 0:
+                return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
+        best_moves = dict()
+        for move in game_state.get_available_moves():
+            next_state = game_state.deepcopy()
+            next_state.play_position(move)
+            result = -PlayerAlphaBetaPruning.value(next_state, self.search_depth - 1)
+            if result not in best_moves.keys():
+                best_moves[result] = []
+            best_moves[result].append(move)
+
+        best_move = max(best_moves.keys())
+
+        return best_moves[best_move][random.randrange(len(best_moves[best_move]))]
+
+
 class PlayerMonteCarlo:
     """
     The PlayerMonteCarlo determines the best move based on the simplest form of the MonteCarlo-Algorithm 
@@ -221,42 +271,3 @@ class PlayerMachineLearning:
         # select move with highest chance of winning
         selected_move = max(best_moves.items(), key=operator.itemgetter(1))[0]
         return selected_move
-
-
-class PlayerAlphaBetaPruning:
-    # Compare https://github.com/karlstroetmann/Artificial-Intelligence/blob/master/SetlX/game-alpha-beta.stlx
-    def __init__(self, search_depth=None):
-        if search_depth is None:
-            self.search_depth = UtilMethods.get_integer_selection("Select Search depth", 1, 10)
-        else:
-            self.search_depth = search_depth
-
-    @staticmethod
-    def value(game_state: Othello, depth, alpha=-1, beta=1):
-        if game_state.game_is_over():
-            return game_state.utility(game_state.get_winner()) * 1000
-        if depth == 0:
-            return Nijssen07Heuristic.heuristic(game_state.get_current_player(), game_state)
-        val = alpha
-        for move in game_state.get_available_moves():
-            next_state = game_state.deepcopy()
-            next_state.play_position(move)
-            val = max({val, -1 * PlayerAlphaBetaPruning.value(next_state, depth - 1, -beta, -alpha)})
-            if val >= beta:
-                return val
-            alpha = max({val, alpha})
-        return val
-
-    def get_move(self, game_state: Othello):
-        best_moves = dict()
-        for move in game_state.get_available_moves():
-            next_state = game_state.deepcopy()
-            next_state.play_position(move)
-            result = -PlayerAlphaBetaPruning.value(next_state, self.search_depth - 1)
-            if result not in best_moves.keys():
-                best_moves[result] = []
-            best_moves[result].append(move)
-
-        best_move = max(best_moves.keys())
-
-        return best_moves[best_move][random.randrange(len(best_moves[best_move]))]
