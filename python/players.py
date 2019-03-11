@@ -279,7 +279,7 @@ class PlayerMachineLearning:
         possible_moves = game_state.get_available_moves()
 
         if self.use_alpha_beta and game_state.get_turn_nr() < self.search_depth:  # check whether start move match
-            ab = PlayerAlphaBetaPruning(search_depth=self.search_depth, use_machine_learning=True, ml_count=(int(self.big_n/10)))
+            ab = PlayerAlphaBetaPruning(search_depth=self.search_depth, use_machine_learning=True, ml_count=self.big_n)
             return ab.get_move(game_state)
 
         # store available moves (top level) in dictionary
