@@ -1,6 +1,8 @@
 """
 This file contains the available player AIs
 """
+from docutils.nodes import math
+
 from othello import Othello
 from heuristics import Nijssen07Heuristic
 from util import UtilMethods
@@ -53,26 +55,37 @@ class PlayerAlphaBetaPruning:
 
     start_tables = StartTables()
 
-    def __init__(self, search_depth=None):
+    def __init__(self, search_depth=None, use_machine_learning=False, ml_count=1):
+        self.ml_count = ml_count
+        self.use_ml = use_machine_learning
         if search_depth is None:
             self.search_depth = UtilMethods.get_integer_selection("[Player AlphaBetaPruning] Select Search depth", 1, 10)
         else:
             self.search_depth = search_depth
-        # Ask the user to determine whether to use the start library
-        self.use_start_lib = UtilMethods.get_boolean_selection(
-                "[Player AlphaBetaPruning] Do you want to use the start library?")
+        if use_machine_learning:
+            self.use_start_lib = False
+        else:
+            # Ask the user to determine whether to use the start library
+            self.use_start_lib = UtilMethods.get_boolean_selection(
+                    "[Player AlphaBetaPruning] Do you want to use the start library?")
 
     @staticmethod
-    def value(game_state: Othello, depth, alpha=-1, beta=1):
+    def value(game_state: Othello, depth, alpha=-1, beta=1, use_ml=False, ml_count=1):
         if game_state.game_is_over():
             return game_state.utility(game_state.get_winner()) * 1000
         if depth == 0:
-            return Nijssen07Heuristic.heuristic(game_state.get_current_player(), game_state)
+            if use_ml:
+                ml = PlayerMachineLearning(alpha_beta=False, big_number=ml_count)
+                game2 = game_state.deepcopy()
+                game2.play_position(ml.get_move(game_state))
+                return Nijssen07Heuristic.heuristic(game2.get_current_player(), game2)
+            else:
+                return Nijssen07Heuristic.heuristic(game_state.get_current_player(), game_state)
         val = alpha
         for move in game_state.get_available_moves():
             next_state = game_state.deepcopy()
             next_state.play_position(move)
-            val = max({val, -1 * PlayerAlphaBetaPruning.value(next_state, depth - 1, -beta, -alpha)})
+            val = max({val, -1 * PlayerAlphaBetaPruning.value(next_state, depth - 1, -beta, -alpha, use_ml, ml_count=ml_count)})
             if val >= beta:
                 return val
             alpha = max({val, alpha})
@@ -88,7 +101,7 @@ class PlayerAlphaBetaPruning:
         for move in game_state.get_available_moves():
             next_state = game_state.deepcopy()
             next_state.play_position(move)
-            result = -PlayerAlphaBetaPruning.value(next_state, self.search_depth - 1)
+            result = -PlayerAlphaBetaPruning.value(next_state, self.search_depth - 1, use_ml=self.use_ml, ml_count=self.ml_count)
             if result not in best_moves.keys():
                 best_moves[result] = []
             best_moves[result].append(move)
@@ -204,8 +217,22 @@ class PlayerMonteCarlo:
 class PlayerMachineLearning:
     db = Database()
 
-    def __init__(self):
-        self.big_n = UtilMethods.get_integer_selection("Select Number of Simulated Games", 100, sys.maxsize)
+    def __init__(self, big_number=0, alpha_beta=None, s_depth=1):
+        if big_number != 0:
+            self.big_n = big_number
+        else:
+            self.big_n = UtilMethods.get_integer_selection("Select Number of Simulated Games", 100, sys.maxsize)
+
+        if alpha_beta is None:
+            # Ask the user to determine whether to use the alpha beta pruning
+            self.use_alpha_beta = UtilMethods.get_boolean_selection("[Player MachineLearning] Do you want to use alpha beta pruning?")
+
+            self.search_depth = 0
+            if self.use_alpha_beta:
+                self.search_depth = UtilMethods.get_integer_selection("[Player MachineLearning] Select Search depth of alpha beta search", 1, 10)
+        else:
+            self.use_alpha_beta = alpha_beta
+            self.search_depth = s_depth
         # init machine learning database
         self.db.init_database()
 
@@ -250,6 +277,10 @@ class PlayerMachineLearning:
         # init variables
         own_symbol = game_state.get_current_player()
         possible_moves = game_state.get_available_moves()
+
+        if self.use_alpha_beta and game_state.get_turn_nr() < self.search_depth:  # check whether start move match
+            ab = PlayerAlphaBetaPruning(search_depth=self.search_depth, use_machine_learning=True, ml_count=(int(self.big_n/10)))
+            return ab.get_move(game_state)
 
         # store available moves (top level) in dictionary
         move_stats = dict()
