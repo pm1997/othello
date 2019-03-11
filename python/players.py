@@ -111,7 +111,7 @@ class PlayerMonteCarlo:
         """
         # Ask the user to enter the number of random games per turn
         self.big_n = UtilMethods.get_integer_selection("[Player MonteCarlo] Select Number of Simulated Games", 100, sys.maxsize)
-        # Ask the userto determine whether to use the start library
+        # Ask the user to determine whether to use the start library
         self.use_start_lib = UtilMethods.get_boolean_selection("[Player MonteCarlo] Do you want to use the start library?")
         # Check whether to use the preprocessor
         self.use_preprocessor_fixed = UtilMethods.get_boolean_selection("[Player MonteCarlo] Do you want to use the fixed length preprocessor?")
@@ -133,7 +133,6 @@ class PlayerMonteCarlo:
         # Sort the dict by value
         ratings = sorted(ratings.items(), key=operator.itemgetter(1))
         game_state.set_available_moves(ratings[:number_of_elements][0])
-
 
     @staticmethod
     def play_random_game(own_symbol, simulated_game):
@@ -170,7 +169,7 @@ class PlayerMonteCarlo:
         own_symbol = game_state.get_current_player()
         # Check whether to preprocess the available moves
         if self.use_preprocessor_fixed:
-            # Preprocess the avaliable moves
+            # Preprocess the available moves
             PlayerMonteCarlo.preprocess_fixed(game_state, self.preprocessor_fixed_Ns)
         # Get the set of legal moves
         possible_moves = game_state.get_available_moves()
@@ -251,8 +250,8 @@ class PlayerMachineLearning:
         # init variables
         own_symbol = game_state.get_current_player()
         possible_moves = game_state.get_available_moves()
-        turn_nr = game_state.get_turn_nr()
 
+        # store available moves (top level) in dictionary
         move_stats = dict()
         for move in possible_moves:
             move_stats[move] = (0, 1)  # set games played to 1 to avoid division by zero error
@@ -260,8 +259,10 @@ class PlayerMachineLearning:
         for i in range(self.big_n):
             # copy game and update database
             simulated_game = game_state.deepcopy()
+            # select a weighted random move and play remaining game
             won, first_played_move, played_moves = self.play_weighted_random_game(own_symbol, simulated_game)
             (won_games, times_played) = move_stats[first_played_move]
+            # update move stats of actual big_n games
             move_stats[first_played_move] = (won_games + won, times_played + 1)
             self.db.update_all_weights(played_moves, won)
 
@@ -274,50 +275,3 @@ class PlayerMachineLearning:
 
         selected_move = max(move_stats.items(), key=operator.itemgetter(1))[0]
         return selected_move
-        # best_moves = dict()
-        # # store chance of winning of possible moves in dict
-        # for move in possible_moves:
-        #     best_moves[move] = self.db.get_likelihood(move, turn_nr)
-        #
-        # # select move with highest chance of winning
-        # selected_move = max(best_moves.items(), key=operator.itemgetter(1))[0]
-        # return selected_move
-
-
-class PlayerAlphaBetaPruning:
-    # Compare https://github.com/karlstroetmann/Artificial-Intelligence/blob/master/SetlX/game-alpha-beta.stlx
-    def __init__(self, search_depth=None):
-        if search_depth is None:
-            self.search_depth = UtilMethods.get_integer_selection("Select Search depth", 1, 10)
-        else:
-            self.search_depth = search_depth
-
-    @staticmethod
-    def value(game_state: Othello, depth, alpha=-1, beta=1):
-        if game_state.game_is_over():
-            return game_state.utility(game_state.get_winner()) * 1000
-        if depth == 0:
-            return Nijssen07Heuristic.heuristic(game_state.get_current_player(), game_state)
-        val = alpha
-        for move in game_state.get_available_moves():
-            next_state = game_state.deepcopy()
-            next_state.play_position(move)
-            val = max({val, -1 * PlayerAlphaBetaPruning.value(next_state, depth - 1, -beta, -alpha)})
-            if val >= beta:
-                return val
-            alpha = max({val, alpha})
-        return val
-
-    def get_move(self, game_state: Othello):
-        best_moves = dict()
-        for move in game_state.get_available_moves():
-            next_state = game_state.deepcopy()
-            next_state.play_position(move)
-            result = -PlayerAlphaBetaPruning.value(next_state, self.search_depth - 1)
-            if result not in best_moves.keys():
-                best_moves[result] = []
-            best_moves[result].append(move)
-
-        best_move = max(best_moves.keys())
-
-        return best_moves[best_move][random.randrange(len(best_moves[best_move]))]
