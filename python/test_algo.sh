@@ -5,7 +5,8 @@ wins_b=0;
 for i in `seq 1 20`;
 	do
 		echo "round: "  $i
-		python3 ./main-game.py <<< $(echo 2; sleep 1; echo 100; sleep 1; echo y; sleep 1; echo n; sleep 1; echo 4; sleep 1; echo 100; sleep 1; echo y; sleep 1; echo 4; sleep 1) | tee temp1.txt
+		# python3 ./main-game.py <<< $(echo 2; sleep 1; echo 100; sleep 1; echo y; sleep 1; echo n; sleep 1; 
+		python3 ./main-game.py <<< $(echo 1; sleep 1; echo 4; sleep 1; echo 100; sleep 1; echo y; sleep 1; echo 4; sleep 1) | tee temp1.txt
 		#w1=$( python3 ./main-game.py <<< $(echo 2; sleep 1; echo 100; sleep 1; echo y; sleep 1; echo n; sleep 1; echo 4; sleep 1; echo 100; sleep 1; echo y; sleep 1; echo 4 ) |  grep -e "Winner")
 		w1=$( cat temp1.txt | grep "Winner" )
 		for word in $w1; do
