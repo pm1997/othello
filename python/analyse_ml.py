@@ -1,4 +1,6 @@
 import numpy as np
+from termcolor import colored
+from constants import COLUMN_NAMES
 
 
 class Analyse:
@@ -62,11 +64,32 @@ class Analyse:
                 r += 1
             print(f"var: {np.var(self._data2[pos], ddof=1)}")
 
-            # print array (board without column / row names)
-            print(self._data2[pos])
+            # print array (board without column /
+            self.print_board(self._data2[pos], average)
+            # print(self._data2[pos])
 
             print("_______________________")
             pos += 1
+
+    def print_board(self, board, average):
+        board_string = ""
+        board_string += ""
+        for i in range(8):
+            board_string += f"      {COLUMN_NAMES[i]} "
+        board_string += "\n"
+        board_string += "  +" + 8 * "-------+" + "\n"
+        for row in range(8):
+            board_string += f"{row + 1} |"
+            for col in range(8):
+                if board[row][col] < average - 0.2:
+                    board_string += f" {colored( board[row][col], 'red')} |"
+                elif board[row][col] > average + 0.2:
+                    board_string += f" {colored(board[row][col], 'green')} |"
+                else:
+                    board_string += f" {board[row][col]} |"
+            board_string += "\n"
+            board_string += "  +" + 8 * "-------+" + "\n"
+        print(board_string)
 
 
 an1 = Analyse()
