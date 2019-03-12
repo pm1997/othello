@@ -54,50 +54,68 @@ class PlayerAlphaBetaPruning:
 
     start_tables = StartTables()
 
-    def __init__(self, search_depth=None, use_machine_learning=False, ml_count=1):
+    def __init__(self, search_depth=None, use_machine_learning=None):
         """
         init start variables and used modules
         :param search_depth: max search depth before heuristic or machine learning is used
-        :param use_machine_learning: use machine learning instead of fixed heuristic
-        :param ml_count:  number of played games if machine learning is used
         """
-        self.ml_count = ml_count
-        self.use_ml = use_machine_learning
+
         if search_depth is None:
             self.search_depth = UtilMethods.get_integer_selection("[Player AlphaBetaPruning] Select Search depth", 1, 10)
         else:
             self.search_depth = search_depth
-        if use_machine_learning:
-            self.use_start_lib = False
-        else:
+
+        if use_machine_learning is None:
             # Ask the user to determine whether to use the start library
-            self.use_start_lib = UtilMethods.get_boolean_selection(
-                    "[Player AlphaBetaPruning] Do you want to use the start library?")
+            self.use_ml = UtilMethods.get_boolean_selection(
+                    "[Player AlphaBetaPruning] Do you want to use the machine learning after Alpha-Beta Pruning?")
+
+            if self.use_ml:
+                self.ml_count = UtilMethods.get_integer_selection("[Player AlphaBetaPruning - Machine Learning] Select number of played Games", 15, 200)
+        else:
+            self.use_ml = False
+            self.ml_count = 1
+
+        # Ask the user to determine whether to use the start library
+        self.use_start_lib = UtilMethods.get_boolean_selection("[Player AlphaBetaPruning] Do you want to use the start library?")
 
     @staticmethod
-    def value(game_state: Othello, depth, alpha=-1, beta=1, use_ml=False, ml_count=1):
+    def value(game_state: Othello, depth, alpha=-1, beta=1):
         if game_state.game_is_over():
             return game_state.utility(game_state.get_winner()) * 1000
         if depth == 0:
-            if use_ml:
-                # use machine learning player again if enabled
-                # alpha_beta was used, so disable use of alpha_beta
-                # ml_count = number of played games
-                ml = PlayerMachineLearning(alpha_beta=False, big_number=ml_count)
-                # copy game state
-                game2 = game_state.deepcopy()
-                # play best move on copy
-                game2.play_position(ml.get_move(game_state))
-                # return heuristic of best move
-                return Nijssen07Heuristic.heuristic(game2.get_current_player(), game2)
-            else:
                 # return heuristic of game state
                 return Nijssen07Heuristic.heuristic(game_state.get_current_player(), game_state)
         val = alpha
         for move in game_state.get_available_moves():
             next_state = game_state.deepcopy()
             next_state.play_position(move)
-            val = max({val, -1 * PlayerAlphaBetaPruning.value(next_state, depth - 1, -beta, -alpha, use_ml, ml_count=ml_count)})
+            val = max({val, -1 * PlayerAlphaBetaPruning.value(next_state, depth - 1, -beta, -alpha)})
+            if val >= beta:
+                return val
+            alpha = max({val, alpha})
+        return val
+
+    @staticmethod
+    def value_ml(game_state: Othello, depth, alpha=-1, beta=1, ml_count=100):
+        if game_state.game_is_over():
+            return game_state.utility(game_state.get_winner()) * 1000
+        if depth == 0:
+            # use machine learning player again if enabled
+            # alpha_beta was used, so disable use of alpha_beta
+            # ml_count = number of played games
+            ml = PlayerMachineLearning(big_number=ml_count)
+            # get best move
+            move = ml.get_move(game_state)
+            # return winnings stats of best move
+            prob = ml.get_move_probability(move)
+            print(f"win probability of move {move} calculated: {prob}")
+            return prob
+        val = alpha
+        for move in game_state.get_available_moves():
+            next_state = game_state.deepcopy()
+            next_state.play_position(move)
+            val = max({val, -1 * PlayerAlphaBetaPruning.value_ml(next_state, depth - 1, -beta, -alpha)})
             if val >= beta:
                 return val
             alpha = max({val, alpha})
@@ -113,7 +131,13 @@ class PlayerAlphaBetaPruning:
         for move in game_state.get_available_moves():
             next_state = game_state.deepcopy()
             next_state.play_position(move)
-            result = -PlayerAlphaBetaPruning.value(next_state, self.search_depth - 1, use_ml=self.use_ml, ml_count=self.ml_count)
+
+            # differ between machine learning or heuristic
+            if self.use_ml:
+                result = -PlayerAlphaBetaPruning.value_ml(next_state, self.search_depth - 1)
+            else:
+                result = -PlayerAlphaBetaPruning.value(next_state, self.search_depth - 1)
+
             if result not in best_moves.keys():
                 best_moves[result] = []
             best_moves[result].append(move)
@@ -228,24 +252,15 @@ class PlayerMonteCarlo:
 
 class PlayerMachineLearning:
     db = Database()
+    # store available moves (top level) in dictionary
+    move_probability = dict()
 
-    def __init__(self, big_number=0, alpha_beta=None, s_depth=1):
+    def __init__(self, big_number=0):
         if big_number != 0:
             self.big_n = big_number
         else:
             self.big_n = UtilMethods.get_integer_selection("Select Number of Simulated Games", 100, sys.maxsize)
 
-        if alpha_beta is None:
-            # Ask the user to determine whether to use the alpha beta pruning
-            self.use_alpha_beta = UtilMethods.get_boolean_selection("[Player MachineLearning] Do you want to use alpha beta pruning?")
-
-            self.search_depth = 0
-            if self.use_alpha_beta:
-                # ask depth of alpha beta pruning if algorithm is used
-                self.search_depth = UtilMethods.get_integer_selection("[Player MachineLearning] Select Search depth of alpha beta search", 1, 10)
-        else:
-            self.use_alpha_beta = alpha_beta
-            self.search_depth = s_depth
         # init machine learning database
         self.db.init_database()
 
@@ -284,6 +299,7 @@ class PlayerMachineLearning:
             move = self.get_weighted_random(possible_moves2, simulated_game.get_turn_nr())
             simulated_game.play_position(move)
         won = 1 if simulated_game.get_winner() == own_symbol else 0
+
         return won, first_move, simulated_game.get_taken_mv()
 
     def get_move(self, game_state: Othello):
@@ -291,16 +307,12 @@ class PlayerMachineLearning:
         own_symbol = game_state.get_current_player()
         possible_moves = game_state.get_available_moves()
 
-        # if alpha_beta is used , get best move of alpha_beta player
-        if self.use_alpha_beta and game_state.get_turn_nr() < self.search_depth:  # check whether start move match
-            # init player with asked parameters ( search depth, number of simulated games)
-            ab = PlayerAlphaBetaPruning(search_depth=self.search_depth, use_machine_learning=True, ml_count=self.big_n)
-            return ab.get_move(game_state)
-
-        # store available moves (top level) in dictionary
         move_stats = dict()
+        self.move_probability.clear()
+
         for move in possible_moves:
             move_stats[move] = (0, 1)  # set games played to 1 to avoid division by zero error
+
         # play big_n games
         for i in range(self.big_n):
             # copy game and update database
@@ -318,8 +330,11 @@ class PlayerMachineLearning:
         for single_move in move_stats:
             # calculate percentage of won games
             (games_won, times_played) = move_stats[single_move]
-            move_stats[single_move] = games_won / times_played
+            self.move_probability[single_move] = games_won / times_played
 
         # get move with highest winning percentage
-        selected_move = max(move_stats.items(), key=operator.itemgetter(1))[0]
+        selected_move = max(self.move_probability.items(), key=operator.itemgetter(1))[0]
         return selected_move
+
+    def get_move_probability(self, move):
+        return self.move_probability[move]
