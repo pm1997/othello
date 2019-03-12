@@ -55,6 +55,12 @@ class PlayerAlphaBetaPruning:
     start_tables = StartTables()
 
     def __init__(self, search_depth=None, use_machine_learning=False, ml_count=1):
+        """
+        init start variables and used modules
+        :param search_depth: max search depth before heuristic or machine learning is used
+        :param use_machine_learning: use machine learning instead of fixed heuristic
+        :param ml_count:  number of played games if machine learning is used
+        """
         self.ml_count = ml_count
         self.use_ml = use_machine_learning
         if search_depth is None:
@@ -74,11 +80,18 @@ class PlayerAlphaBetaPruning:
             return game_state.utility(game_state.get_winner()) * 1000
         if depth == 0:
             if use_ml:
+                # use machine learning player again if enabled
+                # alpha_beta was used, so disable use of alpha_beta
+                # ml_count = number of played games
                 ml = PlayerMachineLearning(alpha_beta=False, big_number=ml_count)
+                # copy game state
                 game2 = game_state.deepcopy()
+                # play best move on copy
                 game2.play_position(ml.get_move(game_state))
+                # return heuristic of best move
                 return Nijssen07Heuristic.heuristic(game2.get_current_player(), game2)
             else:
+                # return heuristic of game state
                 return Nijssen07Heuristic.heuristic(game_state.get_current_player(), game_state)
         val = alpha
         for move in game_state.get_available_moves():
@@ -228,6 +241,7 @@ class PlayerMachineLearning:
 
             self.search_depth = 0
             if self.use_alpha_beta:
+                # ask depth of alpha beta pruning if algorithm is used
                 self.search_depth = UtilMethods.get_integer_selection("[Player MachineLearning] Select Search depth of alpha beta search", 1, 10)
         else:
             self.use_alpha_beta = alpha_beta
@@ -277,7 +291,9 @@ class PlayerMachineLearning:
         own_symbol = game_state.get_current_player()
         possible_moves = game_state.get_available_moves()
 
+        # if alpha_beta is used , get best move of alpha_beta player
         if self.use_alpha_beta and game_state.get_turn_nr() < self.search_depth:  # check whether start move match
+            # init player with asked parameters ( search depth, number of simulated games)
             ab = PlayerAlphaBetaPruning(search_depth=self.search_depth, use_machine_learning=True, ml_count=self.big_n)
             return ab.get_move(game_state)
 
@@ -300,8 +316,10 @@ class PlayerMachineLearning:
         self.db.store_database()
 
         for single_move in move_stats:
+            # calculate percentage of won games
             (games_won, times_played) = move_stats[single_move]
             move_stats[single_move] = games_won / times_played
 
+        # get move with highest winning percentage
         selected_move = max(move_stats.items(), key=operator.itemgetter(1))[0]
         return selected_move
