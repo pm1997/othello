@@ -1,7 +1,6 @@
 """
 This file contains the available player AIs
 """
-from docutils.nodes import math
 
 from othello import Othello
 from heuristics import Nijssen07Heuristic
