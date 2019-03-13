@@ -4,8 +4,13 @@ This file manges the main game.
 
 from othello import Othello
 from util import UtilMethods
-from players import PlayerMonteCarlo, PlayerMachineLearning, PlayerHuman, PlayerRandom, \
-    PlayerAlphaBetaPruning
+
+from Players.playerRandom import PlayerRandom
+from Players.playerMonteCarlo import PlayerMonteCarlo
+from Players.playerMachineLearning import PlayerMachineLearning
+from Players.playerHuman import PlayerHuman
+from Players.playerAlphaBetaPruning import PlayerAlphaBetaPruning
+
 import time
 from constants import PLAYER_ONE, PLAYER_TWO, PRINT_SYMBOLS
 # from machine_learning import Database
