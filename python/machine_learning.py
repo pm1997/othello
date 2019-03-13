@@ -1,37 +1,101 @@
 import numpy as np
 import math
+from util import UtilMethods
 
 
 class Database:
-
+    # data of csv ml_moves.csv
     _data = list()
 
     def init_database(self):
+        # load csv in self_data as 3 dim. array
         csv = np.loadtxt('ml_moves.csv', delimiter=',')
         self._data = csv.reshape((17, 64, 2))
-        print(self._data)
-        print(len(self._data))
 
     #  ###################################################
     #  CAUTION: This will delete the learned factors! '  #
     #  ###################################################
-    @staticmethod
-    def _reset_database():
-        data = np.zeros(shape=(17, 64, 2))
+    def _reset_database(self):
+        """
+        Reset stored played / won games
+        """
+        # write 1.0 in each cell of _data array
+        self._data = np.ones(shape=(17, 64, 2))
+        # save modified array
+        self.store_database()
 
+    def set_data(self, data2):
+        self._data = data2
+
+    def store_database(self):
         with open("ml_moves.csv", 'w') as outfile:
-            for row in data:
+            # write 3 dim. array as list of 2 dim. array's
+            for row in self._data:
+                # write one row of matrix
                 np.savetxt(outfile, row, fmt='%-7.0f', delimiter=',')
 
     @staticmethod
     def translate_move_to_array(move):
-        column_names = {"a": 0, "b": 1, "c": 2,  "d": 3, "e": 4, "f": 5, "g": 6, "h": 7, "i": 8}
+        """
+        :param move: stored move like "a1"
+        :return: position like (0,1)
+        """
         (row, column) = move
-        position = 8 * row + column_names[column]
+        # move is either like "a2" or (0,1)
+        if row in {"a", "b", "c", "d", "e", "f", "g", "h", "i"}:
+            # if move is like "a1" translate char to int
+            column_names = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7, "i": 8}
+            # calculate position in matrix
+            return 8 * column_names[row] + column - 1
+
+        # calculate position in matrix
+        # row 1 column 1 column 2 .. column 8
+        # row 2    ..       ..          ..
+        # row 3    ..       ..          ..
+        # ...      ..       ..          ..
+        # row 8    ..       ..          ..
+        position = 8 * row + column
         return position
 
     def get_likelihood(self, move, turn_nr):
-        chance1 = self._data[math.ceil(turn_nr / 4)][move]
-        chance2 = self._data[math.floor(turn_nr / 4)][move]
+        """
+        calculate chance of winning for given move and turn_number
+        :param move: move in available_moves
+        :param turn_nr: actual turn_number
+        :return: chance of winning for given field
+        """
+        # translate move to position in array
+        position = self.translate_move_to_array(move)
+        # get chances of winning of turn number
+        # eg: turn_number = 5
+        #       => look in row 1  (5 / 4).floor()
+        #       => look in row 2  (5 / 4).ceil()
+        chance1 = self._data[math.ceil(turn_nr / 4)][position][0] / self._data[math.ceil(turn_nr / 4)][position][1]
+        chance2 = self._data[math.floor(turn_nr / 4)][position][0] / self._data[math.ceil(turn_nr / 4)][position][1]
+        # add chances together
         likelihood = (chance1 * (turn_nr % 4) + chance2 * (4 - turn_nr % 4)) / 4
         return likelihood
+
+    def update_weights(self, turn_nr, move, won):
+        # update number of won and turns in last move
+        # eg: turn_number = 5
+        #       => update row 1  (5 / 4).floor()
+        #       => update row 2  (5 / 4).ceil()
+        self._data[math.ceil(turn_nr / 4)][move][0] += won
+        self._data[math.ceil(turn_nr / 4)][move][1] += 1
+
+        self._data[math.floor(turn_nr / 4)][move][0] += won
+        self._data[math.floor(turn_nr / 4)][move][1] += 1
+
+    def update_all_weights(self, moves, won):
+        turn_nr = 0
+        # update each move in game
+        for _ in moves:
+            # translate move like "a2" to (1,0)
+            m1 = UtilMethods.translate_move_to_pair(moves[turn_nr])
+            # translate move 1,0 to position 8
+            position = self.translate_move_to_array(m1)
+            # update array at position position
+            self.update_weights(turn_nr, position, won)
+            # update next move
+            turn_nr += 1
