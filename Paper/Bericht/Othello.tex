@@ -41,7 +41,6 @@
 % \renewcommand*{\familydefault}{\sfdefault}
 
 \pagestyle{fancy}
-
 \fancyfoot[C]{--- \thepage/\pageref{LastPage}\ ---}
 
 \fancypagestyle{plain}{%
@@ -187,9 +186,15 @@
 % ----------------------------------------------------------
 
 \begin{document}
-\maketitle
-\tableofcontents
+\pagenumbering{gobble}
 
+\maketitle
+
+\tableofcontents
+\newpage
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
 \include{einleitung}
 \include{othello-chapter}
 \include{grundlagen}
