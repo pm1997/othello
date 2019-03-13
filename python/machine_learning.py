@@ -24,6 +24,9 @@ class Database:
         # save modified array
         self.store_database()
 
+    def set_data(self, data2):
+        self._data = data2
+
     def store_database(self):
         with open("ml_moves.csv", 'w') as outfile:
             # write 3 dim. array as list of 2 dim. array's
