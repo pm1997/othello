@@ -3,11 +3,10 @@ from util import UtilMethods
 import random
 import sys
 import operator
-from machine_learning import Database
+from ml_database import ml_database
 
 
 class PlayerMachineLearning:
-    db = Database()
     # store available moves (top level) in dictionary
     move_probability = dict()
 
@@ -18,13 +17,14 @@ class PlayerMachineLearning:
             self.big_n = UtilMethods.get_integer_selection("Select Number of Simulated Games", 100, sys.maxsize)
 
         # init machine learning database
-        self.db.init_database()
+        # self.db.init_database()
 
-    def get_weighted_random(self, possible_moves, turn_nr):
+    @staticmethod
+    def get_weighted_random(possible_moves, turn_nr):
         prob_sum = 0.0
         # get sum of all chances in possible moves
         for move in possible_moves:
-            prob_sum += self.db.get_likelihood(move, turn_nr)
+            prob_sum += ml_database.get_likelihood(move, turn_nr)
 
         # choose a random float between 0 and calculated sum
         chose = random.uniform(0.0, prob_sum)
@@ -34,7 +34,7 @@ class PlayerMachineLearning:
         # iterate over possible move to get
         for move in possible_moves:
             move_nr += 1
-            prob_sum += self.db.get_likelihood(move, turn_nr)
+            prob_sum += ml_database.get_likelihood(move, turn_nr)
             if prob_sum >= chose:
                 # if prob_sum >= chose return move
                 return move
@@ -78,10 +78,10 @@ class PlayerMachineLearning:
             (won_games, times_played) = move_stats[first_played_move]
             # update move stats of actual big_n games
             move_stats[first_played_move] = (won_games + won, times_played + 1)
-            self.db.update_all_weights(played_moves, won)
+            ml_database.update_all_weights(played_moves, won)
 
         # save database to csv file
-        self.db.store_database()
+        # self.db.store_database()
 
         for single_move in move_stats:
             # calculate percentage of won games

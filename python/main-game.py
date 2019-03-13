@@ -13,6 +13,7 @@ from Players.playerAlphaBetaPruning import PlayerAlphaBetaPruning
 
 import time
 from constants import PLAYER_ONE, PLAYER_TWO, PRINT_SYMBOLS
+from ml_database import ml_database
 # from machine_learning import Database
 # db = Database()
 # db._reset_database()
@@ -65,6 +66,8 @@ while not game.game_is_over():
     game.print_board()
 # calculate the playing time
 duration = time.time() - start
+
+ml_database.store_database()
 # Inform the User on the fact that the game is over
 print("Game is over")
 # Print the playing time
