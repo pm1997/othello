@@ -4,6 +4,7 @@ from util import UtilMethods
 import random
 from heuristics import Nijssen07Heuristic
 from Players.playerMachineLearning import PlayerMachineLearning
+from Players.playerMonteCarlo import PlayerMonteCarlo
 
 
 class PlayerAlphaBetaPruning:
@@ -11,7 +12,7 @@ class PlayerAlphaBetaPruning:
 
     start_tables = StartTables()
 
-    def __init__(self, search_depth=None, use_machine_learning=None):
+    def __init__(self, search_depth=None):
         """
         init start variables and used modules
         :param search_depth: max search depth before heuristic or machine learning is used
@@ -22,16 +23,24 @@ class PlayerAlphaBetaPruning:
         else:
             self.search_depth = search_depth
 
-        if use_machine_learning is None:
-            # Ask the user to determine whether to use the start library
-            self.use_ml = UtilMethods.get_boolean_selection(
-                    "[Player AlphaBetaPruning] Do you want to use the machine learning after Alpha-Beta Pruning?")
+        # Ask the user to determine whether to use the start library
+        self.use_ml = UtilMethods.get_boolean_selection("[Player AlphaBetaPruning] Do you want to use the machine learning after Alpha-Beta Pruning?")
 
-            if self.use_ml:
-                self.ml_count = UtilMethods.get_integer_selection("[Player AlphaBetaPruning - Machine Learning] Select number of played Games", 10, 75)
+        if self.use_ml:
+            self.ml_count = UtilMethods.get_integer_selection("[Player AlphaBetaPruning - Machine Learning] Select number of played Games", 10, 75)
+            self.use_monte_carlo = False
         else:
             self.use_ml = False
             self.ml_count = 1
+
+            self.use_monte_carlo = UtilMethods.get_boolean_selection(
+                "[Player AlphaBetaPruning] Do you want to use the Monte Carlo after Alpha-Beta Pruning?")
+
+            if self.use_monte_carlo:
+                self.ml_count = UtilMethods.get_integer_selection("[Player AlphaBetaPruning - Machine Learning] Select number of played Games", 10, 75)
+            else:
+                self.use_monte_carlo = False
+                self.ml_count = 1
 
         # Ask the user to determine whether to use the start library
         self.use_start_lib = UtilMethods.get_boolean_selection("[Player AlphaBetaPruning] Do you want to use the start library?")
@@ -58,8 +67,7 @@ class PlayerAlphaBetaPruning:
         if game_state.game_is_over():
             return game_state.utility(game_state.get_winner()) * 1000
         if depth == 0:
-            # use machine learning player again if enabled
-            # alpha_beta was used, so disable use of alpha_beta
+            # use machine learning player if enabled
             # ml_count = number of played games
             ml = PlayerMachineLearning(big_number=ml_count)
             # get best move
@@ -72,7 +80,31 @@ class PlayerAlphaBetaPruning:
         for move in game_state.get_available_moves():
             next_state = game_state.deepcopy()
             next_state.play_position(move)
-            val = max({val, -1 * PlayerAlphaBetaPruning.value_ml(next_state, depth - 1, -beta, -alpha)})
+            val = max({val, -1 * PlayerAlphaBetaPruning.value_ml(next_state, depth - 1, -beta, -alpha, ml_count=ml_count)})
+            if val >= beta:
+                return val
+            alpha = max({val, alpha})
+        return val
+
+    @staticmethod
+    def value_monte_carlo(game_state: Othello, depth, alpha=-1, beta=1, mc_count=100):
+        if game_state.game_is_over():
+            return game_state.utility(game_state.get_winner()) * 1000
+        if depth == 0:
+            # use monte carlo player if enabled
+            # ml_count = number of played games
+            ml = PlayerMonteCarlo(big_number=mc_count, use_start_libs=False, preprocessor_n=-1)
+            # get best move
+            move = ml.get_move(game_state)
+            # return winnings stats of best move
+            prob = ml.get_move_probability(move)
+            print(f"win probability of move {move} calculated: {prob}")
+            return prob
+        val = alpha
+        for move in game_state.get_available_moves():
+            next_state = game_state.deepcopy()
+            next_state.play_position(move)
+            val = max({val, -1 * PlayerAlphaBetaPruning.value_monte_carlo(next_state, depth - 1, -beta, -alpha, mc_count=mc_count)})
             if val >= beta:
                 return val
             alpha = max({val, alpha})
@@ -91,7 +123,9 @@ class PlayerAlphaBetaPruning:
 
             # differ between machine learning or heuristic
             if self.use_ml:
-                result = -PlayerAlphaBetaPruning.value_ml(next_state, self.search_depth - 1)
+                result = -PlayerAlphaBetaPruning.value_ml(next_state, self.search_depth - 1, ml_count=self.ml_count)
+            elif self.use_monte_carlo:
+                result = -PlayerAlphaBetaPruning.value_monte_carlo(next_state, self.search_depth - 1, mc_count=self.ml_count)
             else:
                 result = -PlayerAlphaBetaPruning.value(next_state, self.search_depth - 1)
 
