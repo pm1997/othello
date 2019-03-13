@@ -79,6 +79,34 @@ class UtilMethods:
         return selection
 
     @staticmethod
+    def get_float_selection(description, min_value, max_value):
+        """
+        Asks the user to select an float between min_value and max_value
+        """
+        # Print the description as prompt
+        print(description)
+        # Initially there is no valid selection
+        valid_selection = False
+        # Init the selection
+        selection = min_value - 1  # invalid selection
+        # Continue to prompt user while there is no valid selection
+        while not valid_selection:
+            try:
+                # Ask the user for an Integer input
+                selection = float(input(f"Please enter a number between {min_value} and {max_value}\n"))
+            except ValueError:
+                # Inform the user on the fact, that the entered value was not an Integer
+                print("Invalid selection! Please enter a float value")
+                continue
+            # Check whether the given value is in the range
+            if min_value <= selection <= max_value:
+                valid_selection = True
+            else:
+                print("Invalid selection! Number not between the specified bounds")
+        # Return the Selection
+        return selection
+
+    @staticmethod
     def get_boolean_selection(description):
         """
         Asks the user to enter a yes/no value
