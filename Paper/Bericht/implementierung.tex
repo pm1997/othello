@@ -1,2 +1,41 @@
 \chapter{Implementierung der KI}
+Die theoretischen Grundlagen werden nun angewandt und in ein Python \ot\ Spiel implementiert. \unsure{anders?}
+\section{Vorgehensweise}
+In den folgenden Unterkapiteln  werden verschiedene Spielalgorithmen vorgestellt und implementiert. Anschließend werden diese verbessert und auch unter Berücksichtigung des Laufzeitverhaltens analysiert.
+\\Zunächst wird aber die grundsätzliche Programmstruktur erläutert und das Spielgerüst implementiert, damit unterschiedliche Spieler es ausführen können.
+\section{Vorbereitungen}
+Die Python Implementierung befindet sich in dem Ordner \mxZitat{python}. Die verschiedenen Komponenten des Spiels wurden nach Komponenten gruppiert auf mehrere Dateien aufgeteilt.
+\\Das Spiel wird durch \mxZitat{main-game.py} gestartet.
+Diese Datei führt mehrere Benutzerabfragen nach den Spielern aus, ermittelt den zu spielenden Zug und gibt dann das Spielbrett in der Konsole aus.
+\\Die Hauptklasse ist \mxZitat{Othello}. Diese speichert u.a das Spielbrett, den aktiven Spieler und die durchgeführten Züge. In dieser Klasse befinden sich alle \ot-spezifischen Funktionen, welche von keinem Spieler abhängen. Dazu zählt beispielsweise das Ermitteln der möglichen nächsten Spielzüge und das Spielen eines vorgegebenen Zuges.
+\\Aus den möglichen Zügen wählen die verschiedenen Spieler den für sie jeweils besten Zug aus. Die Spieler befinden sich in dem Unterordner \mxZitat{Players}.
+\section{Spieler}
+Es gibt folgende \mxZitat{Haupt}-Spieler:
+\begin{enumerate}
+\setcounter{enumi}{-1}
+\item Human Player
+\item Random Player
+\item Monte Carlo
+\item Alpha-Beta Pruning
+\item Machine Learning
+\end{enumerate}
+Spieler 0 wird für die manuelle Eingabe von Zügen eingesetzt. Alle anderen Spieler sind Computerspieler und spielen automatisch.
+Nachfolgend werden die einzelnen Computerspieler kurz beschrieben.
+
+\subsection{Random}
+Der Spieler Random wählt aus der Liste der möglichen Züge zufällig einen Zug aus und gibt diesen an die Hauptfunktion zurück.
+
+\subsection{Monte Carlo}
+Dieser Spieler verwendet den in Kapitel \ref{mc_algo} verwendeten Algorithmus um den Zug mit der höchsten Gewinnwahrscheinlichkeit auszuwählen. Dazu spielt der Spieler zufällig eine bei Spielstart eingestellte Anzahl an Spielen ab der aktuellen Spielsituation und berechnet daraus den Anteil der gewonnen Spiele je verfügbaren Zug. Den Zug mit der höchsten Gewinnwahrscheinlichkeit wird nun im \mxZitat{realer} Zug des Spielers ausgewählt.
+
+\subsection{Alpha-Beta Pruning}
+Ebenso wie der Spieler \mxZitat{Monte Carlo} wird der Spielalgorithmus im Theorieteil erläutert. Der beste Zug wird dadurch berechnet, dass eine eingeschränkte Breitensuche bis zu einer bestimmten Tiefe durchgeführt wird, dabei allerdings auch der Gegenspieler beachtet wird.
+Statt einer kompletten Tiefensuche mit MiniMax werden Züge mit einer geringen Zugwahrscheinlichkeit nicht evaluiert. Die Grundidee des Algorithmus ist, dass sowohl der aktuelle Spieler, als auch der Gegenspieler jeweils den für sie besten Zug und für den Gegner schlechtesten Zug spielen.
+\\Nach der eingeschränkten Breitensuche können mehrere Möglichkeiten gewählt werden.
+Es existieren einerseits mehrere Heuristiken, andererseits können auch andere Spieler ab diesen Spielzügen das Spiel berechnen. Diese Möglichkeiten werden in dem Kapitel \ref{ab_comb} genauer erläutert.
+
+\subsection{Machine Learning}
+Dieser Spielalgorithmus besteht hauptsächlich aus dem Monte Carlo Spieler. Der deutliche Unterschied zu diesem besteht aber in der Auswahl der zu simulierenden Spiele. Während Monte Carlo zufällig einen Zug aus den verfügbaren Zügen auswählt, verwendet Machine Learning eine gewichtete Zufallsfunktion. Der Algorithmus speichert die gespielten und gewonnen Spiele in einer Datenbank. Bei der Auswahl des Zuges, gewichtet er die Zugmöglichkeiten, die eine höhere Gewinnwahrscheinlichkeit besitzen höher als die Züge mit einer geringeren Wahrscheinlichkeit. Dadurch wählt er statistisch die Züge mit einer höheren Gewinnwahrscheinlichkeit aus. Durch das Speichern der Ergebnisse der simulierten Spiele in der Datenbank, \mxZitat{lernt} die Datenbank mit der Zeit dazu und kann in weiteren Spielen zuverlässigere Wahrscheinlichkeiten zurückgeben.
+
 \section{Kombination von Monte-Carlo und Alpha-Beta Abschneiden}
+\label{ab_comb}
