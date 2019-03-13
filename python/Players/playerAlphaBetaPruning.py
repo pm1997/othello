@@ -2,7 +2,7 @@ from othello import Othello
 from start_tables import StartTables
 from util import UtilMethods
 import random
-from heuristics import Nijssen07Heuristic
+import heuristics
 from Players.playerMachineLearning import PlayerMachineLearning
 from Players.playerMonteCarlo import PlayerMonteCarlo
 
@@ -12,16 +12,15 @@ class PlayerAlphaBetaPruning:
 
     start_tables = StartTables()
 
-    def __init__(self, search_depth=None):
+    def __init__(self):
         """
         init start variables and used modules
         :param search_depth: max search depth before heuristic or machine learning is used
         """
 
-        if search_depth is None:
-            self.search_depth = UtilMethods.get_integer_selection("[Player AlphaBetaPruning] Select Search depth", 1, 10)
-        else:
-            self.search_depth = search_depth
+        self.search_depth = UtilMethods.get_integer_selection("[Player AlphaBetaPruning] Select Search depth", 1, 10)
+
+        self.heuristic = heuristics.select_heuristic("Player MonteCarlo")
 
         # Ask the user to determine whether to use the start library
         self.use_ml = UtilMethods.get_boolean_selection("[Player AlphaBetaPruning] Do you want to use the machine learning after Alpha-Beta Pruning?")
@@ -46,17 +45,17 @@ class PlayerAlphaBetaPruning:
         self.use_start_lib = UtilMethods.get_boolean_selection("[Player AlphaBetaPruning] Do you want to use the start library?")
 
     @staticmethod
-    def value(game_state: Othello, depth, alpha=-1, beta=1):
+    def value(game_state: Othello, depth, heuristic, alpha=-1, beta=1):
         if game_state.game_is_over():
             return game_state.utility(game_state.get_winner()) * 1000
         if depth == 0:
                 # return heuristic of game state
-                return Nijssen07Heuristic.heuristic(game_state.get_current_player(), game_state)
+                return heuristic(game_state.get_current_player(), game_state)
         val = alpha
         for move in game_state.get_available_moves():
             next_state = game_state.deepcopy()
             next_state.play_position(move)
-            val = max({val, -1 * PlayerAlphaBetaPruning.value(next_state, depth - 1, -beta, -alpha)})
+            val = max({val, -1 * PlayerAlphaBetaPruning.value(next_state, depth - 1, heuristic, -beta, -alpha)})
             if val >= beta:
                 return val
             alpha = max({val, alpha})
@@ -87,13 +86,13 @@ class PlayerAlphaBetaPruning:
         return val
 
     @staticmethod
-    def value_monte_carlo(game_state: Othello, depth, alpha=-1, beta=1, mc_count=100):
+    def value_monte_carlo(game_state: Othello, depth, heuristic, alpha=-1, beta=1, mc_count=100):
         if game_state.game_is_over():
             return game_state.utility(game_state.get_winner()) * 1000
         if depth == 0:
             # use monte carlo player if enabled
             # ml_count = number of played games
-            ml = PlayerMonteCarlo(big_number=mc_count, use_start_libs=False, preprocessor_n=-1)
+            ml = PlayerMonteCarlo(big_number=mc_count, use_start_libs=False, preprocessor_n=-1, heuristic=heuristic)
             # get best move
             move = ml.get_move(game_state)
             # return winnings stats of best move
@@ -104,7 +103,7 @@ class PlayerAlphaBetaPruning:
         for move in game_state.get_available_moves():
             next_state = game_state.deepcopy()
             next_state.play_position(move)
-            val = max({val, -1 * PlayerAlphaBetaPruning.value_monte_carlo(next_state, depth - 1, -beta, -alpha, mc_count=mc_count)})
+            val = max({val, -1 * PlayerAlphaBetaPruning.value_monte_carlo(next_state, depth - 1, heuristic, -beta, -alpha, mc_count=mc_count)})
             if val >= beta:
                 return val
             alpha = max({val, alpha})
@@ -125,9 +124,9 @@ class PlayerAlphaBetaPruning:
             if self.use_ml:
                 result = -PlayerAlphaBetaPruning.value_ml(next_state, self.search_depth - 1, ml_count=self.ml_count)
             elif self.use_monte_carlo:
-                result = -PlayerAlphaBetaPruning.value_monte_carlo(next_state, self.search_depth - 1, mc_count=self.ml_count)
+                result = -PlayerAlphaBetaPruning.value_monte_carlo(next_state, self.search_depth - 1, self.heuristic, mc_count=self.ml_count)
             else:
-                result = -PlayerAlphaBetaPruning.value(next_state, self.search_depth - 1)
+                result = -PlayerAlphaBetaPruning.value(next_state, self.search_depth - 1, self.heuristic)
 
             if result not in best_moves.keys():
                 best_moves[result] = []
