@@ -28,7 +28,7 @@ class PlayerAlphaBetaPruning:
                     "[Player AlphaBetaPruning] Do you want to use the machine learning after Alpha-Beta Pruning?")
 
             if self.use_ml:
-                self.ml_count = UtilMethods.get_integer_selection("[Player AlphaBetaPruning - Machine Learning] Select number of played Games", 15, 200)
+                self.ml_count = UtilMethods.get_integer_selection("[Player AlphaBetaPruning - Machine Learning] Select number of played Games", 10, 75)
         else:
             self.use_ml = False
             self.ml_count = 1
