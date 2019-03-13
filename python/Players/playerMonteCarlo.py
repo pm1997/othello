@@ -14,19 +14,35 @@ class PlayerMonteCarlo:
     """
 
     start_tables = StartTables()
+    move_probability = dict()
 
-    def __init__(self):
+    def __init__(self, big_number=0, use_start_libs=None, preprocessor_n=0):
         """
         Initialize the Player
         """
-        # Ask the user to enter the number of random games per turn
-        self.big_n = UtilMethods.get_integer_selection("[Player MonteCarlo] Select Number of Simulated Games", 100, sys.maxsize)
-        # Ask the user to determine whether to use the start library
-        self.use_start_lib = UtilMethods.get_boolean_selection("[Player MonteCarlo] Do you want to use the start library?")
-        # Check whether to use the preprocessor
-        self.use_preprocessor_fixed = UtilMethods.get_boolean_selection("[Player MonteCarlo] Do you want to use the fixed length preprocessor?")
-        if self.use_preprocessor_fixed:
-            self.preprocessor_fixed_Ns = self.big_n = UtilMethods.get_integer_selection("[Player MonteCarlo]>>[FixedLen Preprocessor] Select Number of moves passing through preprocessor", 1, 64)
+        if big_number != 0:
+            self.big_n = big_number
+        else:
+            # Ask the user to enter the number of random games per turn
+            self.big_n = UtilMethods.get_integer_selection("[Player MonteCarlo] Select Number of Simulated Games", 100, sys.maxsize)
+
+        if use_start_libs is None:
+            # Ask the user to determine whether to use the start library
+            self.use_start_lib = UtilMethods.get_boolean_selection("[Player MonteCarlo] Do you want to use the start library?")
+        else:
+            self.use_start_lib = use_start_libs
+
+        if preprocessor_n == 0:
+            # Check whether to use the preprocessor
+            self.use_preprocessor_fixed = UtilMethods.get_boolean_selection("[Player MonteCarlo] Do you want to use the fixed length preprocessor?")
+            if self.use_preprocessor_fixed:
+                self.preprocessor_fixed_Ns = self.big_n = UtilMethods.get_integer_selection("[Player MonteCarlo]>>[FixedLen Preprocessor] Select Number of moves passing through preprocessor", 1, 64)
+        elif preprocessor_n == -1:
+            self.use_preprocessor_fixed = False
+            self.preprocessor_fixed_Ns = 0
+        else:
+            self.use_preprocessor_fixed = True
+            self.preprocessor_fixed_Ns = self.big_n = preprocessor_n
 
     @staticmethod
     def preprocess_fixed(game_state: Othello, number_of_elements):
@@ -75,6 +91,8 @@ class PlayerMonteCarlo:
                 return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
         # Create a dictionary to store information on won/lost ratios
         winning_statistics = dict()
+        # empty dictionary or win probabilities
+        self.move_probability.clear()
         # Get the own symbol
         own_symbol = game_state.get_current_player()
         # Check whether to preprocess the available moves
@@ -103,9 +121,12 @@ class PlayerMonteCarlo:
             # Access the values
             (games_won, times_played) = winning_statistics[single_move]
             # Calculate the fraction
-            winning_statistics[single_move] = games_won / times_played
+            self.move_probability[single_move] = games_won / times_played
 
         # Select the move with the maximum probability of winning
-        selected_move = max(winning_statistics.items(), key=operator.itemgetter(1))[0]
+        selected_move = max(self.move_probability.items(), key=operator.itemgetter(1))[0]
         # Return the selected move
         return selected_move
+
+    def get_move_probability(self, move):
+        return self.move_probability[move]
