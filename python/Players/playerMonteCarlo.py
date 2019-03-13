@@ -1,11 +1,11 @@
 from othello import Othello
 from start_tables import StartTables
 from util import UtilMethods
-from heuristics import Nijssen07Heuristic
 import operator
 from Players.playerRandom import PlayerRandom
 import sys
 import random
+import heuristics
 
 
 class PlayerMonteCarlo:
@@ -16,7 +16,7 @@ class PlayerMonteCarlo:
     start_tables = StartTables()
     move_probability = dict()
 
-    def __init__(self, big_number=0, use_start_libs=None, preprocessor_n=0):
+    def __init__(self, big_number=0, use_start_libs=None, preprocessor_n=0, heuristic = None):
         """
         Initialize the Player
         """
@@ -24,7 +24,7 @@ class PlayerMonteCarlo:
             self.big_n = big_number
         else:
             # Ask the user to enter the number of random games per turn
-            self.big_n = UtilMethods.get_integer_selection("[Player MonteCarlo] Select Number of Simulated Games", 5, sys.maxsize)
+            self.big_n = UtilMethods.get_integer_selection("[Player MonteCarlo] Select Number of Simulated Games", 100, sys.maxsize)
 
         if use_start_libs is None:
             # Ask the user to determine whether to use the start library
@@ -41,8 +41,13 @@ class PlayerMonteCarlo:
             self.preprocessor = PlayerMonteCarlo.preprocess_variable_selectivity
             self.preprocessor_parameter = 1.0
 
+        if heuristic is None:
+             self.heuristic = heuristics.select_heuristic("Player MonteCarlo")
+        else:
+            self.heuristic = heuristic
+
     @staticmethod
-    def preprocess_get_heuristic_value(game_state: Othello):
+    def preprocess_get_heuristic_value(game_state: Othello, heuristic):
         """
         Returns a dict of each move's value
         :param game_state:
@@ -57,7 +62,7 @@ class PlayerMonteCarlo:
             # Play the move to evaluate the value of the game after making the move
             copy_of_state.play_position(move)
             # Get the value of the current state
-            heuristic_values[move] = Nijssen07Heuristic.heuristic(game_state.get_current_player(), copy_of_state)
+            heuristic_values[move] = heuristic(game_state.get_current_player(), copy_of_state)
         # return the heuristic_values
         return heuristic_values
 
@@ -85,7 +90,7 @@ class PlayerMonteCarlo:
         return preprocessor, preprocessor_parameter
 
     @staticmethod
-    def preprocess_fixed_selectivity(game_state: Othello, N_s):
+    def preprocess_fixed_selectivity(game_state: Othello, N_s, heuristic):
         """
         Will preprocess the given game_state by only letting the N_s best moves pass
         :param game_state:
@@ -93,12 +98,12 @@ class PlayerMonteCarlo:
         :return:
         """
         # Get a list of moves sorted by their heuristic value
-        heuristic_values = sorted(PlayerMonteCarlo.preprocess_get_heuristic_value(game_state).items(), key=operator.itemgetter(1))
+        heuristic_values = sorted(PlayerMonteCarlo.preprocess_get_heuristic_value(game_state, heuristic=heuristic).items(), key=operator.itemgetter(1))
         # Pass the fisrt N_s moves on
         game_state.set_available_moves(heuristic_values[:N_s][0])
 
     @staticmethod
-    def preprocess_variable_selectivity(game_state: Othello, p_s):
+    def preprocess_variable_selectivity(game_state: Othello, p_s, heuristic):
         """
         Will preprocess the given game_state by only letting moves with an value of at least p_s of the average move value pass
         :param game_state:
@@ -106,7 +111,7 @@ class PlayerMonteCarlo:
         :return:
         """
         # Calculate each move's value
-        heuristic_value_dict = PlayerMonteCarlo.preprocess_get_heuristic_value(game_state)
+        heuristic_value_dict = PlayerMonteCarlo.preprocess_get_heuristic_value(game_state, heuristic=heuristic)
         # Get a list of values
         heuristic_values = [v for _, v in heuristic_value_dict.items()]
         # Calculate the Average List Value
@@ -152,7 +157,7 @@ class PlayerMonteCarlo:
         # Check whether to preprocess the available moves
         if self.preprocessor is not None:
             # Preprocess the available moves
-            self.preprocessor(game_state, self.preprocessor_parameter)
+            self.preprocessor(game_state, self.preprocessor_parameter, self.heuristic)
         # Get the set of legal moves
         possible_moves = game_state.get_available_moves()
         # Add a pair of (won_games, times_played) to the dictionary for each legal move
