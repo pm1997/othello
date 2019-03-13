@@ -1,11 +1,14 @@
 #!/bin/bash
-
+# echo 4; sleep 1; echo 100; sleep 1; echo y; sleep 1; echo 4; sleep 1; echo 100
 wins_w=0;
 wins_b=0;
 for i in `seq 1 20`;
 	do
 		echo "round: "  $i
-		w1=$( python3 ./main-game.py <<< $(echo 2; sleep 1; echo 100; sleep 1; echo 3; sleep 1; echo 100 ) | grep -e "Winner")
+		# python3 ./main-game.py <<< $(echo 2; sleep 1; echo 100; sleep 1; echo y; sleep 1; echo n; sleep 1; 
+		python3 ./main-game.py <<< $(echo 1; sleep 1; echo 4; sleep 1; echo 100; sleep 1; echo y; sleep 1; echo 4; sleep 1) | tee temp1.txt
+		#w1=$( python3 ./main-game.py <<< $(echo 2; sleep 1; echo 100; sleep 1; echo y; sleep 1; echo n; sleep 1; echo 4; sleep 1; echo 100; sleep 1; echo y; sleep 1; echo 4 ) |  grep -e "Winner")
+		w1=$( cat temp1.txt | grep "Winner" )
 		for word in $w1; do
 			if [ $word == "W" ]; then
 				wins_w=$(echo  $wins_w + 1 | bc)
