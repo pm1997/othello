@@ -37,5 +37,10 @@ Es existieren einerseits mehrere Heuristiken, andererseits können auch andere S
 \subsection{Machine Learning}
 Dieser Spielalgorithmus besteht hauptsächlich aus dem Monte Carlo Spieler. Der deutliche Unterschied zu diesem besteht aber in der Auswahl der zu simulierenden Spiele. Während Monte Carlo zufällig einen Zug aus den verfügbaren Zügen auswählt, verwendet Machine Learning eine gewichtete Zufallsfunktion. Der Algorithmus speichert die gespielten und gewonnen Spiele in einer Datenbank. Bei der Auswahl des Zuges, gewichtet er die Zugmöglichkeiten, die eine höhere Gewinnwahrscheinlichkeit besitzen höher als die Züge mit einer geringeren Wahrscheinlichkeit. Dadurch wählt er statistisch die Züge mit einer höheren Gewinnwahrscheinlichkeit aus. Durch das Speichern der Ergebnisse der simulierten Spiele in der Datenbank, \mxZitat{lernt} die Datenbank mit der Zeit dazu und kann in weiteren Spielen zuverlässigere Wahrscheinlichkeiten zurückgeben.
 
+\section{Details zum Monte Carlo Spieler}
+In diesem Kapitel wird der Spieler Monte Carlo anhand des vorhandenen Quellcodes detailliert erklärt.
+\\Die Spielerklasse \mxZitat{PlayerMonteCarlo} ist in der Datei \mxZitat{python/Players/playerMonteCarlo.py} zu finden.
+Die zunächst wichtigsten Funktionen sind die Init-Funktion der Klasse und die Funktion \mxZitat{get\_move}. \mxZitat{get\_move} ist eine Interface-Funktion, d.h. alle Spieler stellen eine Funktion \mxZitat{get\_move} bereit, die als Parameter einen Spielzustand (Klasse \code{Othello}) erwartet und einen \code{move} zurückgibt. Dieser besteht aus einem Paar, das die Koordinaten auf dem Spielfeld darstellt.
+
 \section{Kombination von Monte-Carlo und Alpha-Beta Abschneiden}
 \label{ab_comb}
