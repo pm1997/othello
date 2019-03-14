@@ -6,6 +6,7 @@ from Players.playerRandom import PlayerRandom
 import sys
 import random
 import heuristics
+import multiprocessing as mp
 
 
 class PlayerMonteCarlo:
@@ -16,7 +17,7 @@ class PlayerMonteCarlo:
     start_tables = StartTables()
     move_probability = dict()
 
-    def __init__(self, big_number=0, use_start_libs=None, preprocessor_n=0, heuristic = None):
+    def __init__(self, big_number=0, use_start_libs=None, preprocessor_n=0, heuristic=None, use_multiprocessing=None):
         """
         Initialize the Player
         """
@@ -45,6 +46,12 @@ class PlayerMonteCarlo:
              self.heuristic = heuristics.select_heuristic("Player MonteCarlo")
         else:
             self.heuristic = heuristic
+
+        if use_multiprocessing is None:
+            self.use_multiprocessing = UtilMethods.get_boolean_selection(
+                "[Player MonteCarlo] Do you want to use multiproessing?")
+        else:
+            self.use_multiprocessing = use_multiprocessing
 
     @staticmethod
     def preprocess_get_heuristic_value(game_state: Othello, heuristic):
@@ -140,6 +147,38 @@ class PlayerMonteCarlo:
         # Return the first move and whether the game was won or not
         return first_move, won
 
+    @staticmethod
+    def play_n_random_games(own_symbol, game_state: Othello, number_of_games):
+        winning_statistics = dict()
+        # Get the set of legal moves
+        possible_moves = game_state.get_available_moves()
+        # Add a pair of (won_games, times_played) to the dictionary for each legal move
+        for move in possible_moves:
+            winning_statistics[move] = (0, 1)  # set games played to 1 to avoid division by zero error
+
+        # Simulate big_n games
+        for _ in range(number_of_games):
+            # Copy the current game state
+            simulated_game = game_state.deepcopy()
+            # Play one random game and access the returned information
+            first_played_move, won = PlayerMonteCarlo.play_random_game(own_symbol, simulated_game)
+            # Access the statistics stored for the move selected in the random game
+            (won_games, times_played) = winning_statistics[first_played_move]
+            # Increment the counters accordingly
+            winning_statistics[first_played_move] = (won_games + won, times_played + 1)
+        return winning_statistics
+
+    @staticmethod
+    def combine_statistic_dicts(base, added):
+        print(base, added)
+        for move in base:
+            if move in added:
+                base[move] += added[move]
+        for move in added:
+            if move not in base:
+                base[move] = added[move]
+
+
     def get_move(self, game_state: Othello):
         """
         Get the player's selection
@@ -159,22 +198,29 @@ class PlayerMonteCarlo:
         if self.preprocessor is not None:
             # Preprocess the available moves
             self.preprocessor(game_state, self.preprocessor_parameter, self.heuristic)
-        # Get the set of legal moves
-        possible_moves = game_state.get_available_moves()
-        # Add a pair of (won_games, times_played) to the dictionary for each legal move
-        for move in possible_moves:
-            winning_statistics[move] = (0, 1)  # set games played to 1 to avoid division by zero error
 
         # Simulate big_n games
-        for i in range(self.big_n):
-            # Copy the current game state
-            simulated_game = game_state.deepcopy()
-            # Play one random game and access the returned information
-            first_played_move, won = self.play_random_game(own_symbol, simulated_game)
-            # Access the statistics stored for the move selected in the random game
-            (won_games, times_played) = winning_statistics[first_played_move]
-            # Increment the counters accordingly
-            winning_statistics[first_played_move] = (won_games + won, times_played + 1)
+        if not self.use_multiprocessing:
+            winning_statistics = PlayerMonteCarlo.play_n_random_games(own_symbol, game_state.deepcopy(), self.big_n)
+        else:
+            number_of_processes = mp.cpu_count()
+            pool = mp.Pool(processes=number_of_processes)
+            list_of_statistics = [pool.apply_async(PlayerMonteCarlo.play_n_random_games, args=(own_symbol, game_state.deepcopy(), self.big_n)) for _ in range(number_of_processes)]
+            winning_statistics = list_of_statistics[0].get()
+            for single_list in list_of_statistics[1:]:
+                PlayerMonteCarlo.combine_statistic_dicts(winning_statistics, single_list.get())
+            pool.close()
+
+
+        # for _ in range(self.big_n):
+        #     # Copy the current game state
+        #     simulated_game = game_state.deepcopy()
+        #     # Play one random game and access the returned information
+        #     first_played_move, won = self.play_random_game(own_symbol, simulated_game)
+        #     # Access the statistics stored for the move selected in the random game
+        #     (won_games, times_played) = winning_statistics[first_played_move]
+        #     # Increment the counters accordingly
+        #     winning_statistics[first_played_move] = (won_games + won, times_played + 1)
 
         # Reduce the pair of (won_games, times_played) to a winning probability
         for single_move in winning_statistics:
