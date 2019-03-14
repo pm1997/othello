@@ -34,7 +34,7 @@ class PlayerMonteCarlo:
 
         if preprocessor_n == 0:
             # Check whether to use the preprocessor
-           self.preprocessor, self.preprocessor_parameter = self.select_preprocessor()
+            self.preprocessor, self.preprocessor_parameter = self.select_preprocessor()
         elif preprocessor_n == -1:
             self.preprocessor = None
         else:
@@ -66,7 +66,8 @@ class PlayerMonteCarlo:
         # return the heuristic_values
         return heuristic_values
 
-    def select_preprocessor(self):
+    @staticmethod
+    def select_preprocessor():
         # Create a list of Preprocessors
         available_preprocessors = list()
         # Use pairs of the form (description: String, class: Player) to store a player type
