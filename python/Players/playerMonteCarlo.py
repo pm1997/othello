@@ -24,11 +24,13 @@ class PlayerMonteCarlo:
             self.big_n = big_number
         else:
             # Ask the user to enter the number of random games per turn
-            self.big_n = UtilMethods.get_integer_selection("[Player MonteCarlo] Select Number of Simulated Games", 100, sys.maxsize)
+            self.big_n = UtilMethods.get_integer_selection("[Player MonteCarlo] Select Number of Simulated Games", 100,
+                                                           sys.maxsize)
 
         if use_start_libs is None:
             # Ask the user to determine whether to use the start library
-            self.use_start_lib = UtilMethods.get_boolean_selection("[Player MonteCarlo] Do you want to use the start library?")
+            self.use_start_lib = UtilMethods.get_boolean_selection(
+                "[Player MonteCarlo] Do you want to use the start library?")
         else:
             self.use_start_lib = use_start_libs
 
@@ -69,6 +71,10 @@ class PlayerMonteCarlo:
 
     @staticmethod
     def select_preprocessor():
+        """
+        select one preprocessor with specific parameters
+        :return: number of preprocessor (0 for none), parameter
+        """
         # Create a list of Preprocessors
         available_preprocessors = list()
         # Use pairs of the form (description: String, class: Player) to store a player type
@@ -82,7 +88,8 @@ class PlayerMonteCarlo:
         preprocessor_parameter = None
         if preprocessor == PlayerMonteCarlo.preprocess_fixed_selectivity:
             preprocessor_parameter = UtilMethods.get_integer_selection(
-                "[Player MonteCarlo]>>[Fixed Selectivity Preprocessor] Please select the number of moves passing the preprocessor", 1, 64)
+                "[Player MonteCarlo]>>[Fixed Selectivity Preprocessor] Please select the number of moves passing the preprocessor",
+                1, 64)
         elif preprocessor == PlayerMonteCarlo.preprocess_variable_selectivity:
             preprocessor_parameter = UtilMethods.get_float_selection(
                 "[Player MonteCarlo]>>[Variable Selectivity Preprocessor] Please select the percentage of the average move value needed to pass the preprocessor",
@@ -100,7 +107,9 @@ class PlayerMonteCarlo:
         :return:
         """
         # Get a list of moves sorted by their heuristic value
-        heuristic_values = sorted(PlayerMonteCarlo.preprocess_get_heuristic_value(game_state, heuristic=heuristic).items(), key=operator.itemgetter(1))
+        heuristic_values = sorted(
+            PlayerMonteCarlo.preprocess_get_heuristic_value(game_state, heuristic=heuristic).items(),
+            key=operator.itemgetter(1))
         # Pass the first n_s moves on
         game_state.set_available_moves(heuristic_values[:n_s][0])
 
@@ -120,7 +129,8 @@ class PlayerMonteCarlo:
         # Calculate the Average List Value
         average_heuristic_value = sum(heuristic_values) / len(heuristic_values)
         # Pass the moves with an value of at least p_s of the average move value
-        game_state.set_available_moves([m for m, v in heuristic_value_dict.items() if v >= p_s * average_heuristic_value])
+        game_state.set_available_moves(
+            [m for m, v in heuristic_value_dict.items() if v >= p_s * average_heuristic_value])
 
     @staticmethod
     def play_random_game(own_symbol, simulated_game):
@@ -193,4 +203,8 @@ class PlayerMonteCarlo:
         return selected_move
 
     def get_move_probability(self, move):
+        """
+        :param move: given move in available moves
+        :return: win probability of given move
+        """
         return self.move_probability[move]

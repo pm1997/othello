@@ -33,6 +33,10 @@ def get_sign(current_player, field_value):
 
 
 def select_heuristic(player_string):
+    """
+    :param player_string: 'W' or 'B' to ask specific player to choose a heuristic
+    :return: selected heuristic
+    """
     # Create a list of all Heuristics
     available_heuristics = list()
     # Use pairs of the form (description: String, class: Player) to store a player type

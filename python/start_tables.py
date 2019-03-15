@@ -1,4 +1,3 @@
-
 import numpy as np
 import pandas as pd
 from util import UtilMethods
@@ -6,7 +5,6 @@ from othello import Othello
 
 
 class StartTables:
-
     _start_tables = []
 
     def _init_start_tables(self):

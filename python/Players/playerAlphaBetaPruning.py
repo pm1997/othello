@@ -22,10 +22,12 @@ class PlayerAlphaBetaPruning:
         self.heuristic = heuristics.select_heuristic("Player MonteCarlo")
 
         # Ask the user to determine whether to use the start library
-        self.use_ml = UtilMethods.get_boolean_selection("[Player AlphaBetaPruning] Do you want to use the machine learning after Alpha-Beta Pruning?")
+        self.use_ml = UtilMethods.get_boolean_selection(
+            "[Player AlphaBetaPruning] Do you want to use the machine learning after Alpha-Beta Pruning?")
 
         if self.use_ml:
-            self.ml_count = UtilMethods.get_integer_selection("[Player AlphaBetaPruning - Machine Learning] Select number of played Games", 10, 75)
+            self.ml_count = UtilMethods.get_integer_selection(
+                "[Player AlphaBetaPruning - Machine Learning] Select number of played Games", 10, 75)
             self.use_monte_carlo = False
         else:
             self.use_ml = False
@@ -35,13 +37,15 @@ class PlayerAlphaBetaPruning:
                 "[Player AlphaBetaPruning] Do you want to use the Monte Carlo after Alpha-Beta Pruning?")
 
             if self.use_monte_carlo:
-                self.ml_count = UtilMethods.get_integer_selection("[Player AlphaBetaPruning - Machine Learning] Select number of played Games", 10, 75)
+                self.ml_count = UtilMethods.get_integer_selection(
+                    "[Player AlphaBetaPruning - Machine Learning] Select number of played Games", 10, 75)
             else:
                 self.use_monte_carlo = False
                 self.ml_count = 1
 
         # Ask the user to determine whether to use the start library
-        self.use_start_lib = UtilMethods.get_boolean_selection("[Player AlphaBetaPruning] Do you want to use the start library?")
+        self.use_start_lib = UtilMethods.get_boolean_selection(
+            "[Player AlphaBetaPruning] Do you want to use the start library?")
 
     @staticmethod
     def value(game_state: Othello, depth, heuristic, alpha=-1, beta=1):
@@ -57,8 +61,8 @@ class PlayerAlphaBetaPruning:
         if game_state.game_is_over():
             return game_state.utility(game_state.get_winner()) * 1000
         if depth == 0:
-                # return heuristic of game state
-                return heuristic(game_state.get_current_player(), game_state)
+            # return heuristic of game state
+            return heuristic(game_state.get_current_player(), game_state)
         val = alpha
         for move in game_state.get_available_moves():
             next_state = game_state.deepcopy()
@@ -71,6 +75,15 @@ class PlayerAlphaBetaPruning:
 
     @staticmethod
     def value_ml(game_state: Othello, depth, alpha=-1, beta=1, ml_count=100):
+        """
+        get score for alpha beta pruning
+        :param game_state: actual game state
+        :param depth: do alpha beta pruning this depth
+        :param ml_count: number of games which are played in each terminal node after alpha beta pruning
+        :param alpha: value of alpha
+        :param beta:  value of beta
+        :return: score of move
+        """
         if game_state.game_is_over():
             return game_state.utility(game_state.get_winner()) * 1000
         if depth == 0:
@@ -87,7 +100,8 @@ class PlayerAlphaBetaPruning:
         for move in game_state.get_available_moves():
             next_state = game_state.deepcopy()
             next_state.play_position(move)
-            val = max({val, -1 * PlayerAlphaBetaPruning.value_ml(next_state, depth - 1, -beta, -alpha, ml_count=ml_count)})
+            val = max(
+                {val, -1 * PlayerAlphaBetaPruning.value_ml(next_state, depth - 1, -beta, -alpha, ml_count=ml_count)})
             if val >= beta:
                 return val
             alpha = max({val, alpha})
@@ -95,6 +109,16 @@ class PlayerAlphaBetaPruning:
 
     @staticmethod
     def value_monte_carlo(game_state: Othello, depth, heuristic, alpha=-1, beta=1, mc_count=100):
+        """
+        get score for alpha beta pruning
+        :param game_state: actual game state
+        :param depth: do alpha beta pruning this depth
+        :param heuristic: score game state after alpha beta pruning with this heuristic
+        :param mc_count: number of games which are played in each terminal node after alpha beta pruning
+        :param alpha: value of alpha
+        :param beta:  value of beta
+        :return: score of move
+        """
         if game_state.game_is_over():
             return game_state.utility(game_state.get_winner()) * 1000
         if depth == 0:
@@ -111,7 +135,9 @@ class PlayerAlphaBetaPruning:
         for move in game_state.get_available_moves():
             next_state = game_state.deepcopy()
             next_state.play_position(move)
-            val = max({val, -1 * PlayerAlphaBetaPruning.value_monte_carlo(next_state, depth - 1, heuristic, -beta, -alpha, mc_count=mc_count)})
+            val = max({val,
+                       -1 * PlayerAlphaBetaPruning.value_monte_carlo(next_state, depth - 1, heuristic, -beta, -alpha,
+                                                                     mc_count=mc_count)})
             if val >= beta:
                 return val
             alpha = max({val, alpha})
@@ -137,7 +163,8 @@ class PlayerAlphaBetaPruning:
             if self.use_ml:
                 result = -PlayerAlphaBetaPruning.value_ml(next_state, self.search_depth - 1, ml_count=self.ml_count)
             elif self.use_monte_carlo:
-                result = -PlayerAlphaBetaPruning.value_monte_carlo(next_state, self.search_depth - 1, self.heuristic, mc_count=self.ml_count)
+                result = -PlayerAlphaBetaPruning.value_monte_carlo(next_state, self.search_depth - 1, self.heuristic,
+                                                                   mc_count=self.ml_count)
             else:
                 result = -PlayerAlphaBetaPruning.value(next_state, self.search_depth - 1, self.heuristic)
 

@@ -24,10 +24,11 @@ class Database:
         # save modified array
         self.store_database()
 
-    def set_data(self, data2):
-        self._data = data2
-
     def store_database(self):
+        """
+        store database on filesystem
+        :return:
+        """
         with open("ml_moves.csv", 'w') as outfile:
             # write 3 dim. array as list of 2 dim. array's
             for row in self._data:
@@ -77,6 +78,12 @@ class Database:
         return likelihood
 
     def update_weights(self, turn_nr, move, won):
+        """
+        :param turn_nr: actual turn number
+        :param move:  move of turn number
+        :param won: game won ? 1 : 0
+        :return:
+        """
         # update number of won and turns in last move
         # eg: turn_number = 5
         #       => update row 1  (5 / 4).floor()
@@ -88,6 +95,12 @@ class Database:
         self._data[math.floor(turn_nr / 4)][move][1] += 1
 
     def update_all_weights(self, moves, won):
+        """
+        update weights of all moves in game
+        :param moves: list of taken moves
+        :param won: game won ? 1 : 0
+        :return:
+        """
         turn_nr = 0
         # update each move in game
         for _ in moves:
