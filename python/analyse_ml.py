@@ -4,7 +4,6 @@ from constants import COLUMN_NAMES
 
 
 class Analyse:
-
     # data of csv ml_moves.csv
     _data = list()
 
@@ -73,6 +72,11 @@ class Analyse:
 
     @staticmethod
     def print_board(board, average):
+        """
+        :param board: actual board matrix
+        :param average: average value to color matrix
+        :return: stdout of colored matrix
+        """
         board_string = ""
         board_string += ""
         for i in range(8):
@@ -83,7 +87,7 @@ class Analyse:
             board_string += f"{row + 1} |"
             for col in range(8):
                 if board[row][col] < average - 0.2:
-                    board_string += f" {colored( board[row][col], 'red')} |"
+                    board_string += f" {colored(board[row][col], 'red')} |"
                 elif board[row][col] > average + 0.2:
                     board_string += f" {colored(board[row][col], 'green')} |"
                 else:
