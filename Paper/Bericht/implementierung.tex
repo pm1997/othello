@@ -40,7 +40,91 @@ Dieser Spielalgorithmus besteht hauptsächlich aus dem Monte Carlo Spieler. Der 
 \section{Details zum Monte Carlo Spieler}
 In diesem Kapitel wird der Spieler Monte Carlo anhand des vorhandenen Quellcodes detailliert erklärt.
 \\Die Spielerklasse \mxZitat{PlayerMonteCarlo} ist in der Datei \mxZitat{python/Players/playerMonteCarlo.py} zu finden.
-Die zunächst wichtigsten Funktionen sind die Init-Funktion der Klasse und die Funktion \mxZitat{get\_move}. \mxZitat{get\_move} ist eine Interface-Funktion, d.h. alle Spieler stellen eine Funktion \mxZitat{get\_move} bereit, die als Parameter einen Spielzustand (Klasse \code{Othello}) erwartet und einen \code{move} zurückgibt. Dieser besteht aus einem Paar, das die Koordinaten auf dem Spielfeld darstellt.
+Die zunächst wichtigsten Funktionen sind die Init-Funktion der Klasse und die Funktion \mxZitat{get\_move}.
+\subsection*{Init-Funktion}
+In dem Konstruktor der Klasse \code{PlayerMonteCarlo} werden mehrere Benutzerabfragen durchgeführt und in der Klasse gespeichert. Folgende Werte werden ermittelt:
+\begin{itemize}
+\item \code{big\_n}: Anzahl der zufällig gespielten Spiele je Zug
+\item \code{use\_start\_libs}: Bool'scher Wert ob Startbibliotheken verwendet werden sollen.
+\item \code{preprocessor}: Nummer des verwendeten Preprozessors. 0 entspricht der Deaktivierung der Option
+\item \code{preprocessor\_parameter}: Parameter des verwendeten Preprozessors
+\item \code{heuristic}: Wahl einer Heuristikfunktion
+\end{itemize}
+
+\subsection*{get\_move}
+ \mxZitat{get\_move} ist eine Interface-Funktion, d.h. alle Spieler stellen eine Funktion \mxZitat{get\_move} bereit, die als Parameter einen Spielzustand (Klasse \code{Othello}) erwartet und einen \code{move} zurückgibt. Dieser besteht aus einem Paar, das die Koordinaten auf dem Spielfeld darstellt. In Listing \ref{lst:ab1} ist die Funktion abgebildet.
+\vspace{0.5cm}
+\\In den Zeilen 3 bis 6 werden die Starttabellen verwendet, wenn diese in der init-Funktion ausgewählt wurden. Die Funktion \code{get\_available\_start\_tables} gibt eine Liste der möglichen Züge zurück (Z.4). Diese sind in der Form \mxZitat{a2} angegeben. Aus den verfügbaren Zügen wird zufällig ein Element ausgewählt \\(\code{moves[random.randrange(len(moves))]} Z.6) und dieses in ein Koordinatenpaar übersetzt \\(\code{translate\_move\_to\_pair} Z. 6). 
+\\Ist die Liste der verfügbaren Züge leer, oder die Nutzung der Starttabellen deaktiviert, wird der Quellcode ab der Zeile 8 ausgeführt. In den Zeilen 8 bis 18 werden Variablen implementiert und ggf. der Preprozessor (Z. 13f.) ausgeführt.
+\\Die in der Init-Funktion angegeben \code{big\_n} Spiele werden in der Schleife in den Zeilen 20 bis 26 durchgeführt.
+\code{simulated\_game} ist eine Kopie des aktuellen Spielzustandes (Z. 21). Auf dieser Kopie wird nun ein zufälliges Spiel durchgeführt und gibt das Paar \code{(first\_played\_move, won)} zurück (Z. 23). Das lokale Dictionary \code{winning\_statistics} (Z. 25f.) speichert diese Werte und summiert die Anzahl der gewonnen Spielen.
+Das Dictionary speichert für jeden Zug ein Paar, das die gewonnen Spiele und die Gesamtanzahl der Spiele darstellt.
+\\ Nach dem Spielen aller zufälligen Spiele wird die Gewinnwahrscheinlichkeit berechnet (Z. 29 - 31). Die Wahrscheinlichkeit wird in dem Klassendictionary \code{move\_probability} gespeichert (Z. 31).
+\\Abschließend wird das Maximum des Dictionary über die Wahrscheinlichkeiten ermittelt und zurückgegeben (Z. 33f.).
+
+\begin{lstlisting}[caption = {get\_move Funktion des Alpha-Beta Spielers}, language = cpp, captionpos = t , numbers=left, label={lst:ab1}]
+    def get_move(self, game_state: Othello):
+
+        if self.use_start_lib and game_state.get_turn_nr() < 10:  # check whether start move match
+            moves = self.start_tables.get_available_start_tables(game_state)
+            if len(moves) > 0:
+                return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
+
+        winning_statistics = dict()
+        self.move_probability.clear()
+
+        own_symbol = game_state.get_current_player()
+
+        if self.preprocessor is not None:
+            self.preprocessor(game_state, self.preprocessor_parameter, self.heuristic)
+
+        possible_moves = game_state.get_available_moves()
+        for move in possible_moves:
+            winning_statistics[move] = (0, 1)  # set games played to 1 to avoid division by zero error
+
+        for i in range(self.big_n):
+            simulated_game = game_state.deepcopy()
+
+            first_played_move, won = self.play_random_game(own_symbol, simulated_game)
+
+            (won_games, times_played) = winning_statistics[first_played_move]
+            winning_statistics[first_played_move] = (won_games + won, times_played + 1)
+
+
+        for single_move in winning_statistics:
+            (games_won, times_played) = winning_statistics[single_move]
+            self.move_probability[single_move] = games_won / times_played
+
+        selected_move = max(self.move_probability.items(), key=operator.itemgetter(1))[0]
+        return selected_move
+\end{lstlisting}
+
+\section{Details zum Machine Learning Spieler}
+In diesem Kapitel wird der Spieler Machine Learning anhand des vorhandenen Quellcodes detailliert erklärt.
+\\Die Spielerklasse \mxZitat{PlayerMachineLearning} ist in der Datei \mxZitat{python/Players/playerMachineLearning.py} zu finden.
+Die zunächst wichtigsten Funktionen sind die Init-Funktion der Klasse und die Funktion \mxZitat{get\_move}.
+\subsection*{Init-Funktion}
+In dem Konstruktor der Klasse \code{PlayerMachineLearning} wir \code{big\_n}, d.h. die Anzahl der zufällig gespielten Spiele je Zug abgefragt.
+
+\subsection*{get\_move}
+Die \code{get\_move} Funktion dieses Spielers besteht im wesentlichen aus der Funktion \code{get\_move} des Monte Carlo Spielers. Die beiden Unterschiede finden sich in der Schleife, die die zufälligen Spiele ausführt. Die Unterschiede sind in Listing \ref{lst:ml1} dargestellt. 
+Statt der Funktion \code{play\_random\_game} (Z. 6) der \code{PlayerMonteCarlo} Klasse wird die Funktion \code{play\_weighted\_random\_game} (Z. 9) der Klasse \code{PlayerMachineLearning} und anschließend \code{update\_all\_weights} (Z. 10) ausgeführt. 
+\\\code{play\_weighted\_random\_game} spielt ebenfalls zufällige Spiele, allerdings bevorzugt die random-Funktion gewonnene Spiele im Gegensatz zu verlorene oder unentschiedene Spiele.
+\\ Zu diesem Zweck wurde eine Datenbank aufgebaut, die für eine gegebene Zugnummer und Position auf dem Spielbrett eine Gewinnwahrscheinlichkeit zurückliefert. Die Zufallsfunktion wählt aus der Summe der Wahrscheinlichkeiten aller möglichen Zugmöglichkeiten eine zufällige Zahl und ordnet dieser Zahl wieder einem Zug aus dieser Liste zu.
+
+\begin{lstlisting}[caption = {get\_move Funktion des Alpha-Beta Spielers}, language = cpp, captionpos = t , numbers=left, label={lst:ml1}]
+    def get_move(self, game_state: Othello):
+		# ...
+        for i in range(self.big_n): 
+			# ... 
+			# Monte Carlo
+			first_played_move, won = self.play_random_game(own_symbol, simulated_game)
+
+			# Machine Learning
+			won, first_played_move, played_moves = self.play_weighted_random_game(own_symbol, simulated_game)
+			ml_database.update_all_weights(played_moves, won)
+		# ...
+\end{lstlisting}
 
 \section{Kombination von Monte-Carlo und Alpha-Beta Abschneiden}
 \label{ab_comb}
