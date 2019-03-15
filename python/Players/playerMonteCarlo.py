@@ -16,7 +16,7 @@ class PlayerMonteCarlo:
     start_tables = StartTables()
     move_probability = dict()
 
-    def __init__(self, big_number=0, use_start_libs=None, preprocessor_n=0, heuristic = None):
+    def __init__(self, big_number=0, use_start_libs=None, preprocessor_n=0, heuristic=None):
         """
         Initialize the Player
         """
@@ -42,7 +42,7 @@ class PlayerMonteCarlo:
             self.preprocessor_parameter = 1.0
 
         if heuristic is None:
-             self.heuristic = heuristics.select_heuristic("Player MonteCarlo")
+            self.heuristic = heuristics.select_heuristic("Player MonteCarlo")
         else:
             self.heuristic = heuristic
 
@@ -50,7 +50,8 @@ class PlayerMonteCarlo:
     def preprocess_get_heuristic_value(game_state: Othello, heuristic):
         """
         Returns a dict of each move's value
-        :param game_state:
+        :param game_state: game with actual board, player ...
+        :param heuristic:  list of heuristics
         :return:
         """
         # Create Dict to store the value of every move
@@ -77,8 +78,7 @@ class PlayerMonteCarlo:
         available_preprocessors.append(
             ("Variable Selectivity Preprocessor (VSP)", PlayerMonteCarlo.preprocess_variable_selectivity))
         # Ask the user to select a type of preprocessor.
-        preprocessor = UtilMethods.select_one(available_preprocessors,
-                                                      "[Player MonteCarlo] Select a preprocessor mode")
+        preprocessor = UtilMethods.select_one(available_preprocessors, "[Player MonteCarlo] Select a preprocessor mode")
         preprocessor_parameter = None
         if preprocessor == PlayerMonteCarlo.preprocess_fixed_selectivity:
             preprocessor_parameter = UtilMethods.get_integer_selection(
@@ -91,17 +91,18 @@ class PlayerMonteCarlo:
         return preprocessor, preprocessor_parameter
 
     @staticmethod
-    def preprocess_fixed_selectivity(game_state: Othello, N_s, heuristic):
+    def preprocess_fixed_selectivity(game_state: Othello, n_s, heuristic):
         """
         Will preprocess the given game_state by only letting the N_s best moves pass
         :param game_state:
-        :param N_s:
+        :param n_s:
+        :param heuristic:
         :return:
         """
         # Get a list of moves sorted by their heuristic value
         heuristic_values = sorted(PlayerMonteCarlo.preprocess_get_heuristic_value(game_state, heuristic=heuristic).items(), key=operator.itemgetter(1))
-        # Pass the fisrt N_s moves on
-        game_state.set_available_moves(heuristic_values[:N_s][0])
+        # Pass the first n_s moves on
+        game_state.set_available_moves(heuristic_values[:n_s][0])
 
     @staticmethod
     def preprocess_variable_selectivity(game_state: Othello, p_s, heuristic):
@@ -109,6 +110,7 @@ class PlayerMonteCarlo:
         Will preprocess the given game_state by only letting moves with an value of at least p_s of the average move value pass
         :param game_state:
         :param p_s:
+        :param heuristic
         :return:
         """
         # Calculate each move's value
@@ -142,7 +144,9 @@ class PlayerMonteCarlo:
 
     def get_move(self, game_state: Othello):
         """
-        Get the player's selection
+        interface function of all players
+        :param game_state: actual game state
+        :return: best move in available moves
         """
         # Use start library if it is selected and still included
         if self.use_start_lib and game_state.get_turn_nr() < 10:  # check whether start move match
