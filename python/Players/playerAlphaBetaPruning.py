@@ -15,7 +15,6 @@ class PlayerAlphaBetaPruning:
     def __init__(self):
         """
         init start variables and used modules
-        :param search_depth: max search depth before heuristic or machine learning is used
         """
 
         self.search_depth = UtilMethods.get_integer_selection("[Player AlphaBetaPruning] Select Search depth", 1, 10)
@@ -46,6 +45,15 @@ class PlayerAlphaBetaPruning:
 
     @staticmethod
     def value(game_state: Othello, depth, heuristic, alpha=-1, beta=1):
+        """
+        get score for alpha beta pruning
+        :param game_state: actual game state
+        :param depth: do alpha beta pruning this depth
+        :param heuristic: score game state after alpha beta pruning with this heuristic
+        :param alpha: value of alpha
+        :param beta:  value of beta
+        :return: score of move
+        """
         if game_state.game_is_over():
             return game_state.utility(game_state.get_winner()) * 1000
         if depth == 0:
@@ -110,6 +118,11 @@ class PlayerAlphaBetaPruning:
         return val
 
     def get_move(self, game_state: Othello):
+        """
+        interface function of all players
+        :param game_state: actual game state
+        :return: best move in available moves
+        """
         # Use start library if it is selected and still included
         if self.use_start_lib and game_state.get_turn_nr() < 10:  # check whether start move match
             moves = self.start_tables.get_available_start_tables(game_state)
