@@ -21,6 +21,12 @@ class PlayerMachineLearning:
 
     @staticmethod
     def get_weighted_random(possible_moves, turn_nr):
+        """
+        get weighted random move: prefer moves with higher chance of winning
+        :param possible_moves: list of available moves in current game state
+        :param turn_nr: actual turn number
+        :return: random move
+        """
         prob_sum = 0.0
         # get sum of all chances in possible moves
         for move in possible_moves:
@@ -42,6 +48,14 @@ class PlayerMachineLearning:
         return possible_moves[-1]
 
     def play_weighted_random_game(self, own_symbol, simulated_game):
+        """
+        :param own_symbol: player symbol (PLAYER_ONE, PLAYER_TWO)
+        :param simulated_game: copy of game state
+        :return: won, first_move, taken_moves
+            won: player wins random game
+            first_move: root move of player
+            taken_moves: list of all taken moves in simulated game
+        """
         # get possible moves
         possible_moves = simulated_game.get_available_moves()
 
@@ -59,6 +73,11 @@ class PlayerMachineLearning:
         return won, first_move, simulated_game.get_taken_mv()
 
     def get_move(self, game_state: Othello):
+        """
+        interface function of all players
+        :param game_state: actual game state
+        :return: best move in available moves
+        """
         # init variables
         own_symbol = game_state.get_current_player()
         possible_moves = game_state.get_available_moves()
@@ -75,6 +94,7 @@ class PlayerMachineLearning:
             simulated_game = game_state.deepcopy()
             # select a weighted random move and play remaining game
             won, first_played_move, played_moves = self.play_weighted_random_game(own_symbol, simulated_game)
+            # Access the statistics stored for the move selected in the random game
             (won_games, times_played) = move_stats[first_played_move]
             # update move stats of actual big_n games
             move_stats[first_played_move] = (won_games + won, times_played + 1)
@@ -93,4 +113,8 @@ class PlayerMachineLearning:
         return selected_move
 
     def get_move_probability(self, move):
+        """
+        :param move: given move in available moves
+        :return: winning change of move
+        """
         return self.move_probability[move]

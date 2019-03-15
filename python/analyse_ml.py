@@ -65,13 +65,14 @@ class Analyse:
             print(f"var: {np.var(self._data2[pos], ddof=1)}")
 
             # print array (board without column /
-            self.print_board(self._data2[pos], average)
+            Analyse.print_board(self._data2[pos], average)
             # print(self._data2[pos])
 
             print("_______________________")
             pos += 1
 
-    def print_board(self, board, average):
+    @staticmethod
+    def print_board(board, average):
         board_string = ""
         board_string += ""
         for i in range(8):
