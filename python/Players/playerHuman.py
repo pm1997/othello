@@ -11,7 +11,10 @@ class PlayerHuman:
     @staticmethod
     def get_move(game_state: Othello):
         """
+        interface function of all players
         Asks the user for a move and returns the selection
+        :param game_state: actual game state
+        :return: best move in available moves
         """
         # Create a data structure to use with UtilMethods.select_one
         possibilities = []

@@ -3,6 +3,7 @@ This file contains heuristics used to evaluate a certain game state
 """
 
 from othello import Othello
+from util import UtilMethods
 
 # Generate sets of fields of similar value
 ALL_FIELDS = {(a, b) for a in range(8) for b in range(8)}
@@ -29,6 +30,22 @@ def get_sign(current_player, field_value):
         return -1
     else:
         return 0
+
+
+def select_heuristic(player_string):
+    """
+    :param player_string: 'W' or 'B' to ask specific player to choose a heuristic
+    :return: selected heuristic
+    """
+    # Create a list of all Heuristics
+    available_heuristics = list()
+    # Use pairs of the form (description: String, class: Player) to store a player type
+    available_heuristics.append(("Nijssen 07 Heuristic", Nijssen07Heuristic.heuristic))
+
+    if len(available_heuristics) > 1:
+        return UtilMethods.select_one(available_heuristics, f"[{player_string}] Please select a heuristic")
+    else:
+        return available_heuristics[0][1]
 
 
 class Nijssen07Heuristic:

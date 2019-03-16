@@ -10,7 +10,9 @@ class PlayerRandom:
     @staticmethod
     def get_move(game_state: Othello):
         """
-        Return the selected move for the current state
+        interface function of all players
+        :param game_state: actual game state
+        :return: best move in available moves
         """
         # Get the legal moves
         possible_moves = game_state.get_available_moves()
