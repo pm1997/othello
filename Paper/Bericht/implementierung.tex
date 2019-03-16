@@ -41,7 +41,7 @@ Dieser Spielalgorithmus besteht hauptsächlich aus dem Monte Carlo Spieler. Der 
 In diesem Kapitel wird der Spieler Monte Carlo anhand des vorhandenen Quellcodes detailliert erklärt.
 \\Die Spielerklasse \mxZitat{PlayerMonteCarlo} ist in der Datei \mxZitat{python/Players/playerMonteCarlo.py} zu finden.
 Die zunächst wichtigsten Funktionen sind die Init-Funktion der Klasse und die Funktion \mxZitat{get\_move}.
-\subsection*{Init-Funktion}
+\subsection{Init-Funktion}
 In dem Konstruktor der Klasse \code{PlayerMonteCarlo} werden mehrere Benutzerabfragen durchgeführt und in der Klasse gespeichert. Folgende Werte werden ermittelt:
 \begin{itemize}
 \item \code{big\_n}: Anzahl der zufällig gespielten Spiele je Zug
@@ -51,7 +51,7 @@ In dem Konstruktor der Klasse \code{PlayerMonteCarlo} werden mehrere Benutzerabf
 \item \code{heuristic}: Wahl einer Heuristikfunktion
 \end{itemize}
 
-\subsection*{get\_move}
+\subsection{get\_move}
  \mxZitat{get\_move} ist eine Interface-Funktion, d.h. alle Spieler stellen eine Funktion \mxZitat{get\_move} bereit, die als Parameter einen Spielzustand (Klasse \code{Othello}) erwartet und einen \code{move} zurückgibt. Dieser besteht aus einem Paar, das die Koordinaten auf dem Spielfeld darstellt. In Listing \ref{lst:ab1} ist die Funktion abgebildet.
 \vspace{0.5cm}
 \\In den Zeilen 3 bis 6 werden die Starttabellen verwendet, wenn diese in der init-Funktion ausgewählt wurden. Die Funktion \code{get\_available\_start\_tables} gibt eine Liste der möglichen Züge zurück (Z.4). Diese sind in der Form \mxZitat{a2} angegeben. Aus den verfügbaren Zügen wird zufällig ein Element ausgewählt \\(\code{moves[random.randrange(len(moves))]} Z.6) und dieses in ein Koordinatenpaar übersetzt \\(\code{translate\_move\_to\_pair} Z. 6). 
@@ -103,14 +103,14 @@ Das Dictionary speichert für jeden Zug ein Paar, das die gewonnen Spiele und di
 In diesem Kapitel wird der Spieler Machine Learning anhand des vorhandenen Quellcodes detailliert erklärt.
 \\Die Spielerklasse \mxZitat{PlayerMachineLearning} ist in der Datei \mxZitat{python/Players/playerMachineLearning.py} zu finden.
 Die zunächst wichtigsten Funktionen sind die Init-Funktion der Klasse und die Funktion \mxZitat{get\_move}.
-\subsection*{Init-Funktion}
+\subsection{Init-Funktion}
 In dem Konstruktor der Klasse \code{PlayerMachineLearning} wir \code{big\_n}, d.h. die Anzahl der zufällig gespielten Spiele je Zug abgefragt.
 
-\subsection*{get\_move}
+\subsection{get\_move}
 Die \code{get\_move} Funktion dieses Spielers besteht im wesentlichen aus der Funktion \code{get\_move} des Monte Carlo Spielers. Die beiden Unterschiede finden sich in der Schleife, die die zufälligen Spiele ausführt. Die Unterschiede sind in Listing \ref{lst:ml1} dargestellt. 
 Statt der Funktion \code{play\_random\_game} (Z. 6) der \code{PlayerMonteCarlo} Klasse wird die Funktion \code{play\_weighted\_random\_game} (Z. 9) der Klasse \code{PlayerMachineLearning} und anschließend \code{update\_all\_weights} (Z. 10) ausgeführt. 
 \\\code{play\_weighted\_random\_game} spielt ebenfalls zufällige Spiele, allerdings bevorzugt die random-Funktion gewonnene Spiele im Gegensatz zu verlorene oder unentschiedene Spiele.
-\\ Zu diesem Zweck wurde eine Datenbank aufgebaut, die für eine gegebene Zugnummer und Position auf dem Spielbrett eine Gewinnwahrscheinlichkeit zurückliefert. Die Zufallsfunktion wählt aus der Summe der Wahrscheinlichkeiten aller möglichen Zugmöglichkeiten eine zufällige Zahl und ordnet dieser Zahl wieder einem Zug aus dieser Liste zu.
+\\ Zu diesem Zweck wurde eine Datenbank aufgebaut, die für eine gegebene Zugnummer und Position auf dem Spielbrett eine Gewinnwahrscheinlichkeit zurückliefert. Die Zufallsfunktion wählt aus der Summe der Wahrscheinlichkeiten aller möglichen Zugmöglichkeiten eine zufällige Zahl und ordnet dieser Zahl wieder einem Zug aus dieser Liste zu. Der genaue Aufbau der Datenbank ist in dem nächsten Unterkapitel erläutert.
 
 \begin{lstlisting}[caption = {get\_move Funktion des Alpha-Beta Spielers}, language = cpp, captionpos = t , numbers=left, label={lst:ml1}]
     def get_move(self, game_state: Othello):
@@ -125,6 +125,42 @@ Statt der Funktion \code{play\_random\_game} (Z. 6) der \code{PlayerMonteCarlo} 
 			ml_database.update_all_weights(played_moves, won)
 		# ...
 \end{lstlisting}
+\subsection{Aufbau und Funktion der Machine Learning Datenbank}
+In Abbildung \ref{fig:db1} ist ein Ausschnitt der Datenbank dargestellt.
+\\\mxPicture{17cm}{Datenbank-ml}{Aufbau der Machine Learning Datenbank}{Aufbau der Machine Learning Datenbank}{fig:db1}{}
+Die Zeilen stellen die Zugnummern von 0 bis 64 in einer Schrittweite von vier dar. Die Spalten stellen jedes einzelne Feld dar. Sie starten bei \mxZitat{a1} und enden bei \mxZitat{h8}.
+\\Jedes Feld der dadurch aufgespannten Tabelle enthält ein Paar, das die Anzahl der gewonnen Spiele und die Gesamtanzahl der Spiele darstellen, in welchen das jeweilige Feld benutzt wurde.
+\\Initial sind alle Felder auf das Paar \mxZitat{(1, 1)} gesetzt. Dadurch wird in der späteren Berechnung der Gewinnwahrscheinlichkeiten eine Division durch Null vermieden.
+\\Bei jedem Spiel, das mit mindestens einem Machine Learning Spieler gespielt wird, werden die Züge extrahiert und die Datenbank aktualisiert. Im folgenden wird diesan den beiden Beispielspiele aus Listing \ref{lst:ex1} erklärt.
+\newpage
+\begin{lstlisting}[caption = {Auschnitte aus Zugfolge zweier Spiele}, language = cpp, captionpos = t , numbers=left, label={lst:ex1}]
+Spiel 1 (verloren): c4 c5 e6 f5 ..
+Spiel 2 (gewonnen): e6 f6 d3 e7 ..
+\end{lstlisting}
+Nach jedem Spiel wird die Datenbank aktualisiert (siehe Listing \ref{lst:ml1} Zeile 10). Dies bedeutet, dass die Zellen \mxZitat{c4, c5, e6} in der ersten Zeile und \mxZitat{f5} in der zweiten Zeile aktualisiert werden. Statt \mxZitat{(1, 1)} steht in diesen Zellen nun \mxZitat{(1, 2)}, da die Zellen in einem weiteren Spiel verwendet wurden (1 + 1 = 2), aber das letzte Spiel nicht gewonnen wurde (1 + 0 = 1). Nach dem zweiten Spiel werden ebenfalls die Zellen angepasst. in der Zelle \mxZitat{e6} steht nach dem ersten Spiel das Paar \mxZitat{(1, 2)}. Da dieses Spiel gewonnen wurde, werden beide Zahlen nun um eins inkrementiert.
+\\Durch die Initialisierung der Zellen mit \mxZitat{(1, 1)} wird die Gewinnwahrscheinlichkeit (erste Komponente / zweite Komponente) etwas verzerrt. Beispielsweise ist die Gewinnwahrscheinlichkeit nach einem verlorenen Spiel nicht Null sonder 50 Prozent. Nach zwei verlorenen Spielen sinkt diese Wahrscheinlichkeit auf 33,33 Prozent. Bei sehr vielen Spielen, kann das eine gewonnene Spiel vernachlässigt werden und hat nur einen geringen Einfluss auf das Ergebnis.
+\\Der Machine Learning Spieler nutzt diese Wahrscheinlichkeit, um einen gewichteten zufälligen Zug zu ermitteln.
+In Abbildung \ref{fig:rand1} ist dieses Prinzip an einem Beispiel erklärt.
+\\\mxPicture{13cm}{rand1}{Auswahl eines gewichteten zufälligen Zuges}{Auswahl eines gewichteten zufälligen Zuges}{fig:rand1}{}
+Nach der Ermittlung der einzelnen Gewinnwahrscheinlichkeiten der verfügbaren Züge wird die Summe dieser Wahrscheinlichkeiten gebildet. Zu beachten ist, dass die Summe der Wahrscheinlichkeiten nicht 1 sein muss, sondern meistens bei der Hälfte der verfügbaren Züge liegt.
+\\Aus dieser Summe (2,1) wird nun zufällig eine Zahl ausgewählt (1,2). Nun werden sequenziell die Wahrscheinlichkeiten der Züge summiert und dadurch ermittelt, welchen Zug die zufällige Zahl darstellt. In diesem Beispiel stellt eine \mxZitat{1,2} den Zug \mxZitat{f5} dar, da alle Zahlen in dem Intervall 1,1 bis 1,65 dem Zug \mxZitat{f5} zugeordnet sind.
+\\Durch dieses Verfahren werden Züge mit einer höheren Wahrscheinlichkeit bevorteilt, aber nicht ausschließlich ausgewählt.  
 
+\section{Details zum Spieler Alpha-Beta Pruning}
+In diesem Kapitel wird der Spieler \mxZitat{Alpha-Beta Pruning} anhand des vorhandenen Quellcodes detailliert erklärt.
+\\Die Spielerklasse \mxZitat{PlayerAlphaBetaPruning} ist in der Datei \mxZitat{python/Players/playerAlphaBetaPruning.py} zu finden.
+Die zunächst wichtigsten Funktionen sind die Init-Funktion der Klasse und die Funktion \mxZitat{get\_move}.
+\subsection{Init-Funktion}
+In dem Konstruktor der Klasse \code{PlayerAlphaBetaPruning} werden folgende Benutzerabfragen getätigt:
+\begin{itemize}
+\item \code{search\_depth}: Tiefe der Alpha-Beta Suche
+\item \code{use\_start\_libs}: Bool'scher Wert ob Startbibliotheken verwendet werden sollen.
+\item \code{heuristic}: Nummer der verwendeten Heuristik
+\item \code{use\_ml}: Verwende statt der Heuristik Machine Learning in der Tiefe \code{search\-depth} + 1
+\item \code{use\_monte\_carlo}: Verwende statt der Heuristik Monte Carlo in der Tiefe \code{search\-depth} + 1
+\item \code{ml\_count}: Anzahl der zufällig gespielten Spiele wenn Machine Learning oder Monte Carlo verwendet wird.
+\end{itemize}
+
+\subsection{get\_move}
 \section{Kombination von Monte-Carlo und Alpha-Beta Abschneiden}
 \label{ab_comb}
