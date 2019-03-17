@@ -3,12 +3,107 @@ Die theoretischen Grundlagen werden nun angewandt und in ein Python \ot\ Spiel i
 \section{Vorgehensweise}
 In den folgenden Unterkapiteln  werden verschiedene Spielalgorithmen vorgestellt und implementiert. Anschließend werden diese verbessert und auch unter Berücksichtigung des Laufzeitverhaltens analysiert.
 \\Zunächst wird aber die grundsätzliche Programmstruktur erläutert und das Spielgerüst implementiert, damit unterschiedliche Spieler es ausführen können.
-\section{Vorbereitungen}
-Die Python Implementierung befindet sich in dem Ordner \mxZitat{python}. Die verschiedenen Komponenten des Spiels wurden nach Komponenten gruppiert auf mehrere Dateien aufgeteilt.
-\\Das Spiel wird durch \mxZitat{main-game.py} gestartet.
-Diese Datei führt mehrere Benutzerabfragen nach den Spielern aus, ermittelt den zu spielenden Zug und gibt dann das Spielbrett in der Konsole aus.
-\\Die Hauptklasse ist \mxZitat{Othello}. Diese speichert u.a das Spielbrett, den aktiven Spieler und die durchgeführten Züge. In dieser Klasse befinden sich alle \ot-spezifischen Funktionen, welche von keinem Spieler abhängen. Dazu zählt beispielsweise das Ermitteln der möglichen nächsten Spielzüge und das Spielen eines vorgegebenen Zuges.
-\\Aus den möglichen Zügen wählen die verschiedenen Spieler den für sie jeweils besten Zug aus. Die Spieler befinden sich in dem Unterordner \mxZitat{Players}.
+\section{Grundlegende Spiel-Elemente}
+Die Python Implementierung befindet sich im Verzeichnis \mxZitat{python} des zu diesem Projekt gehörenden git Repository. Die einzelnen Komponenten wurden unter thematischen Gesichtspunkten in verschiedenen Dateien organisiert.
+\\Die hier vorhanden Datein enthalten den Code der das Spiel zur Ausführung bringt sowie die Datenstrukturen, die zum Speichern eines Zuges verwendet werden. Auf diese wird in diesem Abschnitt noch detailiert eingegangen.
+\\Im Unterverzeichnis \mxZitat{Players} befinden sich die Implementierungen einzelner Spielstrategien. Diese werden im nachfolgenden Abschnitt detailiert behandelt.
+\subsection{Die Klasse \mxZitat{Othello}}
+Die Klasse \mxZitat{Othello} modelliert einen Spielzustand und enthält die Grundlegende Spiellogik wie bspw. die Berechnung erlaubter Züge. Nachfolgend wird auf die Art der Speicherung eines Spielzustandes und auf die wichtigsten Funktionen dieser Klasse eingegangen.
+\paragraph{Klassenvariablen}
+In Listing \ref{lst:class-vars-othello} sind alle Klassenvariablen, sowie deren Initialisierungswerte angegeben.
+\begin{enumerate}
+\item[\code{\_board}] Bei \code{\_board} handelt es sich um eine Liste von Listen, zur Modellierung der zweidimensionalen Struktur des Spielbretts. Initialisiert wird das Spielbrett in seinem Leerzustand. Daher wird zu Beginn jedes Feld auf \code{0} zur repräsentation des leeren feldes gesetzt.
+\item[\code{\_current\_player}] Speichert den Spieler, der im modellierten Spielzustand an der Reihe ist.
+\item[\code{\_last\_turn\_passed}] wird verwendet um zu speichern ob der vorherige Spieler  passen musste. Dadurch kann das Spiel sobald zwei Spieler unmittelbar nacheinander passen müssen beendet werden.
+\item[\code{\_game\_is\_over}] wird auf \code{True} gesetzt sobald das Spiel beendet ist
+\item[\code{\_fringe}] In \code{\_fringe} werden alle felder des Spielfeldes gespeichert die in eine Richtung unmittelbar neben einem bereits besetzten Feld liegen. Durch die Mitführung dieser Information muss zur Berechnung der erlaubten Züge nicht jedes mal über das Spielfeld iteriert werden um zunächst die infragekommenden Felder zu ermitteln.
+\item[\code{\_turning\_stones}] Enhält als Schlüssel alle erlaubten Züge und als Wert jeweils eine Liste jener Spielsteine die durch ausführen des Zuges umgedreht werden. Da zur Ermittlung der erlaubten Züge diese Information bereits berechnet werden muss wird sie in Form des Dictionarys vorgehalten um diese an anderer Stelle nicht erneut berechnen zu müssen.
+\item[\code{\_taken\_moves}] Speichert alle ausgeführten Züge die erforderlich waren um den modellierten Spielzustand zu erreichen, da einige Algorithmen diese Information benötigen.
+\item[\code{\_turn\_nr}] Speichert die Nummer des aktuellen Spielzuges, da die verwendete Strategie bei einigen Algorithmen davon abhängt, wie weit das Spiel schon fortgeschritten ist.
+\end{enumerate}
+\begin{lstlisting}[caption = {Klassenvariablen der Klasse \mxZitat{Othello}}, language = cpp, captionpos = t , numbers=left, label={lst:class-vars-othello}]
+    _board = [[0 for _ in range(8)] for _ in range(8)]
+    _current_player = None
+ 
+    _last_turn_passed = False
+    _game_is_over = False
+
+    _fringe = set()
+    _turning_stones = dict()
+    
+    _taken_moves = dict()
+    _turn_nr = 0
+\end{lstlisting}
+\paragraph{Die Funktion \code{\_compute\_available\_moves}}
+ ist in Listing \ref{lst:fct-compute-available-moves} angegeben und wird verwendet um die Inhalte des Dictionaries \code{\_turning\_stones} zu berechnern.
+\\Da beiden Spielern in der Regel nicht die gleichen Züge zur Verfügung stehen muss zunaächst der vorherige Inhalt von \code{\_turning\_stones} gelöscht werden. Dies geschieht in Zeile 2 indem die Datenstruktur neu initialisiert wird.
+\\In Zeile 3 wird eine lokale Referenz des zur Darstellung eines durch den aktuellen Spieler besetzen Feldes verwendeten Symbols erzeugt.
+\\Mit der in Zeile 4 beginnenden Schleife wird über alle in Frage kommenden Züge in der Menge \code{\_fringe} iteriert um zu ermitteln, ob dieser Zug erlaubt wäre.
+\\Dazu wird zunächst eine lokale Menge initialisiert um die durch spielen dieser Position gedrehten Steine zu speichern (Zeile 5).
+\\Nun muss ausgehend von der derzeit betrachteten Position ermittelt werden ob in irgendeine Richtung Spielsteine gedreht werden würden. Dies erfolgt durch die in Zeile 6 beginnende Schleife.
+\\Dazu wird zunächst das nächste Feld in diese Richtung unter Verwendung einer Hilfsfunktion ermittelt (Zeile 7) und anschließend eine weitere termporäre Menge der in dieser Richtung gedrehten Steine initialisiert (Zeile 8)
+\\Die entsprechende Richtung muss nun solange weiter verfolgt werden wie ein weiterer Nachbar in diese Richtung vorhanden ist. Dies geschieht durch die in Zeile 9 beginnedne Schleife.
+\\Da in den nachfolgenden Schritten ermittelt werden muss welcher Spieler das derzeit betrachtete Feld besetzt hat, werden die Indizes der derzeitigen  ausgepackt (Zeile 10) und dann verwendet um zu ermitteln welchen Wert das Feld detzeit hat (Zeile 11).
+\\Nun gibt es drei mögliche Fälle:
+\begin{enumerate}
+\setcounter{enumi}{0}
+\item Es befindet sich kein Stein auf dem derzeit betrachteten Feld. In diesem Fall wird die Abfrage in Zeile 12 positiv ausgewertet und diese richtung muss nicht weiter verfolgt werden. Entsprechend wird die while-Schleife in Zeile 13 abgebrochen.
+\item Das derzeit betrachtete Feld wird durch den anderen Spieler besetzt. In diesem Fall ist die Abfrage in Zeile 14 positiv. Da der Stein ggf. umgedreht werden würde, wird die aktuelle Position gespeichert (Zeile 15)
+\item Das derzeit betrachtete Feld wird durch den Spieler selbst besetzt. In diesem Fall wird die Abfrage in Zeile 16 positiv ausgewertet. Nun werden alle Steine zwischen der Ausgangsposition und der derzeitigen gedreht. Daher wird die Menge der durch diesen Zug gedrehten Steine mit der in diese Richtung befindlichen Steine verweinigt (Zeile 17) und die Schleife verlassen (Zeile 18).
+\end{enumerate}
+In Zeile 19 wird das nächste Feld in diese Richtung berechnet.
+\\Gemäß der Regeln muss durch jeden Zug mindestens ein Stein gedreht werden. Aus diesem grund wird nun ermittelt ob dies bei diesem zug gegeben wäre (Zeile 20). Ist dies der Fall so werden die gedrehten Steine für diesen Zug in \code{\_stones\_to\_turn} gespeichert (Zeile 21).
+\\Hat ein Spieler nun keine Möglichkeiten einen Zug durchzuführen, so sind in \code{\_stones\_to\_turn} keine Züge enthalten. Dieser Fall muss besonders behandelt werden. Tritt er ein, so wird die Abfrage in Zeile 22 positiv ausgewertet.
+\\In diesem Fall muss nochmal unterschieden werden, ob der vorherige Spieler ebenfalls keinen Zug zur auswahl hatte (Zeile 23).
+\\Falls ja so ist das Spiel zu ende. Dies wird durch setzen von \code{\_game\_is\_over} gespeichert (Zeile 24).
+\\Falls nein (Zeile 25), so wird gespeichert, dass der Spieler passen musste (Zeile 26) und der nächste Zug vorbereitet (Zeile 27)
+Hat der Spieler hingegen eine Zugmöglichkeit (Zeile 28) so hat er aus Sicht des folgenden Zuges nicht passen müssen. Entsprechend wird \code{\_last\_turn\_passed} wieder auf \code{False} gesetzt. 
+\begin{lstlisting}[caption = {Die Funktion \code{\_compute\_available\_moves}}, language = cpp, captionpos = t , numbers=left, label={lst:fct-compute-available-moves}]
+    def _compute_available_moves(self):
+        self._turning_stones = dict()
+        own_symbol = self._current_player
+        for current_position in self._fringe:
+            position_turns = set()
+            for direction in DIRECTIONS:
+                next_step = Othello._next_step(current_position, direction)
+                this_direction = set()
+                while next_step is not None:
+                    (current_x, current_y) = next_step
+                    current_value = self._board[current_x][current_y]
+                    if current_value == EMPTY_CELL:
+                        break
+                    elif current_value != own_symbol:
+                        this_direction.add(next_step)
+                    elif current_value == own_symbol:
+                        position_turns = position_turns | this_direction
+                        break
+                    next_step = Othello._next_step(next_step, direction)
+            if len(position_turns) > 0:
+                self._turning_stones[current_position] = position_turns
+        if len(self._turning_stones) == 0:
+            if self._last_turn_passed:
+                self._game_is_over = True
+            else:
+                self._last_turn_passed = True
+                self._prepare_next_turn()
+        else:
+            self._last_turn_passed = False
+\end{lstlisting}
+\paragraph{Weitere Funktionen der Klasse \mxZitat{Othello}}
+Die Klasse \mxZitat{Othello} enthält weitere Funktionen auf die hier jedoch nicht im Detail eingegangen werden soll. Dennoch sei hier jeweils kurz deren Verwendungszweck der wichtigsten Funktionen genannt:
+\begin{enumerate}
+\item[\code{play\_position}] verändert den Spielzustand dahingehend, dass der übergebene Zug, sofern er erlaubt ist, ausgeführt wird, die entsprechenden Steine des Gegeners gedreht und dessen Zug vorbereitet wird. Dabei wird auch die \code{\_fringe} entsprechend aktualisiert.
+\item[\code{set\_available\_moves}] Verändert \code{\_stones\_to\_turn} dahingehend, dass nur noch übergebene Positionen enthalten sind. Kann damit zum Filtern der erlaubten Züge verwendet werden.
+\item[\code{get\_available\_moves}] Gibt die erlaubten Züge zur Verwendung in den Spielerimplementierungen zurück
+\item[\code{other\_player}] Gibt das Symbol des anderen Spielers zurück
+\item[\code{utility}] Gibt gemäß der Definition eines Spiels 0, 1 oder -1 zurück.
+\item[\code{get\_winner}] Ermittelt den Gewinner des Spiels und gibt ihn zurück.
+\item[\code{get\_statistics}] Gibt die Anzahl der Felder pro Spieler zurück.
+\item[\code{get\_current\_player}] Gibt den derzeitigen Spieler zurück.
+\item[\code{game\_is\_over}] Gibt zurück ob das Spiel bereits zu ende ist.
+\item[\code{init\_game}] Bereitet den Start eines Spiels vor indem die initial besetzen Felder entsprechen gesetzt werden. Der beginnende Spieler festgelegt und die  \code{\_fringe} vorbereitet, sowie \code{\_stones\_to\_turn} für den ersten Zug berechnet.
+\end{enumerate}
+\subsection{Die Datei \mxZitat{main-game.py}}
 \section{Spieler}
 Es gibt folgende \mxZitat{Haupt}-Spieler:
 \begin{enumerate}
