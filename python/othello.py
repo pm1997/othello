@@ -341,11 +341,8 @@ class Othello:
                         this_direction.add(next_step)
                     # If the line is ended by a field owned by the current player some stones might be turned.
                     elif current_value == own_symbol:
-                        # Check whether there are stones between the starting position for the current player
-                        # and the end of his line
-                        if len(this_direction) > 0:
-                            # If yes add the stones on that line to the stones turned by playing that position
-                            position_turns = position_turns | this_direction
+                        # Add all stones between the starting position and the end of his line to the stones turned
+                        position_turns = position_turns | this_direction
                         break
                     # continue to walk in that direction
                     next_step = Othello._next_step(next_step, direction)
