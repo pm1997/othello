@@ -224,7 +224,6 @@ class PlayerMonteCarlo:
                 PlayerMonteCarlo.combine_statistic_dicts(winning_statistics, single_list.get())
             pool.close()
 
-        print(winning_statistics)
         # Reduce the pair of (won_games, times_played) to a winning probability
         for single_move in winning_statistics:
             print(winning_statistics[single_move])

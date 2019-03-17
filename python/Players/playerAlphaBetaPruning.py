@@ -89,7 +89,7 @@ class PlayerAlphaBetaPruning:
         if depth == 0:
             # use machine learning player if enabled
             # ml_count = number of played games
-            ml = PlayerMachineLearning(big_number=ml_count)
+            ml = PlayerMachineLearning(big_number=ml_count, use_multiprocessing=False)
             # get best move
             move = ml.get_move(game_state)
             # return winnings stats of best move
