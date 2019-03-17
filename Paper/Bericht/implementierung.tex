@@ -12,14 +12,14 @@ Die Klasse \mxZitat{Othello} modelliert einen Spielzustand und enthält die Grun
 \paragraph{Klassenvariablen}
 In Listing \ref{lst:class-vars-othello} sind alle Klassenvariablen, sowie deren Initialisierungswerte angegeben.
 \begin{enumerate}
-\item[\code{\_board}] Bei \code{\_board} handelt es sich um eine Liste von Listen, zur Modellierung der zweidimensionalen Struktur des Spielbretts. Initialisiert wird das Spielbrett in seinem Leerzustand. Daher wird zu Beginn jedes Feld auf \code{0} zur repräsentation des leeren feldes gesetzt.
-\item[\code{\_current\_player}] Speichert den Spieler, der im modellierten Spielzustand an der Reihe ist.
-\item[\code{\_last\_turn\_passed}] wird verwendet um zu speichern ob der vorherige Spieler  passen musste. Dadurch kann das Spiel sobald zwei Spieler unmittelbar nacheinander passen müssen beendet werden.
-\item[\code{\_game\_is\_over}] wird auf \code{True} gesetzt sobald das Spiel beendet ist
-\item[\code{\_fringe}] In \code{\_fringe} werden alle felder des Spielfeldes gespeichert die in eine Richtung unmittelbar neben einem bereits besetzten Feld liegen. Durch die Mitführung dieser Information muss zur Berechnung der erlaubten Züge nicht jedes mal über das Spielfeld iteriert werden um zunächst die infragekommenden Felder zu ermitteln.
-\item[\code{\_turning\_stones}] Enhält als Schlüssel alle erlaubten Züge und als Wert jeweils eine Liste jener Spielsteine die durch ausführen des Zuges umgedreht werden. Da zur Ermittlung der erlaubten Züge diese Information bereits berechnet werden muss wird sie in Form des Dictionarys vorgehalten um diese an anderer Stelle nicht erneut berechnen zu müssen.
-\item[\code{\_taken\_moves}] Speichert alle ausgeführten Züge die erforderlich waren um den modellierten Spielzustand zu erreichen, da einige Algorithmen diese Information benötigen.
-\item[\code{\_turn\_nr}] Speichert die Nummer des aktuellen Spielzuges, da die verwendete Strategie bei einigen Algorithmen davon abhängt, wie weit das Spiel schon fortgeschritten ist.
+\item \code{\_board}: Bei \code{\_board} handelt es sich um eine Liste von Listen, zur Modellierung der zweidimensionalen Struktur des Spielbretts. Initialisiert wird das Spielbrett in seinem Leerzustand. Daher wird zu Beginn jedes Feld auf \code{0} zur Repräsentation des leeren Feldes gesetzt.
+\item \code{\_current\_player}: Speichert den Spieler, der im modellierten Spielzustand an der Reihe ist.
+\item \code{\_last\_turn\_passed} wird verwendet um zu speichern ob der vorherige Spieler  passen musste. Dadurch kann das Spiel sobald zwei Spieler unmittelbar nacheinander passen müssen beendet werden.
+\item \code{\_game\_is\_over} wird auf \code{True} gesetzt sobald das Spiel beendet ist
+\item \code{\_fringe}] In \code{\_fringe} werden alle Felder des Spielfeldes gespeichert die in eine Richtung unmittelbar neben einem bereits besetzten Feld liegen. Durch die Mitführung dieser Information muss zur Berechnung der erlaubten Züge nicht jedes mal über das Spielfeld iteriert werden um zunächst die infrage kommenden Felder zu ermitteln.
+\item \code{\_turning\_stones}: Enthält als Schlüssel alle erlaubten Züge und als Wert jeweils eine Liste jener Spielsteine die durch ausführen des Zuges umgedreht werden. Da zur Ermittlung der erlaubten Züge diese Information bereits berechnet werden muss wird sie in Form des Dictionarys vorgehalten um diese an anderer Stelle nicht erneut berechnen zu müssen.
+\item \code{\_taken\_moves}: Speichert alle ausgeführten Züge die erforderlich waren um den modellierten Spielzustand zu erreichen, da einige Algorithmen diese Information benötigen.
+\item \code{\_turn\_nr}: Speichert die Nummer des aktuellen Spielzuges, da die verwendete Strategie bei einigen Algorithmen davon abhängt, wie weit das Spiel schon fortgeschritten ist.
 \end{enumerate}
 \begin{lstlisting}[caption = {Klassenvariablen der Klasse \mxZitat{Othello}}, language = cpp, captionpos = t , numbers=left, label={lst:class-vars-othello}]
     _board = [[0 for _ in range(8)] for _ in range(8)]
@@ -47,14 +47,14 @@ In Listing \ref{lst:class-vars-othello} sind alle Klassenvariablen, sowie deren 
 \\Nun gibt es drei mögliche Fälle:
 \begin{enumerate}
 \setcounter{enumi}{0}
-\item Es befindet sich kein Stein auf dem derzeit betrachteten Feld. In diesem Fall wird die Abfrage in Zeile 12 positiv ausgewertet und diese richtung muss nicht weiter verfolgt werden. Entsprechend wird die while-Schleife in Zeile 13 abgebrochen.
+\item Es befindet sich kein Stein auf dem derzeit betrachteten Feld. In diesem Fall wird die Abfrage in Zeile 12 positiv ausgewertet und diese Richtung muss nicht weiter verfolgt werden. Entsprechend wird die while-Schleife in Zeile 13 abgebrochen.
 \item Das derzeit betrachtete Feld wird durch den anderen Spieler besetzt. In diesem Fall ist die Abfrage in Zeile 14 positiv. Da der Stein ggf. umgedreht werden würde, wird die aktuelle Position gespeichert (Zeile 15)
-\item Das derzeit betrachtete Feld wird durch den Spieler selbst besetzt. In diesem Fall wird die Abfrage in Zeile 16 positiv ausgewertet. Nun werden alle Steine zwischen der Ausgangsposition und der derzeitigen gedreht. Daher wird die Menge der durch diesen Zug gedrehten Steine mit der in diese Richtung befindlichen Steine verweinigt (Zeile 17) und die Schleife verlassen (Zeile 18).
+\item Das derzeit betrachtete Feld wird durch den Spieler selbst besetzt. In diesem Fall wird die Abfrage in Zeile 16 positiv ausgewertet. Nun werden alle Steine zwischen der Ausgangsposition und der derzeitigen gedreht. Daher wird die Menge der durch diesen Zug gedrehten Steine mit der in diese Richtung befindlichen Steine vereinigt (Zeile 17) und die Schleife verlassen (Zeile 18).
 \end{enumerate}
 In Zeile 19 wird das nächste Feld in diese Richtung berechnet.
-\\Gemäß der Regeln muss durch jeden Zug mindestens ein Stein gedreht werden. Aus diesem grund wird nun ermittelt ob dies bei diesem zug gegeben wäre (Zeile 20). Ist dies der Fall so werden die gedrehten Steine für diesen Zug in \code{\_stones\_to\_turn} gespeichert (Zeile 21).
+\\Gemäß der Regeln muss durch jeden Zug mindestens ein Stein gedreht werden. Aus diesem Grund wird nun ermittelt ob dies bei diesem Zug gegeben wäre (Zeile 20). Ist dies der Fall so werden die gedrehten Steine für diesen Zug in \code{\_stones\_to\_turn} gespeichert (Zeile 21).
 \\Hat ein Spieler nun keine Möglichkeiten einen Zug durchzuführen, so sind in \code{\_stones\_to\_turn} keine Züge enthalten. Dieser Fall muss besonders behandelt werden. Tritt er ein, so wird die Abfrage in Zeile 22 positiv ausgewertet.
-\\In diesem Fall muss nochmal unterschieden werden, ob der vorherige Spieler ebenfalls keinen Zug zur auswahl hatte (Zeile 23).
+\\In diesem Fall muss nochmal unterschieden werden, ob der vorherige Spieler ebenfalls keinen Zug zur Auswahl hatte (Zeile 23).
 \\Falls ja so ist das Spiel zu ende. Dies wird durch setzen von \code{\_game\_is\_over} gespeichert (Zeile 24).
 \\Falls nein (Zeile 25), so wird gespeichert, dass der Spieler passen musste (Zeile 26) und der nächste Zug vorbereitet (Zeile 27)
 Hat der Spieler hingegen eine Zugmöglichkeit (Zeile 28) so hat er aus Sicht des folgenden Zuges nicht passen müssen. Entsprechend wird \code{\_last\_turn\_passed} wieder auf \code{False} gesetzt. 
@@ -92,16 +92,16 @@ Hat der Spieler hingegen eine Zugmöglichkeit (Zeile 28) so hat er aus Sicht des
 \paragraph{Weitere Funktionen der Klasse \mxZitat{Othello}}
 Die Klasse \mxZitat{Othello} enthält weitere Funktionen auf die hier jedoch nicht im Detail eingegangen werden soll. Dennoch sei hier jeweils kurz deren Verwendungszweck der wichtigsten Funktionen genannt:
 \begin{enumerate}
-\item[\code{play\_position}] verändert den Spielzustand dahingehend, dass der übergebene Zug, sofern er erlaubt ist, ausgeführt wird, die entsprechenden Steine des Gegeners gedreht und dessen Zug vorbereitet wird. Dabei wird auch die \code{\_fringe} entsprechend aktualisiert.
-\item[\code{set\_available\_moves}] Verändert \code{\_stones\_to\_turn} dahingehend, dass nur noch übergebene Positionen enthalten sind. Kann damit zum Filtern der erlaubten Züge verwendet werden.
-\item[\code{get\_available\_moves}] Gibt die erlaubten Züge zur Verwendung in den Spielerimplementierungen zurück
-\item[\code{other\_player}] Gibt das Symbol des anderen Spielers zurück
-\item[\code{utility}] Gibt gemäß der Definition eines Spiels 0, 1 oder -1 zurück.
-\item[\code{get\_winner}] Ermittelt den Gewinner des Spiels und gibt ihn zurück.
-\item[\code{get\_statistics}] Gibt die Anzahl der Felder pro Spieler zurück.
-\item[\code{get\_current\_player}] Gibt den derzeitigen Spieler zurück.
-\item[\code{game\_is\_over}] Gibt zurück ob das Spiel bereits zu ende ist.
-\item[\code{init\_game}] Bereitet den Start eines Spiels vor indem die initial besetzen Felder entsprechen gesetzt werden. Der beginnende Spieler festgelegt und die  \code{\_fringe} vorbereitet, sowie \code{\_stones\_to\_turn} für den ersten Zug berechnet.
+\item \code{play\_position} verändert den Spielzustand dahingehend, dass der übergebene Zug, sofern er erlaubt ist, ausgeführt wird, die entsprechenden Steine des Gegners gedreht und dessen Zug vorbereitet wird. Dabei wird auch die \code{\_fringe} entsprechend aktualisiert.
+\item \code{set\_available\_moves} verändert \code{\_stones\_to\_turn} dahingehend, dass nur noch übergebene Positionen enthalten sind. Kann damit zum Filtern der erlaubten Züge verwendet werden.
+\item \code{get\_available\_moves}: Gibt die erlaubten Züge zur Verwendung in den Spieler-\\implementierungen zurück
+\item \code{other\_player}: Gibt das Symbol des anderen Spielers zurück
+\item \code{utility}: Gibt gemäß der Definition eines Spiels 0, 1 oder -1 zurück.
+\item \code{get\_winner}: Ermittelt den Gewinner des Spiels und gibt ihn zurück.
+\item \code{get\_statistics}: Gibt die Anzahl der Felder pro Spieler zurück.
+\item \code{get\_current\_player}: Gibt den derzeitigen Spieler zurück.
+\item \code{game\_is\_over}: Gibt zurück ob das Spiel bereits zu Ende ist.
+\item \code{init\_game}: Bereitet den Start eines Spiels vor indem die initial besetzen Felder entsprechen gesetzt werden. Der beginnende Spieler festgelegt und die  \code{\_fringe} vorbereitet, sowie \code{\_stones\_to\_turn} für den ersten Zug berechnet.
 \end{enumerate}
 \subsection{Die Datei \mxZitat{main-game.py}}
 \section{Spieler}
@@ -207,7 +207,7 @@ Statt der Funktion \code{play\_random\_game} (Z. 6) der \code{PlayerMonteCarlo} 
 \\\code{play\_weighted\_random\_game} spielt ebenfalls zufällige Spiele, allerdings bevorzugt die random-Funktion gewonnene Spiele im Gegensatz zu verlorene oder unentschiedene Spiele.
 \\ Zu diesem Zweck wurde eine Datenbank aufgebaut, die für eine gegebene Zugnummer und Position auf dem Spielbrett eine Gewinnwahrscheinlichkeit zurückliefert. Die Zufallsfunktion wählt aus der Summe der Wahrscheinlichkeiten aller möglichen Zugmöglichkeiten eine zufällige Zahl und ordnet dieser Zahl wieder einem Zug aus dieser Liste zu. Der genaue Aufbau der Datenbank ist in dem nächsten Unterkapitel erläutert.
 
-\begin{lstlisting}[caption = {get\_move Funktion des Alpha-Beta Spielers}, language = cpp, captionpos = t , numbers=left, label={lst:ml1}]
+\begin{lstlisting}[caption = {get\_move Funktion des Machine Learning Spielers}, language = cpp, captionpos = t , numbers=left, label={lst:ml1}]
     def get_move(self, game_state: Othello):
 		# ...
         for i in range(self.big_n): 
@@ -226,8 +226,7 @@ In Abbildung \ref{fig:db1} ist ein Ausschnitt der Datenbank dargestellt.
 Die Zeilen stellen die Zugnummern von 0 bis 64 in einer Schrittweite von vier dar. Die Spalten stellen jedes einzelne Feld dar. Sie starten bei \mxZitat{a1} und enden bei \mxZitat{h8}.
 \\Jedes Feld der dadurch aufgespannten Tabelle enthält ein Paar, das die Anzahl der gewonnen Spiele und die Gesamtanzahl der Spiele darstellen, in welchen das jeweilige Feld benutzt wurde.
 \\Initial sind alle Felder auf das Paar \mxZitat{(1, 1)} gesetzt. Dadurch wird in der späteren Berechnung der Gewinnwahrscheinlichkeiten eine Division durch Null vermieden.
-\\Bei jedem Spiel, das mit mindestens einem Machine Learning Spieler gespielt wird, werden die Züge extrahiert und die Datenbank aktualisiert. Im folgenden wird diesan den beiden Beispielspiele aus Listing \ref{lst:ex1} erklärt.
-\newpage
+\\Bei jedem Spiel, das mit mindestens einem Machine Learning Spieler gespielt wird, werden die Züge extrahiert und die Datenbank aktualisiert. Im folgenden wird dies an den beiden Beispielspiele aus Listing \ref{lst:ex1} erklärt.
 \begin{lstlisting}[caption = {Auschnitte aus Zugfolge zweier Spiele}, language = cpp, captionpos = t , numbers=left, label={lst:ex1}]
 Spiel 1 (verloren): c4 c5 e6 f5 ..
 Spiel 2 (gewonnen): e6 f6 d3 e7 ..
@@ -257,5 +256,45 @@ In dem Konstruktor der Klasse \code{PlayerAlphaBetaPruning} werden folgende Benu
 \end{itemize}
 
 \subsection{get\_move}
+In dem Listing \ref{lst:ab2} ist die \code{get\_move} Funktion des Alpha-Beta Pruning Spielers abgebildet.
+Zunächst wird ebenfalls geprüft, ob die Starttabellen verwendet werden sollen (Z. 3 - 6).
+\\Ist keine passende Starttabelle verfügbar, wird ab Zeile 8 Alpha-Beta Abschneiden durchgeführt.
+Dies bedeutet,dass die Annahme getroffen wurde, dass jeder Spieler stets den besten Zug für sich, aber zeitgleich den schlechtmöglichsten Zug für den Gegner auswählt.
+\\Der Algorithmus führt dadurch eine eingeschränkte Breitensuche bis zu einer bestimmten Tiefe durch.
+Anschließend wird ein Wert ermittelt, der angibt, wie \mxZitat{gut} der gewählte Zug ist.
+Diese Funktion \code{get\_value} existiert in drei unterschiedlichen Varianten.
+Die erste Variante ist \code{value()} (Z. 19), welche eine Heuristik zur Berechnung des Wertes verwendet.  
+Die zweite Variante ist \code{value\_ml()} (Z. 14), welche ab diesem Spielzustand das Spiel mit dem Machine Learning Algorithmus spielt und die Gewinnwahrscheinlichkeit des besten Zuges zurückgibt.
+Die dritte Variante ist \code{value\_monte\_carlo()} (Z. 16), welche ab diesem Spielzustand das Spiel mit dem Monte Carlo Algorithmus spielt und die Gewinnwahrscheinlichkeit des besten Zuges zurückgibt.
+\begin{lstlisting}[caption = {get\_move Funktion des Alpha-Beta Spielers}, language = cpp, captionpos = t , numbers=left, label={lst:ab2}]
+    def get_move(self, game_state: Othello):
+
+        if self.use_start_lib and game_state.get_turn_nr() < 10:  # check whether start move match
+            moves = self.start_tables.get_available_start_tables(game_state)
+            if len(moves) > 0:
+                return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
+        
+        best_moves = dict()
+        for move in game_state.get_available_moves():
+            next_state = game_state.deepcopy()
+            next_state.play_position(move)
+
+            if self.use_ml:
+                result = -PlayerAlphaBetaPruning.value_ml(next_state, 
+                				self.search_depth - 1, ml_count=self.ml_count)
+            elif self.use_monte_carlo:
+                result = -PlayerAlphaBetaPruning.value_monte_carlo(next_state, 
+                				self.search_depth - 1, self.heuristic, mc_count=self.ml_count)
+            else:
+                result = -PlayerAlphaBetaPruning.value(next_state, self.search_depth - 1, self.heuristic)
+
+            if result not in best_moves.keys():
+                best_moves[result] = []
+            best_moves[result].append(move)
+
+        best_move = max(best_moves.keys())
+        return best_moves[best_move][random.randrange(len(best_moves[best_move]))]
+\end{lstlisting}
+
 \section{Kombination von Monte-Carlo und Alpha-Beta Abschneiden}
 \label{ab_comb}
