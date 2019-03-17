@@ -17,7 +17,7 @@ class PlayerMonteCarlo:
     start_tables = StartTables()
     move_probability = dict()
 
-    def __init__(self, big_number=0, use_start_libs=None, preprocessor_n=0, heuristic=None):
+    def __init__(self, big_number=0, use_start_libs=None, preprocessor_n=0, heuristic=None, use_multiprocessing=None):
         """
         Initialize the Player
         """
@@ -49,7 +49,10 @@ class PlayerMonteCarlo:
         else:
             self.heuristic = heuristic
 
-        self.use_multiprocessing = True
+        if use_multiprocessing is None:
+            self.use_multiprocessing = UtilMethods.get_boolean_selection("[Player Monte Carlo] Use Multiprocessing?")
+        else:
+            self.use_multiprocessing = use_multiprocessing
 
     @staticmethod
     def preprocess_get_heuristic_value(game_state: Othello, heuristic):
@@ -216,7 +219,6 @@ class PlayerMonteCarlo:
             number_of_processes = mp.cpu_count()
             pool = mp.Pool(processes=number_of_processes)
             list_of_stats = [pool.apply_async(PlayerMonteCarlo.play_n_random_games, args=(own_symbol, game_state.deepcopy(), self.big_n//number_of_processes)) for _ in range(number_of_processes)]
-            print(list_of_stats)
             winning_statistics = list_of_stats[0].get()
             for single_list in list_of_stats[1:]:
                 PlayerMonteCarlo.combine_statistic_dicts(winning_statistics, single_list.get())
