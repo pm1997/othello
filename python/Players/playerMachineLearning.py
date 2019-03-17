@@ -4,18 +4,24 @@ import random
 import sys
 import operator
 from ml_database import ml_database
+import multiprocessing as mp
+from Players.playerMonteCarlo import PlayerMonteCarlo
 
 
 class PlayerMachineLearning:
     # store available moves (top level) in dictionary
     move_probability = dict()
 
-    def __init__(self, big_number=0):
+    def __init__(self, big_number=0, use_multiprocessing=None):
         if big_number != 0:
             self.big_n = big_number
         else:
-            self.big_n = UtilMethods.get_integer_selection("Select Number of Simulated Games", 100, sys.maxsize)
+            self.big_n = UtilMethods.get_integer_selection("[Player Machinelearning] Select Number of Simulated Games", 100, sys.maxsize)
 
+        if use_multiprocessing is None:
+            self.use_multiprocessing = UtilMethods.get_boolean_selection("[Player Machinelearning] Use Multiprocessing?")
+        else:
+            self.use_multiprocessing = use_multiprocessing
         # init machine learning database
         # self.db.init_database()
 
@@ -72,6 +78,28 @@ class PlayerMachineLearning:
 
         return won, first_move, simulated_game.get_taken_mv()
 
+    def play_n_weighted_random_games(self, own_symbol, game_state: Othello, number_of_games):
+        winning_statistics = dict()
+        # Get the set of legal moves
+        possible_moves = game_state.get_available_moves()
+        # Add a pair of (won_games, times_played) to the dictionary for each legal move
+        for move in possible_moves:
+            winning_statistics[move] = (1, 1)  # set games played to 1 to avoid division by zero error
+
+        database_info = list()
+        # Simulate big_n games
+        for _ in range(number_of_games):
+            simulated_game = game_state.deepcopy()
+            # select a weighted random move and play remaining game
+            won, first_played_move, played_moves = self.play_weighted_random_game(own_symbol, simulated_game)
+            # Access the statistics stored for the move selected in the random game
+            (won_games, times_played) = winning_statistics[first_played_move]
+            # update move stats of actual big_n games
+            winning_statistics[first_played_move] = (won_games + won, times_played + 1)
+            database_info.append((played_moves, won))
+
+        return winning_statistics, database_info
+
     def get_move(self, game_state: Othello):
         """
         interface function of all players
@@ -80,13 +108,32 @@ class PlayerMachineLearning:
         """
         # init variables
         own_symbol = game_state.get_current_player()
-        possible_moves = game_state.get_available_moves()
-
         move_stats = dict()
         self.move_probability.clear()
 
-        for move in possible_moves:
-            move_stats[move] = (0, 1)  # set games played to 1 to avoid division by zero error
+        if not self.use_multiprocessing:
+            move_stats, db_info = self.play_n_weighted_random_games(own_symbol, game_state, self.big_n)
+            for i in range(len(db_info)):
+                (played_moves, won) = db_info[i]
+                ml_database.update_all_weights(played_moves, won)
+        else:
+            number_of_processes = mp.cpu_count()
+            pool = mp.Pool(processes=number_of_processes)
+            list_of_returns = [pool.apply_async(PlayerMachineLearning.play_n_weighted_random_games, args=(self, own_symbol, game_state.deepcopy(), self.big_n//number_of_processes)) for _ in range(number_of_processes)]
+            # Base case
+            (winning_info, db_info) = list_of_returns[0].get()
+            move_stats = winning_info
+            for i in range(len(db_info)):
+                (played_moves, won) = db_info[i]
+                ml_database.update_all_weights(played_moves, won)
+            # Other cases
+            for single_return in list_of_returns[1:]:
+                (winning_info, db_info) = single_return.get()
+                PlayerMonteCarlo.combine_statistic_dicts(move_stats, winning_info)
+                for i in range(len(db_info)):
+                    (played_moves, won) = db_info[i]
+                    ml_database.update_all_weights(played_moves, won)
+            pool.close()
 
         # play big_n games
         for i in range(self.big_n):
