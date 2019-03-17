@@ -6,6 +6,7 @@ from Players.playerRandom import PlayerRandom
 import sys
 import random
 import heuristics
+import multiprocessing as mp
 
 
 class PlayerMonteCarlo:
@@ -47,6 +48,8 @@ class PlayerMonteCarlo:
             self.heuristic = heuristics.select_heuristic("Player MonteCarlo")
         else:
             self.heuristic = heuristic
+
+        self.use_multiprocessing = True
 
     @staticmethod
     def preprocess_get_heuristic_value(game_state: Othello, heuristic):
@@ -152,6 +155,38 @@ class PlayerMonteCarlo:
         # Return the first move and whether the game was won or not
         return first_move, won
 
+    @staticmethod
+    def play_n_random_games(own_symbol, game_state: Othello, number_of_games):
+        winning_statistics = dict()
+        # Get the set of legal moves
+        possible_moves = game_state.get_available_moves()
+        # Add a pair of (won_games, times_played) to the dictionary for each legal move
+        for move in possible_moves:
+            winning_statistics[move] = (1, 1)  # set games played to 1 to avoid division by zero error
+
+        # Simulate big_n games
+        for _ in range(number_of_games):
+            # Copy the current game state
+            simulated_game = game_state.deepcopy()
+            # Play one random game and access the returned information
+            first_played_move, won = PlayerMonteCarlo.play_random_game(own_symbol, simulated_game)
+            # Access the statistics stored for the move selected in the random game
+            (won_games, times_played) = winning_statistics[first_played_move]
+            # Increment the counters accordingly
+            winning_statistics[first_played_move] = (won_games + won, times_played + 1)
+        return winning_statistics
+
+    @staticmethod
+    def combine_statistic_dicts(base, added):
+        for move in base:
+            if move in added:
+                (b_won, b_played) = base[move]
+                (a_won, a_played) = added[move]
+                base[move] = (b_won + a_won, b_played + a_played)
+        for move in added:
+            if move not in base:
+                base[move] = added[move]
+
     def get_move(self, game_state: Othello):
         """
         interface function of all players
@@ -173,25 +208,24 @@ class PlayerMonteCarlo:
         if self.preprocessor is not None:
             # Preprocess the available moves
             self.preprocessor(game_state, self.preprocessor_parameter, self.heuristic)
-        # Get the set of legal moves
-        possible_moves = game_state.get_available_moves()
-        # Add a pair of (won_games, times_played) to the dictionary for each legal move
-        for move in possible_moves:
-            winning_statistics[move] = (0, 1)  # set games played to 1 to avoid division by zero error
 
         # Simulate big_n games
-        for i in range(self.big_n):
-            # Copy the current game state
-            simulated_game = game_state.deepcopy()
-            # Play one random game and access the returned information
-            first_played_move, won = self.play_random_game(own_symbol, simulated_game)
-            # Access the statistics stored for the move selected in the random game
-            (won_games, times_played) = winning_statistics[first_played_move]
-            # Increment the counters accordingly
-            winning_statistics[first_played_move] = (won_games + won, times_played + 1)
+        if not self.use_multiprocessing:
+            winning_statistics = PlayerMonteCarlo.play_n_random_games(own_symbol, game_state, self.big_n)
+        else:
+            number_of_processes = mp.cpu_count()
+            pool = mp.Pool(processes=number_of_processes)
+            list_of_stats = [pool.apply_async(PlayerMonteCarlo.play_n_random_games, args=(own_symbol, game_state.deepcopy(), self.big_n//number_of_processes)) for _ in range(number_of_processes)]
+            print(list_of_stats)
+            winning_statistics = list_of_stats[0].get()
+            for single_list in list_of_stats[1:]:
+                PlayerMonteCarlo.combine_statistic_dicts(winning_statistics, single_list.get())
+            pool.close()
 
+        print(winning_statistics)
         # Reduce the pair of (won_games, times_played) to a winning probability
         for single_move in winning_statistics:
+            print(winning_statistics[single_move])
             # Access the values
             (games_won, times_played) = winning_statistics[single_move]
             # Calculate the fraction
