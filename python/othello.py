@@ -4,6 +4,7 @@ Functions to calculate available moves, make moves, etc. are included as well.
 """
 
 import copy
+import numpy as np
 from constants import PRINT_SYMBOLS, COLUMN_NAMES, EMPTY_CELL, DIRECTIONS, PLAYER_ONE, PLAYER_TWO
 
 
@@ -13,8 +14,8 @@ class Othello:
     Contains functions to calculate available moves, etc. as well
     """
 
-    # Representation of the board. A list of Lists 
-    _board = [[0 for _ in range(8)] for _ in range(8)]
+    # Representation of the board. A list of Lists
+    _board = np.full((8,8), EMPTY_CELL, dtype='int8')
     # Stores the player who's turn it is in the current state
     _current_player = None
 
@@ -109,7 +110,11 @@ class Othello:
         for row in range(8):
             board_string += f"{row + 1} |"
             for col in range(8):
-                board_string += f" {PRINT_SYMBOLS[self._board[row][col]]} |"
+                available_moves = self.get_available_moves()
+                if (row, col) in available_moves:
+                    board_string += f" • |"
+                else:
+                    board_string += f" {PRINT_SYMBOLS[self._board[row][col]]} |"
             board_string += "\n"
             board_string += "  +" + 8 * "---+" + "\n"
         return board_string
@@ -302,6 +307,8 @@ class Othello:
             self._update_fringe(position)
             # Prepare the next turn
             self._prepare_next_turn()
+            (row, col) = position
+            print(f"Played position: ({COLUMN_NAMES[col]}{row + 1})")
             return True
         else:
             # If no return false
