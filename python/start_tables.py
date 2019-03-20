@@ -29,7 +29,7 @@ class StartTables:
 
         turn_nr = game.get_turn_nr()
         available_moves = []
-        taken_mv = game.get_taken_mv()
+        taken_mv = game.get_taken_mvs_text()
         for game in self._start_tables:
             turn = 0
             for move in game:
