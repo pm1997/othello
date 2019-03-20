@@ -3,8 +3,8 @@ from start_tables import StartTables
 from util import UtilMethods
 import random
 import heuristics
-from Players.playerMachineLearning import PlayerMachineLearning
-from Players.playerMonteCarlo import PlayerMonteCarlo
+from Agents.machineLearning import PlayerMachineLearning
+from Agents.monteCarlo import PlayerMonteCarlo
 
 
 class PlayerAlphaBetaPruning:
