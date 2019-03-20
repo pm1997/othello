@@ -12,7 +12,7 @@ from Agents.human import PlayerHuman
 from Agents.alphaBetaPruning import PlayerAlphaBetaPruning
 
 import time
-from constants import PLAYER_ONE, PLAYER_TWO, PRINT_SYMBOLS
+from constants import PLAYER_ONE, PLAYER_TWO, PRINT_SYMBOLS, COLUMN_NAMES
 from ml_database import ml_database
 
 if __name__ == '__main__':
@@ -66,6 +66,8 @@ if __name__ == '__main__':
         game.play_position(move)
         # Print the new state of the board
         game.print_board()
+
+        print(f"Played position: ({COLUMN_NAMES[move[1]]}{move[0] + 1})")
     # calculate the playing time
     duration = time.time() - start
 
