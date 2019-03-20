@@ -28,7 +28,7 @@ class Othello:
     _fringe = set()
     # Stores legal moves as key and the set of the stones turned after making that move as value
     _turning_stones = dict()
-    _taken_moves = dict()
+    _taken_moves = []
     _turn_nr = 0
 
     def deepcopy(self):
@@ -112,7 +112,7 @@ class Othello:
             for col in range(8):
                 available_moves = self.get_available_moves()
                 if (row, col) in available_moves:
-                    board_string += f" • |"
+                    board_string += f" * |"
                 else:
                     board_string += f" {PRINT_SYMBOLS[self._board[row][col]]} |"
             board_string += "\n"
@@ -160,7 +160,17 @@ class Othello:
         """
         return self._turn_nr
 
-    def get_taken_mv(self):
+    def get_taken_mvs_text(self):
+        """
+        :return: deepcopy of list of taken moves like ["d2","e3"]
+        """
+        taken_mvs_dict = {}
+        for i in range(len(self._taken_moves)):
+            row, col = self._taken_moves[i]
+            taken_mvs_dict[i] = COLUMN_NAMES[col] + str(row + 1)
+        return taken_mvs_dict
+
+    def get_taken_mvs(self):
         """
         :return: deepcopy of list of taken moves like ["d2","e3"]
         """
@@ -299,7 +309,7 @@ class Othello:
             for (row2, column2) in self._turning_stones[position]:
                 # Turn the stone. The field is now owned by the current player
                 self._board[row2][column2] = current_symbol
-            self._taken_moves[self._turn_nr] = COLUMN_NAMES[column] + str(row + 1)
+            self._taken_moves.append((row, column))
             self._turn_nr += 1
             # The position is occupied now. Remove it from fringe
             self._fringe.remove(position)
@@ -308,7 +318,8 @@ class Othello:
             # Prepare the next turn
             self._prepare_next_turn()
             (row, col) = position
-            print(f"Played position: ({COLUMN_NAMES[col]}{row + 1})")
+            # TODO Do something to print less annoyingly
+            # print(f"Played position: ({COLUMN_NAMES[col]}{row + 1})")
             return True
         else:
             # If no return false

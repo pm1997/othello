@@ -3,7 +3,7 @@ import math
 from util import UtilMethods
 
 
-class Database:
+class MachineDatabase:
     # data of csv ml_moves.csv
     _data = list()
 
