@@ -89,7 +89,7 @@ class PlayerAlphaBetaPruning:
         if depth == 0:
             # use machine learning player if enabled
             # ml_count = number of played games
-            ml = PlayerMachineLearning(big_number=ml_count)
+            ml = PlayerMachineLearning(big_number=ml_count, use_multiprocessing=False)
             # get best move
             move = ml.get_move(game_state)
             # return winnings stats of best move
@@ -124,7 +124,7 @@ class PlayerAlphaBetaPruning:
         if depth == 0:
             # use monte carlo player if enabled
             # ml_count = number of played games
-            ml = PlayerMonteCarlo(big_number=mc_count, use_start_libs=False, preprocessor_n=-1, heuristic=heuristic)
+            ml = PlayerMonteCarlo(big_number=mc_count, use_start_libs=False, preprocessor_n=-1, heuristic=heuristic, use_multiprocessing=False)
             # get best move
             move = ml.get_move(game_state)
             # return winnings stats of best move
