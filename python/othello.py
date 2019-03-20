@@ -170,7 +170,7 @@ class Othello:
         """
         Returns the winner of the game.
         The player with the most stones on the board is the winner.
-        If both Players own the same number of stones, the winner is None and it is a tie
+        If both Agents own the same number of stones, the winner is None and it is a tie
         """
         stats = self.get_statistics()
         if stats[PLAYER_ONE] == stats[PLAYER_TWO]:

@@ -2,7 +2,7 @@ from othello import Othello
 from start_tables import StartTables
 from util import UtilMethods
 import operator
-from Players.playerRandom import PlayerRandom
+from Agents.playerRandom import PlayerRandom
 import sys
 import random
 import heuristics

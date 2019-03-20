@@ -5,7 +5,7 @@ import sys
 import operator
 from ml_database import ml_database
 import multiprocessing as mp
-from Players.playerMonteCarlo import PlayerMonteCarlo
+from Agents.monteCarlo import PlayerMonteCarlo
 
 
 class PlayerMachineLearning:
