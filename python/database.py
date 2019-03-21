@@ -3,6 +3,7 @@ import numpy as np
 from constants import DATABASE_FILE_NAME, PLAYER_ONE, PLAYER_TWO
 from Agents.playerRandom import PlayerRandom
 from othello import Othello
+import multiprocessing as mp
 
 
 class Database:
@@ -61,7 +62,7 @@ class Database:
         """
         store database in file
         """
-        self.store_database()
+        self._store_database()
 
     def _create_new_database(self):
         """
@@ -70,9 +71,9 @@ class Database:
         # write 1.0 in each cell of _data array
         self._data = np.zeros(shape=(60, 9, 3), dtype='int64')
         # save modified array
-        self.store_database()
+        self._store_database()
 
-    def store_database(self):
+    def _store_database(self):
         """
         store database on filesystem
         :return:
@@ -106,9 +107,8 @@ class Database:
         self._data[turn_nr][field_type] = (won_games_pl1, won_games_pl2, total_games_played + 1)
 
     def update_fields_stats_for_single_game(self, moves, winner):
-        turn_nr = 0
         # update each move in game
-        for _ in range(len(moves)):
+        for turn_nr in range(len(moves)):
             # translate move like "a2" to (1,0)
             # move = UtilMethods.translate_move_to_pair(moves[turn_nr])
             # translate move 1,0 to position 8
@@ -118,12 +118,31 @@ class Database:
             # update next move
             turn_nr += 1
 
-    def train_db(self, count):
+    @staticmethod
+    def _play_n_random_games(count):
+        multi_stats = []
         for i in range(count):
+            if i%100 == 0:
+                print(f"Game No: {i}")
             g = Othello()
             g.init_game()
             while not g.game_is_over():
                 g.play_position(PlayerRandom.get_move(g))
-            moves = g.get_taken_mv()
             winner = g.get_winner()
-            self.update_fields_stats_for_single_game(moves, winner)
+            multi_stats.append((g.get_taken_mv(), winner))
+        return multi_stats
+
+    def train_db_multi_threaded(self, count):
+        number_of_processes = mp.cpu_count()
+        pool = mp.Pool(processes=number_of_processes)
+        list_of_stats = [pool.apply_async(self._play_n_random_games, args=(count // number_of_processes,))
+                         for _ in range(number_of_processes)]
+        for single_list in list_of_stats:
+            list_of_games = single_list.get()
+            print(list_of_games)
+            for single_game in list_of_games:
+                print(single_game)
+                moves, winner = single_game
+                self.update_fields_stats_for_single_game(moves, winner)
+        print(self._data)
+
