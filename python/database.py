@@ -1,7 +1,8 @@
 import os
 import numpy as np
-from constants import DATABASE_FILE_NAME
-from util import UtilMethods
+from constants import DATABASE_FILE_NAME, PLAYER_ONE, PLAYER_TWO
+from Agents.playerRandom import PlayerRandom
+from othello import Othello
 
 
 class Database:
@@ -24,9 +25,9 @@ class Database:
     # 7 | 0 | 1 | 2 | 3 | 3 | 2 | 1 | 0 |
     #   +---+---+---+---+---+---+---+---+
     _DATABASE_TO_POSITIONS = {0: [(0, 0), (0, 7), (7, 0), (7, 7)],
-                              1: [(0, 1), (0, 6), (1, 0), (1, 7), (6, 1), (6, 7), (7, 1), (7, 6)],
-                              2: [(0, 2), (0, 5), (2, 0), (2, 7), (5, 1), (5, 7), (7, 2), (7, 5)],
-                              3: [(0, 3), (0, 5), (3, 0), (3, 7), (4, 1), (4, 7), (7, 3), (7, 4)],
+                              1: [(0, 1), (0, 6), (1, 0), (1, 7), (6, 0), (6, 7), (7, 1), (7, 6)],
+                              2: [(0, 2), (0, 5), (2, 0), (2, 7), (5, 0), (5, 7), (7, 2), (7, 5)],
+                              3: [(0, 3), (0, 4), (3, 0), (3, 7), (4, 0), (4, 7), (7, 3), (7, 4)],
                               4: [(1, 1), (1, 6), (6, 1), (6, 6)],
                               5: [(1, 2), (1, 5), (2, 1), (2, 6), (5, 1), (5, 6), (6, 2), (6, 5)],
                               6: [(1, 3), (1, 4), (3, 1), (3, 6), (4, 1), (4, 6), (6, 3), (6, 4)],
@@ -53,25 +54,25 @@ class Database:
             self._create_new_database()
         # load csv in self_data as 3 dim. array
         csv = np.loadtxt(DATABASE_FILE_NAME, delimiter=';', dtype='int64')
-        self._data = csv.reshape((60, 9, 2))
+        self._data = csv.reshape((60, 9, 3))
         print(self._data.dtype)
 
     def __del__(self):
         """
         store database in file
         """
-        self._store_database()
+        self.store_database()
 
     def _create_new_database(self):
         """
         Reset stored played / won games
         """
         # write 1.0 in each cell of _data array
-        self._data = np.zeros(shape=(60, 9, 2), dtype='int64')
+        self._data = np.zeros(shape=(60, 9, 3), dtype='int64')
         # save modified array
-        self._store_database()
+        self.store_database()
 
-    def _store_database(self):
+    def store_database(self):
         """
         store database on filesystem
         :return:
@@ -96,20 +97,33 @@ class Database:
             return 0
         return won_games / total_games_played
 
-    def update_field_stat(self, turn_nr, move, won):
-        field_type = self._translate_position_to_database(move)
-        (won_games, total_games_played) = self._data[turn_nr][field_type]
-        self._data[turn_nr][field_type] = (won_games + won, total_games_played + 1)
+    def update_field_stat(self, turn_nr, field_type, winner):
+        (won_games_pl1, won_games_pl2, total_games_played) = self._data[turn_nr][field_type]
+        if winner == PLAYER_ONE:
+            won_games_pl1 += 1
+        elif winner == PLAYER_TWO:
+            won_games_pl2 += 1
+        self._data[turn_nr][field_type] = (won_games_pl1, won_games_pl2, total_games_played + 1)
 
-    def update_multiple_fields_stats(self, moves, won):
+    def update_fields_stats_for_single_game(self, moves, winner):
         turn_nr = 0
         # update each move in game
-        for _ in moves:
+        for _ in range(len(moves)):
             # translate move like "a2" to (1,0)
-            move = UtilMethods.translate_move_to_pair(moves[turn_nr])
+            # move = UtilMethods.translate_move_to_pair(moves[turn_nr])
             # translate move 1,0 to position 8
-            position = self._translate_position_to_database(move)
+            position = self._translate_position_to_database(moves[turn_nr])
             # update array at position position
-            self.update_field_stat(turn_nr, position, won)
+            self.update_field_stat(turn_nr, position, winner)
             # update next move
             turn_nr += 1
+
+    def train_db(self, count):
+        for i in range(count):
+            g = Othello()
+            g.init_game()
+            while not g.game_is_over():
+                g.play_position(PlayerRandom.get_move(g))
+            moves = g.get_taken_mv()
+            winner = g.get_winner()
+            self.update_fields_stats_for_single_game(moves, winner)
