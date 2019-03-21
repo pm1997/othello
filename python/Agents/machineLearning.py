@@ -16,10 +16,10 @@ class PlayerMachineLearning:
         if big_number != 0:
             self.big_n = big_number
         else:
-            self.big_n = UtilMethods.get_integer_selection("[Player Machinelearning] Select Number of Simulated Games", 100, sys.maxsize)
+            self.big_n = UtilMethods.get_integer_selection("[Player MachineLearning] Select Number of Simulated Games", 100, sys.maxsize)
 
         if use_multiprocessing is None:
-            self.use_multiprocessing = UtilMethods.get_boolean_selection("[Player Machinelearning] Use Multiprocessing?")
+            self.use_multiprocessing = UtilMethods.get_boolean_selection("[Player MachineLearning] Use Multiprocessing?")
         else:
             self.use_multiprocessing = use_multiprocessing
         # init machine learning database
@@ -108,7 +108,7 @@ class PlayerMachineLearning:
         """
         # init variables
         own_symbol = game_state.get_current_player()
-        move_stats = dict()
+        # move_stats = dict()
         self.move_probability.clear()
 
         if not self.use_multiprocessing:

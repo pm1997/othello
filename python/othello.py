@@ -15,7 +15,7 @@ class Othello:
     """
 
     # Representation of the board. A list of Lists
-    _board = np.full((8,8), EMPTY_CELL, dtype='int8')
+    _board = np.full((8, 8), EMPTY_CELL, dtype='int8')
     # Stores the player who's turn it is in the current state
     _current_player = None
 
@@ -28,7 +28,7 @@ class Othello:
     _fringe = set()
     # Stores legal moves as key and the set of the stones turned after making that move as value
     _turning_stones = dict()
-    _taken_moves = []
+    _taken_moves = dict()
     _turn_nr = 0
 
     def deepcopy(self):
@@ -170,7 +170,7 @@ class Othello:
             taken_mvs_dict[i] = COLUMN_NAMES[col] + str(row + 1)
         return taken_mvs_dict
 
-    def get_taken_mvs(self):
+    def get_taken_mv(self):
         """
         :return: deepcopy of list of taken moves like ["d2","e3"]
         """
@@ -309,7 +309,7 @@ class Othello:
             for (row2, column2) in self._turning_stones[position]:
                 # Turn the stone. The field is now owned by the current player
                 self._board[row2][column2] = current_symbol
-            self._taken_moves.append((row, column))
+            self._taken_moves[self._turn_nr] = (row, column)
             self._turn_nr += 1
             # The position is occupied now. Remove it from fringe
             self._fringe.remove(position)
@@ -317,9 +317,6 @@ class Othello:
             self._update_fringe(position)
             # Prepare the next turn
             self._prepare_next_turn()
-            (row, col) = position
-            # TODO Do something to print less annoyingly
-            # print(f"Played position: ({COLUMN_NAMES[col]}{row + 1})")
             return True
         else:
             # If no return false
