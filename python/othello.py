@@ -14,22 +14,24 @@ class Othello:
     Contains functions to calculate available moves, etc. as well
     """
 
-    # Representation of the board. A list of Lists
-    _board = np.full((8, 8), EMPTY_CELL, dtype='int8')
-    # Stores the player who's turn it is in the current state
-    _current_player = None
+    def __init__(self):
+        # Representation of the board. A list of Lists
+        self._board = np.full((8, 8), EMPTY_CELL, dtype='int8')
 
-    # Stores whether the last player had to pass. Used to determine the end of the game. 
-    _last_turn_passed = False
-    # Is set to 'True' once the Game is finished.
-    _game_is_over = False
+        # Stores the player who's turn it is in the current state
+        self._current_player = None
 
-    # Store all fields next to the ones already taken.
-    _fringe = set()
-    # Stores legal moves as key and the set of the stones turned after making that move as value
-    _turning_stones = dict()
-    _taken_moves = dict()
-    _turn_nr = 0
+        # Stores whether the last player had to pass. Used to determine the end of the game.
+        self._last_turn_passed = False
+        # Is set to 'True' once the Game is finished.
+        self._game_is_over = False
+
+        # Store all fields next to the ones already taken.
+        self._fringe = set()
+        # Stores legal moves as key and the set of the stones turned after making that move as value
+        self._turning_stones = dict()
+        self._taken_moves = []
+        self._turn_nr = 0
 
     def deepcopy(self):
         """
@@ -309,7 +311,7 @@ class Othello:
             for (row2, column2) in self._turning_stones[position]:
                 # Turn the stone. The field is now owned by the current player
                 self._board[row2][column2] = current_symbol
-            self._taken_moves[self._turn_nr] = (row, column)
+            self._taken_moves.append(position)
             self._turn_nr += 1
             # The position is occupied now. Remove it from fringe
             self._fringe.remove(position)
