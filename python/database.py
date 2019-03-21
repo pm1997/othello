@@ -42,7 +42,7 @@ class Database:
             _POSITION_TO_DATABASE[field] = field_type
 
     @staticmethod
-    def _translate_database_to_positions(field_type):
+    def translate_database_to_positions(field_type):
         return Database._DATABASE_TO_POSITIONS[field_type]
 
     @staticmethod
@@ -56,7 +56,6 @@ class Database:
         # load csv in self_data as 3 dim. array
         csv = np.loadtxt(DATABASE_FILE_NAME, delimiter=';', dtype='int64')
         self._data = csv.reshape((60, 9, 3))
-        print(self._data.dtype)
 
     def __del__(self):
         """
@@ -139,10 +138,7 @@ class Database:
                          for _ in range(number_of_processes)]
         for single_list in list_of_stats:
             list_of_games = single_list.get()
-            print(list_of_games)
             for single_game in list_of_games:
-                print(single_game)
                 moves, winner = single_game
                 self.update_fields_stats_for_single_game(moves, winner)
-        print(self._data)
 

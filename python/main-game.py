@@ -71,7 +71,7 @@ if __name__ == '__main__':
     # calculate the playing time
     duration = time.time() - start
 
-    ml_database._store_database()
+    # ml_database._store_database()
     # Inform the User on the fact that the game is over
     print("Game is over")
     # Print the playing time
