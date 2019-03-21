@@ -1,6 +1,5 @@
 import numpy as np
 import math
-from util import UtilMethods
 
 
 class MachineDatabase:
@@ -104,10 +103,8 @@ class MachineDatabase:
         turn_nr = 0
         # update each move in game
         for _ in moves:
-            # translate move like "a2" to (1,0)
-            m1 = UtilMethods.translate_move_to_pair(moves[turn_nr])
             # translate move 1,0 to position 8
-            position = self.translate_move_to_array(m1)
+            position = self.translate_move_to_array(moves[turn_nr])
             # update array at position position
             self.update_weights(turn_nr, position, won)
             # update next move

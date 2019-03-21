@@ -202,7 +202,7 @@ class PlayerMonteCarlo:
             if len(moves) > 0:
                 return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
         # Create a dictionary to store information on won/lost ratios
-        winning_statistics = dict()
+        # winning_statistics = dict()
         # empty dictionary or win probabilities
         self.move_probability.clear()
         # Get the own symbol
