@@ -7,6 +7,7 @@ import sys
 import random
 import heuristics
 import multiprocessing as mp
+import database
 
 
 class PlayerMonteCarlo:
@@ -17,7 +18,7 @@ class PlayerMonteCarlo:
     start_tables = StartTables()
     move_probability = dict()
 
-    def __init__(self, big_number=0, use_start_libs=None, preprocessor_n=0, heuristic=None, use_multiprocessing=None):
+    def __init__(self, big_number=100, use_start_libs=True, preprocessor_n=-1, heuristic=heuristics.FieldHeuristic.heuristic, use_multiprocessing=True):
         """
         Initialize the Player
         """
@@ -226,7 +227,7 @@ class PlayerMonteCarlo:
 
         # Reduce the pair of (won_games, times_played) to a winning probability
         for single_move in winning_statistics:
-            print(winning_statistics[single_move])
+            # print(winning_statistics[single_move])
             # Access the values
             (games_won, times_played) = winning_statistics[single_move]
             # Calculate the fraction
@@ -235,6 +236,7 @@ class PlayerMonteCarlo:
         # Select the move with the maximum probability of winning
         selected_move = max(self.move_probability.items(), key=operator.itemgetter(1))[0]
         # Return the selected move
+        database.db._store_database()
         return selected_move
 
     def get_move_probability(self, move):

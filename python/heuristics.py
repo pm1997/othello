@@ -4,6 +4,8 @@ This file contains heuristics used to evaluate a certain game state
 
 from othello import Othello
 from util import UtilMethods
+import database
+import operator
 
 # Generate sets of fields of similar value
 ALL_FIELDS = {(a, b) for a in range(8) for b in range(8)}
@@ -41,6 +43,7 @@ def select_heuristic(player_string):
     available_heuristics = list()
     # Use pairs of the form (description: String, class: Player) to store a player type
     available_heuristics.append(("Nijssen 07 Heuristic", Nijssen07Heuristic.heuristic))
+    available_heuristics.append(("Field Heuristic", FieldHeuristic.heuristic))
 
     if len(available_heuristics) > 1:
         return UtilMethods.select_one(available_heuristics, f"[{player_string}] Please select a heuristic")
@@ -82,3 +85,22 @@ class Nijssen07Heuristic:
             value += get_sign(current_player, board[x][y]) * weight_dict[(x, y)]
         # Return the Calculated value 
         return value
+
+
+class FieldHeuristic:
+
+    @staticmethod
+    def heuristic(current_player, game_state: Othello):
+        """
+        Calculates the value of game_state for current_player
+        """
+
+        moves = game_state.get_available_moves()
+        turn_nr = game_state.get_turn_nr()
+        move_probability = dict()
+
+        for move in moves:
+            move_probability[move] = database.db.get_likelihood(move, turn_nr, current_player)
+
+        selected_move = max(move_probability.items(), key=operator.itemgetter(1))[0]
+        return move_probability[selected_move]
