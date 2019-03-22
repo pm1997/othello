@@ -4,15 +4,15 @@ from util import UtilMethods
 import random
 import heuristics
 # from Agents.machineLearning import PlayerMachineLearning
-from Agents.monteCarlo import monteCarlo
+from Agents.monteCarlo import MonteCarlo
 
 
-class alphaBetaPruning:
+class AlphaBetaPruning:
     # Compare https://github.com/karlstroetmann/Artificial-Intelligence/blob/master/SetlX/game-alpha-beta.stlx
 
     start_tables = StartTables()
 
-    def __init__(self, heuristic=heuristics.StoredMonteCarloHeuristic.heuristic, search_depth=4, use_ml=False, use_monte_carlo=False, use_start_lib=True):
+    def __init__(self, heuristic=heuristics.StoredMonteCarloHeuristic.heuristic, search_depth=5, use_ml=False, use_monte_carlo=False, use_start_lib=True):
         """
         init start variables and used modules
         """
@@ -69,7 +69,7 @@ class alphaBetaPruning:
         for move in game_state.get_available_moves():
             next_state = game_state.deepcopy()
             next_state.play_position(move)
-            val = max({val, -1 * alphaBetaPruning.value(next_state, depth - 1, heuristic, -beta, -alpha)})
+            val = max({val, -1 * AlphaBetaPruning.value(next_state, depth - 1, heuristic, -beta, -alpha)})
             if val >= beta:
                 return val
             alpha = max({val, alpha})
@@ -126,7 +126,7 @@ class alphaBetaPruning:
         if depth == 0:
             # use monte carlo player if enabled
             # ml_count = number of played games
-            ml = monteCarlo(big_number=mc_count, use_start_libs=False, preprocessor_n=-1, heuristic=heuristic, use_multiprocessing=False)
+            ml = MonteCarlo(big_number=mc_count, use_start_libs=False, preprocessor_n=-1, heuristic=heuristic, use_multiprocessing=False)
             # get best move
             move = ml.get_move(game_state)
             # return winnings stats of best move
@@ -138,7 +138,7 @@ class alphaBetaPruning:
             next_state = game_state.deepcopy()
             next_state.play_position(move)
             val = max({val,
-                       -1 * alphaBetaPruning.value_monte_carlo(next_state, depth - 1, heuristic, -beta, -alpha,
+                       -1 * AlphaBetaPruning.value_monte_carlo(next_state, depth - 1, heuristic, -beta, -alpha,
                                                                mc_count=mc_count)})
             if val >= beta:
                 return val
@@ -167,10 +167,10 @@ class alphaBetaPruning:
                 result = 0
                 # result = -PlayerAlphaBetaPruning.value_ml(next_state, self.search_depth - 1, ml_count=self.ml_count)
             elif self.use_monte_carlo:
-                result = -alphaBetaPruning.value_monte_carlo(next_state, self.search_depth - 1, self.heuristic,
+                result = -AlphaBetaPruning.value_monte_carlo(next_state, self.search_depth - 1, self.heuristic,
                                                              mc_count=self.ml_count)
             else:
-                result = -alphaBetaPruning.value(next_state, self.search_depth - 1, self.heuristic)
+                result = -AlphaBetaPruning.value(next_state, self.search_depth - 1, self.heuristic)
 
             if result not in best_moves.keys():
                 best_moves[result] = []
