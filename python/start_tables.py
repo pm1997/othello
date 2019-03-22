@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from util import UtilMethods
 from othello import Othello
+from constants import COLUMN_NAMES
 
 
 class StartTables:
@@ -70,7 +71,12 @@ class StartTables:
         # calculate for all start sequences in start table
         for game in self._start_tables:
             # add move and opposite move to new start table
-            new_moves.append(UtilMethods.calculate_opposite_move(game))
+            # ---------------------------------------------------------
+            # | WARNING: Only call each method once !!!               |
+            # ---------------------------------------------------------
+            # | new_moves.append(self.calculate_opposite_move(game))  |
+            # | new_moves.append(self.calculate_diagonal_moves(game)) |
+            # ---------------------------------------------------------
             new_moves.append(game)
 
         # new_moves = self.remove_duplicates(new_moves)
@@ -87,28 +93,43 @@ class StartTables:
                         csv_row = turn
                 f.write("%s\n" % csv_row)
 
-    # def remove_duplicates(self, matrix):
-    #     print(matrix)
-    #     for row in range(1, len(matrix) - 1):
-    #         print(row)
-    #         line1 = matrix[row]
-    #         print(line1)
-    #         offset = 0
-    #         for row2 in range(row + 1, len(matrix)):
-    #             line2 = matrix[row2 - offset]
-    #             if self.compare_array(line1, line2):
-    #                 del matrix[row2 - offset]
-    #                 offset += 1
-    #     print(matrix)
-    #     return matrix
-    #
-    # def compare_array(self, a1, a2):
-    #     if "nan" in a1:
-    #         a1.remove("nan")
-    #     len1 = len(a1)
-    #     if len1 != len(a2):
-    #         return False
-    #     for item in range(len1):
-    #         if a1[item] != a2[item]:
-    #             return False
-    #     return True
+    @staticmethod
+    def calculate_opposite_move(moves):
+        """calculate the point symmetric moves of one given game"""
+        new_turns = list()
+        for move in moves:
+            if move[0] not in {"a", "b", "c", "d", "e", "f", "g", "h"}:
+                break
+            # move is a char and a int , eg. 'd3'
+            # translate this move to a x and y coordinate
+            (row, column) = UtilMethods.translate_move_to_pair(move)
+            if column < 8 and row < 7:
+                # mirror row and column at point 3.5,3.5 => middle of board
+                row -= 7
+                row = abs(row) % 7
+                column -= 7
+                column = abs(column) % 7
+            new_turns.append(COLUMN_NAMES[column] + str(row + 1))
+        print(f"old:{moves}")
+        print(f"new:{new_turns}")
+        return new_turns
+
+    @staticmethod
+    def calculate_diagonal_moves(moves):
+        """calculate the point symmetric moves of one given game"""
+        new_turns = list()
+        for move in moves:
+            if move[0] not in {"a", "b", "c", "d", "e", "f", "g", "h"}:
+                break
+            # move is a char and a int , eg. 'd3'
+            # translate this move to a x and y coordinate
+            (row, column) = UtilMethods.translate_move_to_pair(move)
+            if column < 8 and row < 7:
+                # mirror row and column at diagonal 0,0; 7,7 => middle of board
+                row_temp = row
+                row = column
+                column = row_temp
+            new_turns.append(COLUMN_NAMES[column] + str(row + 1))
+        print(f"old:{moves}")
+        print(f"new:{new_turns}")
+        return new_turns
