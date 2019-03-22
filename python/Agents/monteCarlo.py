@@ -226,7 +226,7 @@ class PlayerMonteCarlo:
 
         # Reduce the pair of (won_games, times_played) to a winning probability
         for single_move in winning_statistics:
-            print(winning_statistics[single_move])
+            # print(winning_statistics[single_move])
             # Access the values
             (games_won, times_played) = winning_statistics[single_move]
             # Calculate the fraction
