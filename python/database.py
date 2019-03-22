@@ -145,5 +145,19 @@ class Database:
                 moves, winner = single_game
                 self.update_fields_stats_for_single_game(moves, winner)
 
+    def sum_databases(self, file):
+        csv = np.loadtxt(file, delimiter=';')
+        db1 = csv.reshape((60, 9, 3))
+        r1 = 0
+        for row in self._data:
+            c1 = 0
+            for column in row:
+                column[0] += db1[r1][c1][0]
+                column[1] += db1[r1][c1][1]
+                column[2] += db1[r1][c1][2]
+                c1 += 1
+            r1 += 1
+        print("finished merge")
+
 
 db = Database()
