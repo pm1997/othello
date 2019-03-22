@@ -4,7 +4,7 @@ This file contains heuristics used to evaluate a certain game state
 
 from othello import Othello
 from util import UtilMethods
-from database import Database
+import database
 import operator
 
 # Generate sets of fields of similar value
@@ -94,13 +94,13 @@ class FieldHeuristic:
         """
         Calculates the value of game_state for current_player
         """
-        db = Database()
+
         moves = game_state.get_available_moves()
         turn_nr = game_state.get_turn_nr()
         move_probability = dict()
 
         for move in moves:
-            move_probability[move] = db.get_likelihood(move, turn_nr, current_player)
+            move_probability[move] = database.db.get_likelihood(move, turn_nr, current_player)
 
         selected_move = max(move_probability.items(), key=operator.itemgetter(1))[0]
         return move_probability[selected_move]
