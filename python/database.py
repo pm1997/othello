@@ -83,19 +83,22 @@ class Database:
                 # write one row of matrix
                 np.savetxt(outfile, row, fmt='%d', delimiter=';')
 
-    def get_likelihood(self, move, turn_nr):
+    def get_likelihood(self, move, turn_nr, current_player):
         """
         calculate chance of winning for given move and turn_number
         :param move: move in available_moves
         :param turn_nr: actual turn_number
+        :param current_player: actual player
         :return: chance of winning for given field at the given turn number
         """
         # translate move to position in array
         position = self._translate_position_to_database(move)
-        (won_games, total_games_played) = self._data[turn_nr][position]
+        won_games_pl1, won_games_pl2, total_games_played = self._data[turn_nr][position]
         if total_games_played == 0:
             return 0
-        return won_games / total_games_played
+        if current_player == PLAYER_ONE:
+            return won_games_pl1 / total_games_played
+        return won_games_pl2 / total_games_played
 
     def update_field_stat(self, turn_nr, field_type, winner):
         (won_games_pl1, won_games_pl2, total_games_played) = self._data[turn_nr][field_type]
