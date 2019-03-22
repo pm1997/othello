@@ -1,8 +1,8 @@
 from othello import Othello
-import random
+import random as rnd
 
 
-class random:
+class Random:
     """
     The PlayerRandom plays a random move taken from the set of legal moves
     """
@@ -17,4 +17,4 @@ class random:
         # Get the legal moves
         possible_moves = game_state.get_available_moves()
         # Return a Random move
-        return possible_moves[random.randrange(len(possible_moves))]
+        return possible_moves[rnd.randrange(len(possible_moves))]

@@ -3,7 +3,7 @@ from constants import COLUMN_NAMES
 from util import UtilMethods
 
 
-class human:
+class Human:
     """
     The PlayerHuman asks the user to select each move
     """
