@@ -18,7 +18,7 @@ class MonteCarlo:
     start_tables = StartTables()
     move_probability = dict()
 
-    def __init__(self, big_number=100, use_start_libs=True, preprocessor_n=-1, heuristic=heuristics.StoredMonteCarloHeuristic.heuristic, use_multiprocessing=True):
+    def __init__(self, big_number=400, use_start_libs=True, preprocessor_n=-1, heuristic=heuristics.StoredMonteCarloHeuristic.heuristic, use_multiprocessing=True):
         """
         Initialize the Player
         """
@@ -198,10 +198,10 @@ class MonteCarlo:
         :return: best move in available moves
         """
         # Use start library if it is selected and still included
-        if self.use_start_lib and game_state.get_turn_nr() < 10:  # check whether start move match
+        if self.use_start_lib and game_state.get_turn_nr() < 21:  # check whether start move match
             moves = self.start_tables.get_available_start_tables(game_state)
             if len(moves) > 0:
-                return UtilMethods.translate_move_to_pair(moves[Random.randrange(len(moves))])
+                return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
         # Create a dictionary to store information on won/lost ratios
         # winning_statistics = dict()
         # empty dictionary or win probabilities
@@ -236,7 +236,7 @@ class MonteCarlo:
         # Select the move with the maximum probability of winning
         selected_move = max(self.move_probability.items(), key=operator.itemgetter(1))[0]
         # Return the selected move
-        database.db._store_database()
+        database.db.store_database()
         return selected_move
 
     def get_move_probability(self, move):

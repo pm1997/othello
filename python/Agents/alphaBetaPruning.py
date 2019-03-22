@@ -152,7 +152,7 @@ class AlphaBetaPruning:
         :return: best move in available moves
         """
         # Use start library if it is selected and still included
-        if self.use_start_lib and game_state.get_turn_nr() < 10:  # check whether start move match
+        if self.use_start_lib and game_state.get_turn_nr() < 21:  # check whether start move match
             moves = self.start_tables.get_available_start_tables(game_state)
             if len(moves) > 0:
                 return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
