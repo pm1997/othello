@@ -7,13 +7,13 @@ from util import UtilMethods
 
 from Agents.playerRandom import PlayerRandom
 from Agents.monteCarlo import PlayerMonteCarlo
-from Agents.machineLearning import PlayerMachineLearning
+# from Agents.machineLearning import PlayerMachineLearning
 from Agents.human import PlayerHuman
 from Agents.alphaBetaPruning import PlayerAlphaBetaPruning
 
 import time
 from constants import PLAYER_ONE, PLAYER_TWO, PRINT_SYMBOLS, COLUMN_NAMES
-from ml_database import ml_database
+# from ml_database import ml_database
 
 if __name__ == '__main__':
     # from machine_learning import Database
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     available_players.append(("AI Player - Random", PlayerRandom))
     available_players.append(("AI Player - Monte Carlo", PlayerMonteCarlo))
     available_players.append(("AI Player - Alpha-Beta Pruning", PlayerAlphaBetaPruning))
-    available_players.append(("AI Player - Machine Learning", PlayerMachineLearning))
+    # available_players.append(("AI Player - Machine Learning", PlayerMachineLearning))
 
     # Ask the user to select a type of player as first player.
     selection_player_one = UtilMethods.select_one(available_players,
