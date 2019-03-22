@@ -2,7 +2,7 @@
 In den folgenden Unterkapiteln  werden verschiedene Spielalgorithmen vorgestellt und implementiert. Anschließend werden diese verbessert und auch unter Berücksichtigung des Laufzeitverhaltens analysiert.
 \\Zunächst wird aber die grundsätzliche Programmstruktur erläutert und das Spielgerüst implementiert, damit unterschiedliche Spieler es ausführen können.
 \section{Grundlegende Spiel-Elemente}
-Die Python Implementierung befindet sich im Verzeichnis \mxZitat{python} des zu diesem Projekt gehörenden git Repository. Um das Spiel zur Ausführung zu bringen wird das Paket \mxZitat{numpy} benötigt. Ist diese Abhängigkeit vorhanden kann das Spiel durch ausführen des Kommandos \code{python main-game} gestartet werden.
+Die Python Implementierung befindet sich im Verzeichnis \mxZitat{python} des zu diesem Projekt gehörenden git Repository. Um das Spiel zur Ausführung zu bringen werden die Pakete \mxZitat{numpy} sowie \mxZitat{pandas} benötigt. Sind diese Abhängigkeit vorhanden kann das Spiel durch ausführen des Kommandos \code{python main-game} gestartet werden.
 \\Die einzelnen Komponenten wurden unter thematischen Gesichtspunkten in verschiedenen Dateien organisiert. Nachfolgend wird auf die einzelnen Dateien und deren Funktion kurz eingegangen.
 \subsection{Der Spielablauf}
 In \mxZitat{main-game.py}
@@ -119,20 +119,28 @@ Die Klasse \mxZitat{Othello} enthält weitere Funktionen auf die hier jedoch nic
 \item \code{game\_is\_over}: Gibt zurück ob das Spiel bereits zu Ende ist.
 \item \code{init\_game}: Bereitet den Start eines Spiels vor indem die initial besetzen Felder entsprechen gesetzt werden. Der beginnende Spieler festgelegt und die  \code{\_fringe} vorbereitet, sowie \code{\_stones\_to\_turn} für den ersten Zug berechnet.
 \end{enumerate}
-\subsection{Heuristiken}
-\subsubsection{Nijssen 2007 Heuristik}
-\subsubsection{Stored Monte-Carlo-Heuristik}
 \subsection{Die übrigen Komponenten}
+Neben den zuvor detailliert besprochenen finden in der Implementierung noch die folgenden Komponenten Anwendung: 
 \begin{enumerate}
-\item \code{constants.py}
-\item \code{util.py} 
+\item Konstanten in der Datei \code{constants.py}. Durch die Verwendung von Konstanten bspw. zur Symbolisierung von welchen Spieler ein Feld besetzt ist, wird einerseits von konkreten Werten abstrahiert und diese sind, sofern erforderlich einfach austauschbar. Andererseits wird eine gewisse Konsitenz, bspw. für Mapping-Funktionen zur Ausgabe, über das ganze Programm hinweg erreicht.
+\item Hilfsfunktionen in der Datei \code{util.py} werden dazu genutzt Werte vom Benutzer abzufragen.
 \end{enumerate}
+\section{Heuristiken}
+Wie im Abschnitt \ref{Heuristiken} besprochen werden für einige Algorithmen Funktionen zur Approximation des Wertes eines Spielzustandes benötigt. Im Rahmen dieser Arbeit wurden die folgenden beiden Heuristiken implementiert:
+\begin{enumerate}
+\item Nijssen 2007 Heuristik
+\item Stored Monte-Carlo-Heuristik
+\end{enumerate}
+Die Implementierung beider Heuristiken befinden sich in der Datei \code{heuristics.py}
+\subsection{Nijssen 2007 Heuristik}
+Die \mxZitat{Nijssen 2007 Heuristik} wurde aus \cite{nijssen_2007} übernommen. Ihr liegt die im \ref{othello-chapter} erläuterte Idee zugrunde, die einzelnen Spielfelder in Kategorien einzuteilen und jeder Kategorie einen speziellen Wert zuzuweisen. Die Bewertung des Spielzustandes $S$ aus Sicht eines Spielers $\mathtt{player}$ ergibt sich dann nach der folgenden Formel: $\mathtt{heuristic}(\mathtt{player}, S) = \sum\limits_{f \in F}  w_{f} * b_{f}$ wobei $F$ für die Menge aller Felder des Spielzustandes S, $w_{f}$ für das dem Feld zugeordnete Gewicht und $b_{f} = \begin{cases} 1 \mathtt{,\ wenn\ player} = \mathtt{s}(f) \\ -1 \mathtt{,\ sonst} \end{cases} \ \mathtt{mit\ s}(f) $
+\subsection{Stored Monte-Carlo-Heuristik}
 \section{Start Tabellen}
 \section{Agenten}
+\label{agenten}
 Beim Start eines Partie stehen dem Nutzer mehrere Agenten zur Auswahl die die Rolle eines Spielers übernehmen können. Die Implementierung zu diesen Agenten befindet sich in Unterverzeichnis \code{Agents}.
 \\Die folgende Agenten stehen dabei zur Auswahl:
 \begin{enumerate}
-\setcounter{enumi}{-1}
 \item Human
 \item Random Player
 \item Monte Carlo
