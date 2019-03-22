@@ -2,7 +2,6 @@
 This file contains various utility methods.
 E.g. to ask the user for a certain selection
 """
-
 from constants import COLUMN_NUMBERS, COLUMN_NAMES
 
 
@@ -139,6 +138,8 @@ class UtilMethods:
         """calculate the point symmetric moves of one given game"""
         new_turns = list()
         for move in moves:
+            if move[0] not in {"a", "b", "c", "d", "e", "f", "g", "h"}:
+                break
             # move is a char and a int , eg. 'd3'
             # translate this move to a x and y coordinate
             (row, column) = UtilMethods.translate_move_to_pair(move)
