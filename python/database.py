@@ -1,7 +1,7 @@
 import os
 import numpy as np
 from constants import DATABASE_FILE_NAME, PLAYER_ONE, PLAYER_TWO
-from Agents.playerRandom import PlayerRandom
+from Agents.random import random
 from othello import Othello
 import multiprocessing as mp
 
@@ -72,7 +72,7 @@ class Database:
         # save modified array
         self._store_database()
 
-    def _store_database(self):
+    def store_database(self):
         """
         store database on filesystem
         :return:
@@ -129,7 +129,7 @@ class Database:
             g = Othello()
             g.init_game()
             while not g.game_is_over():
-                g.play_position(PlayerRandom.get_move(g))
+                g.play_position(random.get_move(g))
             winner = g.get_winner()
             multi_stats.append((g.get_taken_mv(), winner))
         return multi_stats
