@@ -61,7 +61,7 @@ class Database:
         """
         store database in file
         """
-        self._store_database()
+        # self._store_database()
 
     def _create_new_database(self):
         """
@@ -144,3 +144,6 @@ class Database:
             for single_game in list_of_games:
                 moves, winner = single_game
                 self.update_fields_stats_for_single_game(moves, winner)
+
+
+db = Database()
