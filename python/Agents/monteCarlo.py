@@ -9,6 +9,7 @@ import heuristics
 import multiprocessing as mp
 import database
 
+
 class PlayerMonteCarlo:
     """
     The PlayerMonteCarlo determines the best move based on the simplest form of the MonteCarlo-Algorithm
@@ -17,7 +18,7 @@ class PlayerMonteCarlo:
     start_tables = StartTables()
     move_probability = dict()
 
-    def __init__(self, big_number=0, use_start_libs=None, preprocessor_n=0, heuristic=None, use_multiprocessing=None):
+    def __init__(self, big_number=100, use_start_libs=True, preprocessor_n=-1, heuristic=heuristics.FieldHeuristic.heuristic, use_multiprocessing=True):
         """
         Initialize the Player
         """

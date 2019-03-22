@@ -12,20 +12,21 @@ class PlayerAlphaBetaPruning:
 
     start_tables = StartTables()
 
-    def __init__(self):
+    def __init__(self, heuristic=heuristics.FieldHeuristic.heuristic, search_depth=4, use_ml=False, use_monte_carlo=False, use_start_lib=True):
         """
         init start variables and used modules
         """
 
-        self.search_depth = UtilMethods.get_integer_selection("[Player AlphaBetaPruning] Select Search depth", 1, 10)
+        self.search_depth = search_depth  # UtilMethods.get_integer_selection("[Player AlphaBetaPruning] Select Search depth", 1, 10)
 
-        self.heuristic = heuristics.select_heuristic("Player MonteCarlo")
+        self.heuristic = heuristic  # heuristics.select_heuristic("Player MonteCarlo")
 
         # Ask the user to determine whether to use the start library
         # self.use_ml = UtilMethods.get_boolean_selection(
         #    "[Player AlphaBetaPruning] Do you want to use the machine learning after Alpha-Beta Pruning?")
 
-        self.use_ml = False
+        self.use_ml = use_ml
+        self.use_monte_carlo = use_monte_carlo
         if self.use_ml:
             self.ml_count = UtilMethods.get_integer_selection(
                 "[Player AlphaBetaPruning - Machine Learning] Select number of played Games", 10, 75)
@@ -34,8 +35,8 @@ class PlayerAlphaBetaPruning:
             self.use_ml = False
             self.ml_count = 1
 
-            self.use_monte_carlo = UtilMethods.get_boolean_selection(
-                "[Player AlphaBetaPruning] Do you want to use the Monte Carlo after Alpha-Beta Pruning?")
+            self.use_monte_carlo = False  # UtilMethods.get_boolean_selection(
+            #  "[Player AlphaBetaPruning] Do you want to use the Monte Carlo after Alpha-Beta Pruning?")
 
             if self.use_monte_carlo:
                 self.ml_count = UtilMethods.get_integer_selection(
@@ -45,8 +46,8 @@ class PlayerAlphaBetaPruning:
                 self.ml_count = 1
 
         # Ask the user to determine whether to use the start library
-        self.use_start_lib = UtilMethods.get_boolean_selection(
-            "[Player AlphaBetaPruning] Do you want to use the start library?")
+        self.use_start_lib = use_start_lib  # UtilMethods.get_boolean_selection(
+        #    "[Player AlphaBetaPruning] Do you want to use the start library?")
 
     @staticmethod
     def value(game_state: Othello, depth, heuristic, alpha=-1, beta=1):

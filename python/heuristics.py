@@ -104,4 +104,3 @@ class FieldHeuristic:
 
         selected_move = max(move_probability.items(), key=operator.itemgetter(1))[0]
         return move_probability[selected_move]
-
