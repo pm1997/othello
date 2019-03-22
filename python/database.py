@@ -70,7 +70,7 @@ class Database:
         # write 1.0 in each cell of _data array
         self._data = np.zeros(shape=(60, 9, 3), dtype='int64')
         # save modified array
-        self._store_database()
+        self.store_database()
 
     def store_database(self):
         """
@@ -157,7 +157,7 @@ class Database:
                 column[2] += db1[r1][c1][2]
                 c1 += 1
             r1 += 1
-        self._store_database()
+        self.store_database()
         print("finished merge")
 
 
