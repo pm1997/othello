@@ -157,6 +157,7 @@ class Database:
                 column[2] += db1[r1][c1][2]
                 c1 += 1
             r1 += 1
+        self._store_database()
         print("finished merge")
 
 
