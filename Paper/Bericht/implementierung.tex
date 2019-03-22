@@ -2,10 +2,27 @@
 In den folgenden Unterkapiteln  werden verschiedene Spielalgorithmen vorgestellt und implementiert. Anschließend werden diese verbessert und auch unter Berücksichtigung des Laufzeitverhaltens analysiert.
 \\Zunächst wird aber die grundsätzliche Programmstruktur erläutert und das Spielgerüst implementiert, damit unterschiedliche Spieler es ausführen können.
 \section{Grundlegende Spiel-Elemente}
-Die Python Implementierung befindet sich im Verzeichnis \mxZitat{python} des zu diesem Projekt gehörenden git Repository. Um das Spiel zur Ausführung zu bringen wird das Paket \mxZitat{numpy} benötigt. Ist diese Abhängigkeit vorhanden kann das Spiel durch ausführen des Kommandos \mxZitat{python main-game} gestartet werden.
+Die Python Implementierung befindet sich im Verzeichnis \mxZitat{python} des zu diesem Projekt gehörenden git Repository. Um das Spiel zur Ausführung zu bringen wird das Paket \mxZitat{numpy} benötigt. Ist diese Abhängigkeit vorhanden kann das Spiel durch ausführen des Kommandos \code{python main-game} gestartet werden.
 \\Die einzelnen Komponenten wurden unter thematischen Gesichtspunkten in verschiedenen Dateien organisiert. Nachfolgend wird auf die einzelnen Dateien und deren Funktion kurz eingegangen.
 \subsection{Der Spielablauf}
 In \mxZitat{main-game.py}
+\begin{lstlisting}[caption = {Spielablauf in \mxZitat{main-game.py}}, language = cpp, captionpos = t , numbers=left, label={lst:lst-main-game}]
+    players = {PLAYER_ONE: player_one, PLAYER_TWO: player_two}
+    game = Othello()
+    game.init_game()
+    game.print_board()
+    while not game.game_is_over():
+        current_player = game.get_current_player()
+        player_object = players[current_player]
+        move = player_object.get_move(game)
+        game.play_position(move)
+        game.print_board()
+        print(f"Played position: ({COLUMN_NAMES[move[1]]}{move[0] + 1})")
+    duration = time.time() - start
+    print("Game is over")
+    print(f"Total duration: {duration} seconds")
+    print(f"Winner is {PRINT_SYMBOLS[game.get_winner()]}")
+\end{lstlisting}
 \subsection{Die Klasse \mxZitat{Othello}}
 Die Klasse \mxZitat{Othello} modelliert einen Spielzustand und enthält die Grundlegende Spiellogik wie bspw. die Berechnung erlaubter Züge. Nachfolgend wird auf die Art der Speicherung eines Spielzustandes und auf die wichtigsten Funktionen dieser Klasse eingegangen.
 \paragraph{Klassenvariablen}
@@ -112,32 +129,21 @@ Beim Start eines Partie stehen dem Nutzer mehrere Agenten zur Auswahl die die Ro
 \item Random Player
 \item Monte Carlo
 \item Alpha-Beta Pruning
-\item Machine Learning
 \end{enumerate}
 \subsection{Human Agent}
-Spieler 0 wird für die manuelle Eingabe von Zügen eingesetzt. Alle anderen Spieler sind Computerspieler und spielen automatisch.
-Nachfolgend werden die einzelnen Computerspieler kurz beschrieben.
+Der \mxZitat{Human Agent} bzw. menschlische Agent stellt eine Schnittstelle die es einem menschlichen Spieler ermöglicht eine Spielentscheidung zu treffen. Die Implementierung findet sich in der Datei \code{human.py}
+\\Neben dem Spielfeld bekommt der Nutzer dabei eine Liste aller für Ihn möglichen Züge dargestellt. Durch die Eingabe eines Zuges wird dieser im Spielmodell ausgeführt und der nächste Agent wird aufgerufen. Da das Ziel dieser Arbeit darin besteht eine künstliche Intelligenz zur Wahl der Züge zu entwicklen, soll an dieser Stelle nicht weiter auf diesen Agenten eingegangen sein.
 
 \subsection{Random}
 Der Spieler Random wählt aus der Liste der möglichen Züge zufällig einen Zug aus und gibt diesen an die Hauptfunktion zurück.
 
 \subsection{Monte Carlo}
 Dieser Spieler verwendet den in Kapitel \ref{mc_algo} verwendeten Algorithmus um den Zug mit der höchsten Gewinnwahrscheinlichkeit auszuwählen. Dazu spielt der Spieler zufällig eine bei Spielstart eingestellte Anzahl an Spielen ab der aktuellen Spielsituation und berechnet daraus den Anteil der gewonnen Spiele je verfügbaren Zug. Den Zug mit der höchsten Gewinnwahrscheinlichkeit wird nun im \mxZitat{realer} Zug des Spielers ausgewählt.
-
-\subsection{Alpha-Beta Pruning}
-Ebenso wie der Spieler \mxZitat{Monte Carlo} wird der Spielalgorithmus im Theorieteil erläutert. Der beste Zug wird dadurch berechnet, dass eine eingeschränkte Breitensuche bis zu einer bestimmten Tiefe durchgeführt wird, dabei allerdings auch der Gegenspieler beachtet wird.
-Statt einer kompletten Tiefensuche mit MiniMax werden Züge mit einer geringen Zugwahrscheinlichkeit nicht evaluiert. Die Grundidee des Algorithmus ist, dass sowohl der aktuelle Spieler, als auch der Gegenspieler jeweils den für sie besten Zug und für den Gegner schlechtesten Zug spielen.
-\\Nach der eingeschränkten Breitensuche können mehrere Möglichkeiten gewählt werden.
-Es existieren einerseits mehrere Heuristiken, andererseits können auch andere Spieler ab diesen Spielzügen das Spiel berechnen. Diese Möglichkeiten werden in dem Kapitel \ref{ab_comb} genauer erläutert.
-
-\subsection{Machine Learning}
-Dieser Spielalgorithmus besteht hauptsächlich aus dem Monte Carlo Spieler. Der deutliche Unterschied zu diesem besteht aber in der Auswahl der zu simulierenden Spiele. Während Monte Carlo zufällig einen Zug aus den verfügbaren Zügen auswählt, verwendet Machine Learning eine gewichtete Zufallsfunktion. Der Algorithmus speichert die gespielten und gewonnen Spiele in einer Datenbank. Bei der Auswahl des Zuges, gewichtet er die Zugmöglichkeiten, die eine höhere Gewinnwahrscheinlichkeit besitzen höher als die Züge mit einer geringeren Wahrscheinlichkeit. Dadurch wählt er statistisch die Züge mit einer höheren Gewinnwahrscheinlichkeit aus. Durch das Speichern der Ergebnisse der simulierten Spiele in der Datenbank, \mxZitat{lernt} die Datenbank mit der Zeit dazu und kann in weiteren Spielen zuverlässigere Wahrscheinlichkeiten zurückgeben.
-
-\section{Details zum Monte Carlo Spieler}
+\subsubsection{Details zum Monte Carlo Spieler}
 In diesem Kapitel wird der Spieler Monte Carlo anhand des vorhandenen Quellcodes detailliert erklärt.
 \\Die Spielerklasse \mxZitat{PlayerMonteCarlo} ist in der Datei \mxZitat{python/Players/playerMonteCarlo.py} zu finden.
 Die zunächst wichtigsten Funktionen sind die Init-Funktion der Klasse und die Funktion \mxZitat{get\_move}.
-\subsection{Init-Funktion}
+\paragraph{init-Funktion}
 In dem Konstruktor der Klasse \code{PlayerMonteCarlo} werden mehrere Benutzerabfragen durchgeführt und in der Klasse gespeichert. Folgende Werte werden ermittelt:
 \begin{itemize}
 \item \code{big\_n}: Anzahl der zufällig gespielten Spiele je Zug
@@ -147,7 +153,7 @@ In dem Konstruktor der Klasse \code{PlayerMonteCarlo} werden mehrere Benutzerabf
 \item \code{heuristic}: Wahl einer Heuristikfunktion
 \end{itemize}
 
-\subsection{get\_move}
+\paragraph{get\_move}
  \mxZitat{get\_move} ist eine Interface-Funktion, d.h. alle Spieler stellen eine Funktion \mxZitat{get\_move} bereit, die als Parameter einen Spielzustand (Klasse \code{Othello}) erwartet und einen \code{move} zurückgibt. Dieser besteht aus einem Paar, das die Koordinaten auf dem Spielfeld darstellt. In Listing \ref{lst:ab1} ist die Funktion abgebildet.
 \vspace{0.5cm}
 \\In den Zeilen 3 bis 6 werden die Starttabellen verwendet, wenn diese in der init-Funktion ausgewählt wurden. Die Funktion \code{get\_available\_start\_tables} gibt eine Liste der möglichen Züge zurück (Z.4). Diese sind in der Form \mxZitat{a2} angegeben. Aus den verfügbaren Zügen wird zufällig ein Element ausgewählt \\(\code{moves[random.randrange(len(moves))]} Z.6) und dieses in ein Koordinatenpaar übersetzt \\(\code{translate\_move\_to\_pair} Z. 6). 
@@ -195,57 +201,17 @@ Das Dictionary speichert für jeden Zug ein Paar, das die gewonnen Spiele und di
         return selected_move
 \end{lstlisting}
 
-\section{Details zum Machine Learning Spieler}
-In diesem Kapitel wird der Spieler Machine Learning anhand des vorhandenen Quellcodes detailliert erklärt.
-\\Die Spielerklasse \mxZitat{PlayerMachineLearning} ist in der Datei \mxZitat{python/Players/playerMachineLearning.py} zu finden.
-Die zunächst wichtigsten Funktionen sind die Init-Funktion der Klasse und die Funktion \mxZitat{get\_move}.
-\subsection{Init-Funktion}
-In dem Konstruktor der Klasse \code{PlayerMachineLearning} wir \code{big\_n}, d.h. die Anzahl der zufällig gespielten Spiele je Zug abgefragt.
+\subsection{Alpha-Beta Pruning}
+Ebenso wie der Spieler \mxZitat{Monte Carlo} wird der Spielalgorithmus im Theorieteil erläutert. Der beste Zug wird dadurch berechnet, dass eine eingeschränkte Breitensuche bis zu einer bestimmten Tiefe durchgeführt wird, dabei allerdings auch der Gegenspieler beachtet wird.
+Statt einer kompletten Tiefensuche mit MiniMax werden Züge mit einer geringen Zugwahrscheinlichkeit nicht evaluiert. Die Grundidee des Algorithmus ist, dass sowohl der aktuelle Spieler, als auch der Gegenspieler jeweils den für sie besten Zug und für den Gegner schlechtesten Zug spielen.
+\\Nach der eingeschränkten Breitensuche können mehrere Möglichkeiten gewählt werden.
+Es existieren einerseits mehrere Heuristiken, andererseits können auch andere Spieler ab diesen Spielzügen das Spiel berechnen. Diese Möglichkeiten werden in dem Kapitel \ref{ab_comb} genauer erläutert.
 
-\subsection{get\_move}
-Die \code{get\_move} Funktion dieses Spielers besteht im wesentlichen aus der Funktion \code{get\_move} des Monte Carlo Spielers. Die beiden Unterschiede finden sich in der Schleife, die die zufälligen Spiele ausführt. Die Unterschiede sind in Listing \ref{lst:ml1} dargestellt. 
-Statt der Funktion \code{play\_random\_game} (Z. 6) der \code{PlayerMonteCarlo} Klasse wird die Funktion \code{play\_weighted\_random\_game} (Z. 9) der Klasse \code{PlayerMachineLearning} und anschließend \code{update\_all\_weights} (Z. 10) ausgeführt. 
-\\\code{play\_weighted\_random\_game} spielt ebenfalls zufällige Spiele, allerdings bevorzugt die random-Funktion gewonnene Spiele im Gegensatz zu verlorene oder unentschiedene Spiele.
-\\ Zu diesem Zweck wurde eine Datenbank aufgebaut, die für eine gegebene Zugnummer und Position auf dem Spielbrett eine Gewinnwahrscheinlichkeit zurückliefert. Die Zufallsfunktion wählt aus der Summe der Wahrscheinlichkeiten aller möglichen Zugmöglichkeiten eine zufällige Zahl und ordnet dieser Zahl wieder einem Zug aus dieser Liste zu. Der genaue Aufbau der Datenbank ist in dem nächsten Unterkapitel erläutert.
-
-\begin{lstlisting}[caption = {get\_move Funktion des Machine Learning Spielers}, language = cpp, captionpos = t , numbers=left, label={lst:ml1}]
-    def get_move(self, game_state: Othello):
-		# ...
-        for i in range(self.big_n): 
-			# ... 
-			# Monte Carlo
-			first_played_move, won = self.play_random_game(own_symbol, simulated_game)
-
-			# Machine Learning
-			won, first_played_move, played_moves = self.play_weighted_random_game(own_symbol, simulated_game)
-			ml_database.update_all_weights(played_moves, won)
-		# ...
-\end{lstlisting}
-\subsection{Aufbau und Funktion der Machine Learning Datenbank}
-In Abbildung \ref{fig:db1} ist ein Ausschnitt der Datenbank dargestellt.
-\\\mxPicture{17cm}{Datenbank-ml}{Aufbau der Machine Learning Datenbank}{Aufbau der Machine Learning Datenbank}{fig:db1}{}
-Die Zeilen stellen die Zugnummern von 0 bis 64 in einer Schrittweite von vier dar. Die Spalten stellen jedes einzelne Feld dar. Sie starten bei \mxZitat{a1} und enden bei \mxZitat{h8}.
-\\Jedes Feld der dadurch aufgespannten Tabelle enthält ein Paar, das die Anzahl der gewonnen Spiele und die Gesamtanzahl der Spiele darstellen, in welchen das jeweilige Feld benutzt wurde.
-\\Initial sind alle Felder auf das Paar \mxZitat{(1, 1)} gesetzt. Dadurch wird in der späteren Berechnung der Gewinnwahrscheinlichkeiten eine Division durch Null vermieden.
-\\Bei jedem Spiel, das mit mindestens einem Machine Learning Spieler gespielt wird, werden die Züge extrahiert und die Datenbank aktualisiert. Im folgenden wird dies an den beiden Beispielspiele aus Listing \ref{lst:ex1} erklärt.
-\begin{lstlisting}[caption = {Auschnitte aus Zugfolge zweier Spiele}, language = cpp, captionpos = t , numbers=left, label={lst:ex1}]
-Spiel 1 (verloren): c4 c5 e6 f5 ..
-Spiel 2 (gewonnen): e6 f6 d3 e7 ..
-\end{lstlisting}
-Nach jedem Spiel wird die Datenbank aktualisiert (siehe Listing \ref{lst:ml1} Zeile 10). Dies bedeutet, dass die Zellen \mxZitat{c4, c5, e6} in der ersten Zeile und \mxZitat{f5} in der zweiten Zeile aktualisiert werden. Statt \mxZitat{(1, 1)} steht in diesen Zellen nun \mxZitat{(1, 2)}, da die Zellen in einem weiteren Spiel verwendet wurden (1 + 1 = 2), aber das letzte Spiel nicht gewonnen wurde (1 + 0 = 1). Nach dem zweiten Spiel werden ebenfalls die Zellen angepasst. in der Zelle \mxZitat{e6} steht nach dem ersten Spiel das Paar \mxZitat{(1, 2)}. Da dieses Spiel gewonnen wurde, werden beide Zahlen nun um eins inkrementiert.
-\\Durch die Initialisierung der Zellen mit \mxZitat{(1, 1)} wird die Gewinnwahrscheinlichkeit (erste Komponente / zweite Komponente) etwas verzerrt. Beispielsweise ist die Gewinnwahrscheinlichkeit nach einem verlorenen Spiel nicht Null sonder 50 Prozent. Nach zwei verlorenen Spielen sinkt diese Wahrscheinlichkeit auf 33,33 Prozent. Bei sehr vielen Spielen, kann das eine gewonnene Spiel vernachlässigt werden und hat nur einen geringen Einfluss auf das Ergebnis.
-\\Der Machine Learning Spieler nutzt diese Wahrscheinlichkeit, um einen gewichteten zufälligen Zug zu ermitteln.
-In Abbildung \ref{fig:rand1} ist dieses Prinzip an einem Beispiel erklärt.
-\\\mxPicture{13cm}{rand1}{Auswahl eines gewichteten zufälligen Zuges}{Auswahl eines gewichteten zufälligen Zuges}{fig:rand1}{}
-Nach der Ermittlung der einzelnen Gewinnwahrscheinlichkeiten der verfügbaren Züge wird die Summe dieser Wahrscheinlichkeiten gebildet. Zu beachten ist, dass die Summe der Wahrscheinlichkeiten nicht 1 sein muss, sondern meistens bei der Hälfte der verfügbaren Züge liegt.
-\\Aus dieser Summe (2,1) wird nun zufällig eine Zahl ausgewählt (1,2). Nun werden sequenziell die Wahrscheinlichkeiten der Züge summiert und dadurch ermittelt, welchen Zug die zufällige Zahl darstellt. In diesem Beispiel stellt eine \mxZitat{1,2} den Zug \mxZitat{f5} dar, da alle Zahlen in dem Intervall 1,1 bis 1,65 dem Zug \mxZitat{f5} zugeordnet sind.
-\\Durch dieses Verfahren werden Züge mit einer höheren Wahrscheinlichkeit bevorteilt, aber nicht ausschließlich ausgewählt.  
-
-\section{Details zum Spieler Alpha-Beta Pruning}
+\subsubsection{Details zum Spieler Alpha-Beta Pruning}
 In diesem Kapitel wird der Spieler \mxZitat{Alpha-Beta Pruning} anhand des vorhandenen Quellcodes detailliert erklärt.
 \\Die Spielerklasse \mxZitat{PlayerAlphaBetaPruning} ist in der Datei \mxZitat{python/Players/playerAlphaBetaPruning.py} zu finden.
 Die zunächst wichtigsten Funktionen sind die Init-Funktion der Klasse und die Funktion \mxZitat{get\_move}.
-\subsection{Init-Funktion}
+\paragraph{Init-Funktion}
 In dem Konstruktor der Klasse \code{PlayerAlphaBetaPruning} werden folgende Benutzerabfragen getätigt:
 \begin{itemize}
 \item \code{search\_depth}: Tiefe der Alpha-Beta Suche
@@ -256,7 +222,7 @@ In dem Konstruktor der Klasse \code{PlayerAlphaBetaPruning} werden folgende Benu
 \item \code{ml\_count}: Anzahl der zufällig gespielten Spiele wenn Machine Learning oder Monte Carlo verwendet wird.
 \end{itemize}
 
-\subsection{get\_move}
+\paragraph{get\_move}
 In dem Listing \ref{lst:ab2} ist die \code{get\_move} Funktion des Alpha-Beta Pruning Spielers abgebildet.
 Zunächst wird ebenfalls geprüft, ob die Starttabellen verwendet werden sollen (Z. 3 - 6).
 \\Ist keine passende Starttabelle verfügbar, wird ab Zeile 8 Alpha-Beta Abschneiden durchgeführt.
@@ -296,6 +262,3 @@ Die dritte Variante ist \code{value\_monte\_carlo()} (Z. 16), welche ab diesem S
         best_move = max(best_moves.keys())
         return best_moves[best_move][random.randrange(len(best_moves[best_move]))]
 \end{lstlisting}
-
-\section{Kombination von Monte-Carlo und Alpha-Beta Abschneiden}
-\label{ab_comb}

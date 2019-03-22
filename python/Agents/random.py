@@ -2,7 +2,7 @@ from othello import Othello
 import random
 
 
-class PlayerRandom:
+class random:
     """
     The PlayerRandom plays a random move taken from the set of legal moves
     """
