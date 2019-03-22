@@ -1,12 +1,11 @@
 \chapter{Implementierung der KI}
-Die theoretischen Grundlagen werden nun angewandt und in ein Python \ot\ Spiel implementiert. \unsure{anders?}
-\section{Vorgehensweise}
 In den folgenden Unterkapiteln  werden verschiedene Spielalgorithmen vorgestellt und implementiert. Anschließend werden diese verbessert und auch unter Berücksichtigung des Laufzeitverhaltens analysiert.
 \\Zunächst wird aber die grundsätzliche Programmstruktur erläutert und das Spielgerüst implementiert, damit unterschiedliche Spieler es ausführen können.
 \section{Grundlegende Spiel-Elemente}
-Die Python Implementierung befindet sich im Verzeichnis \mxZitat{python} des zu diesem Projekt gehörenden git Repository. Die einzelnen Komponenten wurden unter thematischen Gesichtspunkten in verschiedenen Dateien organisiert.
-\\Die hier vorhanden Datein enthalten den Code der das Spiel zur Ausführung bringt sowie die Datenstrukturen, die zum Speichern eines Zuges verwendet werden. Auf diese wird in diesem Abschnitt noch detailiert eingegangen.
-\\Im Unterverzeichnis \mxZitat{Players} befinden sich die Implementierungen einzelner Spielstrategien. Diese werden im nachfolgenden Abschnitt detailiert behandelt.
+Die Python Implementierung befindet sich im Verzeichnis \mxZitat{python} des zu diesem Projekt gehörenden git Repository. Um das Spiel zur Ausführung zu bringen wird das Paket \mxZitat{numpy} benötigt. Ist diese Abhängigkeit vorhanden kann das Spiel durch ausführen des Kommandos \mxZitat{python main-game} gestartet werden.
+\\Die einzelnen Komponenten wurden unter thematischen Gesichtspunkten in verschiedenen Dateien organisiert. Nachfolgend wird auf die einzelnen Dateien und deren Funktion kurz eingegangen.
+\subsection{Der Spielablauf}
+In \mxZitat{main-game.py}
 \subsection{Die Klasse \mxZitat{Othello}}
 Die Klasse \mxZitat{Othello} modelliert einen Spielzustand und enthält die Grundlegende Spiellogik wie bspw. die Berechnung erlaubter Züge. Nachfolgend wird auf die Art der Speicherung eines Spielzustandes und auf die wichtigsten Funktionen dieser Klasse eingegangen.
 \paragraph{Klassenvariablen}
@@ -103,17 +102,19 @@ Die Klasse \mxZitat{Othello} enthält weitere Funktionen auf die hier jedoch nic
 \item \code{game\_is\_over}: Gibt zurück ob das Spiel bereits zu Ende ist.
 \item \code{init\_game}: Bereitet den Start eines Spiels vor indem die initial besetzen Felder entsprechen gesetzt werden. Der beginnende Spieler festgelegt und die  \code{\_fringe} vorbereitet, sowie \code{\_stones\_to\_turn} für den ersten Zug berechnet.
 \end{enumerate}
-\subsection{Die Datei \mxZitat{main-game.py}}
-\section{Spieler}
-Es gibt folgende \mxZitat{Haupt}-Spieler:
+\subsection{Die übrigen Komponenten}
+\section{Agenten}
+Beim Start eines Partie stehen dem Nutzer mehrere Agenten zur Auswahl die die Rolle eines Spielers übernehmen können. Die Implementierung zu diesen Agenten befindet sich in Unterverzeichnis \code{Agents}.
+\\Die folgende Agenten stehen dabei zur Auswahl:
 \begin{enumerate}
 \setcounter{enumi}{-1}
-\item Human Player
+\item Human
 \item Random Player
 \item Monte Carlo
 \item Alpha-Beta Pruning
 \item Machine Learning
 \end{enumerate}
+\subsection{Human Agent}
 Spieler 0 wird für die manuelle Eingabe von Zügen eingesetzt. Alle anderen Spieler sind Computerspieler und spielen automatisch.
 Nachfolgend werden die einzelnen Computerspieler kurz beschrieben.
 
