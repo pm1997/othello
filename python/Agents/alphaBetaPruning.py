@@ -12,7 +12,7 @@ class alphaBetaPruning:
 
     start_tables = StartTables()
 
-    def __init__(self, heuristic=heuristics.FieldHeuristic.heuristic, search_depth=4, use_ml=False, use_monte_carlo=False, use_start_lib=True):
+    def __init__(self, heuristic=heuristics.StoredMonteCarloHeuristic.heuristic, search_depth=4, use_ml=False, use_monte_carlo=False, use_start_lib=True):
         """
         init start variables and used modules
         """
