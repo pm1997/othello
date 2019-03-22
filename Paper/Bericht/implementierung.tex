@@ -6,6 +6,23 @@ Die Python Implementierung befindet sich im Verzeichnis \mxZitat{python} des zu 
 \\Die einzelnen Komponenten wurden unter thematischen Gesichtspunkten in verschiedenen Dateien organisiert. Nachfolgend wird auf die einzelnen Dateien und deren Funktion kurz eingegangen.
 \subsection{Der Spielablauf}
 In \mxZitat{main-game.py}
+\begin{lstlisting}[caption = {Spielablauf in \mxZitat{main-game.py}}, language = cpp, captionpos = t , numbers=left, label={lst:lst-main-game}]
+    players = {PLAYER_ONE: player_one, PLAYER_TWO: player_two}
+    game = Othello()
+    game.init_game()
+    game.print_board()
+    while not game.game_is_over():
+        current_player = game.get_current_player()
+        player_object = players[current_player]
+        move = player_object.get_move(game)
+        game.play_position(move)
+        game.print_board()
+        print(f"Played position: ({COLUMN_NAMES[move[1]]}{move[0] + 1})")
+    duration = time.time() - start
+    print("Game is over")
+    print(f"Total duration: {duration} seconds")
+    print(f"Winner is {PRINT_SYMBOLS[game.get_winner()]}")
+\end{lstlisting}
 \subsection{Die Klasse \mxZitat{Othello}}
 Die Klasse \mxZitat{Othello} modelliert einen Spielzustand und enthält die Grundlegende Spiellogik wie bspw. die Berechnung erlaubter Züge. Nachfolgend wird auf die Art der Speicherung eines Spielzustandes und auf die wichtigsten Funktionen dieser Klasse eingegangen.
 \paragraph{Klassenvariablen}
@@ -114,8 +131,8 @@ Beim Start eines Partie stehen dem Nutzer mehrere Agenten zur Auswahl die die Ro
 \item Alpha-Beta Pruning
 \end{enumerate}
 \subsection{Human Agent}
-Spieler 0 wird für die manuelle Eingabe von Zügen eingesetzt. Alle anderen Spieler sind Computerspieler und spielen automatisch.
-Nachfolgend werden die einzelnen Computerspieler kurz beschrieben.
+Der \mxZitat{Human Agent} bzw. menschlische Agent stellt eine Schnittstelle die es einem menschlichen Spieler ermöglicht eine Spielentscheidung zu treffen. Die Implementierung findet sich in der Datei \code{human.py}
+\\Neben dem Spielfeld bekommt der Nutzer dabei eine Liste aller für Ihn möglichen Züge dargestellt. Durch die Eingabe eines Zuges wird dieser im Spielmodell ausgeführt und der nächste Agent wird aufgerufen. Da das Ziel dieser Arbeit darin besteht eine künstliche Intelligenz zur Wahl der Züge zu entwicklen, soll an dieser Stelle nicht weiter auf diesen Agenten eingegangen sein.
 
 \subsection{Random}
 Der Spieler Random wählt aus der Liste der möglichen Züge zufällig einen Zug aus und gibt diesen an die Hauptfunktion zurück.
