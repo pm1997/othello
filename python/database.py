@@ -121,7 +121,7 @@ class Database:
     def _play_n_random_games(count):
         multi_stats = []
         for i in range(count):
-            if i%100 == 0:
+            if i % 100 == 0:
                 print(f"Game No: {i}")
             g = Othello()
             g.init_game()
@@ -141,4 +141,3 @@ class Database:
             for single_game in list_of_games:
                 moves, winner = single_game
                 self.update_fields_stats_for_single_game(moves, winner)
-
