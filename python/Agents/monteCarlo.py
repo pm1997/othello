@@ -2,7 +2,7 @@ from othello import Othello
 from start_tables import StartTables
 from util import UtilMethods
 import operator
-from Agents.playerRandom import PlayerRandom
+from Agents.random import random
 import sys
 import random
 import heuristics
@@ -10,7 +10,7 @@ import multiprocessing as mp
 import database
 
 
-class PlayerMonteCarlo:
+class monteCarlo:
     """
     The PlayerMonteCarlo determines the best move based on the simplest form of the MonteCarlo-Algorithm
     """
@@ -42,7 +42,7 @@ class PlayerMonteCarlo:
         elif preprocessor_n == -1:
             self.preprocessor = None
         else:
-            self.preprocessor = PlayerMonteCarlo.preprocess_variable_selectivity
+            self.preprocessor = monteCarlo.preprocess_variable_selectivity
             self.preprocessor_parameter = 1.0
 
         if heuristic is None:
@@ -87,17 +87,17 @@ class PlayerMonteCarlo:
         # Use pairs of the form (description: String, class: Player) to store a player type
         available_preprocessors.append(("None", None))
         available_preprocessors.append(
-            ("Fixed Selectivity Preprocessor (FSP)", PlayerMonteCarlo.preprocess_fixed_selectivity))
+            ("Fixed Selectivity Preprocessor (FSP)", monteCarlo.preprocess_fixed_selectivity))
         available_preprocessors.append(
-            ("Variable Selectivity Preprocessor (VSP)", PlayerMonteCarlo.preprocess_variable_selectivity))
+            ("Variable Selectivity Preprocessor (VSP)", monteCarlo.preprocess_variable_selectivity))
         # Ask the user to select a type of preprocessor.
         preprocessor = UtilMethods.select_one(available_preprocessors, "[Player MonteCarlo] Select a preprocessor mode")
         preprocessor_parameter = None
-        if preprocessor == PlayerMonteCarlo.preprocess_fixed_selectivity:
+        if preprocessor == monteCarlo.preprocess_fixed_selectivity:
             preprocessor_parameter = UtilMethods.get_integer_selection(
                 "[Player MonteCarlo]>>[Fixed Selectivity Preprocessor] Please select the number of moves passing the preprocessor",
                 1, 64)
-        elif preprocessor == PlayerMonteCarlo.preprocess_variable_selectivity:
+        elif preprocessor == monteCarlo.preprocess_variable_selectivity:
             preprocessor_parameter = UtilMethods.get_float_selection(
                 "[Player MonteCarlo]>>[Variable Selectivity Preprocessor] Please select the percentage of the average move value needed to pass the preprocessor",
                 0, 1)
@@ -115,7 +115,7 @@ class PlayerMonteCarlo:
         """
         # Get a list of moves sorted by their heuristic value
         heuristic_values = sorted(
-            PlayerMonteCarlo.preprocess_get_heuristic_value(game_state, heuristic=heuristic).items(),
+            monteCarlo.preprocess_get_heuristic_value(game_state, heuristic=heuristic).items(),
             key=operator.itemgetter(1))
         # Pass the first n_s moves on
         game_state.set_available_moves(heuristic_values[:n_s][0])
@@ -130,7 +130,7 @@ class PlayerMonteCarlo:
         :return:
         """
         # Calculate each move's value
-        heuristic_value_dict = PlayerMonteCarlo.preprocess_get_heuristic_value(game_state, heuristic=heuristic)
+        heuristic_value_dict = monteCarlo.preprocess_get_heuristic_value(game_state, heuristic=heuristic)
         # Get a list of values
         heuristic_values = [v for _, v in heuristic_value_dict.items()]
         # Calculate the Average List Value
@@ -145,13 +145,13 @@ class PlayerMonteCarlo:
         Play the given simulated_game to an end and return the first move and whether the game was won or not
         """
         # Select a random move based on the RandomPlayer and store it
-        first_move = PlayerRandom.get_move(simulated_game)
+        first_move = random.get_move(simulated_game)
         # Play the selected move
         simulated_game.play_position(first_move)
         # Continue to Play until the game is over
         while not simulated_game.game_is_over():
             # Get a random move
-            move = PlayerRandom.get_move(simulated_game)
+            move = random.get_move(simulated_game)
             # Play the random move
             simulated_game.play_position(move)
         # Decide whether the game was won
@@ -173,7 +173,7 @@ class PlayerMonteCarlo:
             # Copy the current game state
             simulated_game = game_state.deepcopy()
             # Play one random game and access the returned information
-            first_played_move, won = PlayerMonteCarlo.play_random_game(own_symbol, simulated_game)
+            first_played_move, won = monteCarlo.play_random_game(own_symbol, simulated_game)
             # Access the statistics stored for the move selected in the random game
             (won_games, times_played) = winning_statistics[first_played_move]
             # Increment the counters accordingly
@@ -215,14 +215,14 @@ class PlayerMonteCarlo:
 
         # Simulate big_n games
         if not self.use_multiprocessing:
-            winning_statistics = PlayerMonteCarlo.play_n_random_games(own_symbol, game_state, self.big_n)
+            winning_statistics = monteCarlo.play_n_random_games(own_symbol, game_state, self.big_n)
         else:
             number_of_processes = mp.cpu_count()
             pool = mp.Pool(processes=number_of_processes)
-            list_of_stats = [pool.apply_async(PlayerMonteCarlo.play_n_random_games, args=(own_symbol, game_state.deepcopy(), self.big_n//number_of_processes)) for _ in range(number_of_processes)]
+            list_of_stats = [pool.apply_async(monteCarlo.play_n_random_games, args=(own_symbol, game_state.deepcopy(), self.big_n // number_of_processes)) for _ in range(number_of_processes)]
             winning_statistics = list_of_stats[0].get()
             for single_list in list_of_stats[1:]:
-                PlayerMonteCarlo.combine_statistic_dicts(winning_statistics, single_list.get())
+                monteCarlo.combine_statistic_dicts(winning_statistics, single_list.get())
             pool.close()
 
         # Reduce the pair of (won_games, times_played) to a winning probability
