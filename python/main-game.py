@@ -5,11 +5,11 @@ This file manges the main game.
 from othello import Othello
 from util import UtilMethods
 
-from Agents.playerRandom import PlayerRandom
-from Agents.monteCarlo import PlayerMonteCarlo
+from Agents.random import random
+from Agents.monteCarlo import monteCarlo
 # from Agents.machineLearning import PlayerMachineLearning
-from Agents.human import PlayerHuman
-from Agents.alphaBetaPruning import PlayerAlphaBetaPruning
+from Agents.human import human
+from Agents.alphaBetaPruning import alphaBetaPruning
 
 import time
 from constants import PLAYER_ONE, PLAYER_TWO, PRINT_SYMBOLS, COLUMN_NAMES
@@ -24,10 +24,10 @@ if __name__ == '__main__':
     # Create a list of Player Types
     available_players = list()
     # Use pairs of the form (description: String, class: Player) to store a player type
-    available_players.append(("Human Player", PlayerHuman))
-    available_players.append(("AI Player - Random", PlayerRandom))
-    available_players.append(("AI Player - Monte Carlo", PlayerMonteCarlo))
-    available_players.append(("AI Player - Alpha-Beta Pruning", PlayerAlphaBetaPruning))
+    available_players.append(("Human Player", human))
+    available_players.append(("AI Player - Random", random))
+    available_players.append(("AI Player - Monte Carlo", monteCarlo))
+    available_players.append(("AI Player - Alpha-Beta Pruning", alphaBetaPruning))
     # available_players.append(("AI Player - Machine Learning", PlayerMachineLearning))
 
     # Ask the user to select a type of player as first player.
