@@ -13,7 +13,8 @@ class StartTables:
         and store them in _start_tables
         """
         csv = pd.read_csv('start_moves.csv')
-        self._start_tables = np.array(csv)
+        self._start_tables = np.array(csv, dtype="str")
+        # print(self._start_tables)
         # ########################################################
         # CAUTION: Call only once or on change of start tables ! #
         # #  self.calculate_missing_start_moves()                #
@@ -40,12 +41,15 @@ class StartTables:
                         break
                 else:  # turn == turn_nr
                     # if start sequence is finished and shorter than longest sequence the gab is filled with "i8" fields
-                    if move != "i8":  # i8 = invalid field
+                    if move != "i8" or move != "nan":  # i8 = invalid field
                         available_moves.append(move)
                         break
                     else:
                         break
                 turn += 1
+        available_moves = list(dict.fromkeys(available_moves))
+        if "nan" in available_moves:
+            available_moves.remove("nan")
         return available_moves
 
     def calculate_missing_start_moves(self):
@@ -69,13 +73,42 @@ class StartTables:
             new_moves.append(UtilMethods.calculate_opposite_move(game))
             new_moves.append(game)
 
+        # new_moves = self.remove_duplicates(new_moves)
         # store new start table in file 'start_moves.csv'
         with open('start_moves.csv', 'w') as f:
             for row in new_moves:
                 csv_row = ""
                 for turn in row:
+                    if turn == "nan":
+                        break
                     if len(csv_row):
                         csv_row += "," + turn
                     else:
                         csv_row = turn
                 f.write("%s\n" % csv_row)
+
+    # def remove_duplicates(self, matrix):
+    #     print(matrix)
+    #     for row in range(1, len(matrix) - 1):
+    #         print(row)
+    #         line1 = matrix[row]
+    #         print(line1)
+    #         offset = 0
+    #         for row2 in range(row + 1, len(matrix)):
+    #             line2 = matrix[row2 - offset]
+    #             if self.compare_array(line1, line2):
+    #                 del matrix[row2 - offset]
+    #                 offset += 1
+    #     print(matrix)
+    #     return matrix
+    #
+    # def compare_array(self, a1, a2):
+    #     if "nan" in a1:
+    #         a1.remove("nan")
+    #     len1 = len(a1)
+    #     if len1 != len(a2):
+    #         return False
+    #     for item in range(len1):
+    #         if a1[item] != a2[item]:
+    #             return False
+    #     return True
