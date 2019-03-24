@@ -9,6 +9,7 @@ import operator
 
 # Generate sets of fields of similar value
 ALL_FIELDS = {(a, b) for a in range(8) for b in range(8)}
+CENTER = {(3, 3), (3, 4), (4, 3), (4, 4)}
 CENTRAL_FIELDS = {(a, b) for a in range(2, 6) for b in range(2, 6)}
 CORNERS = {(0, 0), (0, 7), (7, 0), (7, 7)}
 C_FIELDS = {(0, 1), (0, 6), (1, 0), (1, 7), (6, 0), (6, 7), (7, 1), (7, 6)}
@@ -104,3 +105,55 @@ class StoredMonteCarloHeuristic:
 
         selected_move = max(move_probability.items(), key=operator.itemgetter(1))[0]
         return move_probability[selected_move]
+
+
+class CowthelloHeuristic:
+    """
+    Is the heuristic proposed by http://www.aurochs.org/games/cowthello/cowthello.js
+
+    corner,     nextCorner, helpCorner, edge,       edge,       helpCorner, nextCorner, corner,
+    nextCorner, nextNext,   normal,     normal,     normal,     normal,     nextNext,   nextCorner,
+    helpCorner, normal,     helpHelp,   helpEdge,   helpEdge,   helpHelp,   normal,     helpCorner,
+    edge,       normal,     helpEdge,   normal,     normal,     helpEdge,   normal,     edge,
+    edge,       normal,     helpEdge,   normal,     normal,     helpEdge,   normal,     edge,
+    helpCorner, normal,     helpHelp,   helpEdge,   helpEdge,   helpHelp,   normal,     helpCorner,
+    nextCorner, nextNext,   normal,     normal,     normal,     normal,     nextNext,   nextCorner,
+    corner,     nextCorner, helpCorner, edge,       edge,       helpCorner, nextCorner, corner
+
+    corner=100;
+    edge=10;
+    helpCorner=25;
+    helpHelp=50
+    nextCorner=-25;
+    normal=1;
+    helpEdge=5;
+    nextNext=-50;
+
+
+    """
+    # Create a dictionary and assign each field it's value
+    values = dict()
+    for position in ALL_FIELDS:
+        values[position] = database.Database.translate_position_to_database(position)
+
+    weight_matcher = {0: 100, 1: -25, 2: 25, 3: 10, 4: -50, 5: 1, 6: 1, 7: 50, 8: 5, 'X': 1}
+    for position in ALL_FIELDS:
+        values[position] = weight_matcher[values[position]]
+
+    @staticmethod
+    def heuristic(current_player, game_state: Othello):
+        """
+        Calculates the value of game_state for current_player
+        """
+        # Without any information the value is 0
+        value = 0
+        # Get the board
+        board = game_state.get_board()
+        # Get the values assigned to each field
+        weight_dict = CowthelloHeuristic.values
+        # Iterate over the fields with an assigned value
+        for (x, y) in CowthelloHeuristic.values.keys():
+            # Add the fields value to the heuristic value if it us owned by the current player. Subtract it otherwise
+            value += get_sign(current_player, board[x][y]) * weight_dict[(x, y)]
+        # Return the Calculated value
+        return value
