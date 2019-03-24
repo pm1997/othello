@@ -1,53 +1,20 @@
 import os
 import numpy as np
-from constants import DATABASE_FILE_NAME, PLAYER_ONE, PLAYER_TWO
+from constants import DATABASE_FILE_NAME, PLAYER_ONE, PLAYER_TWO, DATABASE_TO_POSITIONS, POSITION_TO_DATABASE
 from Agents.random import Random
 from othello import Othello
 import multiprocessing as mp
 
 
 class Database:
-    #     0   1   2   3   4   5   6   7
-    #   +---+---+---+---+---+---+---+---+
-    # 0 | 0 | 1 | 2 | 3 | 3 | 2 | 1 | 0 |
-    #   +---+---+---+---+---+---+---+---+
-    # 1 | 1 | 4 | 5 | 6 | 6 | 5 | 4 | 1 |
-    #   +---+---+---+---+---+---+---+---+
-    # 2 | 2 | 5 | 7 | 8 | 8 | 7 | 5 | 2 |
-    #   +---+---+---+---+---+---+---+---+
-    # 3 | 3 | 6 | 8 | X | X | 8 | 6 | 3 |
-    #   +---+---+---+---+---+---+---+---+
-    # 4 | 3 | 6 | 8 | X | X | 8 | 6 | 3 |
-    #   +---+---+---+---+---+---+---+---+
-    # 5 | 2 | 5 | 7 | 8 | 8 | 7 | 5 | 2 |
-    #   +---+---+---+---+---+---+---+---+
-    # 6 | 1 | 4 | 5 | 6 | 6 | 5 | 4 | 1 |
-    #   +---+---+---+---+---+---+---+---+
-    # 7 | 0 | 1 | 2 | 3 | 3 | 2 | 1 | 0 |
-    #   +---+---+---+---+---+---+---+---+
-    _DATABASE_TO_POSITIONS = {0: [(0, 0), (0, 7), (7, 0), (7, 7)],
-                              1: [(0, 1), (0, 6), (1, 0), (1, 7), (6, 0), (6, 7), (7, 1), (7, 6)],
-                              2: [(0, 2), (0, 5), (2, 0), (2, 7), (5, 0), (5, 7), (7, 2), (7, 5)],
-                              3: [(0, 3), (0, 4), (3, 0), (3, 7), (4, 0), (4, 7), (7, 3), (7, 4)],
-                              4: [(1, 1), (1, 6), (6, 1), (6, 6)],
-                              5: [(1, 2), (1, 5), (2, 1), (2, 6), (5, 1), (5, 6), (6, 2), (6, 5)],
-                              6: [(1, 3), (1, 4), (3, 1), (3, 6), (4, 1), (4, 6), (6, 3), (6, 4)],
-                              7: [(2, 2), (2, 5), (5, 2), (5, 5)],
-                              8: [(2, 3), (2, 4), (3, 2), (3, 5), (4, 2), (4, 5), (5, 3), (5, 4)],
-                              'X': [(3, 3), (3, 4), (4, 3), (4, 4)]}
-
-    _POSITION_TO_DATABASE = {}
-    for (field_type, fields) in _DATABASE_TO_POSITIONS.items():
-        for field in fields:
-            _POSITION_TO_DATABASE[field] = field_type
 
     @staticmethod
     def translate_database_to_positions(field_type):
-        return Database._DATABASE_TO_POSITIONS[field_type]
+        return DATABASE_TO_POSITIONS[field_type]
 
     @staticmethod
-    def _translate_position_to_database(move):
-        return Database._POSITION_TO_DATABASE[move]
+    def translate_position_to_database(move):
+        return POSITION_TO_DATABASE[move]
 
     def __init__(self):
         # check if database file exists
@@ -92,7 +59,7 @@ class Database:
         :return: chance of winning for given field at the given turn number
         """
         # translate move to position in array
-        position = self._translate_position_to_database(move)
+        position = self.translate_position_to_database(move)
         won_games_pl1, won_games_pl2, total_games_played = self._data[turn_nr][position]
         if total_games_played == 0:
             return 0
@@ -114,7 +81,7 @@ class Database:
             # translate move like "a2" to (1,0)
             # move = UtilMethods.translate_move_to_pair(moves[turn_nr])
             # translate move 1,0 to position 8
-            position = self._translate_position_to_database(moves[turn_nr])
+            position = self.translate_position_to_database(moves[turn_nr])
             # update array at position position
             self.update_field_stat(turn_nr, position, winner)
             # update next move
