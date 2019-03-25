@@ -6,7 +6,7 @@ Die Python Implementierung befindet sich im Verzeichnis \mxZitat{python} des zu 
 \\Die einzelnen Komponenten wurden unter thematischen Gesichtspunkten in verschiedenen Dateien organisiert. Nachfolgend wird auf die einzelnen Dateien und deren Funktion kurz eingegangen.
 \subsection{Der Spielablauf}
 In \mxZitat{main-game.py}
-\begin{lstlisting}[caption = {Spielablauf in \mxZitat{main-game.py}}, language = cpp, captionpos = t , numbers=left, label={lst:lst-main-game}]
+\begin{lstlisting}[caption = {Spielablauf in \mxZitat{main-game.py}}, language = python, captionpos = t , numbers=left, label={lst:lst-main-game}]
     players = {PLAYER_ONE: player_one, PLAYER_TWO: player_two}
     game = Othello()
     game.init_game()
@@ -37,7 +37,7 @@ In Listing \ref{lst:class-vars-othello} sind alle Klassenvariablen, sowie deren 
 \item \code{\_taken\_moves}: Speichert alle ausgeführten Züge die erforderlich waren um den modellierten Spielzustand zu erreichen, da einige Algorithmen diese Information benötigen.
 \item \code{\_turn\_nr}: Speichert die Nummer des aktuellen Spielzuges, da die verwendete Strategie bei einigen Algorithmen davon abhängt, wie weit das Spiel schon fortgeschritten ist.
 \end{enumerate}
-\begin{lstlisting}[caption = {Klassenvariablen der Klasse \mxZitat{Othello}}, language = cpp, captionpos = t , numbers=left, label={lst:class-vars-othello}]
+\begin{lstlisting}[caption = {Klassenvariablen der Klasse \mxZitat{Othello}}, language = python, captionpos = t , numbers=left, label={lst:class-vars-othello}]
     _board = [[0 for _ in range(8)] for _ in range(8)]
     _current_player = None
  
@@ -74,7 +74,7 @@ In Zeile 19 wird das nächste Feld in diese Richtung berechnet.
 \\Falls ja so ist das Spiel zu ende. Dies wird durch setzen von \code{\_game\_is\_over} gespeichert (Zeile 24).
 \\Falls nein (Zeile 25), so wird gespeichert, dass der Spieler passen musste (Zeile 26) und der nächste Zug vorbereitet (Zeile 27)
 Hat der Spieler hingegen eine Zugmöglichkeit (Zeile 28) so hat er aus Sicht des folgenden Zuges nicht passen müssen. Entsprechend wird \code{\_last\_turn\_passed} wieder auf \code{False} gesetzt. 
-\begin{lstlisting}[caption = {Die Funktion \code{\_compute\_available\_moves}}, language = cpp, captionpos = t , numbers=left, label={lst:fct-compute-available-moves}]
+\begin{lstlisting}[caption = {Die Funktion \code{\_compute\_available\_moves}}, language = python, captionpos = t , numbers=left, label={lst:fct-compute-available-moves}]
     def _compute_available_moves(self):
         self._turning_stones = dict()
         own_symbol = self._current_player
@@ -143,11 +143,50 @@ Die \mxZitat{Nijssen 2007 Heuristik} wurde aus \cite{nijssen_2007} übernommen. 
 \item \code{Andere-Felder}: $+1$
 \end{enumerate}
 \subsection{Stored Monte-Carlo-Heuristik}
-Die \mxZitat{Stored Monte-Carlo-Heuristik} verwendet eine Datenbank. In dieser Datenbank werden die Anzahl der gespielten und gewonnenen Spielzüge gespeichert. 
-Da das Spielfeld symmetrisch ist, müssen nicht alle 64 Felder gespeichert werden, sondern nur 9 Felder. Die mittleren Felder sind initial schon gesetzt. Die neun unterschiedlichen Felder sind in der Grafik \ref{fig:sym1} farblich gekennzeichnet.
+Die \mxZitat{Stored Monte-Carlo-Heuristik} verwendet eine Datenbank. In dieser Datenbank werden die Anzahl der gespielten und gewonnenen Spielzüge gespeichert. Diese wird in den Unterkapiteln \ref{db}  und \ref{train} erklärt. Darauf aufbauend wird die Funktionsweise der Heuristik in dem Kapitel \ref{heuristik1} erläutert.
+\paragraph{Datenbank}
+\label{db}
+Die Datenbank speichert zu jeder Zugnummer die Gewinnwahrscheinlichkeiten der Spieler für Feldkategorien. Es existieren zehn Feldkategorien. Das Spielfeld ist symmetrisch zum Mittelpunkt aufgebaut. Dies bedeutet, dass Züge, welche symmetrisch zu anderen Zügen sind, als ein Zug angesehen werden können. In Abbildung \ref{fig:sym1} sind die symmetrischen Felder des Othello-Spielbrettes farblich hervorgehoben. Die unterschiedlichen Farben stellen die unterschiedlichen Feldkategorien dar. Diese sind von Null bis Acht durchnummeriert. Das Zentrum ist mit \mxZitat{X} markiert. Da das Zentrum bei Spielstart schon besetzt ist, wird diese Feldkategorie nicht in der Datenbank gespeichert. Die restlichen neun Kategorien sind als Spalten in der Datenbank abgebildet.
 \\\mxPicture{10cm}{symmetrie}{Symmetrie des Spielfeldes}{Symmetrie des Spielfeldes}{fig:sym1}{}
-\\Die Datenbank besteht aus 60 Zeilen und 9 Spalten. Die neun Spalten stellen o.g. Spielfeldtypen ( \mxZitat{0} bis \mxZitat{8}) dar. Jede Zelle in dieser Tabelle enthält ein Tripel. Die erste Komponente stellt die Anzahl der gewonnen Spiele des ersten Spielers dar, in welchem eine Zelle der Spielfeldkategorie zu in dieser Zugzahl gespielt wurde. Die zweite Komponente speichert die Anzahl der Spiele, welche der zweite Spieler gewonnen hat. Die dritte Komponente gibt die Gesamtanzahl der gespielten Spiele dieser Spielkategorie wieder. Zwischen den drei Komponenten gibt es folgenden mathematischen Zusammenhang: $\mathtt{won\_games1} + \mathtt{won\_games2} \leq \mathtt{total\_played\_games}$
+\\Die Datenbank besteht aus 60 Zeilen und neun Spalten. Die neun Spalten stellen o.g. Feldkategorien ( \mxZitat{0} bis \mxZitat{8}) dar. Die n-te Zeile stellt die Gewinnwahrscheinlichkeiten des Spielfeldes in dem n-ten Spielzug da.
+\\Jede Zelle in dieser Tabelle enthält ein Tripel. Die erste Komponente stellt die Anzahl der gewonnen Spiele des ersten Spielers dar, die zweite Komponente speichert die Anzahl der Spiele, welche der zweite Spieler gewonnen hat und die dritte Komponente gibt die Gesamtanzahl der gespielten Spiele dieser Spielkategorie an. Die genaue Funktionsweise wird in Kapitel \ref{train} erklärt.
+\\Zwischen den drei Komponenten gibt es folgenden mathematischen Zusammenhang: 
+\\$\mathtt{won\_games1} + \mathtt{won\_games2} \leq \mathtt{total\_played\_games}$
+\\Durch unentschiedene Spiele kann die Gesamtanzahl der Spiele größer als die Summe der gewonnen Spiele der zwei Spieler sein.
+In Abbildung \ref{fig:db1} ist der Initialzustand der Datenbank dargestellt (vgl. auch Abbildung \ref{fig:sym1} bzgl. der Feldkategorien). Die Startwerte der Tupel sind jeweils \mxZitat{(0, 0, 0)}, da initial noch keine Spiele gespeichert sind.
+\\\mxPicture{15cm}{db2}{Ausschnitt des Initialzustandes der Datenbank}{Ausschnitt des Initialzustandes der Datenbank}{fig:db1}{}
+\paragraph{Befüllen der Datenbank}
+\label{train}
 
+Nachdem die Datenbank im vorherigen Kapitel initialisiert erstellt wurde, wird diese nun mit Spieldaten aus zufällig gespielten Spielen befüllt. In Listing \ref{lst:train1} ist das Spielen eines zufälligen Spieles und den Aufruf der Funktion \code{update\_fields\_stats\_for\_single\_game} abgebildet. Zunächst wird ein Othello-Spiel initialisiert (Z. 1f.). Durch die Nutzung des \mxZitat{Random}-Agenten wird ein komplettes Spiel durchgeführt (Z. 3f.). Anschließend wird der Gewinner ermittelt (Z. 5) und die Zugreihenfolge ermittelt (Z. 6). Die Funktion \code{update\_fields\_stats\_for\_single\_game} verwendet diese beiden Parameter um die Datenbank zu aktualisieren. Die Funktion wird in Listing \ref{lst:train2} abgebildet.
+
+\begin{lstlisting}[caption = {Befüllen der Datenbank 1}, language = python, captionpos = t , numbers=left, label={lst:train1}]
+g = Othello()
+g.init_game()
+while not g.game_is_over():
+	g.play_position(Random.get_move(g))
+winner = g.get_winner()
+moves = g.get_taken_mv()
+self.update_fields_stats_for_single_game(moves, winner)
+\end{lstlisting}
+
+\begin{lstlisting}[caption = {Befüllen der Datenbank 2}, language = python, captionpos = t , numbers=left, label={lst:train2}]
+	def update_field_stat(self, turn_nr, field_type, winner):
+		(won_games_pl1, won_games_pl2, total_games_played) = self._data[turn_nr][field_type]
+		if winner == PLAYER_ONE:
+			won_games_pl1 += 1
+		elif winner == PLAYER_TWO:
+			won_games_pl2 += 1
+		self._data[turn_nr][field_type] = (won_games_pl1, won_games_pl2, total_games_played + 1)
+
+	def update_fields_stats_for_single_game(self, moves, winner):
+		for turn_nr in range(len(moves)):
+			position = self.translate_position_to_database(moves[turn_nr])
+			self.update_field_stat(turn_nr, position, winner)
+\end{lstlisting}
+
+\paragraph{Heuristik}
+\label{heuristik1}
 
 \section{Start Tabellen}
 Für viele Spiele, beispielsweise für Schach, existieren Starttabellen, welche die \mxZitat{besten} Eröffnungszüge speichern. Für Othello existieren zwar mehrere Spieltabellen, aber nur wenige Eröffnungsspiele. In der Implementierung werden die 77 Eröffnungszüge von Robert Gatliff \cite{open1} verwendet. Diese bestehen jeweils aus einer Zugreihenfolge, z.B. \code{c4, c3, d3, c5, b2}. 
@@ -165,7 +204,7 @@ Beim Start eines Partie stehen dem Nutzer mehrere Agenten zur Auswahl die die Ro
 \item Alpha-Beta Pruning
 \end{enumerate}
 \subsection{Human Agent}
-Der \mxZitat{Human Agent} bzw. menschliche Agent stellt eine Schnittstelle die es einem menschlichen Spieler ermöglicht eine Spielentscheidung zu treffen. Die Implementierung findet sich in der Datei \code{human.py}
+Der \mxZitat{Human Agent} bzw. menschliche Agent stellt eine Schnittstelle die es einem menschlichen Spieler \\ermöglicht eine Spielentscheidung zu treffen. Die Implementierung findet sich in der Datei \code{human.py}
 \\Neben dem Spielfeld bekommt der Nutzer dabei eine Liste aller für Ihn möglichen Züge dargestellt. Durch die Eingabe eines Zuges wird dieser im Spielmodell ausgeführt und der nächste Agent wird aufgerufen. Da das Ziel dieser Arbeit darin besteht eine künstliche Intelligenz zur Wahl der Züge zu entwickeln, soll an dieser Stelle nicht weiter auf diesen Agenten eingegangen sein.
 
 \subsection{Random}
@@ -199,7 +238,7 @@ Das Dictionary speichert für jeden Zug ein Paar, das die gewonnen Spiele und di
 \\ Nach dem Spielen aller zufälligen Spiele wird die Gewinnwahrscheinlichkeit berechnet (Z. 29 - 31). Die Wahrscheinlichkeit wird in dem Klassendictionary \code{move\_probability} gespeichert (Z. 31).
 \\Abschließend wird das Maximum des Dictionary über die Wahrscheinlichkeiten ermittelt und zurückgegeben (Z. 33f.).
 
-\begin{lstlisting}[caption = {get\_move Funktion des Alpha-Beta Spielers}, language = cpp, captionpos = t , numbers=left, label={lst:ab1}]
+\begin{lstlisting}[caption = {get\_move Funktion des Alpha-Beta Spielers}, language = python, captionpos = t , numbers=left, label={lst:ab1}]
     def get_move(self, game_state: Othello):
 
         if self.use_start_lib and game_state.get_turn_nr() < 10:  # check whether start move match
@@ -268,7 +307,7 @@ Diese Funktion \code{get\_value} existiert in drei unterschiedlichen Varianten.
 Die erste Variante ist \code{value()} (Z. 19), welche eine Heuristik zur Berechnung des Wertes verwendet.  
 Die zweite Variante ist \code{value\_ml()} (Z. 14), welche ab diesem Spielzustand das Spiel mit dem Machine Learning Algorithmus spielt und die Gewinnwahrscheinlichkeit des besten Zuges zurückgibt.
 Die dritte Variante ist \code{value\_monte\_carlo()} (Z. 16), welche ab diesem Spielzustand das Spiel mit dem Monte Carlo Algorithmus spielt und die Gewinnwahrscheinlichkeit des besten Zuges zurückgibt.
-\begin{lstlisting}[caption = {get\_move Funktion des Alpha-Beta Spielers}, language = cpp, captionpos = t , numbers=left, label={lst:ab2}]
+\begin{lstlisting}[caption = {get\_move Funktion des Alpha-Beta Spielers}, language = python, captionpos = t , numbers=left, label={lst:ab2}]
     def get_move(self, game_state: Othello):
 
         if self.use_start_lib and game_state.get_turn_nr() < 10:  # check whether start move match
@@ -297,3 +336,6 @@ Die dritte Variante ist \code{value\_monte\_carlo()} (Z. 16), welche ab diesem S
         best_move = max(best_moves.keys())
         return best_moves[best_move][random.randrange(len(best_moves[best_move]))]
 \end{lstlisting}
+
+\paragraph{Kombination des Alpha-Beta Pruning Agenten mit weiteren Agenten}
+\label{ab_comb}
