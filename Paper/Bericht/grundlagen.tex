@@ -216,7 +216,7 @@ Dieses einfache Beispiel zeigt bereits recht gut wie die Auswertung von weiteren
 
 \subsubsection{Implementierung}
 Nachfolgend wird eine Pseudoimplementierung einer Invariante des Alpha-Beta Abschneiden Algorithmus angegeben (siehe Listing \ref{lst:abprun}). Es handelt sich um eine angepasste Version von \cite{StroetmannAI19}
-\begin{lstlisting}[caption = {Pseudoimplementierung von Alpha-Beta Abschneiden}, language = cpp, captionpos = t , numbers=left, label={lst:abprun}]
+\begin{lstlisting}[caption = {Pseudoimplementierung von Alpha-Beta Abschneiden}, language = python, captionpos = t , numbers=left, label={lst:abprun}]
 alphaBeta(State, player, alpha = -1, beta = 1) {
         if (finished(State)) {
             return utility(State, player)

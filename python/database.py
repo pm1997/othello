@@ -85,7 +85,7 @@ class Database:
             # update array at position position
             self.update_field_stat(turn_nr, position, winner)
             # update next move
-            turn_nr += 1
+            # turn_nr += 1
 
     @staticmethod
     def _play_n_random_games(count):
