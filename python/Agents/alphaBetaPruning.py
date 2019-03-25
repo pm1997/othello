@@ -10,43 +10,43 @@ from Agents.monteCarlo import MonteCarlo
 class AlphaBetaPruning:
     # Compare https://github.com/karlstroetmann/Artificial-Intelligence/blob/master/SetlX/game-alpha-beta.stlx
 
-    start_tables = StartTables()
+    _start_tables = StartTables()
 
     def __init__(self, heuristic=heuristics.StoredMonteCarloHeuristic.heuristic, search_depth=5, use_ml=False, use_monte_carlo=False, use_start_lib=True):
         """
         init start variables and used modules
         """
 
-        self.search_depth = search_depth  # UtilMethods.get_integer_selection("[Player AlphaBetaPruning] Select Search depth", 1, 10)
+        self._search_depth = search_depth  # UtilMethods.get_integer_selection("[Player AlphaBetaPruning] Select Search depth", 1, 10)
 
-        self.heuristic = heuristic  # heuristics.select_heuristic("Player MonteCarlo")
+        self._heuristic = heuristic  # heuristics.select_heuristic("Player MonteCarlo")
 
         # Ask the user to determine whether to use the start library
         # self.use_ml = UtilMethods.get_boolean_selection(
         #    "[Player AlphaBetaPruning] Do you want to use the machine learning after Alpha-Beta Pruning?")
 
-        self.use_ml = use_ml
-        self.use_monte_carlo = use_monte_carlo
-        if self.use_ml:
-            self.ml_count = UtilMethods.get_integer_selection(
+        self._use_ml = use_ml
+        self._use_monte_carlo = use_monte_carlo
+        if self._use_ml:
+            self._ml_count = UtilMethods.get_integer_selection(
                 "[Player AlphaBetaPruning - Machine Learning] Select number of played Games", 10, 75)
-            self.use_monte_carlo = False
+            self._use_monte_carlo = False
         else:
-            self.use_ml = False
-            self.ml_count = 1
+            self._use_ml = False
+            self._ml_count = 1
 
-            self.use_monte_carlo = False  # UtilMethods.get_boolean_selection(
+            self._use_monte_carlo = False  # UtilMethods.get_boolean_selection(
             #  "[Player AlphaBetaPruning] Do you want to use the Monte Carlo after Alpha-Beta Pruning?")
 
-            if self.use_monte_carlo:
-                self.ml_count = UtilMethods.get_integer_selection(
+            if self._use_monte_carlo:
+                self._ml_count = UtilMethods.get_integer_selection(
                     "[Player AlphaBetaPruning - Machine Learning] Select number of played Games", 10, 75)
             else:
-                self.use_monte_carlo = False
-                self.ml_count = 1
+                self._use_monte_carlo = False
+                self._ml_count = 1
 
         # Ask the user to determine whether to use the start library
-        self.use_start_lib = use_start_lib  # UtilMethods.get_boolean_selection(
+        self._use_start_lib = use_start_lib  # UtilMethods.get_boolean_selection(
         #    "[Player AlphaBetaPruning] Do you want to use the start library?")
 
     @staticmethod
@@ -152,8 +152,8 @@ class AlphaBetaPruning:
         :return: best move in available moves
         """
         # Use start library if it is selected and still included
-        if self.use_start_lib and game_state.get_turn_nr() < 21:  # check whether start move match
-            moves = self.start_tables.get_available_start_tables(game_state)
+        if self._use_start_lib and game_state.get_turn_nr() < 21:  # check whether start move match
+            moves = self._start_tables.get_available_start_tables(game_state)
             if len(moves) > 0:
                 return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
         best_moves = dict()
@@ -162,15 +162,15 @@ class AlphaBetaPruning:
             next_state.play_position(move)
 
             # differ between machine learning or heuristic
-            if self.use_ml:
+            if self._use_ml:
                 print("not supported")
                 result = 0
                 # result = -PlayerAlphaBetaPruning.value_ml(next_state, self.search_depth - 1, ml_count=self.ml_count)
-            elif self.use_monte_carlo:
-                result = -AlphaBetaPruning.value_monte_carlo(next_state, self.search_depth - 1, self.heuristic,
-                                                             mc_count=self.ml_count)
+            elif self._use_monte_carlo:
+                result = -AlphaBetaPruning.value_monte_carlo(next_state, self._search_depth - 1, self._heuristic,
+                                                             mc_count=self._ml_count)
             else:
-                result = -AlphaBetaPruning.value(next_state, self.search_depth - 1, self.heuristic)
+                result = -AlphaBetaPruning.value(next_state, self._search_depth - 1, self._heuristic)
 
             if result not in best_moves.keys():
                 best_moves[result] = []

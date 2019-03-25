@@ -23,37 +23,37 @@ class MonteCarlo:
         Initialize the Player
         """
         if big_number != 0:
-            self.big_n = big_number
+            self._big_n = big_number
         else:
             # Ask the user to enter the number of random games per turn
-            self.big_n = UtilMethods.get_integer_selection("[Player MonteCarlo] Select Number of Simulated Games", 100,
-                                                           sys.maxsize)
+            self._big_n = UtilMethods.get_integer_selection("[Player MonteCarlo] Select Number of Simulated Games", 100,
+                                                            sys.maxsize)
 
         if use_start_libs is None:
             # Ask the user to determine whether to use the start library
-            self.use_start_lib = UtilMethods.get_boolean_selection(
+            self._use_start_lib = UtilMethods.get_boolean_selection(
                 "[Player MonteCarlo] Do you want to use the start library?")
         else:
-            self.use_start_lib = use_start_libs
+            self._use_start_lib = use_start_libs
 
         if preprocessor_n == 0:
             # Check whether to use the preprocessor
-            self.preprocessor, self.preprocessor_parameter = self.select_preprocessor()
+            self._preprocessor, self._preprocessor_parameter = self.select_preprocessor()
         elif preprocessor_n == -1:
-            self.preprocessor = None
+            self._preprocessor = None
         else:
-            self.preprocessor = MonteCarlo.preprocess_variable_selectivity
-            self.preprocessor_parameter = 1.0
+            self._preprocessor = MonteCarlo.preprocess_variable_selectivity
+            self._preprocessor_parameter = 1.0
 
         if heuristic is None:
-            self.heuristic = heuristics.select_heuristic("Player MonteCarlo")
+            self._heuristic = heuristics.select_heuristic("Player MonteCarlo")
         else:
-            self.heuristic = heuristic
+            self._heuristic = heuristic
 
         if use_multiprocessing is None:
-            self.use_multiprocessing = UtilMethods.get_boolean_selection("[Player Monte Carlo] Use Multiprocessing?")
+            self._use_multiprocessing = UtilMethods.get_boolean_selection("[Player Monte Carlo] Use Multiprocessing?")
         else:
-            self.use_multiprocessing = use_multiprocessing
+            self._use_multiprocessing = use_multiprocessing
 
     @staticmethod
     def preprocess_get_heuristic_value(game_state: Othello, heuristic):
@@ -198,7 +198,7 @@ class MonteCarlo:
         :return: best move in available moves
         """
         # Use start library if it is selected and still included
-        if self.use_start_lib and game_state.get_turn_nr() < 21:  # check whether start move match
+        if self._use_start_lib and game_state.get_turn_nr() < 21:  # check whether start move match
             moves = self.start_tables.get_available_start_tables(game_state)
             if len(moves) > 0:
                 return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
@@ -209,17 +209,17 @@ class MonteCarlo:
         # Get the own symbol
         own_symbol = game_state.get_current_player()
         # Check whether to preprocess the available moves
-        if self.preprocessor is not None:
+        if self._preprocessor is not None:
             # Preprocess the available moves
-            self.preprocessor(game_state, self.preprocessor_parameter, self.heuristic)
+            self._preprocessor(game_state, self._preprocessor_parameter, self._heuristic)
 
         # Simulate big_n games
-        if not self.use_multiprocessing:
-            winning_statistics = MonteCarlo.play_n_random_games(own_symbol, game_state, self.big_n)
+        if not self._use_multiprocessing:
+            winning_statistics = MonteCarlo.play_n_random_games(own_symbol, game_state, self._big_n)
         else:
             number_of_processes = mp.cpu_count()
             pool = mp.Pool(processes=number_of_processes)
-            list_of_stats = [pool.apply_async(MonteCarlo.play_n_random_games, args=(own_symbol, game_state.deepcopy(), self.big_n // number_of_processes)) for _ in range(number_of_processes)]
+            list_of_stats = [pool.apply_async(MonteCarlo.play_n_random_games, args=(own_symbol, game_state.deepcopy(), self._big_n // number_of_processes)) for _ in range(number_of_processes)]
             winning_statistics = list_of_stats[0].get()
             for single_list in list_of_stats[1:]:
                 MonteCarlo.combine_statistic_dicts(winning_statistics, single_list.get())
