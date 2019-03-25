@@ -169,7 +169,8 @@ Der \mxZitat{Human Agent} bzw. menschliche Agent stellt eine Schnittstelle die e
 \\Neben dem Spielfeld bekommt der Nutzer dabei eine Liste aller für Ihn möglichen Züge dargestellt. Durch die Eingabe eines Zuges wird dieser im Spielmodell ausgeführt und der nächste Agent wird aufgerufen. Da das Ziel dieser Arbeit darin besteht eine künstliche Intelligenz zur Wahl der Züge zu entwickeln, soll an dieser Stelle nicht weiter auf diesen Agenten eingegangen sein.
 
 \subsection{Random}
-Der Spieler Random wählt aus der Liste der möglichen Züge zufällig einen Zug aus und gibt diesen an die Hauptfunktion zurück.
+Die Implementierung des Agenten \mxZitat{Random} befindet sich in der Datei \code{random.py}. Dieser Agent ist die einfachste Form der im Rahmen dieser Arbeit eingesetzen Strategien einer künstlichen Intelligenz. Ihr liegt die Idee zugrunde, dass der Agent einen zufälligen Zug aus der Menge der erlaubten Züge auswählt.
+\\In der mit der Arbeit entwickelten Implementierung ist dies derartig umgesetzt, dass der Agent die Liste der möglichen Züge aus dem Spielzustand abruft und einen zufälligen Index der Liste auswählt um dann den dort angegebenen Zug zu spielen.
 
 \subsection{Monte Carlo}
 Dieser Spieler verwendet den in Kapitel \ref{mc_algo} verwendeten Algorithmus um den Zug mit der höchsten Gewinnwahrscheinlichkeit auszuwählen. Dazu spielt der Spieler zufällig eine bei Spielstart eingestellte Anzahl an Spielen ab der aktuellen Spielsituation und berechnet daraus den Anteil der gewonnen Spiele je verfügbaren Zug. Den Zug mit der höchsten Gewinnwahrscheinlichkeit wird nun im \mxZitat{realer} Zug des Spielers ausgewählt.
