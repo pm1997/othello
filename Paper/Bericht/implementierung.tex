@@ -138,7 +138,7 @@ Die \mxZitat{Nijssen 2007 Heuristik} wurde aus \cite{nijssen_2007} übernommen. 
 Die \mxZitat{Stored Monte-Carlo-Heuristik} verwendet eine Datenbank. In dieser Datenbank werden die Anzahl der gespielten und gewonnenen Spielzüge gespeichert. 
 Da das Spielfeld symmetrisch ist, müssen nicht alle 64 Felder gespeichert werden, sondern nur 9 Felder. Die mittleren Felder sind initial schon gesetzt. Die neun unterschiedlichen Felder sind in der Grafik \ref{fig:sym1} farblich gekennzeichnet.
 \\\mxPicture{10cm}{symmetrie}{Symmetrie des Spielfeldes}{Symmetrie des Spielfeldes}{fig:sym1}{}
-\\Die Datenbank besteht aus 60 Zeilen und 9 Spalten. Die neun Spalten stellen o.g. Spielfelder dar. Jede Zelle in dieser Tabelle enthält ein Tripel. Die erste Komponente stellt die Anzahl der gewonnen Spiele des ersten Spielers dar, in welchem eine Zelle der Spielfeldkategorie zu in dieser Zugzahl gespielt wurde. 
+\\Die Datenbank besteht aus 60 Zeilen und 9 Spalten. Die neun Spalten stellen o.g. Spielfeldtypen ( \mxZitat{0} bis \mxZitat{8}) dar. Jede Zelle in dieser Tabelle enthält ein Tripel. Die erste Komponente stellt die Anzahl der gewonnen Spiele des ersten Spielers dar, in welchem eine Zelle der Spielfeldkategorie zu in dieser Zugzahl gespielt wurde. Die zweite Komponente speichert die Anzahl der Spiele, welche der zweite Spieler gewonnen hat. Die dritte Komponente gibt die Gesamtanzahl der gespielten Spiele dieser Spielkategorie wieder. Zwischen den drei Komponenten gibt es folgenden mathematischen Zusammenhang: $\mathtt{won\_games1} + \mathtt{won\_games2} \leq \mathtt{total\_played\_games}$
 
 
 \section{Start Tabellen}
