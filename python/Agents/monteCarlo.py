@@ -7,7 +7,6 @@ import sys
 import random
 import heuristics
 import multiprocessing as mp
-import database
 
 
 class MonteCarlo:
@@ -236,7 +235,6 @@ class MonteCarlo:
         # Select the move with the maximum probability of winning
         selected_move = max(self.move_probability.items(), key=operator.itemgetter(1))[0]
         # Return the selected move
-        database.db.store_database()
         return selected_move
 
     def get_move_probability(self, move):
