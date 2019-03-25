@@ -294,18 +294,33 @@ Das genaue Verhalten des Agenten kann durch die folgenden Paramter beeinflusst w
 \subsubsection{Die Präprozessoren}
 Nachfolgend wird kurz auf die Implementierung der in Kapitel \ref{mc_algo} beschriebenen Präprozessoren eingegangen.
 \paragraph{Der feste Selektivität Präprozessor}
+Die in \ref{lst:mc-prep-fixed} abgedruckte Funktion gibt die Implementierung des Präprozessors mit fester Selektivität an.
+\\Die Funktion erhält einen Spielzustand \code{game\_state}, den Parameter \code{n\_s} der Anzahl $N_{s}$ der Züge die den Präprozessor passieren und eine Heuristik \code{heuristic} die zur Bewertung der Spielzüge herangezogen wird. In der sich über die Zeilen 3 bis 5 erstreckenden Anweisungen wird eine nach der Bewertung des einzelnen Zuges gemäß der Heuristik sortierte Liste von Zügen erstellt. In Zeile 6 werden dann nur die ersten \code{n\_s} Züge im Spielzustand \code{game\_state} gesetzt.
+\begin{lstlisting}[caption = {Die Funktion \code{preprocess\_fixed\_slectivity}}, language = python, captionpos = t , numbers=left, label={lst:mc-prep-fixed}]
+	@staticmethod	    
+	def preprocess_fixed_selectivity(game_state: Othello, n_s, heuristic):
+    heuristic_values = sorted(
+        MonteCarlo.preprocess_get_heuristic_value(game_state, heuristic=heuristic).items(),
+            key=operator.itemgetter(1))
+    game_state.set_available_moves(heuristic_values[:n_s][0])
+\end{lstlisting}
 \paragraph{Der variable Selektivität Präprozessor}
+In \ref{lst:mc-prep-var} ist die Implementierung des Präprozessors mit variabler Selektivität angegeben.
+\\Wie der Präprozessor mit fester Selektivität erhält auch diese Funktion einen Spielzustand \code{game\_state} und eine Heuristik \code{heuristic}. Anders als bei dem oben beschriebenen Präprozessor wird hier jedoch ein Wert \code{p\_s} zur Beschreibung der maximalen prozentualen Abweichung $p_{s}$ vom Mittelwert der Wertigkeit der Züge übergeben.
+\\Für die Berechnung wid zunächst der Wert der Heuristik für alle Spielzüge berechnet (Zeile 3). Daraufhin wird in der Zeile 5 der Durchschnittliche Wert berechnet und mit der Anweisung in den zeilen 6 und 7 nur jene Züge im Spielzustand gesetzt, die einen Wert größer als $p_{s}$ multipliziert mit dem Durchschnittlichen Wert haben.
+\begin{lstlisting}[caption = {Die Funktion \code{preprocess\_variable\_slectivity}}, language = python, captionpos = t , numbers=left, label={lst:mc-prep-var}]
+	@staticmethod
+    def preprocess_variable_selectivity(game_state: Othello, p_s, heuristic):
+        heuristic_value_dict = MonteCarlo.preprocess_get_heuristic_value(game_state, heuristic=heuristic)
+        heuristic_values = [v for _, v in heuristic_value_dict.items()]
+        average_heuristic_value = sum(heuristic_values) / len(heuristic_values)
+        game_state.set_available_moves(
+            [m for m, v in heuristic_value_dict.items() if v >= p_s * average_heuristic_value])
+\end{lstlisting}
 \subsubsection{Die Funktion \code{get\_move}}
 Eine Funktion \code{get\_move} wird von allen Agenten bereitgestellt und in der \code{main-game.py} zur auswahl eines Zuges gerufen. Beschrieben wird der Zug durch ein Paar, welches die Koordinaten auf dem Spielbrett darstellt.
 \\Nachfolgend wird die in Listing \ref{lst:ab1} abgedruckte Funktion diskutiert:
 \vspace{0.5cm}
-\\In den Zeilen 3 bis 6 werden die Starttabellen verwendet, wenn diese in der init-Funktion ausgewählt wurden. Die Funktion \code{get\_available\_start\_tables} gibt eine Liste der möglichen Züge zurück (Z.4). Diese sind in der Form \mxZitat{a2} angegeben. Aus den verfügbaren Zügen wird zufällig ein Element ausgewählt \\(\code{moves[random.randrange(len(moves))]} Z.6) und dieses in ein Koordinatenpaar übersetzt \\(\code{translate\_move\_to\_pair} Z. 6). 
-\\Ist die Liste der verfügbaren Züge leer, oder die Nutzung der Starttabellen deaktiviert, wird der Quellcode ab der Zeile 8 ausgeführt. In den Zeilen 8 bis 18 werden Variablen implementiert und ggf. der Preprozessor (Z. 13f.) ausgeführt.
-\\Die in der Init-Funktion angegeben \code{big\_n} Spiele werden in der Schleife in den Zeilen 20 bis 26 durchgeführt.
-\code{simulated\_game} ist eine Kopie des aktuellen Spielzustandes (Z. 21). Auf dieser Kopie wird nun ein zufälliges Spiel durchgeführt und gibt das Paar \code{(first\_played\_move, won)} zurück (Z. 23). Das lokale Dictionary \code{winning\_statistics} (Z. 25f.) speichert diese Werte und summiert die Anzahl der gewonnen Spielen.
-Das Dictionary speichert für jeden Zug ein Paar, das die gewonnen Spiele und die Gesamtanzahl der Spiele darstellt.
-\\ Nach dem Spielen aller zufälligen Spiele wird die Gewinnwahrscheinlichkeit berechnet (Z. 29 - 31). Die Wahrscheinlichkeit wird in dem Klassendictionary \code{move\_probability} gespeichert (Z. 31).
-\\Abschließend wird das Maximum des Dictionary über die Wahrscheinlichkeiten ermittelt und zurückgegeben (Z. 33f.).
 
 \begin{lstlisting}[caption = {get\_move Funktion des Monte-Carlo Agenten}, language = python, captionpos = t , numbers=left, label={lst:ab1}]
     def get_move(self, game_state: Othello):
@@ -335,7 +350,6 @@ Das Dictionary speichert für jeden Zug ein Paar, das die gewonnen Spiele und di
             (games_won, times_played) = winning_statistics[single_move]
             self.move_probability[single_move] = games_won / times_played
         selected_move = max(self.move_probability.items(), key=operator.itemgetter(1))[0]
-        database.db.store_database()
         return selected_move
 \end{lstlisting}
 
