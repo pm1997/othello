@@ -126,7 +126,7 @@ Neben den zuvor detailliert besprochenen finden in der Implementierung noch die 
 \item Hilfsfunktionen in der Datei \code{util.py} werden dazu genutzt Werte vom Benutzer abzufragen.
 \end{enumerate}
 \section{Heuristiken}
-Wie im Abschnitt \ref{Heuristiken} besprochen werden für einige Algorithmen Funktionen zur Approximation des Wertes eines Spielzustandes benötigt. Im Rahmen dieser Arbeit wurden die folgenden beiden Heuristiken implementiert:
+Wie im Abschnitt \ref{Heuristiken} besprochen werden für einige Algorithmen Funktionen zur Approximation des Wertes eines Spielzustandes benötigt. Im Rahmen dieser Arbeit wurden die folgenden Heuristiken implementiert:
 \begin{enumerate}
 \item Nijssen 2007 Heuristik
 \item Stored Monte-Carlo-Heuristik
@@ -259,66 +259,62 @@ Die Implementierung des Agenten \mxZitat{Random} befindet sich in der Datei \cod
 \\In der mit der Arbeit entwickelten Implementierung ist dies derartig umgesetzt, dass der Agent die Liste der möglichen Züge aus dem Spielzustand abruft und einen zufälligen Index der Liste auswählt um dann den dort angegebenen Zug zu spielen.
 
 \subsection{Monte Carlo}
-Dieser Spieler verwendet den in Kapitel \ref{mc_algo} verwendeten Algorithmus um den Zug mit der höchsten Gewinnwahrscheinlichkeit auszuwählen. Dazu spielt der Spieler zufällig eine bei Spielstart eingestellte Anzahl an Spielen ab der aktuellen Spielsituation und berechnet daraus den Anteil der gewonnen Spiele je verfügbaren Zug. Den Zug mit der höchsten Gewinnwahrscheinlichkeit wird nun im \mxZitat{realer} Zug des Spielers ausgewählt.
-\subsubsection{Details zum Monte Carlo Spieler}
-In diesem Kapitel wird der Spieler Monte Carlo anhand des vorhandenen Quellcodes detailliert erklärt.
-\\Die Spielerklasse \mxZitat{PlayerMonteCarlo} ist in der Datei \mxZitat{python/Players/playerMonteCarlo.py} zu finden.
-Die zunächst wichtigsten Funktionen sind die Init-Funktion der Klasse und die Funktion \mxZitat{get\_move}.
-\paragraph{init-Funktion}
-In dem Konstruktor der Klasse \code{PlayerMonteCarlo} werden mehrere Benutzerabfragen durchgeführt und in der Klasse gespeichert. Folgende Werte werden ermittelt:
+Hinter diesem Agenten steht das im Kapitel \ref{mc_algo} erläuterte Prinzip, der zufällig gespielten Spiele zur Ermittlung des Spielzuges mit der höchsten Gewinnwahrscheinlichkeit. Dabei werden ausgehend von einem derzietigen Spielzustand $N$ Spiele simuliert in dem für beide Spieler der Agent \mxZitat{Random} verwendet wird. Dabei wird für den jeweils ersten simulierten Zug gespeichert wie oft dieser durchgeführt wurde und wie häufig dies in einer gewonnenen Simulation resultierte. In dem nicht simulierten Spiel wird dann jener Spielzug ausgeführt, bei dem der Quotient aus der Anzahl der nach spielen dieses Zuges gewonnen Spiele und der Anzahl der simulierten Spiele die mit diesem Zug begonnen wurden, am größten ist.
+\\Nachfolgend wird dieses Prinzip anhand des Quellcodes nochmals erläutert
+\subsubsection{Parameter}
+Das genaue Verhalten des Agenten kann durch die folgenden Paramter beeinflusst werden: 
 \begin{itemize}
-\item \code{big\_n}: Anzahl der zufällig gespielten Spiele je Zug
-\item \code{use\_start\_libs}: Bool'scher Wert ob Startbibliotheken verwendet werden sollen.
-\item \code{preprocessor}: Nummer des verwendeten Preprozessors. 0 entspricht der Deaktivierung der Option
-\item \code{preprocessor\_parameter}: Parameter des verwendeten Preprozessors
-\item \code{heuristic}: Wahl einer Heuristikfunktion
+\item \code{big\_n}: Die Anzahl $N$ der zufällig gespielten Spiele je Zug
+\item \code{use\_start\_libs}: Bool'scher Wert ob Startbibliotheken verwendet werden sollen
+\item \code{preprocessor}: Der verwendete Vorverarbeiter bzw. Präprozessor. Dabei stehen die folgenden bereits im Kapitel \ref{mc_algo} besprochenen Varianten zur Auswahl:
+\begin{itemize}
+    \item Der feste Selektivität Präprozessor
+    \item Der variable Selektivität Präprozessor
+    \item Kein Präprozessor
+\end{itemize}
+\item \code{preprocessor\_parameter}: Parameter des verwendeten Preprozessors. Je nach Auswahl des Präprozessors steht dieser Parameter für:
+\begin{itemize}
+    \item Die Anzahl der Züge die durch den Präprozessor gelangen
+    \item Die Prozentuale Abweichung vom Mittelwert der Wertigkeiten der Züge
+\end{itemize}
+\item \code{heuristic}: Eine der in \ref{heuristik1} beschriebenen. Wird im Präprozessor zur Bewertung von Spielzuständen herangezogen.
+\item \code{use\_multiprocessing}: Boolscher Wert der angibt ob die $N$ simulierten Spiele unter Verwendung mehrerer Prozesse durchgeführt werden sollen. Bei Systemen mit mehr als einem Prozessor können damit durch Parallelisierung Geschwindigkeitsvorteile erreicht werden. 
 \end{itemize}
 
-\paragraph{get\_move}
- \mxZitat{get\_move} ist eine Interface-Funktion, d.h. alle Spieler stellen eine Funktion \mxZitat{get\_move} bereit, die als Parameter einen Spielzustand (Klasse \code{Othello}) erwartet und einen \code{move} zurückgibt. Dieser besteht aus einem Paar, das die Koordinaten auf dem Spielfeld darstellt. In Listing \ref{lst:ab1} ist die Funktion abgebildet.
+\subsubsection{Die Präprozessoren}
+Nachfolgend wird kurz auf die Implementierung der in Kapitel \ref{mc_algo} beschriebenen Präprozessoren eingegangen.
+\paragraph{Der feste Selektivität Präprozessor}
+\paragraph{Der variable Selektivität Präprozessor}
+\subsubsection{Die Funktion \code{get\_move}}
+Eine Funktion \code{get\_move} wird von allen Agenten bereitgestellt und in der \code{main-game.py} zur auswahl eines Zuges gerufen. Beschrieben wird der Zug durch ein Paar, welches die Koordinaten auf dem Spielbrett darstellt.
+\\Nachfolgend wird die in Listing \ref{lst:ab1} abgedruckte Funktion diskutiert:
 \vspace{0.5cm}
-\\In den Zeilen 3 bis 6 werden die Starttabellen verwendet, wenn diese in der init-Funktion ausgewählt wurden. Die Funktion \code{get\_available\_start\_tables} gibt eine Liste der möglichen Züge zurück (Z.4). Diese sind in der Form \mxZitat{a2} angegeben. Aus den verfügbaren Zügen wird zufällig ein Element ausgewählt \\(\code{moves[random.randrange(len(moves))]} Z.6) und dieses in ein Koordinatenpaar übersetzt \\(\code{translate\_move\_to\_pair} Z. 6). 
-\\Ist die Liste der verfügbaren Züge leer, oder die Nutzung der Starttabellen deaktiviert, wird der Quellcode ab der Zeile 8 ausgeführt. In den Zeilen 8 bis 18 werden Variablen implementiert und ggf. der Preprozessor (Z. 13f.) ausgeführt.
-\\Die in der Init-Funktion angegeben \code{big\_n} Spiele werden in der Schleife in den Zeilen 20 bis 26 durchgeführt.
-\code{simulated\_game} ist eine Kopie des aktuellen Spielzustandes (Z. 21). Auf dieser Kopie wird nun ein zufälliges Spiel durchgeführt und gibt das Paar \code{(first\_played\_move, won)} zurück (Z. 23). Das lokale Dictionary \code{winning\_statistics} (Z. 25f.) speichert diese Werte und summiert die Anzahl der gewonnen Spielen.
-Das Dictionary speichert für jeden Zug ein Paar, das die gewonnen Spiele und die Gesamtanzahl der Spiele darstellt.
-\\ Nach dem Spielen aller zufälligen Spiele wird die Gewinnwahrscheinlichkeit berechnet (Z. 29 - 31). Die Wahrscheinlichkeit wird in dem Klassendictionary \code{move\_probability} gespeichert (Z. 31).
-\\Abschließend wird das Maximum des Dictionary über die Wahrscheinlichkeiten ermittelt und zurückgegeben (Z. 33f.).
 
-\begin{lstlisting}[caption = {get\_move Funktion des Alpha-Beta Spielers}, language = python, captionpos = t , numbers=left, label={lst:ab1}]
+\begin{lstlisting}[caption = {get\_move Funktion des Monte-Carlo Agenten}, language = python, captionpos = t , numbers=left, label={lst:ab1}]
     def get_move(self, game_state: Othello):
-
-        if self.use_start_lib and game_state.get_turn_nr() < 10:  # check whether start move match
+        if self.use_start_lib and game_state.get_turn_nr() < 21: 
             moves = self.start_tables.get_available_start_tables(game_state)
             if len(moves) > 0:
                 return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
-
-        winning_statistics = dict()
         self.move_probability.clear()
-
         own_symbol = game_state.get_current_player()
-
         if self.preprocessor is not None:
             self.preprocessor(game_state, self.preprocessor_parameter, self.heuristic)
-
-        possible_moves = game_state.get_available_moves()
-        for move in possible_moves:
-            winning_statistics[move] = (0, 1)  # set games played to 1 to avoid division by zero error
-
-        for i in range(self.big_n):
-            simulated_game = game_state.deepcopy()
-
-            first_played_move, won = self.play_random_game(own_symbol, simulated_game)
-
-            (won_games, times_played) = winning_statistics[first_played_move]
-            winning_statistics[first_played_move] = (won_games + won, times_played + 1)
-
-
+        if not self.use_multiprocessing:
+            winning_statistics = MonteCarlo.play_n_random_games(own_symbol, game_state, self.big_n)
+        else:
+            number_of_processes = mp.cpu_count()
+            pool = mp.Pool(processes=number_of_processes)
+            list_of_stats = [pool.apply_async(MonteCarlo.play_n_random_games, args=(own_symbol, game_state.deepcopy(), self.big_n // number_of_processes)) for _ in range(number_of_processes)]
+            winning_statistics = list_of_stats[0].get()
+            for single_list in list_of_stats[1:]:
+                MonteCarlo.combine_statistic_dicts(winning_statistics, single_list.get())
+            pool.close()
         for single_move in winning_statistics:
             (games_won, times_played) = winning_statistics[single_move]
             self.move_probability[single_move] = games_won / times_played
-
         selected_move = max(self.move_probability.items(), key=operator.itemgetter(1))[0]
+        database.db.store_database()
         return selected_move
 \end{lstlisting}
 
