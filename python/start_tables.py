@@ -44,9 +44,7 @@ class StartTables:
                     # if start sequence is finished and shorter than longest sequence the gab is filled with "i8" fields
                     if move != "i8" or move != "nan":  # i8 = invalid field
                         available_moves.append(move)
-                        break
-                    else:
-                        break
+                    break
                 turn += 1
         available_moves = list(dict.fromkeys(available_moves))
         if "nan" in available_moves:

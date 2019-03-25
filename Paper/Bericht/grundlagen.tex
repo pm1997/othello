@@ -262,6 +262,7 @@ Gibt die Heuristik im Falle eines Endzustandes den Wert der Utility Funktion zur
 \subsubsection{Vorwärtsabschneiden}
 Vorwärtsabschneiden (Forward Pruning) durchsucht nicht den kompletten \gtree , sondern durchsucht nur einen Teil. Eine Möglichkeit ist eine Strahlensuche, welche nur die \mxZitat{besten} Züge durchsucht (vgl. \cite{Russell.2016} S. 175). Die Züge mit einer geringen Erfolgswahrscheinlichkeit werden abgeschnitten und nicht bis zum Blattknoten evaluiert. Durch die Wahl des jeweiligen Zuges mit der höchsten Gewinnwahrscheinlichkeit können aber auch sehr gute bzw. schlechte Züge nicht berücksichtigt werden, wenn diese eine geringe Wahrscheinlichkeit besitzen. Durch das Abschneiden von Teilen des \gtree\ wird die Suchgeschwindigkeit deutlich erhöht. Der in dem \ot -Programm \mxZitat{Logistello} verwendete \mxZitat{Probcut} erzielt außerdem eine Gewinnwahrscheinlichkeit von 64\% gegenüber der ursprünglichen Version ohne Vorwärtsabschneiden (vgl. \cite{Russell.2016} S. 175).
 \subsubsection{Suche gegen Nachschlagen}
+\label{lookup}
 Viele Spiele kann man in 3 Haupt-Spielabschnitte einteilen:
 \begin{itemize}
 \item Eröffnungsphase
@@ -269,7 +270,7 @@ Viele Spiele kann man in 3 Haupt-Spielabschnitte einteilen:
 \item Endphase
 \end{itemize}
 In der Eröffnungsphase und in der Endphase gibt es im Vergleich zum Mittelspiel wenige Zugmöglichkeiten. Dadurch sinkt der Verzweigungsfaktor und die generelle Anzahl der Folgezustände. In diesen Phasen können die optimalen Spielzüge einfacher berechnet werden. Eine weitere Möglichkeit besteht aus dem Nachschlagen des \states\ aus einer Lookup-Tabelle.
-\\Dies ist sinnvoll, da gewöhnlicherweise sehr viel Literatur über die Spieleröffnung des jeweiligen Spiels existiert.% Auch über die Endzustände in der Schlussphase des Spiels findet sich Literatur. 
+\\Dies ist sinnvoll, da gewöhnlicherweise sehr viel Literatur über die Spieleröffnung des jeweiligen Spiels existiert. % Auch über die Endzustände in der Schlussphase des Spiels findet sich Literatur. 
 Das Mittelspiel jedoch hat zu viele Zugmöglichkeiten, um eine Tabelle der möglichen Spielzüge bis zum Spielende aufstellen zu können. In dem Kapitel \ref{othello-eroff} werden die bekanntesten Eröffnungsstrategien aufgelistet.
 \\Viele Spielstrategien wie beispielsweise die MiniMax-Strategie setzen den kompletten oder wenigstens einen großen Teil des Spielbaums voraus. Dieser kann entweder berechnet werden oder aus einer Lookup-Tabelle gelesen werden. Je nach Verzweigungsfaktor der einzelnen Spielzüge kann diese allerdings sehr groß sein. Selbst im späten Spielverlauf gibt es verschiedene Spiele, welche einen großen Spielbaum besitzen.
 \\Beispielsweise existieren für das Endspiel in Schach mit einem König, Läufer und Springer gegen einen König 3.494.568 mögliche Positionen (vgl. \cite{Russell.2016} S.176).

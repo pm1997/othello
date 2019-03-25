@@ -32,7 +32,7 @@ In Listing \ref{lst:class-vars-othello} sind alle Klassenvariablen, sowie deren 
 \item \code{\_current\_player}: Speichert den Spieler, der im modellierten Spielzustand an der Reihe ist.
 \item \code{\_last\_turn\_passed} wird verwendet um zu speichern ob der vorherige Spieler  passen musste. Dadurch kann das Spiel sobald zwei Spieler unmittelbar nacheinander passen müssen beendet werden.
 \item \code{\_game\_is\_over} wird auf \code{True} gesetzt sobald das Spiel beendet ist
-\item \code{\_fringe}] In \code{\_fringe} werden alle Felder des Spielfeldes gespeichert die in eine Richtung unmittelbar neben einem bereits besetzten Feld liegen. Durch die Mitführung dieser Information muss zur Berechnung der erlaubten Züge nicht jedes mal über das Spielfeld iteriert werden um zunächst die infrage kommenden Felder zu ermitteln.
+\item \code{\_fringe} In \code{\_fringe} werden alle Felder des Spielfeldes gespeichert die in eine Richtung unmittelbar neben einem bereits besetzten Feld liegen. Durch die Mitführung dieser Information muss zur Berechnung der erlaubten Züge nicht jedes mal über das Spielfeld iteriert werden um zunächst die infrage kommenden Felder zu ermitteln.
 \item \code{\_turning\_stones}: Enthält als Schlüssel alle erlaubten Züge und als Wert jeweils eine Liste jener Spielsteine die durch ausführen des Zuges umgedreht werden. Da zur Ermittlung der erlaubten Züge diese Information bereits berechnet werden muss wird sie in Form des Dictionarys vorgehalten um diese an anderer Stelle nicht erneut berechnen zu müssen.
 \item \code{\_taken\_moves}: Speichert alle ausgeführten Züge die erforderlich waren um den modellierten Spielzustand zu erreichen, da einige Algorithmen diese Information benötigen.
 \item \code{\_turn\_nr}: Speichert die Nummer des aktuellen Spielzuges, da die verwendete Strategie bei einigen Algorithmen davon abhängt, wie weit das Spiel schon fortgeschritten ist.
@@ -130,8 +130,9 @@ Wie im Abschnitt \ref{Heuristiken} besprochen werden für einige Algorithmen Fun
 \begin{enumerate}
 \item Nijssen 2007 Heuristik
 \item Stored Monte-Carlo-Heuristik
+\item Cowthello Heuristik
 \end{enumerate}
-Die Implementierung beider Heuristiken befinden sich in der Datei \code{heuristics.py}
+Die Implementierung aller Heuristiken befinden sich in der Datei \code{heuristics.py}
 \subsection{Nijssen 2007 Heuristik}
 Die \mxZitat{Nijssen 2007 Heuristik} wurde aus \cite{nijssen_2007} übernommen. Ihr liegt die im Kapitel \ref{othello-chapter} erläuterte Idee zugrunde, die einzelnen Spielfelder in Kategorien einzuteilen und jeder Kategorie einen speziellen Wert zuzuweisen. Die Bewertung des Spielzustandes $s$ aus Sicht eines Spielers $\mathtt{player}$ ergibt sich dann nach der folgenden Formel: $\mathtt{heuristic}(\mathtt{player}, S) = \sum\limits_{f \in \mathtt{domain}(\mathtt{F}(s))}  w_{f} * b_{f}$ wobei $F(s)$ eine Funktion ist, die für das Spielfeld des Zustands $s$ eine Relation zurückgibt die für jedes Feld angibt durch welchen Spieler es besetzt ist oder ob es leer ist, $w_{f}$ für das dem Feld zugeordnete Gewicht und $b_{f} = \begin{cases} 1 \mathtt{,\ wenn\ F}(s)[f] = \mathtt{player} \\ -1 \mathtt{,\ wenn\ F}(s)[f] = \mathtt{other(player)} \\ 0 \mathtt{,\ sonst} \end{cases}$
 \\Für die Gewichte $b_{f}$ der im Kapitel \ref{othello-chapter} eingeführten Kategorien vergibt Nijssen die folgenden Gewichte:
@@ -155,9 +156,9 @@ Die Datenbank speichert zu jeder Zugnummer die Gewinnwahrscheinlichkeiten der Sp
 \\Durch unentschiedene Spiele kann die Gesamtanzahl der Spiele größer als die Summe der gewonnen Spiele der zwei Spieler sein.
 In Abbildung \ref{fig:db1} ist der Initialzustand der Datenbank dargestellt (vgl. auch Abbildung \ref{fig:sym1} bzgl. der Feldkategorien). Die Startwerte der Tupel sind jeweils \mxZitat{(0, 0, 0)}, da initial noch keine Spiele gespeichert sind.
 \\\mxPicture{15cm}{db2}{Ausschnitt des Initialzustandes der Datenbank}{Ausschnitt des Initialzustandes der Datenbank}{fig:db1}{}
+
 \paragraph{Befüllen der Datenbank}
 \label{train}
-
 Nachdem die Datenbank im vorherigen Kapitel initialisiert erstellt wurde, wird diese nun mit Spieldaten aus zufällig gespielten Spielen befüllt. In Listing \ref{lst:train1} ist das Spielen eines zufälligen Spieles und den Aufruf der Funktion \code{update\_fields\_stats\_for\_single\_game} abgebildet. Zunächst wird ein Othello-Spiel initialisiert (Z. 1f.). Durch die Nutzung des \mxZitat{Random}-Agenten wird ein komplettes Spiel durchgeführt (Z. 3f.). Anschließend wird der Gewinner ermittelt (Z. 5) und die Zugreihenfolge ermittelt (Z. 6). Die Funktion \code{update\_fields\_stats\_for\_single\_game} verwendet diese beiden Parameter um die Datenbank zu aktualisieren. Die Funktion wird in Listing \ref{lst:train2} abgebildet.
 
 \begin{lstlisting}[caption = {Befüllen der Datenbank 1}, language = python, captionpos = t , numbers=left, label={lst:train1}]
@@ -169,6 +170,8 @@ winner = g.get_winner()
 moves = g.get_taken_mv()
 self.update_fields_stats_for_single_game(moves, winner)
 \end{lstlisting}
+In der Funktion \code{update\_fields\_stats\_for\_single\_game} (Listing \ref{lst:train2} Z. 9-12) wird die Liste der Züge in einzelne Züge aufgeteilt (Z. 10), welche anschließend jeweils eine Spalte in einer Datenbankzeile aktualisieren. Dazu werden die Züge, beispielsweise \mxZitat{a1}, in Zeile 11 in eine Feldkategorie umgerechnet (im Beispiel \mxZitat{0}) und ebenfalls der Methode \code{update\_field\_stat} übergeben.
+\\Diese Methode liest die Werte der durch Zugnummer und Feldkategorie festgelegte Zelle aus (Z.2). Je nachdem welcher Spieler dieses Spiel gewonnen hat, wird die Zahl der gewonnenen Spiele des ersten, zweiten oder keinem Spieler um eins erhöht (Z. 3-6). Abschließend wird die Zahl der insgesamt durchgeführten Spiele inkrementiert (Z.7 dritte Komponente) und in die Datenbank zurückgeschrieben (Z.7).
 
 \begin{lstlisting}[caption = {Befüllen der Datenbank 2}, language = python, captionpos = t , numbers=left, label={lst:train2}]
 	def update_field_stat(self, turn_nr, field_type, winner):
@@ -184,13 +187,57 @@ self.update_fields_stats_for_single_game(moves, winner)
 			position = self.translate_position_to_database(moves[turn_nr])
 			self.update_field_stat(turn_nr, position, winner)
 \end{lstlisting}
-
+Die Datenbank wurde mit 140.000 Spielen trainiert, um statistische Abweichungen zu minimieren.
+\\Zur Auswertung der Datenbank wurde die Klasse \code{Analyse} in der Datei \code{analyse\_database.py} erstellt. Diese liest die Datenbank aus und liefert eine farbige Ansicht der Gewinnwahrscheinlichkeiten eines Spielers jeweils pro Zug auf dem Terminal. Neben dem dargestellten Spielbrett wird auch das Minimum, das Maximum, der Durchschnittswert und die Standardabweichung des dargestellten Spielbrettes berechnet.
 \paragraph{Heuristik}
 \label{heuristik1}
+Mithilfe der o.g. Datenbank wird eine Heuristik implementiert. Die Methode \code{heuristic} ist in Listing \ref{lst:heuristic2} abgebildet. Diese ermittelt die verfügbaren Zugmöglichkeiten und die aktuelle Zugnummer (Z. 2f.). Für jede Zugmöglichkeit wird die Gewinnwahrscheinlichkeit für den übergebenen Spieler in ein Dictionary gespeichert (Z. 6f.). Aus diesem Dictionary wird die höchste Wahrscheinlichkeit ermittelt und zurückgegeben (Z. 9f.).
+\begin{lstlisting}[caption = {Stored Monte-Carlo-Heuristik Funktion}, language = python, captionpos = t , numbers=left, label={lst:heuristic2}]
+def heuristic(current_player, game_state: Othello):
+	moves = game_state.get_available_moves()
+	turn_nr = game_state.get_turn_nr()
+	move_probability = dict()
+
+	for move in moves:
+		move_probability[move] = database.db.get_likelihood(move, turn_nr, current_player)
+
+	selected_move = max(move_probability.items(), key=operator.itemgetter(1))[0]
+ 	return move_probability[selected_move]
+\end{lstlisting}
+
+\subsection{Cowthello Heuristik}
+Die \mxZitat{Cowthello Heuristik} wurde aus \cite{cow1} übernommen. Ihr liegt ebenfalls der in Kapitel \ref{othello-chapter} erläuterte Idee zugrunde, die einzelnen Spielfelder in Kategorien einzuteilen und jeder Kategorie einen speziellen Wert zuzuweisen. Die Heuristik unterscheidet sich von der \mxZitat{Nijssen 2007 Heuristik} nur in der genaueren Definition der Feldkategorien und unterschiedliche Gewichtungen dieser Felder.
+Die Gewichte der einzelnen Felder sind in Abbildung dargestellt. Die Unterschiede zur \mxZitat{Nijssen 2007 Heuristik} bestehen in der detaillierteren Gewichtung beispielsweise der Zentralfelder (\mxZitat{1}, \mxZitat{5} oder \mxZitat{50}) im Gegensatz zu \mxZitat{2}. Die restliche Implementierung ist identisch zur \mxZitat{Nijssen 2007 Heuristik}.
+\\\mxPicture{10cm}{cow1}{Gewichtung der einzelnen Spielfelder}{Gewichtung der einzelnen Spielfelder}{fig:cow1}{}
 
 \section{Start Tabellen}
-Für viele Spiele, beispielsweise für Schach, existieren Starttabellen, welche die \mxZitat{besten} Eröffnungszüge speichern. Für Othello existieren zwar mehrere Spieltabellen, aber nur wenige Eröffnungsspiele. In der Implementierung werden die 77 Eröffnungszüge von Robert Gatliff \cite{open1} verwendet. Diese bestehen jeweils aus einer Zugreihenfolge, z.B. \code{c4, c3, d3, c5, b2}. 
-\\Diese Züge werden im Spiel mit dem aktuellen Spielzustand verglichen. Wenn eine oder mehrere gespeicherte Züge mit dem aktuellen Spielzustand übereinstimmen, wir ein Zug aus den verfügbaren Zügen ausgewählt und gespielt.
+In dem Grundlagenkapitel \ref{lookup} wurden die Vor- und Nachteile von Suche vs. Nachschlagen beschrieben. In diesem Kapitel wird die Implementierung der Starttabellen mit Eröffnungszügen erklärt. Im Folgenden werden Spieltabellen und Startdatenbank synonym verwendet, da diese Tabellen als Matrix in einer Datenbank gespeichert werden.
+\\Für viele Spiele, beispielsweise für Schach, existieren Starttabellen, welche die \mxZitat{besten} Eröffnungszüge speichern. Für Othello existieren zwar mehrere Spieltabellen, aber nur wenige Eröffnungsspiele. In der Implementierung werden die 77 Eröffnungszüge von Robert Gatliff \cite{open1} verwendet. Diese bestehen jeweils aus einer Zugreihenfolge, z.B. \code{c4, c3, d3, c5, b2}. 
+\\Diese Züge werden im Spiel mit dem aktuellen Spielzustand verglichen. Wenn eine oder mehrere gespeicherte Züge mit dem aktuellen Spielzustand übereinstimmen, wir ein Zug aus den verfügbaren Zügen ausgewählt und gespielt. Die Funktion \code{get\_available\_start\_tables} ist in Listing \ref{lst:start2} abgebildet.
+\begin{lstlisting}[caption = {Befüllen der Datenbank 2}, language = python, captionpos = t , numbers=left, label={lst:start2}]
+def get_available_start_tables(self, game: Othello):
+	if len(self._start_tables) == 0:
+		self._init_start_tables()
+	turn_nr = game.get_turn_nr()
+	available_moves = []
+	taken_mv = game.get_taken_mvs_text()
+	for game in self._start_tables:
+		turn = 0
+		for move in game:
+			if turn < turn_nr:
+				if taken_mv[turn] != move:
+					break
+			else:  # turn == turn_nr
+				if move != "i8" or move != "nan":  # invalid field
+					available_moves.append(move)
+				break
+			turn += 1
+	available_moves = list(dict.fromkeys(available_moves))
+	if "nan" in available_moves:
+		available_moves.remove("nan")
+	return available_moves
+\end{lstlisting}
+Beim ersten Aufrufen der Starttabellen, wird die Datenbank initialisiert (Z. 2f.). Ab Zeile sieben werden alle Zeilen der Datenbank mit der aktuellen Zugreihenfolge des Spiels verglichen (Z. 9ff.). Wenn ein Zug in der bestehenden Zugreihenfolge abweichend von dem aktuellen Eintrag der Startdatenbank ist (Z. 11f.), wird der weitere Vergleich mit diesem Eintrag abgebrochen und mit dem folgenden Eintrag fortgefahren.
 \\Da das Spielbrett symmetrisch zum Mittelpunkt ist, wurden die Eröffnungszüge gespiegelt. Dadurch wurde die Datenbank auf 308 Züge erweitert. Diese ist in der Datei \code{start\_moves.csv} als CSV gespeichert.
 \\Die Agenten \mxZitat{Monte Carlo} und \mxZitat{Alpha-Beta Pruning} verwenden in der Standardeinstellung Starttabellen. Wenn beide Agenten gegeneinander spielen, werden die ersten Spielzüge beider Spieler sehr stark beschleunigt. Die Agenten müssen keine Züge berechnen, sondern können, bei verfügbaren Eröffnungszügen, durch das Nachschlagen in der Datenbank und die Auswahl eines Spielzuges sehr viel Spielzeit einsparen. Erst wenn die Datenbank keine passende Zugmöglichkeit mehr enthält, starten die Agenten die Berechnung des besten Zuges.
 \section{Agenten}
