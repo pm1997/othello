@@ -133,7 +133,15 @@ Wie im Abschnitt \ref{Heuristiken} besprochen werden für einige Algorithmen Fun
 \end{enumerate}
 Die Implementierung beider Heuristiken befinden sich in der Datei \code{heuristics.py}
 \subsection{Nijssen 2007 Heuristik}
-Die \mxZitat{Nijssen 2007 Heuristik} wurde aus \cite{nijssen_2007} übernommen. Ihr liegt die im \ref{othello-chapter} erläuterte Idee zugrunde, die einzelnen Spielfelder in Kategorien einzuteilen und jeder Kategorie einen speziellen Wert zuzuweisen. Die Bewertung des Spielzustandes $S$ aus Sicht eines Spielers $\mathtt{player}$ ergibt sich dann nach der folgenden Formel: $\mathtt{heuristic}(\mathtt{player}, S) = \sum\limits_{f \in F}  w_{f} * b_{f}$ wobei $F$ für die Menge aller Felder des Spielzustandes S, $w_{f}$ für das dem Feld zugeordnete Gewicht und $b_{f} = \begin{cases} 1 \mathtt{,\ wenn\ player} = \mathtt{s}(f) \\ -1 \mathtt{,\ sonst} \end{cases} \ \mathtt{mit\ s}(f) $
+Die \mxZitat{Nijssen 2007 Heuristik} wurde aus \cite{nijssen_2007} übernommen. Ihr liegt die im Kapitel \ref{othello-chapter} erläuterte Idee zugrunde, die einzelnen Spielfelder in Kategorien einzuteilen und jeder Kategorie einen speziellen Wert zuzuweisen. Die Bewertung des Spielzustandes $s$ aus Sicht eines Spielers $\mathtt{player}$ ergibt sich dann nach der folgenden Formel: $\mathtt{heuristic}(\mathtt{player}, S) = \sum\limits_{f \in \mathtt{domain}(\mathtt{F}(s))}  w_{f} * b_{f}$ wobei $F(s)$ eine Funktion ist, die für das Spielfeld des Zustands $s$ eine Relation zurückgibt die für jedes Feld angibt durch welchen Spieler es besetzt ist oder ob es leer ist, $w_{f}$ für das dem Feld zugeordnete Gewicht und $b_{f} = \begin{cases} 1 \mathtt{,\ wenn\ F}(s)[f] = \mathtt{player} \\ -1 \mathtt{,\ wenn\ F}(s)[f] = \mathtt{other(player)} \\ 0 \mathtt{,\ sonst} \end{cases}$
+\\Für die Gewichte $b_{f}$ der im Kapitel \ref{othello-chapter} eingeführten Kategorien vergibt Nijssen die folgenden Gewichte:
+\begin{enumerate}
+\item \code{Eck-Felder}: $+5$
+\item \code{X-Felder}: $-2$
+\item \code{C-Felder}: $-1$
+\item \code{Zentral-Felder}: $+2$
+\item \code{Andere-Felder}: $+1$
+\end{enumerate}
 \subsection{Stored Monte-Carlo-Heuristik}
 Die \mxZitat{Stored Monte-Carlo-Heuristik} verwendet eine Datenbank. In dieser Datenbank werden die Anzahl der gespielten und gewonnenen Spielzüge gespeichert. 
 Da das Spielfeld symmetrisch ist, müssen nicht alle 64 Felder gespeichert werden, sondern nur 9 Felder. Die mittleren Felder sind initial schon gesetzt. Die neun unterschiedlichen Felder sind in der Grafik \ref{fig:sym1} farblich gekennzeichnet.
