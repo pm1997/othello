@@ -324,14 +324,19 @@ Eine Funktion \code{get\_move} wird von allen Agenten bereitgestellt und in der 
 \\Nachfolgend wird die in Listing \ref{lst:ab1} abgedruckte Funktion diskutiert:
 \vspace{0.5cm}
 Als Parameter erhält die Fuktion den Spielzustand \code{game\state}, zu dem die Entscheidung über den nächsten Zug getroffen werden soll. In Zeile 2 wird nun überprüft, ob die Verwendung der Starttabellen aktiviert ist und zusätzlich in dem aktuellen Spiel weniger als 21 Züge gespielt wurden. Die zweite Komponente der \code{if}-Abfrage erfolgt, da die Startbibliothek maximal Strategien bis zum 20-ten Zug enthält.
-\\Ist dies der Fall so werden in Zeile 3 alle gemäß der Startbibliothek in Frage kommenden Züge ermittelt. Steht mindestens ein Zug zur Auswal (Z. 4) so wird dieser gespielt. 
+\\Ist dies der Fall so werden in Zeile 3 alle gemäß der Startbibliothek in Frage kommenden Züge ermittelt. Steht mindestens ein Zug zur Auswal (Z. 4) so wird dieser gespielt. Nun werden die im vorherigen Zug ermittelten Wahrscheinlichekiten gelöscht(Z. 6) und das Symbol, welches zur Repräsentation des eigenen Spielers verwendet wird zwischengespeichert (Z.6)
+\\Ist die Option zur Verwendung eines Präprozessors aktiviert wird die Abfrage in Zeile 8 positiv ausgewertet. In diesem Fall wird der selektierte Präprozessor aufgerufen (Z. 9). Danach wird ermittelt ob die Option zur verwendung mehrer Prozesse aktiviert ist (Z. 10). Ist dies nicht der Fall, so werden \code{big\_n} zufällige Spiele gespielt (Z. 11). Die dazu aufgerufene Hilfsfunktion gibt ein Object des Typs \mxZitat{Dictionary} zurück. Dieses enthält für jeden möglichen Zug die Anzahl der gewonnen Spiele wenn dieser Zug zuerst gespielt wurde und die Gesamtanzahl von Spielen.\\
+Ist die option zur Verwendung mehrere Prozesse aktiviert, so wird der \code{else}-Zweig in den Zeilen 12 bis 20 ausgeführt:
+\\Dazu wird zunächst die Anzahl der Verfügbaren Prozessorkerne ermittelt (Z. 13). Im weiteren Verlauf werden entsprechend viele Prozesse verwendet. So können alle verfügbaren Prozessorkerne genutzt werden, ohne einen zu großen Verwaltungsaufwand für die Prozesse zu generieren. In Zeile 14 wird dann ein entsprechender Pool von Prozessen angelegt und durch die Anweisung der Zeilen 15 und 16 spezifiziert, dass mittels dieser Prozesse so häufig wie Prozesse vorhanden sind asynchron jeweils \code{big\_n} geteilt durch die Anzahl der Prozesse zufällige Spiele simuliert werden. Da die entsprechende Funktion eine Ganzzahl erwartet, kommt an dieser Stelle die Ganzzahldivison \code{//} zum Einsatz. Dadurch ergibt die Summe aller durchgeführten Simulationen ggf. nicht \code{big\_n}; bei entsprechend großen Werten kann dies jedoch vernachlässigt werden.
+\\Da die Spiele asynchron simuliert werden muss die Berechnung zunächst durch Aufruf der Funktion \code{get} an jedem Listenelement angestoßen werden. Für das erste Element geschieht dies in Zeile 17. Für die weiteren Elemente erfolgt dies in der Schleife zur Zusammenführung der Ergebnisse. In Zeile 20 werden dann alle Prozesse wieder geschlossen.
+\\Nun muss anhand der Daten zu gewonnenen und insgesamt gespielten Spiele für jeden Zug die Gewinnwahrscheinlichkeit berechnet werden. Dies erfolgt in den Zeilen 21 bis 23 indem der Quotinet aus den beiden Werten gebildet wird (Z. 23)
+\\Nun wird jener Zugmit der größten Gewinnwahrscheinlichkeit ermittelt (Z. 24) und and die aufrufende Funktion zurückgegeben (Z. 25).      
 \begin{lstlisting}[caption = {get\_move Funktion des Monte-Carlo Agenten}, language = python, captionpos = t , numbers=left, label={lst:ab1}]
     def get_move(self, game_state: Othello):
         if self.use_start_lib and game_state.get_turn_nr() < 21: 
             moves = self.start_tables.get_available_moves_of_start_tables(game_state)
             if len(moves) > 0:
                 return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
-        winning_statistics = dict()
         self.move_probability.clear()
         own_symbol = game_state.get_current_player()
         if self.preprocessor is not None:
@@ -357,12 +362,8 @@ Als Parameter erhält die Fuktion den Spielzustand \code{game\state}, zu dem die
 \subsection{Alpha-Beta Pruning}
 Der Agent \mxZitat{Alpha-Beta Pruning} basiert auf dem in Kapitel \ref{ab-pruning} beschriebenen Prinzip des Alpha-Beta Abschneidens. Wie bereits erläutert handelt es sich dabei um eine Tiefensuche, bei der weniger vielversprechende Zweige nicht bis zum Ende ausgewertet werden.
 \\Wie in \ref{ab-depth-limited} erläutert wird dabei ab einer gewissen Suchtiefe eine Heuristik zur Bewertung eines Spielzustandes herangezogen. Dadurch, muss nicht der komplette Baum bis zum Ende ausgewertet werden.  
-
-\subsubsection{Details zum Spieler Alpha-Beta Pruning}
-In diesem Kapitel wird der Spieler \mxZitat{Alpha-Beta Pruning} anhand des vorhandenen Quellcodes detailliert erklärt.
-\\Die Spielerklasse \mxZitat{alphaBetaPruning} ist in der Datei \mxZitat{python/Agents/alphaBetaPruning.py} zu finden.
-Die zunächst wichtigsten Funktionen sind die Init-Funktion der Klasse und die Funktion \mxZitat{get\_move}.
-\paragraph{Init-Funktion}
+\\Nachfolgend wird die in der Datei \code{alphaBetaPruning.py} bedindliche Implementierung besprochen.
+\subsubsection{Parameter}
 In dem Konstruktor der Klasse \code{AlphaBetaPruning} können folgende Klassenvariablen gesetzt werden:
 \begin{itemize}
 \item \code{\_search\_depth}: Tiefe der Alpha-Beta Suche
@@ -372,47 +373,9 @@ In dem Konstruktor der Klasse \code{AlphaBetaPruning} können folgende Klassenva
 \item \code{\_use\_monte\_carlo}: Verwende statt der Heuristik Monte Carlo in der Tiefe \code{search\_depth} + 1
 \item \code{\_ml\_count}: Anzahl der zufällig gespielten Spiele wenn Machine Learning oder Monte Carlo verwendet wird.
 \end{itemize}
+\subsubsection{Die Funktion \code{value}}
+\subsubsection{Die Funktion \code{get\_move}}
 
-\paragraph{get\_move}
-In dem Listing \ref{lst:ab2} ist die \code{get\_move} Funktion des Alpha-Beta Pruning Spielers abgebildet.
-Zunächst wird ebenfalls geprüft, ob die Starttabellen verwendet werden sollen (Z. 3 - 6).
-\\Ist keine passende Starttabelle verfügbar, wird ab Zeile 8 Alpha-Beta Abschneiden durchgeführt.
-Dies bedeutet,dass die Annahme getroffen wurde, dass jeder Spieler stets den besten Zug für sich, aber zeitgleich den schlecht möglichsten Zug für den Gegner auswählt.
-\\Der Algorithmus führt dadurch eine eingeschränkte Breitensuche bis zu einer bestimmten Tiefe durch.
-Anschließend wird ein Wert ermittelt, der angibt, wie \mxZitat{gut} der gewählte Zug ist.
-Diese Funktion \code{get\_value} existiert in drei unterschiedlichen Varianten.
-Die erste Variante ist \code{value()} (Z. 19), welche eine Heuristik zur Berechnung des Wertes verwendet.  
-Die zweite Variante ist \code{value\_ml()} (Z. 14), welche ab diesem Spielzustand das Spiel mit dem Machine Learning Algorithmus spielt und die Gewinnwahrscheinlichkeit des besten Zuges zurückgibt.
-Die dritte Variante ist \code{value\_monte\_carlo()} (Z. 16), welche ab diesem Spielzustand das Spiel mit dem Monte Carlo Algorithmus spielt und die Gewinnwahrscheinlichkeit des besten Zuges zurückgibt.
 \begin{lstlisting}[caption = {get\_move Funktion des Alpha-Beta Spielers}, language = python, captionpos = t , numbers=left, label={lst:ab2}]
-    def get_move(self, game_state: Othello):
-
-        if self.use_start_lib and game_state.get_turn_nr() < 10:  # check whether start move match
-            moves = self.start_tables.get_available_moves_of_start_tables(game_state)
-            if len(moves) > 0:
-                return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
-        
-        best_moves = dict()
-        for move in game_state.get_available_moves():
-            next_state = game_state.deepcopy()
-            next_state.play_position(move)
-
-            if self.use_ml:
-                result = -PlayerAlphaBetaPruning.value_ml(next_state, 
-                				self.search_depth - 1, ml_count=self.ml_count)
-            elif self.use_monte_carlo:
-                result = -PlayerAlphaBetaPruning.value_monte_carlo(next_state, 
-                				self.search_depth - 1, self.heuristic, mc_count=self.ml_count)
-            else:
-                result = -PlayerAlphaBetaPruning.value(next_state, self.search_depth - 1, self.heuristic)
-
-            if result not in best_moves.keys():
-                best_moves[result] = []
-            best_moves[result].append(move)
-
-        best_move = max(best_moves.keys())
-        return best_moves[best_move][random.randrange(len(best_moves[best_move]))]
+    
 \end{lstlisting}
-
-\paragraph{Kombination des Alpha-Beta Pruning Agenten mit weiteren Agenten}
-\label{ab_comb}
