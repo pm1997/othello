@@ -195,7 +195,7 @@ class Othello:
     def utility(self, player):
         """
         Returns:
-          1: if the give player is the winner
+          1: if the given player is the winner
           0: if it is a tie
          -1: If the given player lost
         """
