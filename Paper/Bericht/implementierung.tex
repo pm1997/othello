@@ -364,18 +364,58 @@ Der Agent \mxZitat{Alpha-Beta Pruning} basiert auf dem in Kapitel \ref{ab-prunin
 \\Wie in \ref{ab-depth-limited} erläutert wird dabei ab einer gewissen Suchtiefe eine Heuristik zur Bewertung eines Spielzustandes herangezogen. Dadurch, muss nicht der komplette Baum bis zum Ende ausgewertet werden.  
 \\Nachfolgend wird die in der Datei \code{alphaBetaPruning.py} bedindliche Implementierung besprochen.
 \subsubsection{Parameter}
-In dem Konstruktor der Klasse \code{AlphaBetaPruning} können folgende Klassenvariablen gesetzt werden:
+Auch das detaillierte Verhalten des Agenten \mxZitat{Alpha-Beta Pruning} kann durch verschiedene Parameter beeinflusst werden. Sie lauten:
 \begin{itemize}
-\item \code{\_search\_depth}: Tiefe der Alpha-Beta Suche
-\item \code{\_use\_start\_libs}: Bool'scher Wert ob Startbibliotheken verwendet werden sollen.
-\item \code{\_heuristic}: Nummer der verwendeten Heuristik
-\item \code{\_use\_ml}: Verwende statt der Heuristik Machine Learning in der Tiefe \code{search\_depth} + 1
-\item \code{\_use\_monte\_carlo}: Verwende statt der Heuristik Monte Carlo in der Tiefe \code{search\_depth} + 1
-\item \code{\_ml\_count}: Anzahl der zufällig gespielten Spiele wenn Machine Learning oder Monte Carlo verwendet wird.
+\item \code{\_use\_start\_libs}: Bool'scher Wert der angibt ob Startbibliotheken verwendet werden sollen.
+\item \code{\_search\_depth}: Gibt die Tiefe an, ab der einzelne Zweige nicht weiter verfolgt werden und stattdessen die Heuristik zur Zustandsbewertung verwendet wird.
+\item \code{\_heuristic}: Eine der in Kapitel \ref{Heuristiken} beschriebenen Heuristiken.
+\item \code{\_use\_monte\_carlo}: Bool'scher Wert der angibt ob in der Tiefe \code{search\_depth} + 1 statt der Heuristik das Prinzip des Monte Carlo Agentens zur Bewertung der Züge verwendet werden soll.
+\item \code{\_mc\_count}: Anzahl der simuliert Spiele wenn das Monte Carlo Prinzip zur Bewertung des Zustandes verwendet wird.
 \end{itemize}
 \subsubsection{Die Funktion \code{value}}
+Die in Listing \ref{lst:ab-value} abgedruckte Funktion \code{value} entspricht im wesentlichen der in Listing \ref{lst:abprun} abgedruckten und in \ref{ab-basics-impl} besprochenen \mxZitat{value}-Funktion des Alpha-Beta Abschneiden Algorithmus.
+\\Hier soll einzig auf den sich unterscheidenden Basisfall (Zeile 3-6) eingegangen werden. Ist ein Endzustand erreicht, so ist das Spiel beendet und die Abfrage in Zeile 3 wird positiv ausgewertet. In diesem Fall wird der Wert der \code{utility}-Funktion für den aktuellen Spieler zurück gegeben (Z. 4). Um das Gewinnen bzw. Verlieren jedoch deutlich stärker zu gewichten als die Bewertungen der Heuristik wird dies zuvor mit $1000$ multipliziert.
+\\Ist die maximale Suchtiefe erreicht, so wird die Abfrage in Zeile 5 positiv ausgewertet. In diesem Fall wird die Heuristik zur Zustandsbewertung herangezogen (Z. 6)
+\begin{lstlisting}[caption = {\code{value} Funktion des Alpha-Beta Spielers}, language = python, captionpos = t , numbers=left, label={lst:ab-value}]
+    @staticmethod
+    def value(game_state: Othello, depth, heuristic, alpha=-1, beta=1):
+        if game_state.game_is_over():
+            return game_state.utility(game_state.get_current_player()) * 1000
+        if depth == 0:
+            return heuristic(game_state.get_current_player(), game_state)
+        val = alpha
+        for move in game_state.get_available_moves():
+            next_state = game_state.deepcopy()
+            next_state.play_position(move)
+            val = max({val, -1 * AlphaBetaPruning.value(next_state, depth - 1, heuristic, -beta, -alpha)})
+            if val >= beta:
+                return val
+            alpha = max({val, alpha})
+        return val
+\end{lstlisting}
+\paragraph{Änderungen an \code{value\_monte\_carlo}}
+Wird statt der Heuristik zur Bewertung der \mxZitat{Monte-Carlo Agent} herangezogen so wird statt der Funktion \code{value} die angepasste Funktion \code{value\_monte\_carlo} aufgerufen. Dabei wird in dem in Listing \ref{lst:ab-value} in Zeile 6 beschriebenen \code{if}-Zweig eine Bewertung aller möglichen Züge vorgenommen und die Gewinnwahrscheinlichkeit des besten Zuges zurückgegeben. 
+
 \subsubsection{Die Funktion \code{get\_move}}
 
-\begin{lstlisting}[caption = {get\_move Funktion des Alpha-Beta Spielers}, language = python, captionpos = t , numbers=left, label={lst:ab2}]
-    
+\begin{lstlisting}[caption = {get\_move Funktion des Alpha-Beta Spielers}, language = python, captionpos = t , numbers=left, label={lst:ab-get-move}]
+    def get_move(self, game_state: Othello):
+        if self._use_start_lib and game_state.get_turn_nr() < 21:  # check whether start move match
+            moves = self._start_tables.get_available_moves_of_start_tables(game_state)
+            if len(moves) > 0:
+                return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
+        best_moves = dict()
+        for move in game_state.get_available_moves():
+            next_state = game_state.deepcopy()
+            next_state.play_position(move)
+            if self._use_monte_carlo:
+                result = -AlphaBetaPruning.value_monte_carlo(next_state, self._search_depth - 1, self._heuristic,
+                                                             mc_count=self._mc_count)
+            else:
+                result = -AlphaBetaPruning.value(next_state, self._search_depth - 1, self._heuristic)
+            if result not in best_moves.keys():
+                best_moves[result] = []
+            best_moves[result].append(move)
+        best_move = max(best_moves.keys())
+        return best_moves[best_move][random.randrange(len(best_moves[best_move]))]
 \end{lstlisting}
