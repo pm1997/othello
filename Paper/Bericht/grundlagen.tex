@@ -216,6 +216,7 @@ Der Kindknoten K des Knotens D ist mit einem Wert von 42 vielversprechend und wi
 Dieses einfache Beispiel zeigt bereits recht gut wie die Auswertung von weiteren Zweigen vermieden werden kann. In der Praktischen Anwendung befinden sich die wegfallenden Zustände häufig nicht nur in den Blättern des Baumes sondern auch auf höheren Ebenen. Der eingesparte Aufwand wird dadurch häufig noch größer.  
 
 \subsubsection{Implementierung}
+\label{ab-basics-impl}
 Nachfolgend wird eine Pseudoimplementierung einer Invariante des Alpha-Beta Abschneiden Algorithmus angegeben (siehe Listing \ref{lst:abprun}). Es handelt sich um eine angepasste Version von \cite{StroetmannAI19}
 \begin{lstlisting}[caption = {Pseudoimplementierung von Alpha-Beta Abschneiden}, language = python, captionpos = t , numbers=left, label={lst:abprun}]
 alphaBeta(State, player, alpha = -1, beta = 1) {
