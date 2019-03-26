@@ -45,6 +45,7 @@ def select_heuristic(player_string):
     # Use pairs of the form (description: String, class: Player) to store a player type
     available_heuristics.append(("Nijssen 07 Heuristic", Nijssen07Heuristic.heuristic))
     available_heuristics.append(("Field Heuristic", StoredMonteCarloHeuristic.heuristic))
+    available_heuristics.append(("Cowthello Heuristic", CowthelloHeuristic.heuristic))
 
     if len(available_heuristics) > 1:
         return UtilMethods.select_one(available_heuristics, f"[{player_string}] Please select a heuristic")
