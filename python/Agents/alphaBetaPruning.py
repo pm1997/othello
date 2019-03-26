@@ -21,29 +21,11 @@ class AlphaBetaPruning:
 
         self._heuristic = heuristic  # heuristics.select_heuristic("Player MonteCarlo")
 
-        # Ask the user to determine whether to use the start library
-        # self.use_ml = UtilMethods.get_boolean_selection(
-        #    "[Player AlphaBetaPruning] Do you want to use the machine learning after Alpha-Beta Pruning?")
-
-        self._use_ml = use_ml
         self._use_monte_carlo = use_monte_carlo
-        if self._use_ml:
-            self._ml_count = UtilMethods.get_integer_selection(
-                "[Player AlphaBetaPruning - Machine Learning] Select number of played Games", 10, 75)
-            self._use_monte_carlo = False
-        else:
-            self._use_ml = False
-            self._ml_count = 1
 
-            self._use_monte_carlo = False  # UtilMethods.get_boolean_selection(
-            #  "[Player AlphaBetaPruning] Do you want to use the Monte Carlo after Alpha-Beta Pruning?")
-
-            if self._use_monte_carlo:
-                self._ml_count = UtilMethods.get_integer_selection(
+        if self._use_monte_carlo:
+            self._mc_count = UtilMethods.get_integer_selection(
                     "[Player AlphaBetaPruning - Machine Learning] Select number of played Games", 10, 75)
-            else:
-                self._use_monte_carlo = False
-                self._ml_count = 1
 
         # Ask the user to determine whether to use the start library
         self._use_start_lib = use_start_lib  # UtilMethods.get_boolean_selection(
@@ -129,7 +111,7 @@ class AlphaBetaPruning:
 
             if self._use_monte_carlo:
                 result = -AlphaBetaPruning.value_monte_carlo(next_state, self._search_depth - 1, self._heuristic,
-                                                             mc_count=self._ml_count)
+                                                             mc_count=self._mc_count)
             else:
                 result = -AlphaBetaPruning.value(next_state, self._search_depth - 1, self._heuristic)
 
