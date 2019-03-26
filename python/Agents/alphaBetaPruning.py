@@ -75,40 +75,6 @@ class AlphaBetaPruning:
             alpha = max({val, alpha})
         return val
 
-    # @staticmethod
-    # def value_ml(game_state: Othello, depth, alpha=-1, beta=1, ml_count=100):
-    #     """
-    #     get score for alpha beta pruning
-    #     :param game_state: actual game state
-    #     :param depth: do alpha beta pruning this depth
-    #     :param ml_count: number of games which are played in each terminal node after alpha beta pruning
-    #     :param alpha: value of alpha
-    #     :param beta:  value of beta
-    #     :return: score of move
-    #     """
-    #     if game_state.game_is_over():
-    #         return game_state.utility(game_state.get_winner()) * 1000
-    #     if depth == 0:
-    #         # use machine learning player if enabled
-    #         # ml_count = number of played games
-    #         ml = PlayerMachineLearning(big_number=ml_count, use_multiprocessing=False)
-    #         # get best move
-    #         move = ml.get_move(game_state)
-    #         # return winnings stats of best move
-    #         prob = ml.get_move_probability(move)
-    #         print(f"win probability of move {move} calculated: {prob}")
-    #         return prob
-    #     val = alpha
-    #     for move in game_state.get_available_moves():
-    #         next_state = game_state.deepcopy()
-    #         next_state.play_position(move)
-    #         val = max(
-    #             {val, -1 * PlayerAlphaBetaPruning.value_ml(next_state, depth - 1, -beta, -alpha, ml_count=ml_count)})
-    #         if val >= beta:
-    #             return val
-    #         alpha = max({val, alpha})
-    #     return val
-
     @staticmethod
     def value_monte_carlo(game_state: Othello, depth, heuristic, alpha=-1, beta=1, mc_count=100):
         """
@@ -126,11 +92,11 @@ class AlphaBetaPruning:
         if depth == 0:
             # use monte carlo player if enabled
             # ml_count = number of played games
-            ml = MonteCarlo(big_number=mc_count, use_start_libs=False, preprocessor_n=-1, heuristic=heuristic, use_multiprocessing=False)
+            mc = MonteCarlo(big_number=mc_count, use_start_libs=False, preprocessor_n=-1, heuristic=heuristic, use_multiprocessing=False)
             # get best move
-            move = ml.get_move(game_state)
+            move = mc.get_move(game_state)
             # return winnings stats of best move
-            prob = ml.get_move_probability(move)
+            prob = mc.get_move_probability(move)
             # print(f"win probability of move {move} calculated: {prob}")
             return prob
         val = alpha
