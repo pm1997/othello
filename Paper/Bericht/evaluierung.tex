@@ -1,1 +1,29 @@
 \chapter{Evaluierung}
+Die in Kapitel \ref{implementation} erklärten Agenten werden nun verglichen. Sie werden einerseits in den Standardeinstellungen verglichen, als auch mit anderen Einstellungen, beispielsweise mit verschiedenen Heuristiken. Die Standardeinstellungen der Agenten wurden empirisch an eine Laufzeit von fünf Minuten je Spiel und Agent angenähert. Dies war eine Vorgabe, dass jedem Agent etwa fünf Minuten Berechnungszeit zur Verfügung steht.
+In der folgenden Tabelle sind die in diesem Kapitel evaluierten Agenten aufgelistet.
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{| c | c | c |} \hline
+Vergleich & Agent 1 & Agent 2 \\ \hline
+1 & Random & Monte Carlo  \\ \hline
+2 & Monte Carlo & Random\\ \hline
+3 & Random & Alpha-Beta\\ \hline
+4 & Alpha-Beta & Random\\ \hline
+5 & Alpha-Beta: Nijssen 2007 Heuristik & Random\\ \hline
+6 & Alpha-Beta: Cowthello Heuristik & Random\\ \hline
+7 & Random & Alpha-Beta: Nijssen 2007 Heuristik \\ \hline
+8 & Random & Alpha-Beta: Cowthello Heuristik \\ \hline
+9 & Alpha-Beta: Nijssen 2007 Heuristik & Monte Carlo\\ \hline
+10 & Alpha-Beta: Cowthello Heuristik & Monte Carlo\\ \hline
+11 & Monte Carlo & Alpha-Beta: Nijssen 2007 Heuristik \\ \hline
+12 & Monte Carlo & Alpha-Beta: Cowthello Heuristik \\ \hline
+\end{tabular}
+\end{center}
+\caption{Liste der Äquivalenzklassen}
+\label{agents1}
+\end{table}
+
+Die in dieser Tabelle aufgeführten Vergleiche werden in den folgenden Unterkapiteln durchgeführt und die Ergebnisse evaluiert.
+Um ein aussagekräftiges Ergebnis ermitteln zu können, werden jeweils 100 Spiele pro Vergleich durchgeführt. Da ein Unterschied existiert, welcher Agent den ersten Zug durchführt, werden beide Kombinationen verglichen.
+\subsection{Random vs. Monte Carlo}
+In diesem Vergleich werden die Agenten \mxZitat{Random} und \mxZitat{Monte Carlo} in Standardkonfiguration verglichen. Dies bedeutet, dass \mxZitat{Monte Carlo} 1400 zufällige Spiele je Zug durchführt und dadurch den \mxZitat{besten} Zug ermittelt.

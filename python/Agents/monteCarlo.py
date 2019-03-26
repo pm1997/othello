@@ -198,7 +198,7 @@ class MonteCarlo:
         """
         # Use start library if it is selected and still included
         if self._use_start_lib and game_state.get_turn_nr() < 21:  # check whether start move match
-            moves = self.start_tables.get_available_start_tables(game_state)
+            moves = self.start_tables.get_available_moves_of_start_tables(game_state)
             if len(moves) > 0:
                 return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
         # Create a dictionary to store information on won/lost ratios

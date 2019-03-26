@@ -21,7 +21,7 @@ class StartTables:
         # #  self.calculate_missing_start_moves()                #
         # #########################################################
 
-    def get_available_start_tables(self, game: Othello):
+    def get_available_moves_of_start_tables(self, game: Othello):
         """
         search moves with identical game tree and get next element of these start table game tree
         :return: list of available moves
