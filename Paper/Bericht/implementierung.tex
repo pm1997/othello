@@ -355,10 +355,8 @@ Als Parameter erhält die Fuktion den Spielzustand \code{game\state}, zu dem die
 \end{lstlisting}
 
 \subsection{Alpha-Beta Pruning}
-Ebenso wie der Spieler \mxZitat{Monte Carlo} wird der Spielalgorithmus im Theorieteil erläutert. Der beste Zug wird dadurch berechnet, dass eine eingeschränkte Breitensuche bis zu einer bestimmten Tiefe durchgeführt wird, dabei allerdings auch der Gegenspieler beachtet wird.
-Statt einer kompletten Tiefensuche mit MiniMax werden Züge mit einer geringen Zugwahrscheinlichkeit nicht evaluiert. Die Grundidee des Algorithmus ist, dass sowohl der aktuelle Spieler, als auch der Gegenspieler jeweils den für sie besten Zug und für den Gegner schlechtesten Zug spielen.
-\\Nach der eingeschränkten Breitensuche können mehrere Möglichkeiten gewählt werden.
-Es existieren einerseits mehrere Heuristiken, andererseits können auch andere Spieler ab diesen Spielzügen das Spiel berechnen. Diese Möglichkeiten werden in dem Kapitel \ref{ab_comb} genauer erläutert.
+Der Agent \mxZitat{Alpha-Beta Pruning} basiert auf dem in Kapitel \ref{ab-pruning} beschriebenen Prinzip des Alpha-Beta Abschneidens. Wie bereits erläutert handelt es sich dabei um eine Tiefensuche, bei der weniger vielversprechende Zweige nicht bis zum Ende ausgewertet werden.
+\\Wie in \ref{ab-depth-limited} erläutert wird dabei ab einer gewissen Suchtiefe eine Heuristik zur Bewertung eines Spielzustandes herangezogen. Dadurch, muss nicht der komplette Baum bis zum Ende ausgewertet werden.  
 
 \subsubsection{Details zum Spieler Alpha-Beta Pruning}
 In diesem Kapitel wird der Spieler \mxZitat{Alpha-Beta Pruning} anhand des vorhandenen Quellcodes detailliert erklärt.
