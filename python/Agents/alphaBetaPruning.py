@@ -43,7 +43,7 @@ class AlphaBetaPruning:
         :return: score of move
         """
         if game_state.game_is_over():
-            return game_state.utility(game_state.get_winner()) * 1000
+            return game_state.utility(game_state.get_current_player()) * 1000
         if depth == 0:
             # return heuristic of game state
             return heuristic(game_state.get_current_player(), game_state)
@@ -70,7 +70,7 @@ class AlphaBetaPruning:
         :return: score of move
         """
         if game_state.game_is_over():
-            return game_state.utility(game_state.get_winner()) * 1000
+            return game_state.utility(game_state.get_current_player()) * 1000
         if depth == 0:
             # use monte carlo player if enabled
             # ml_count = number of played games
