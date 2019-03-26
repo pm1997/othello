@@ -20,7 +20,7 @@ for i in `seq 1 100`;
                         fi
 		done
 		echo $w1
-		w2=$( cat $temp1 | grep "duration" )
+		w2=$( cat $temp | grep "duration" )
 		echo $w2
 		durations=$(echo -ne "$durations\n$w2")
 done
