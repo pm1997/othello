@@ -127,12 +127,7 @@ class AlphaBetaPruning:
             next_state = game_state.deepcopy()
             next_state.play_position(move)
 
-            # differ between machine learning or heuristic
-            if self._use_ml:
-                print("not supported")
-                result = 0
-                # result = -PlayerAlphaBetaPruning.value_ml(next_state, self.search_depth - 1, ml_count=self.ml_count)
-            elif self._use_monte_carlo:
+            if self._use_monte_carlo:
                 result = -AlphaBetaPruning.value_monte_carlo(next_state, self._search_depth - 1, self._heuristic,
                                                              mc_count=self._ml_count)
             else:
