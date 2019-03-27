@@ -17,7 +17,7 @@ class MonteCarlo:
     _start_tables = StartTables()
     _move_probability = dict()
 
-    def __init__(self, big_number=1400, use_start_libs=True, preprocessor_n=-1, heuristic=heuristics.StoredMonteCarloHeuristic.heuristic, use_multiprocessing=True):
+    def __init__(self, big_number=2000, use_start_libs=True, preprocessor_n=-1, heuristic=heuristics.StoredMonteCarloHeuristic.heuristic, use_multiprocessing=True):
         """
         Initialize the Player
         """

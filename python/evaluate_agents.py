@@ -164,9 +164,9 @@ if __name__ == '__main__':
             # Get the Player object assigned to that player
             player_object = players[current_player]
             # Ask the Player to calculate it's move based on the current state
-            calculation_start = time.time();
+            calculation_start = time.time()
             move = player_object.get_move(game)
-            calculation_time = time.time() - calculation_start;
+            calculation_time = time.time() - calculation_start
             times[current_player] += calculation_time
             # Play the move calculated by the player
             game.play_position(move)
@@ -177,7 +177,6 @@ if __name__ == '__main__':
         # calculate the playing time
         duration = time.time() - start
 
-        # ml_database._store_database()
         # Inform the User on the fact that the game is over
         print("Game is over")
         # Print the playing time
@@ -203,7 +202,9 @@ if __name__ == '__main__':
         outfile.write(f"Player 2 won {winning_stats[PLAYER_TWO]} games\n")
         outfile.write(f"Player 1 won in {winning_stats[PLAYER_ONE] * 100 / games_nr} %\n")
         outfile.write(f"Player 2 won in {winning_stats[PLAYER_TWO] * 100 / games_nr} %\n")
-        outfile.write(f"Computation Time Player 1: {total_times[PLAYER_ONE]}\n")
-        outfile.write(f"Computation Time Player 2: {total_times[PLAYER_TWO]}\n")
-        outfile.write(f"total duration: {durations}\n")
-        outfile.write(f"average duration: {durations / games_nr}\n")
+        outfile.write(f"Total Computation Time Player 1: {total_times[PLAYER_ONE]}\n")
+        outfile.write(f"Total Computation Time Player 2: {total_times[PLAYER_TWO]}\n")
+        outfile.write(f"Average Computation Time Player 1: {total_times[PLAYER_ONE / games_nr]}\n")
+        outfile.write(f"Average Computation Time Player 2: {total_times[PLAYER_TWO / games_nr]}\n")
+        outfile.write(f"Total Duration: {durations}\n")
+        outfile.write(f"Average Duration: {durations / games_nr}\n")
