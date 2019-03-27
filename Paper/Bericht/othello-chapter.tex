@@ -9,7 +9,7 @@
 \item X-Felder: Felder, welche ein Feld diagonal von den Ecken entfernt sind \cite{wikibooks}
 \item Zentrum: innerste Felder von C3 bis F6 (grüne Felder) \cite{wikibooks}
 \item Zentralfelder: Felder D4 bis E5 \cite{wikibooks}
-\item Frontsteine: die äußersten Steine auf dem Spielbrett um das Zentrum (vgl. \cite{Ortiz.}).
+\item Frontsteine: die äußersten Steine auf dem Spielbrett, welche andere Steine umschließen (vgl. \cite{Ortiz.}).
 \end{itemize}
 Diese Kategorien sind für die spätere Strategie wichtig.
 \\\mxPicture{5.8cm}{kategorie}{Kategorien des Spielfeldes}{Kategorien des Spielfeldes}{fig:kat1}{}
@@ -18,16 +18,18 @@ Die verschiedenen Varianten sind allerdings bis auf die Startposition gleich. Be
 
 \section{Spielregeln}
 
-\ot\ besitzt einfache Spielregeln, welche im Spielverlauf aber auch taktisches oder strategisches Geschick erfordern. Jeder Spieler legt abwechselnd einen Stein auf das Spielbrett. Dabei sind folgende Spielregeln zu beachten welche auch in Abbildung \ref{fig:turn2} abgebildet sind:
+\ot\ besitzt wenige Spielregeln, welche im Spielverlauf aber auch taktisches oder strategisches Geschick erfordern. Jeder Spieler legt abwechselnd einen Stein auf das Spielbrett. Dabei sind folgende Spielregeln zu beachten welche auch in Abbildung \ref{fig:turn2} abgebildet sind:
 \begin{itemize}
 \item Ein Stein darf nur in ein leeres Feld gelegt werden.
 \item Es dürfen nur Steine auf Felder gelegt werden, welche einen oder mehrere gegnerischen Steine mit einem bestehenden Stein umschließen würden. Dies ist im linken Spielbrett durch grüne Felder und im mittleren Spielbrett durch das gelbe Feld hervorgehoben. Das gelbe Feld (F5) umschließt mit dem Feld D5 (blau) einen gegnerischen Stein. Es können auch mehrere Steine umschlossen werden. Allerdings dürfen sich dazwischen keine leeren Felder befinden.
 \item Von dem neu gesetzten Stein in alle Richtungen ausgehend werden die umschlossenen generischen Steine umgedreht, sodass alle Steine die eigene Farbe besitzen. In dem Beispiel ist das im dem rechten Spielbrett zu sehen. F5 umschließt dabei das Feld E5 (rot). Dieses Feld wird nun gedreht und wird schwarz.
 \item Ist für einen Spieler kein Zug möglich muss dieser aussetzen. Ein Spieler darf allerdings nicht freiwillig aussetzen wenn noch mindestens eine Zugmöglichkeit besteht.
-\item Ist für beide Spieler kein Zug mehr möglich, ist das Spiel beendet. Der Spieler mit den meisten Steinen seiner Farbe gewinnt das Spiel.
-\item Das Spiel endet auch wenn alle Felder des Spielbrettes besetzt sind. In diesem Fall gewinnt ebenfalls der Spieler mit den meisten Steiner seiner Farbe.
+\item Der Spieler mit den meisten Steinen seiner Farbe gewinnt das Spiel.
+\item Ist für beide Spieler kein Zug mehr möglich, ist das Spiel beendet. 
+\item Das Spiel endet ebenfalls wenn alle Felder des Spielbrettes besetzt sind.
 \end{itemize}
 \mxPicture{15cm}{turn2}{valide Zugmöglichkeiten für Schwarz und ausgeführter Zug}{valide Zugmöglichkeiten für Schwarz und ausgeführter Zug}{fig:turn2}{}
+\newpage
 \section{Spielverlauf}
 Das Spiel wird in drei Abschnitte eingeteilt \cite{Ortiz.}:
 \begin{itemize}
@@ -36,7 +38,7 @@ Das Spiel wird in drei Abschnitte eingeteilt \cite{Ortiz.}:
 \item Endspiel
 \end{itemize}
 Diese Abschnitte sind jeweils 20 Spielzüge lang.
-Im Eröffnungs- und Endspiel stehen zum Mittelspiel wenige Zugmöglichkeiten zur Verfügung, da entweder nur wenige Steine auf dem Spielbrett existieren oder das Spielbrett fast gefüllt ist und nur noch einzelne Lücken übrig sind. Im Mittelspiel existieren sehr viele Möglichkeiten, da sich schon mindestens 20 Steine auf dem Spielbrett befinden und diese sehr gute Anlegemöglichkeiten bieten. 
+Im Eröffnungs- und Endspiel stehen im Vergleich zum Mittelspiel wenige Zugmöglichkeiten zur Verfügung, da entweder nur wenige Steine auf dem Spielbrett existieren oder das Spielbrett fast gefüllt ist und nur noch einzelne Lücken übrig sind. Im Mittelspiel existieren viele Möglichkeiten, da sich schon mindestens 20 Steine auf dem Spielbrett befinden und diese sehr gute Anlegemöglichkeiten bieten. 
 \section{Spielstrategien}
 \label{strat1}
 Wie in anderen Spielen gibt es auch in \ot\ verschiedene Strategien. Dabei kann beispielsweise offensiv gespielt werden, indem versucht wird möglichst viele Steine in einem Zug zu drehen. Es gibt auch defensive \mxZitat{stille} Züge. Ein \mxZitat{stiller} Zug dreht keinen Frontstein um und dreht möglichst nur wenige innere Steine um (vgl. \cite{Ortiz.}).
