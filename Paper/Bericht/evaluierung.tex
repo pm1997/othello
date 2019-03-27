@@ -1,6 +1,7 @@
 \chapter{Evaluierung}
 \section{Evaluierung der einzelnen Agenten}
-Nun gilt es die in Kapitel \ref{implementation} beschriebenen Agenten zu evaluieren. In Ermangelung eines Othello-Spielers der über ein entsprechend gute Spielfähigen verfügt, so dass er zu einem aussagekräftigen Vergleich herangezogen werden könnte, werden die einzelnen Agenten untereinander verglichen. Die einstellbaren Parameter wurden dabei so gewählt, dass der Agent im Laufe eines Spiels ungefähr 5 Minuten zum Treffen seiner Entscheidung benötigt. Dabei hat sich gezeigt, dass die beim Agenten \mxZitat{Alpha-Beta Pruning} gewählte Heuristik die Gewinnchance des Agenten wesentlich beeinflusst. Aus diesem Grund wird der \mxZitat{Alpha-Beta Pruning}-Agent mit allen zur Verfügung stehenden Heuristiken seperat betrachtet. Die sich daraus Ergebenden Vergleiche sind in Tabelle \ref{tbl:cmp-agents} dargestellt. Der Agent \mxZitat{Alpha-Beta Pruning} wird dabei durch \mxZitat{AB} abgekürzt.
+Nun gilt es die in Kapitel \ref{implementation} beschriebenen Agenten zu evaluieren. In Ermangelung eines Othello-Spielers der über ein entsprechend gute Spielfähigen verfügt, so dass er zu einem aussagekräftigen Vergleich herangezogen werden könnte, werden die einzelnen Agenten untereinander verglichen. Die einstellbaren Parameter wurden dabei so gewählt, dass der Agent im Laufe eines Spiels ungefähr 5 Minuten zum Treffen seiner Entscheidung benötigt. Auf die genauen Werte der Parameter soll hier nicht näher eingegangen werden. Aus Gründen der Nachvollziehbarkeit finden sie sich in den Anschnitten \ref{eval:agents:params:subsec-mc} bzw. \ref{eval:agents:params:subsec-ab}
+\\Bei der Bestimmung der Parameter sich gezeigt, dass die beim Agenten \mxZitat{Alpha-Beta Pruning} gewählte Heuristik die Gewinnchance des Agenten wesentlich beeinflusst. Aus diesem Grund wird der \mxZitat{Alpha-Beta Pruning}-Agent mit allen zur Verfügung stehenden Heuristiken seperat betrachtet. Die sich daraus Ergebenden Vergleiche sind in Tabelle \ref{tbl:cmp-agents} dargestellt. Der Agent \mxZitat{Alpha-Beta Pruning} wird dabei durch \mxZitat{AB} abgekürzt.
 \paragraph{Vergleich mit dem Agent \mxZitat{Random}}
 Grundsätzlich gilt, dass der durch einen Agenten zur Auswahl von Spielzügen benötigte Rechenaufwand nur dann gerechtfertigt ist, wenn sich dieser in irgendeinen Vorteil bietet, also besser spielt als ein Agent der beliebige Spielzüge durchführt. Aus diesem Grund werden alle Agenten zunächst mit dem \mxZitat{Random}-Agenten verglichen. Daraus ergeben sich zunächst die Vergleiche 1 bis 5.
 \\Da ein Agent möglicherweise über bessere Gewinnchancen verfügt, wenn er als ein bestimmter Spieler auftritt gilt es außerdem zu Prüfen wie sich die Agenten verhalten, wenn sie auf der anderen Position verwendet werden. Daraus ergeben sich die Vergleiche 6 bis 10. 
@@ -63,35 +64,11 @@ Vergleich & Gewonnene Spiele Agent 1 & Gewonnene Spiele Agent 2 & Spielzeit \\ \
 \label{tbl:cmp-results}
 \end{table}
 
-\subsection{Random vs. Monte Carlo}
-In diesem Vergleich werden die Agenten \mxZitat{Random} und \mxZitat{Monte Carlo} in Standardkonfiguration verglichen. Dies bedeutet, dass \mxZitat{Monte Carlo} 1400 zufällige Spiele je Zug durchführt und dadurch den \mxZitat{besten} Zug ermittelt.
-Die Auswertung ergab folgende Ergebnisse:
-\begin{itemize}
-\item Ein durchschnittliches Spiel dauert Minuten.
-\item Der Agent \mxZitat{Random} gewann Spiele.
-\item Der Agent \mxZitat{Monte Carlo} gewann Spiele.
-\end{itemize}
+\subsection*{Parameter des \mxZitat{Monte Carlo}-Agenten}
+\label{eval:agents:params:subsec-mc}
 
-\subsection{Monte Carlo vs Random}
+\subsection*{Parameter des \mxZitat{Alpha-Beta Pruning}-Agenten}
+\label{eval:agents:params:subsec-ab}
 
-\subsection{Random vs Alpha-Beta}
-
-\subsection{Alpha-Beta vs Random}
-
-\subsection{Alpha-Beta: Nijssen 2007 Heuristik vs Random}
-
-\subsection{Alpha-Beta: Cowthello Heuristik vs Random}
-
-\subsection{Random vs Alpha-Beta: Nijssen 2007 Heuristik}
-
-\subsection{Random vs Alpha-Beta: Cowthello Heuristik}
-
-\subsection{Alpha-Beta: Nijssen 2007 Heuristik vs Monte Carlo}
-
-\subsection{Alpha-Beta: Cowthello Heuristik vs Monte Carlo}
-
-\subsection{Monte Carlo vs Alpha-Beta: Nijssen 2007 Heuristik}
-
-\subsection{Monte Carlo vs Alpha-Beta: Cowthello Heuristik}
 
 \section{Evaluierung der Bedeutung verschiedener Feldkategorien}
