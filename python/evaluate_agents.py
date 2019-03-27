@@ -142,11 +142,13 @@ if __name__ == '__main__':
     games_nr = args.games_nr
     winning_stats = {PLAYER_ONE: 0, PLAYER_TWO: 0}
     durations = 0
+    total_times = {PLAYER_ONE: 0, PLAYER_TWO: 0}
 
     for game in range(games_nr):
         print(f"game: {game}")
         # Store the players in a dict with the internal player codes as key to allow easy access and maintaining the correct order
         players = {PLAYER_ONE: player_one, PLAYER_TWO: player_two}
+        times = {PLAYER_ONE: 0, PLAYER_TWO: 0}
 
         # Create a new game state
         game = Othello()
@@ -162,7 +164,10 @@ if __name__ == '__main__':
             # Get the Player object assigned to that player
             player_object = players[current_player]
             # Ask the Player to calculate it's move based on the current state
+            calculation_start = time.time();
             move = player_object.get_move(game)
+            calculation_time = time.time() - calculation_start;
+            times[current_player] += calculation_time
             # Play the move calculated by the player
             game.play_position(move)
             # Print the new state of the board
@@ -183,6 +188,8 @@ if __name__ == '__main__':
             winning_stats[winner] += 1
         print(f"Winner is {PRINT_SYMBOLS[winner]}")
         durations += duration
+        total_times[PLAYER_ONE] += times[PLAYER_ONE]
+        total_times[PLAYER_TWO] += times[PLAYER_TWO]
     print(f"Player 1 won {winning_stats[PLAYER_ONE]} games")
     print(f"Player 2 won {winning_stats[PLAYER_TWO]} games")
     print(f"Player 1 won in {winning_stats[PLAYER_ONE] * 100 / games_nr} %\n")
@@ -196,5 +203,7 @@ if __name__ == '__main__':
         outfile.write(f"Player 2 won {winning_stats[PLAYER_TWO]} games\n")
         outfile.write(f"Player 1 won in {winning_stats[PLAYER_ONE] * 100 / games_nr} %\n")
         outfile.write(f"Player 2 won in {winning_stats[PLAYER_TWO] * 100 / games_nr} %\n")
+        outfile.write(f"Computation Time Player 1: {total_times[PLAYER_ONE]}\n")
+        outfile.write(f"Computation Time Player 2: {total_times[PLAYER_TWO]}\n")
         outfile.write(f"total duration: {durations}\n")
         outfile.write(f"average duration: {durations / games_nr}\n")
