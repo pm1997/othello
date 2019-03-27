@@ -40,10 +40,9 @@ class StartTables:
                     if taken_mv[turn] != move:
                         # move is different to start_table
                         break
-                else:  # turn == turn_nr
-                    # if start sequence is finished and shorter than longest sequence the gab is filled with "i8" fields
-                    if move != "i8" or move != "nan":  # i8 = invalid field
-                        available_moves.append(move)
+                # if start sequence is finished and shorter than longest sequence the gab is filled with "i8" fields
+                elif move != "i8" or move != "nan":  # i8 = invalid field
+                    available_moves.append(move)
                     break
                 turn += 1
         available_moves = list(dict.fromkeys(available_moves))
