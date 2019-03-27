@@ -16,3 +16,18 @@ Player 2 won in 50.25 %
 total duration: 108.93046951293945
 average duration: 0.05446523475646973
 #----------------------------------------------------------
+
+# Random vs Monte Carlo 1400 Spiele je Zug __---------------
+# Ausgeführt auf 6-Kern i7 3,3 GHz => 12 virtuelle Kerne
+
+Total games: 100
+Player 1 won 0 games
+Player 2 won 100 games
+Player 1 won in 0.0 %
+Player 2 won in 100.0 %
+total duration: 12086.69370007515
+average duration: 120.86693700075149
+
+=> interpoliert auf 8 Kerne ~ 180 Sekunden
+
+#----------------------------------------------------------
