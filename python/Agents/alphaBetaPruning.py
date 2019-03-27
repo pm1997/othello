@@ -12,7 +12,7 @@ class AlphaBetaPruning:
 
     _start_tables = StartTables()
 
-    def __init__(self, heuristic=heuristics.StoredMonteCarloHeuristic.heuristic, search_depth=5, use_ml=False, use_monte_carlo=False, use_start_lib=True):
+    def __init__(self, heuristic=heuristics.StoredMonteCarloHeuristic.heuristic, search_depth=5, mc_count=10, use_monte_carlo=False, use_start_lib=True):
         """
         init start variables and used modules
         """
@@ -24,8 +24,8 @@ class AlphaBetaPruning:
         self._use_monte_carlo = use_monte_carlo
 
         if self._use_monte_carlo:
-            self._mc_count = UtilMethods.get_integer_selection(
-                    "[Player AlphaBetaPruning - Machine Learning] Select number of played Games", 10, 75)
+            self._mc_count = mc_count # UtilMethods.get_integer_selection(
+            #  "[Player AlphaBetaPruning - Machine Learning] Select number of played Games", 10, 75)
 
         # Ask the user to determine whether to use the start library
         self._use_start_lib = use_start_lib  # UtilMethods.get_boolean_selection(
