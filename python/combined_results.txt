@@ -1,0 +1,18 @@
+
+# Random vs Random ---------------------------------------
+Total games: 1000
+Player 1 won 481 games
+Player 2 won 480 games
+Player 1 won in 48.1 %
+Player 2 won in 48.0 %
+total duration: 54.400999784469604
+average duration: 0.054400999784469606
+
+Total games: 2000
+Player 1 won 908 games
+Player 2 won 1005 games
+Player 1 won in 45.4 %
+Player 2 won in 50.25 %
+total duration: 108.93046951293945
+average duration: 0.05446523475646973
+#----------------------------------------------------------

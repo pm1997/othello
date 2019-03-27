@@ -3,7 +3,6 @@ from start_tables import StartTables
 from util import UtilMethods
 import random
 import heuristics
-# from Agents.machineLearning import PlayerMachineLearning
 from Agents.monteCarlo import MonteCarlo
 
 
@@ -16,20 +15,30 @@ class AlphaBetaPruning:
         """
         init start variables and used modules
         """
+        self._search_depth = search_depth
+        if self._search_depth == 0:
+            self._search_depth = UtilMethods.get_integer_selection("[Player AlphaBetaPruning] Select Search depth", 1, 10)
 
-        self._search_depth = search_depth  # UtilMethods.get_integer_selection("[Player AlphaBetaPruning] Select Search depth", 1, 10)
-
-        self._heuristic = heuristic  # heuristics.select_heuristic("Player MonteCarlo")
+        self._heuristic = heuristic
+        if self._heuristic is None:
+            self._heuristic = heuristics.select_heuristic("Player MonteCarlo")
 
         self._use_monte_carlo = use_monte_carlo
+        if self._use_monte_carlo is None:
+            self._use_start_lib = UtilMethods.get_boolean_selection(
+                "[Player AlphaBetaPruning] Do you want to use monte carlo after alpha-beta pruning?")
 
         if self._use_monte_carlo:
-            self._mc_count = mc_count # UtilMethods.get_integer_selection(
-            #  "[Player AlphaBetaPruning - Machine Learning] Select number of played Games", 10, 75)
+            self._mc_count = mc_count
+            if self._mc_count == 0:
+                self._mc_count = UtilMethods.get_integer_selection(
+                    "[Player AlphaBetaPruning - Machine Learning] Select number of played Games", 10, 75)
 
         # Ask the user to determine whether to use the start library
-        self._use_start_lib = use_start_lib  # UtilMethods.get_boolean_selection(
-        #    "[Player AlphaBetaPruning] Do you want to use the start library?")
+        self._use_start_lib = use_start_lib
+        if self._use_start_lib is None:
+            self._use_start_lib = UtilMethods.get_boolean_selection(
+                "[Player AlphaBetaPruning] Do you want to use the start library?")
 
     @staticmethod
     def value(game_state: Othello, depth, heuristic, alpha=-1, beta=1):
@@ -73,13 +82,12 @@ class AlphaBetaPruning:
             return game_state.utility(game_state.get_current_player()) * 1000
         if depth == 0:
             # use monte carlo player if enabled
-            # ml_count = number of played games
+            # mc_count = number of played games
             mc = MonteCarlo(big_number=mc_count, use_start_libs=False, preprocessor_n=-1, heuristic=heuristic, use_multiprocessing=False)
             # get best move
             move = mc.get_move(game_state)
             # return winnings stats of best move
             prob = mc.get_move_probability(move)
-            # print(f"win probability of move {move} calculated: {prob}")
             return prob
         val = alpha
         for move in game_state.get_available_moves():

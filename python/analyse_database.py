@@ -70,7 +70,6 @@ class Analyse:
 
             # print array (board without column /
             Analyse.print_board(self._data2[position], average)
-            # print(self._data2[pos])
 
             print("_______________________")
 
