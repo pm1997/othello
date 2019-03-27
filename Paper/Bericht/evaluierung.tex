@@ -1,31 +1,69 @@
 \chapter{Evaluierung}
-Die in Kapitel \ref{implementation} beschriebenen Agenten werden nun verglichen. Sie werden zunächst in den Standardeinstellungen verglichen und in einem weiteren Schritt mit verschiedenen Variationen dieser Einstellungen. Ein Beispiel hierfür wäre die Verwendung einer anderen Heuristik. Die Standardeinstellungen der Agenten wurden empirisch an eine Laufzeit von fünf Minuten je Spiel und Agent angenähert. Dies war eine Vorgabe, dass jedem Agent etwa fünf Minuten Berechnungszeit zur Verfügung steht.
-In der folgenden Tabelle sind die in diesem Kapitel evaluierten Agenten aufgelistet.
+\section{Evaluierung der einzelnen Agenten}
+Nun gilt es die in Kapitel \ref{implementation} beschriebenen Agenten zu evaluieren. In Ermangelung eines Othello-Spielers der über ein entsprechend gute Spielfähigen verfügt, so dass er zu einem aussagekräftigen Vergleich herangezogen werden könnte, werden die einzelnen Agenten untereinander verglichen. Die einstellbaren Parameter wurden dabei so gewählt, dass der Agent im Laufe eines Spiels ungefähr 5 Minuten zum Treffen seiner Entscheidung benötigt. Dabei hat sich gezeigt, dass die beim Agenten \mxZitat{Alpha-Beta Pruning} gewählte Heuristik die Gewinnchance des Agenten wesentlich beeinflusst. Aus diesem Grund wird der \mxZitat{Alpha-Beta Pruning}-Agent mit allen zur Verfügung stehenden Heuristiken seperat betrachtet. Die sich daraus Ergebenden Vergleiche sind in Tabelle \ref{tbl:cmp-agents} dargestellt. Der Agent \mxZitat{Alpha-Beta Pruning} wird dabei durch \mxZitat{AB} abgekürzt.
+\paragraph{Vergleich mit dem Agent \mxZitat{Random}}
+Grundsätzlich gilt, dass der durch einen Agenten zur Auswahl von Spielzügen benötigte Rechenaufwand nur dann gerechtfertigt ist, wenn sich dieser in irgendeinen Vorteil bietet, also besser spielt als ein Agent der beliebige Spielzüge durchführt. Aus diesem Grund werden alle Agenten zunächst mit dem \mxZitat{Random}-Agenten verglichen. Daraus ergeben sich zunächst die Vergleiche 1 bis 5.
+\\Da ein Agent möglicherweise über bessere Gewinnchancen verfügt, wenn er als ein bestimmter Spieler auftritt gilt es außerdem zu Prüfen wie sich die Agenten verhalten, wenn sie auf der anderen Position verwendet werden. Daraus ergeben sich die Vergleiche 6 bis 10. 
+
+\paragraph{Vergleich der Agenten \mxZitat{Alpha-Beta Pruning} und \mxZitat{Monte Carlo}}
+Bisher wurden die Agenten \mxZitat{Alpha-Beta Pruning} und \mxZitat{Monte Carlo} lediglich mit dem \mxZitat{Random}-Agenten verglichen. Interessant ist daher auch die Fragestellung wie die beiden Agenten gegeneinander Spielen. Hier sei vorweggefriffen, dass Anhand der im Abschnitt \nameref{p:vgl-result} dargestellten Ergebnisse der Vergleiche 2 bis 5 bzw. 7 bis 10 festgestellt werden konnte, dass der Agent \mxZitat{Alpha-Beta Pruning} mit der Heuristik \mxZitat{???} \unsure{ermitteln} die besten Ergebnisse erzielt. Daher wird diese für den Vergleich der Agenten untereinander herangezogen. Aus den oben beschriebenen Gründen ergeben sich daraus die beiden Vergleiche 11 und 12.
+
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{| c | c | c |} \hline
 Vergleich & Agent 1 & Agent 2 \\ \hline
-1 & Random & Monte Carlo  \\ \hline
-2 & Monte Carlo & Random\\ \hline
-3 & Random & Alpha-Beta\\ \hline
-4 & Alpha-Beta & Random\\ \hline
-5 & Alpha-Beta: Nijssen 2007 Heuristik & Random\\ \hline
-6 & Alpha-Beta: Cowthello Heuristik & Random\\ \hline
-7 & Random & Alpha-Beta: Nijssen 2007 Heuristik \\ \hline
-8 & Random & Alpha-Beta: Cowthello Heuristik \\ \hline
-9 & Alpha-Beta: Nijssen 2007 Heuristik & Monte Carlo\\ \hline
-10 & Alpha-Beta: Cowthello Heuristik & Monte Carlo\\ \hline
-11 & Monte Carlo & Alpha-Beta: Nijssen 2007 Heuristik \\ \hline
-12 & Monte Carlo & Alpha-Beta: Cowthello Heuristik \\ \hline
+\hline
+0 & Random & Random  \\ \hline
+\hline
+1 & Monte Carlo & Random  \\ \hline
+2 & AB (Nijssen 2008 Heuristik) & Random\\ \hline
+3 & AB (Stored Monte Carlo Heuristik) & Random\\ \hline
+4 & AB (Cowthello Heuristik) & Random\\ \hline
+5 & AB (mit anschließendem Monte Carlo) & Random\\ \hline
+\hline
+6 & Random & Monte Carlo\\ \hline
+7 & Random & AB (Nijssen 2008 Heuristik)\\ \hline
+8 & Random & AB (Stored Monte Carlo Heuristik)\\ \hline
+9 & Random & AB (Cowthello Heuristik)\\ \hline
+10 & Random & AB (mit anschließendem Monte Carlo)\\ \hline
+\hline
+11 & AB (beste) & Monte Carlo\\ \hline
+12 & Monte Carlo & AB (beste)\\ \hline
 \end{tabular}
 \end{center}
 \caption{Liste der Äquivalenzklassen}
-\label{agents1}
+\label{tbl:cmp-agents}
 \end{table}
 
-Die in dieser Tabelle aufgeführten Vergleiche werden in den folgenden Unterkapiteln durchgeführt und die Ergebnisse evaluiert.
-Um ein aussagekräftiges Ergebnis ermitteln zu können, werden jeweils 100 Spiele pro Vergleich durchgeführt. Da ein Unterschied existiert, welcher Agent den ersten Zug durchführt, werden beide Kombinationen verglichen.
-\section{Random vs. Monte Carlo}
+\paragraph{Ergebnisse der Vergleiche}
+\label{p:vgl-result}
+Um zum einen ein möglichst aussagekräftiges Ergebnis zu erhalten und zum Anderen die zur Durchführung der Spiele erforderliche Rechenzeit zu beschränken wurden für jeden der in Tabelle \ref{tbl:cmp-agents} angegebenen Vergleiche jeweils 100 Spiele durchgeführt. Die Ergebnisse dieser vergleiche finden sich in Tabelle \ref{tbl:cmp-results}:
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{| c | c | c | c |} \hline
+Vergleich & Gewonnene Spiele Agent 1 & Gewonnene Spiele Agent 2 & Spielzeit \\ \hline
+\hline
+0 & 0 & 0 & 0  \\ \hline
+1 & 0 & 0 & 0  \\ \hline
+2 & 0 & 0 & 0  \\ \hline
+3 & 0 & 0 & 0  \\ \hline
+4 & 0 & 0 & 0  \\ \hline
+5 & 0 & 0 & 0  \\ \hline
+6 & 0 & 0 & 0  \\ \hline
+7 & 0 & 0 & 0  \\ \hline
+8 & 0 & 0 & 0  \\ \hline
+9 & 0 & 0 & 0  \\ \hline
+10 & 0 & 0 & 0  \\ \hline
+11 & 0 & 0 & 0  \\ \hline
+12 & 0 & 0 & 0  \\ \hline
+\end{tabular}
+\end{center}
+\caption{Liste der Äquivalenzklassen}
+\label{tbl:cmp-results}
+\end{table}
+
+\subsection{Random vs. Monte Carlo}
 In diesem Vergleich werden die Agenten \mxZitat{Random} und \mxZitat{Monte Carlo} in Standardkonfiguration verglichen. Dies bedeutet, dass \mxZitat{Monte Carlo} 1400 zufällige Spiele je Zug durchführt und dadurch den \mxZitat{besten} Zug ermittelt.
 Die Auswertung ergab folgende Ergebnisse:
 \begin{itemize}
@@ -33,25 +71,27 @@ Die Auswertung ergab folgende Ergebnisse:
 \item Der Agent \mxZitat{Random} gewann Spiele.
 \item Der Agent \mxZitat{Monte Carlo} gewann Spiele.
 \end{itemize}
-Aus diese Ergebnissen können unentschiedene Spiele abgeleitet werden. Der Vergleich mit dem \mxZitat{Random} Agenten soll die grundsätzliche Leistungsfähigkeit des Agenten darstellen. Statistisch ist die Gewinnwahrscheinlichkeit des \mxZitat{Random} Agenten 50 Prozent. Je höher die Gewinnwahrscheinlichkeit des \mxZitat{Monte Carlo} Agenten ist, dh. je mehr sie von den 50 Prozent abweicht, desto besser ist der Agent. Ist die Wahrscheinlichkeit nur minimal besser als 50 Prozent, ist der Agent nicht sehr gut, da durch simples Raten eine Gewinnwahrscheinlichkeit von 50 Prozent erreicht wird.
-\section{Monte Carlo vs Random}
 
-\section{Random vs Alpha-Beta}
+\subsection{Monte Carlo vs Random}
 
-\section{Alpha-Beta vs Random}
+\subsection{Random vs Alpha-Beta}
 
-\section{Alpha-Beta: Nijssen 2007 Heuristik vs Random}
+\subsection{Alpha-Beta vs Random}
 
-\section{Alpha-Beta: Cowthello Heuristik vs Random}
+\subsection{Alpha-Beta: Nijssen 2007 Heuristik vs Random}
 
-\section{Random vs Alpha-Beta: Nijssen 2007 Heuristik}
+\subsection{Alpha-Beta: Cowthello Heuristik vs Random}
 
-\section{Random vs Alpha-Beta: Cowthello Heuristik}
+\subsection{Random vs Alpha-Beta: Nijssen 2007 Heuristik}
 
-\section{Alpha-Beta: Nijssen 2007 Heuristik vs Monte Carlo}
+\subsection{Random vs Alpha-Beta: Cowthello Heuristik}
 
-\section{Alpha-Beta: Cowthello Heuristik vs Monte Carlo}
+\subsection{Alpha-Beta: Nijssen 2007 Heuristik vs Monte Carlo}
 
-\section{Monte Carlo vs Alpha-Beta: Nijssen 2007 Heuristik}
+\subsection{Alpha-Beta: Cowthello Heuristik vs Monte Carlo}
 
-\section{Monte Carlo vs Alpha-Beta: Cowthello Heuristik}
+\subsection{Monte Carlo vs Alpha-Beta: Nijssen 2007 Heuristik}
+
+\subsection{Monte Carlo vs Alpha-Beta: Cowthello Heuristik}
+
+\section{Evaluierung der Bedeutung verschiedener Feldkategorien}
