@@ -7,6 +7,7 @@ Die Python Implementierung befindet sich im Verzeichnis \mxZitat{python} des zu 
 \\Die einzelnen Komponenten wurden unter thematischen Gesichtspunkten in verschiedenen Dateien organisiert. Nachfolgend wird auf die einzelnen Dateien und deren Funktion kurz eingegangen.
 \subsection{Der Spielablauf}
 In \mxZitat{main-game.py} wird das Rahmenprogramm gestartet. In diesem werden zunächst die Spieler festgelegt. Anschließend wird ein Spiel erstellt, initialisiert und das Spielbrett ausgegeben ( siehe Listing \ref{lst:lst-main-game} Z. 2-4). Die Methode \code{game\_is\_over} gibt bei Spielende \code{True}, ansonsten \code{False} zurück. In der Schleife von Zeile 5 bis Zeile 11 wird der Agent des aktuelle Spielers ermittelt (Z. 6f.). Für diesen wird die Funktion \code{get\_move} aufgerufen. Diese gibt den nach der Strategie des jeweiligen Agenten besten Spielzug zurück. Je nach Spielagent werden unterschiedliche Algorithmen zur Ermittlung dieses Zuges verwendet. Dieser Zug wird gespielt und auf das Spielbrett angewendet (Z. 9). Abschließend wird das aktualisierte Spielbrett und der zuletzt durchgeführte Zug ausgegeben (Z. 10f.). Die Schleife wird bis zum Spielende wiederholt. Danach wird der Gewinner und die gesamte Spieldauer ermittelt und ausgegeben (Z. 12-15).
+\newpage
 \begin{lstlisting}[caption = {Spielablauf in \mxZitat{main-game.py}}, language = python, captionpos = t , numbers=left, label={lst:lst-main-game}]
     players = {PLAYER_ONE: player_one, PLAYER_TWO: player_two}
     game = Othello()
@@ -183,7 +184,9 @@ self.update_fields_stats_for_single_game(moves, winner)
 \end{lstlisting}
 In der Funktion \code{update\_fields\_stats\_for\_single\_game} (Listing \ref{lst:train2} Z. 9-12) wird die Liste der Züge in einzelne Züge aufgeteilt (Z. 10), welche anschließend jeweils eine Spalte in einer Datenbankzeile aktualisieren. Dazu werden die Züge, beispielsweise \mxZitat{a1}, in Zeile 11 in eine Feldkategorie umgerechnet (im Beispiel \mxZitat{0}) und ebenfalls der Methode \code{update\_field\_stat} übergeben.
 \\Diese Methode liest die Werte der durch Zugnummer und Feldkategorie festgelegte Zelle aus (Z.2). Je nachdem, welcher Spieler dieses Spiel gewonnen hat, wird die Zahl der gewonnenen Spiele des ersten, zweiten oder keinem Spieler um eins erhöht (Z. 3-6). Abschließend wird die Zahl der insgesamt durchgeführten Spiele inkrementiert (Z.7 dritte Komponente) und in die Datenbank zurückgeschrieben (Z.7).
-
+\\Die Datenbank wurde mit 140.000 Spielen trainiert, um statistische Abweichungen zu minimieren. Hierbei wirkt das Gesetz der großen Zahlen, das besagt, dass sich die Wahrscheinlichkeiten eines Ereignisses bei sehr vielen Wiederholungen dem Erwartungswert annähert.
+\\Zur Auswertung der Datenbank wurde die Klasse \code{Analyse} in der Datei \code{analyse\_database.py} erstellt. Diese liest die Datenbank aus und liefert eine farbige Ansicht der Gewinnwahrscheinlichkeiten eines Spielers jeweils pro Zug auf dem Terminal. Neben dem dargestellten Spielbrett wird auch das Minimum, das Maximum, der Durchschnittswert und die Standardabweichung des dargestellten Spielbrettes berechnet.
+\newpage
 \begin{lstlisting}[caption = {Befüllen der Datenbank 2}, language = python, captionpos = t , numbers=left, label={lst:train2}]
 	def update_field_stat(self, turn_nr, field_type, winner):
 		(won_games_pl1, won_games_pl2, total_games_played) = self._data[turn_nr][field_type]
@@ -198,8 +201,7 @@ In der Funktion \code{update\_fields\_stats\_for\_single\_game} (Listing \ref{ls
 			position = self.translate_position_to_database(moves[turn_nr])
 			self.update_field_stat(turn_nr, position, winner)
 \end{lstlisting}
-Die Datenbank wurde mit 140.000 Spielen trainiert, um statistische Abweichungen zu minimieren. Hierbei wirkt das Gesetz der großen Zahlen, das besagt, dass sich die Wahrscheinlichkeiten eines Ereignisses bei sehr vielen Wiederholungen dem Erwartungswert annähert.
-\\Zur Auswertung der Datenbank wurde die Klasse \code{Analyse} in der Datei \code{analyse\_database.py} erstellt. Diese liest die Datenbank aus und liefert eine farbige Ansicht der Gewinnwahrscheinlichkeiten eines Spielers jeweils pro Zug auf dem Terminal. Neben dem dargestellten Spielbrett wird auch das Minimum, das Maximum, der Durchschnittswert und die Standardabweichung des dargestellten Spielbrettes berechnet.
+
 \paragraph{Heuristik}
 \label{para:heuristic1}
 Mithilfe der o.g. Datenbank wird eine Heuristik implementiert. Die Methode \code{heuristic} ist in Listing \ref{lst:heuristic2} abgebildet. Diese ermittelt die verfügbaren Zugmöglichkeiten und die aktuelle Zugnummer (Z. 2f.). Für jede Zugmöglichkeit wird die Gewinnwahrscheinlichkeit für den übergebenen Spieler in ein Dictionary gespeichert (Z. 6f.). Aus diesem Dictionary wird die höchste Wahrscheinlichkeit ermittelt und zurückgegeben (Z. 9f.).
@@ -225,6 +227,7 @@ Die Gewichte der einzelnen Felder sind in Abbildung dargestellt. Die Unterschied
 In dem Grundlagenkapitel \ref{lookup} wurden die Vor- und Nachteile von Suche vs. Nachschlagen beschrieben. In diesem Kapitel wird die Implementierung der Starttabellen mit Eröffnungszügen erklärt. Im Folgenden werden Spieltabellen und Startdatenbank synonym verwendet, da diese Tabellen als Matrix in einer Datenbank gespeichert werden.
 \\Für viele Spiele, beispielsweise für Schach, existieren Starttabellen, welche die \mxZitat{besten} Eröffnungszüge speichern. Für Othello existieren zwar mehrere Spieltabellen, aber nur wenige Eröffnungsspiele. In der Implementierung werden die 77 Eröffnungszüge von Robert Gatliff \cite{open1} verwendet. Diese bestehen jeweils aus einer Zugreihenfolge, z.B. \code{c4, c3, d3, c5, b2}. 
 \\Diese Züge werden im Spiel mit dem aktuellen Spielzustand verglichen. Wenn eine oder mehrere gespeicherte Züge mit dem aktuellen Spielzustand übereinstimmen, wir ein Zug aus den verfügbaren Zügen ausgewählt und gespielt. Die Funktion \code{get\_available\_moves\_of\_start\_tables} ist in Listing \ref{lst:start2} abgebildet.
+\newpage
 \begin{lstlisting}[caption = {Befüllen der Datenbank 2}, language = python, captionpos = t , numbers=left, label={lst:start2}]
 def get_available_moves_of_start_tables(self, game: Othello):
 	if len(self._start_tables) == 0:
@@ -238,9 +241,8 @@ def get_available_moves_of_start_tables(self, game: Othello):
 			if turn < turn_nr:
 				if taken_mv[turn] != move:
 					break
-			else:  # turn == turn_nr
-				if move != "i8" or move != "nan":  # invalid field
-					available_moves.append(move)
+			elif move != "i8" or move != "nan":  # invalid field
+				available_moves.append(move)
 				break
 			turn += 1
 	available_moves = list(dict.fromkeys(available_moves))
@@ -310,6 +312,7 @@ Die in \ref{lst:mc-prep-fixed} abgedruckte Funktion gibt die Implementierung des
 In \ref{lst:mc-prep-var} ist die Implementierung des Präprozessors mit variabler Selektivität angegeben.
 \\Wie der Präprozessor mit fester Selektivität erhält auch diese Funktion einen Spielzustand \code{game\_state} und eine Heuristik \code{heuristic}. Anders als bei dem oben beschriebenen Präprozessor wird hier jedoch ein Wert \code{p\_s} zur Beschreibung der maximalen prozentualen Abweichung $p_{s}$ vom Mittelwert der Wertigkeit der Züge übergeben.
 \\Für die Berechnung wid zunächst der Wert der Heuristik für alle Spielzüge berechnet (Zeile 3). Daraufhin wird in der Zeile 5 der Durchschnittliche Wert berechnet und mit der Anweisung in den zeilen 6 und 7 nur jene Züge im Spielzustand gesetzt, die einen Wert größer als $p_{s}$ multipliziert mit dem Durchschnittlichen Wert haben.
+\newpage
 \begin{lstlisting}[caption = {Die Funktion \code{preprocess\_variable\_slectivity}}, language = python, captionpos = t , numbers=left, label={lst:mc-prep-var}]
 	@staticmethod
     def preprocess_variable_selectivity(game_state: Othello, p_s, heuristic):

@@ -1,7 +1,7 @@
 import argparse
 
 """
-This file manges the main game.
+This file add console arguments to the main game.
 """
 
 from othello import Othello

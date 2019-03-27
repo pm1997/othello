@@ -7,7 +7,7 @@ In dem folgenden Unterkapitel werden grundlegende Definitionen eingeführt. Dies
 Ein \blue{Spiel} besteht aus einem Tupel der Form \\[0.2cm]
   \hspace*{1.3cm}
   $\mathtt{G} = \langle Q, S\textsubscript{0},\mathtt{player}, \mathtt{actions}, \mathtt{result}, \mathtt{terminalTest}, \mathtt{utility} \rangle$
-\\Definiere $Q$ als die Menge aller Zustände im Spiel. Ein Spielzustand besteht aus dem aktuellen Spielbrett, der Zugnummer, dem aktiven Spieler und weiteren Parametern, welche zur genauen Darstellung eines Spielzustands führen.
+\\Sei $Q$ die Menge aller Zustände im Spiel. Ein Spielzustand besteht aus dem aktuellen Spielbrett, der Zugnummer, dem aktiven Spieler und weiteren Parametern, welche zur genauen Darstellung eines Spielzustands führen.
 \begin{itemize}
 \item $\mathtt{Q}:$ Menge aller Spielzustände ($states$)
 \item $\so\ \in \mathtt{Q}$ beschreibt den Startzustand des Spiels.
@@ -27,7 +27,9 @@ $\\\mathtt{False}\ | s \not\in \mathtt{terminalStates} \end{cases}$
 Eine spezielle Art von Spielen sind \blue{Nullsummenspiele}.
 \begin{Definition}[Nullsummenspiele (vgl. \cite{Russell.2016} S. 161)]
 In einem \blue{Nullsummenspiel} ist die Summe der utility Funktion eines Endzustandes ($\mathtt{terminalState}$) über alle Spieler 0. Es gilt also:
+\vspace{0.2cm}
 \\$\forall s \in \mathtt{terminalStates}: \sum\limits_{p \in Players} utility(s, p) = 0$
+\vspace{0.2cm}
 %\\Dies bedeutet, dass wenn ein Spieler gewinnt mindestens ein Gegenspieler verliert.
 \\In Othello spielen zwei Spieler gegeneinander. Es gibt also nur die drei Möglichkeiten:
 \begin{itemize}
@@ -57,6 +59,7 @@ Ein \blue{Suchbaum} ist ein Teil des Spielbaums. Die Wurzel des Spielbaums beste
 \\ $B \in A \wedge B = A[s]$ mit $ A \in \mathtt{Spielbaum}, B \in \mathtt{Suchbaum}(s), s \in Q$
 \end{Definition}
 \info{Überleitung einfügen}
+\newpage
 \section{Spielstrategien}
 Es gibt verschiedene Spielstrategien. Im Folgenden werden diese kurz erläutert und anschließend verglichen.
 \subsection{MiniMax}
@@ -247,10 +250,10 @@ Da der Algorithmus per Definition alle Wertigkeiten kleiner $alpha$ ausschließe
 \end{enumerate}
 
 \subsubsection{Ordnung der Züge}
-Wie in obigen Beispiel an den Zweigen unter dem Knoten C zu sehen war kann, je nach der Reihenfolge in der die Folgezüge untersucht werden, die Auswertung eines Folgezustandes früher oder später abgebrochen werden. Optimalerweise werden die besten Züge, also jene Züge die einen möglichst frühen Abbruch der Betrachtung eines Knotens herbeiführen zuerst betrachtet. Um dies Abschätzen zu können bedient man sich in der Praxis einer Heuristik die Aussagen über die Güte eines Zuges im Vergleich zu den übrigen Zügen zulässt. Anhand dieser Heuristik kann dann die Reihenfolge der Auswertung einzelner Folgezustände dynamisch angepasst werden.
+Wie in obigen Beispiel an den Zweigen unter dem Knoten C zu sehen war kann, je nach der Reihenfolge in der die Folgezüge untersucht werden, die Auswertung eines Folgezustandes früher oder später abgebrochen werden. Optimalerweise werden die besten Züge, also jene Züge die einen möglichst frühen Abbruch der Betrachtung eines Knotens herbeiführen zuerst betrachtet. Um dies Abschätzen zu können bedient man sich in der Praxis einer Heuristik die Aussagen über die Güte eines Zuges im Vergleich zu den übrigen Zügen zulässt. Anhand dieser Heuristik kann dann die Reihenfolge der Auswertung einzelner Folgezustände dynamisch angepasst werden. In Kapitel \ref{Heuristiken} werden unterschiedliche Heuristiken erklärt.
 
 \subsection{Suboptimale Echtzeitentscheidungen}
-Selbst die gezeigten Verbesserung des MiniMax-Algorithmus besitzt noch einen wesentlichen Nachteil. Da es sich um einen \mxZitat{depth-first} Algorithmus handelt muss jeder Pfad bis zu einem Endzustand betrachtet werden um eine Aussage über den Wert des Zuges treffen zu können. Dem steht jedoch die Tatsache entgegen, dass in der Praxis eine Entscheidung möglichst schnell, idealer Weise innerhalb weniger Minuten, getroffen werden soll. Hinzu kommt die Tatsache, dass viele Spiele unter Verwendung von derzeit erhältlicher Hardware (noch) nicht lösbar sind.\\
+Selbst die gezeigten Verbesserung des MiniMax-Algorithmus besitzt noch einen wesentlichen Nachteil. Da es sich um einen \mxZitat{depth-first} Algorithmus handelt muss jeder Pfad bis zu einem Endzustand betrachtet werden um eine Aussage über den Wert des Zuges treffen zu können. Dem steht jedoch die Tatsache entgegen, dass in der Praxis eine Entscheidung möglichst schnell, idealer Weise innerhalb weniger Sekunden, getroffen werden soll. Hinzu kommt die Tatsache, dass viele Spiele unter Verwendung von derzeit erhältlicher Hardware (noch) nicht lösbar sind.\\
 Es gilt also eine Möglichkeit zu finden, die Auswertung des kompletten Baumes zu vermeiden.
 
 \subsubsection{Heuristiken}
@@ -274,7 +277,7 @@ Viele Spiele kann man in 3 Haupt-Spielabschnitte einteilen:
 \end{itemize}
 In der Eröffnungsphase und in der Endphase gibt es im Vergleich zum Mittelspiel wenige Zugmöglichkeiten. Dadurch sinkt der Verzweigungsfaktor und die generelle Anzahl der Folgezustände. In diesen Phasen können die optimalen Spielzüge einfacher berechnet werden. Eine weitere Möglichkeit besteht aus dem Nachschlagen des \states\ aus einer Lookup-Tabelle.
 \\Dies ist sinnvoll, da gewöhnlicherweise sehr viel Literatur über die Spieleröffnung des jeweiligen Spiels existiert. % Auch über die Endzustände in der Schlussphase des Spiels findet sich Literatur. 
-Das Mittelspiel jedoch hat zu viele Zugmöglichkeiten, um eine Tabelle der möglichen Spielzüge bis zum Spielende aufstellen zu können. In dem Kapitel \ref{othello-eroff} werden die bekanntesten Eröffnungsstrategien aufgelistet.
+Das Mittelspiel jedoch hat zu viele Zugmöglichkeiten, um eine Tabelle der möglichen Spielzüge bis zum Spielende aufstellen zu können.Den in diesem Spielabschnitt existieren üblicherweise 4 bis 12 Zugmöglichkeiten. Der in dem Kapitel \ref{othello-eroff} werden die bekanntesten Eröffnungsstrategien aufgelistet.
 \\Viele Spielstrategien wie beispielsweise die MiniMax-Strategie setzen den kompletten oder wenigstens einen großen Teil des Spielbaums voraus. Dieser kann entweder berechnet werden oder aus einer Lookup-Tabelle gelesen werden. Je nach Verzweigungsfaktor der einzelnen Spielzüge kann diese allerdings sehr groß sein. Selbst im späten Spielverlauf gibt es verschiedene Spiele, welche einen großen Spielbaum besitzen.
 \\Beispielsweise existieren für das Endspiel in Schach mit einem König, Läufer und Springer gegen einen König 3.494.568 mögliche Positionen (vgl. \cite{Russell.2016} S.176).
 \\Dies sind zu viele Möglichkeiten um alle speichern zu können, da noch sehr viel mehr Endspiel-Kombinationen als diese existieren.
