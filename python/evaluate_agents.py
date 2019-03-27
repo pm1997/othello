@@ -72,7 +72,7 @@ if __name__ == '__main__':
     if args.use_mp1:
         use_multiprocessing = args.use_mp1
 
-    use_monte_carlo = True
+    use_monte_carlo = False
     if args.use_mc1:
         use_monte_carlo = args.use_mc1
 
@@ -86,7 +86,7 @@ if __name__ == '__main__':
         player_one = MonteCarlo(big_number=big_number, use_start_libs=use_start_libs, preprocessor_n=preprocessor_n,
                                 heuristic=heuristic1, use_multiprocessing=use_multiprocessing)
     elif args.agent1 == 3:
-        player_one = AlphaBetaPruning(heuristic=heuristic1, search_depth=search_depth, use_monte_carlo=use_monte_carlo,
+        player_one = AlphaBetaPruning(heuristic=heuristic1, search_depth=search_depth, mc_count=big_number, use_monte_carlo=use_monte_carlo,
                                       use_start_lib=use_start_libs)
     else:
         player_one = Human()
@@ -120,7 +120,7 @@ if __name__ == '__main__':
     if args.use_mp2:
         use_multiprocessing2 = args.use_mp2
 
-    use_monte_carlo2 = True
+    use_monte_carlo2 = False
     if args.use_mc2:
         use_monte_carlo2 = args.use_mc2
 
@@ -135,12 +135,13 @@ if __name__ == '__main__':
                                 heuristic=heuristic2, use_multiprocessing=use_multiprocessing2)
     elif args.agent2 == 3:
         player_two = AlphaBetaPruning(heuristic=heuristic2, search_depth=search_depth2,
-                                      use_monte_carlo=use_monte_carlo2, use_start_lib=use_start_libs2)
+                                      use_monte_carlo=use_monte_carlo2, mc_count=big_number2, use_start_lib=use_start_libs2)
     else:
         player_two = Human()
 
     games_nr = args.games_nr
     winning_stats = {PLAYER_ONE: 0, PLAYER_TWO: 0}
+    durations = 0
 
     for game in range(games_nr):
         print(f"game: {game}")
@@ -178,7 +179,22 @@ if __name__ == '__main__':
         print(f"Total duration: {duration} seconds")
         # Print the winner of the game
         winner = game.get_winner()
-        winning_stats[winner] += 1
+        if winner is not None:
+            winning_stats[winner] += 1
         print(f"Winner is {PRINT_SYMBOLS[winner]}")
+        durations += duration
     print(f"Player 1 won {winning_stats[PLAYER_ONE]} games")
     print(f"Player 2 won {winning_stats[PLAYER_TWO]} games")
+    print(f"Player 1 won in {winning_stats[PLAYER_ONE] * 100 / games_nr} %\n")
+    print(f"Player 2 won in {winning_stats[PLAYER_TWO] * 100 / games_nr} %\n")
+    print(f"total duration: {durations}")
+    print(f"average duration: {durations / games_nr}")
+
+    with open("results", 'w') as outfile:
+        outfile.write(f"Total games: {games_nr}\n")
+        outfile.write(f"Player 1 won {winning_stats[PLAYER_ONE]} games\n")
+        outfile.write(f"Player 2 won {winning_stats[PLAYER_TWO]} games\n")
+        outfile.write(f"Player 1 won in {winning_stats[PLAYER_ONE] * 100 / games_nr} %\n")
+        outfile.write(f"Player 2 won in {winning_stats[PLAYER_TWO] * 100 / games_nr} %\n")
+        outfile.write(f"total duration: {durations}\n")
+        outfile.write(f"average duration: {durations / games_nr}\n")
