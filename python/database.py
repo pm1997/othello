@@ -24,12 +24,6 @@ class Database:
         csv = np.loadtxt(DATABASE_FILE_NAME, delimiter=';', dtype='int64')
         self._data = csv.reshape((60, 9, 3))
 
-    def __del__(self):
-        """
-        store database in file
-        """
-        # self._store_database()
-
     def _create_new_database(self):
         """
         Reset stored played / won games
@@ -78,14 +72,11 @@ class Database:
     def update_fields_stats_for_single_game(self, moves, winner):
         # update each move in game
         for turn_nr in range(len(moves)):
-            # translate move like "a2" to (1,0)
-            # move = UtilMethods.translate_move_to_pair(moves[turn_nr])
             # translate move 1,0 to position 8
             position = self.translate_position_to_database(moves[turn_nr])
             # update array at position position
             self.update_field_stat(turn_nr, position, winner)
             # update next move
-            # turn_nr += 1
 
     @staticmethod
     def _play_n_random_games(count):
