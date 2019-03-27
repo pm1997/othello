@@ -14,8 +14,8 @@ class MonteCarlo:
     The PlayerMonteCarlo determines the best move based on the simplest form of the MonteCarlo-Algorithm
     """
 
-    start_tables = StartTables()
-    move_probability = dict()
+    _start_tables = StartTables()
+    _move_probability = dict()
 
     def __init__(self, big_number=1400, use_start_libs=True, preprocessor_n=-1, heuristic=heuristics.StoredMonteCarloHeuristic.heuristic, use_multiprocessing=True):
         """
@@ -106,7 +106,7 @@ class MonteCarlo:
     @staticmethod
     def preprocess_fixed_selectivity(game_state: Othello, n_s, heuristic):
         """
-        Will preprocess the given game_state by only letting the N_s best moves pass
+        Will preprocess the given game_state by only letting the n_s best moves pass
         :param game_state:
         :param n_s:
         :param heuristic:
@@ -198,13 +198,13 @@ class MonteCarlo:
         """
         # Use start library if it is selected and still included
         if self._use_start_lib and game_state.get_turn_nr() < 21:  # check whether start move match
-            moves = self.start_tables.get_available_moves_of_start_tables(game_state)
+            moves = self._start_tables.get_available_moves_of_start_tables(game_state)
             if len(moves) > 0:
                 return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
         # Create a dictionary to store information on won/lost ratios
         # winning_statistics = dict()
         # empty dictionary or win probabilities
-        self.move_probability.clear()
+        self._move_probability.clear()
         # Get the own symbol
         own_symbol = game_state.get_current_player()
         # Check whether to preprocess the available moves
@@ -230,10 +230,10 @@ class MonteCarlo:
             # Access the values
             (games_won, times_played) = winning_statistics[single_move]
             # Calculate the fraction
-            self.move_probability[single_move] = games_won / times_played
+            self._move_probability[single_move] = games_won / times_played
 
         # Select the move with the maximum probability of winning
-        selected_move = max(self.move_probability.items(), key=operator.itemgetter(1))[0]
+        selected_move = max(self._move_probability.items(), key=operator.itemgetter(1))[0]
         # Return the selected move
         return selected_move
 
@@ -242,4 +242,4 @@ class MonteCarlo:
         :param move: given move in available moves
         :return: win probability of given move
         """
-        return self.move_probability[move]
+        return self._move_probability[move]
