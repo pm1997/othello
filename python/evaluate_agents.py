@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    big_number = 1400
+    big_number = 2000
     if args.big_number1:
         big_number = args.big_number1
 
@@ -60,6 +60,7 @@ if __name__ == '__main__':
 
     heuristic1 = heuristics.StoredMonteCarloHeuristic.heuristic
     if args.heuristic1:
+        print(f"heuristic1: {args.heuristic1}")
         # Create a list of all Heuristics
         available_heuristics = list()
         # Use pairs of the form (description: String, class: Player) to store a player type
@@ -74,6 +75,7 @@ if __name__ == '__main__':
 
     use_monte_carlo = False
     if args.use_mc1:
+        print(f"mc1: {args.use_mc1}")
         use_monte_carlo = args.use_mc1
 
     search_depth = 5
@@ -94,7 +96,7 @@ if __name__ == '__main__':
     # --------------------------------------------------------------------------------------------------
     # Player 2
 
-    big_number2 = 1400
+    big_number2 = 2000
     if args.big_number2:
         big_number2 = args.big_number2
 
@@ -108,6 +110,7 @@ if __name__ == '__main__':
 
     heuristic2 = heuristics.StoredMonteCarloHeuristic.heuristic
     if args.heuristic2:
+        print(f"heuristic2: {args.heuristic2}")
         # Create a list of all Heuristics
         available_heuristics = list()
         # Use pairs of the form (description: String, class: Player) to store a player type
@@ -122,6 +125,7 @@ if __name__ == '__main__':
 
     use_monte_carlo2 = False
     if args.use_mc2:
+        print(f"mc2: {args.use_mc2}")
         use_monte_carlo2 = args.use_mc2
 
     search_depth2 = 5
@@ -204,7 +208,7 @@ if __name__ == '__main__':
         outfile.write(f"Player 2 won in {winning_stats[PLAYER_TWO] * 100 / games_nr} %\n")
         outfile.write(f"Total Computation Time Player 1: {total_times[PLAYER_ONE]}\n")
         outfile.write(f"Total Computation Time Player 2: {total_times[PLAYER_TWO]}\n")
-        outfile.write(f"Average Computation Time Player 1: {total_times[PLAYER_ONE / games_nr]}\n")
-        outfile.write(f"Average Computation Time Player 2: {total_times[PLAYER_TWO / games_nr]}\n")
+        outfile.write(f"Average Computation Time Player 1: {total_times[PLAYER_ONE] / games_nr}\n")
+        outfile.write(f"Average Computation Time Player 2: {total_times[PLAYER_TWO] / games_nr}\n")
         outfile.write(f"Total Duration: {durations}\n")
         outfile.write(f"Average Duration: {durations / games_nr}\n")
