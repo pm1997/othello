@@ -112,12 +112,12 @@ if __name__ == '__main__':
     if args.heuristic2:
         print(f"heuristic2: {args.heuristic2}")
         # Create a list of all Heuristics
-        available_heuristics = list()
+        available_heuristics2 = list()
         # Use pairs of the form (description: String, class: Player) to store a player type
-        available_heuristics.append(("Nijssen 07 Heuristic", heuristics.Nijssen07Heuristic.heuristic))
-        available_heuristics.append(("Field Heuristic", heuristics.StoredMonteCarloHeuristic.heuristic))
-        available_heuristics.append(("Cowthello Heuristic", heuristics.CowthelloHeuristic.heuristic))
-        heuristic2 = available_heuristics[args.heuristic1]
+        available_heuristics2.append(("Nijssen 07 Heuristic", heuristics.Nijssen07Heuristic.heuristic))
+        available_heuristics2.append(("Field Heuristic", heuristics.StoredMonteCarloHeuristic.heuristic))
+        available_heuristics2.append(("Cowthello Heuristic", heuristics.CowthelloHeuristic.heuristic))
+        heuristic2 = available_heuristics2[args.heuristic2]
 
     use_multiprocessing2 = True
     if args.use_mp2:
