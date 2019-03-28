@@ -45,3 +45,93 @@ Total Computation Time Player 1: 11821.433485746384
 Total Computation Time Player 2: 0.23468875885009766
 
 # ------------------------------------------------------------
+Random vs Alpha Beta CowthelloHeuristic (Heuristic 2)
+
+Total games: 100
+Player 1 won 29 games
+Player 2 won 70 games
+Player 1 won in 29.0 %
+Player 2 won in 70.0 %
+Total Computation Time Player 1: 0.032953739166259766
+Total Computation Time Player 2: 11575.408989906311
+Average Computation Time Player 1: 0.00032953739166259767
+Average Computation Time Player 2: 115.7540898990631
+Total Duration: 11583.338537216187
+Average Duration: 115.83338537216187
+
+# ------------------------------------------------------------
+Random vs Alpha Beta StoredMonteCarloHeuristic (Heuristic 1)
+
+Total games: 100
+Player 1 won 53 games
+Player 2 won 46 games
+Player 1 won in 53.0 %
+Player 2 won in 46.0 %
+Total Computation Time Player 1: 0.03419208526611328
+Total Computation Time Player 2: 15839.922535896301
+Average Computation Time Player 1: 0.0003419208526611328
+Average Computation Time Player 2: 158.399225358963
+Total Duration: 15847.898064613342
+Average Duration: 158.47898064613344
+
+# ------------------------------------------------------------
+Random vs Alpha Beta Nijssen07Heuristic (Heuristic 0)
+
+Total games: 100
+Player 1 won 36 games
+Player 2 won 64 games
+Player 1 won in 36.0 %
+Player 2 won in 64.0 %
+Total Computation Time Player 1: 0.02891397476196289
+Total Computation Time Player 2: 18204.209469795227
+Average Computation Time Player 1: 0.0002891397476196289
+Average Computation Time Player 2: 182.04209469795228
+Total Duration: 18210.045891046524
+Average Duration: 182.10045891046525
+
+# ------------------------------------------------------------
+Alpha Beta Nijssen07Heuristic  vs Random (Heuristic 0)
+
+Total games: 100
+Player 1 won 54 games
+Player 2 won 40 games
+Player 1 won in 54.0 %
+Player 2 won in 40.0 %
+Total Computation Time Player 1: 15265.094288110733
+Total Computation Time Player 2: 0.032700300216674805
+Average Computation Time Player 1: 152.65094288110734
+Average Computation Time Player 2: 0.00032700300216674804
+Total Duration: 15273.387269735336
+Average Duration: 152.73387269735338
+
+# ------------------------------------------------------------
+Alpha Beta StoredMonteCarloHeuristic vs Random (Heuristic 1)
+
+Total games: 100
+Player 1 won 45 games
+Player 2 won 48 games
+Player 1 won in 45.0 %
+Player 2 won in 48.0 %
+Total Computation Time Player 1: 18690.29140686989
+Total Computation Time Player 2: 0.03688216209411621
+Average Computation Time Player 1: 186.9029140686989
+Average Computation Time Player 2: 0.0003688216209411621
+Total Duration: 18699.62310886383
+Average Duration: 186.9962310886383
+
+# ------------------------------------------------------------
+Alpha Beta CowthelloHeuristic vs Random (Heuristic 2)
+
+Total games: 100
+Player 1 won 55 games
+Player 2 won 33 games
+Player 1 won in 55.0 %
+Player 2 won in 33.0 %
+Total Computation Time Player 1: 12341.613943815231
+Total Computation Time Player 2: 0.033247947692871094
+Average Computation Time Player 1: 123.41613943815231
+Average Computation Time Player 2: 0.00033247947692871093
+Total Duration: 12350.61412358284
+Average Duration: 123.5061412358284
+
+# ------------------------------------------------------------
