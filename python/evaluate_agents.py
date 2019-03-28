@@ -67,7 +67,7 @@ if __name__ == '__main__':
         available_heuristics.append(("Nijssen 07 Heuristic", heuristics.Nijssen07Heuristic.heuristic))
         available_heuristics.append(("Field Heuristic", heuristics.StoredMonteCarloHeuristic.heuristic))
         available_heuristics.append(("Cowthello Heuristic", heuristics.CowthelloHeuristic.heuristic))
-        heuristic1 = available_heuristics[args.heuristic1]
+        heuristic1 = available_heuristics[args.heuristic1][1]
 
     use_multiprocessing = True
     if args.use_mp1:
@@ -117,7 +117,7 @@ if __name__ == '__main__':
         available_heuristics2.append(("Nijssen 07 Heuristic", heuristics.Nijssen07Heuristic.heuristic))
         available_heuristics2.append(("Field Heuristic", heuristics.StoredMonteCarloHeuristic.heuristic))
         available_heuristics2.append(("Cowthello Heuristic", heuristics.CowthelloHeuristic.heuristic))
-        heuristic2 = available_heuristics2[args.heuristic2]
+        heuristic2 = available_heuristics2[args.heuristic2][1]
 
     use_multiprocessing2 = True
     if args.use_mp2:
