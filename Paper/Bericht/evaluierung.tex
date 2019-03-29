@@ -1,4 +1,8 @@
 \chapter{Evaluierung}
+Ziel dieses Kapitel ist es die im vorherigen Kapitel vorgestellte Implementierung zu testen. Dabei ergeben sich im wesentlichen zwei Testaspekte: Zum einen die vorgestellten Agenten und zum anderen die Bedeutung der in Kapitel \ref{impl:stored-mc} eingeführten Feldkategorien.
+\paragraph{}
+Die Evaluierung der einzelnen Agenten erfolgt dabei im wesentlichen dadurch die Agenten gegeneinander Spielen zu lassen. Mittels einer genügend großen Anzahl von Spielen lässt sich darart ermitteln welcher der jeweils verwendeten Agenten im Mittel die meisten Spiele gewinnt und damit besser ist.
+\\Die Bedeutung der Feldkategorien wird Anhand der Gewinnwahrscheinlichkeit einer Spielkategorie über den Spielfortschritt untersucht.
 \section{Evaluierung der einzelnen Agenten}
 Nun gilt es die in Kapitel \ref{implementation} beschriebenen Agenten zu evaluieren. In Ermangelung eines Othello-Spielers der über ein entsprechend gute Spielfähigen verfügt, so dass er zu einem aussagekräftigen Vergleich herangezogen werden könnte, werden die einzelnen Agenten untereinander verglichen. Die einstellbaren Parameter wurden dabei so gewählt, dass der Agent im Laufe eines Spiels ungefähr 5 Minuten zum Treffen seiner Entscheidung benötigt. Auf die genauen Werte der Parameter soll hier nicht näher eingegangen werden. Aus Gründen der Nachvollziehbarkeit finden sie sich in den Anschnitten \ref{eval:agents:params:subsec-mc} bzw. \ref{eval:agents:params:subsec-ab}
 \\Bei der Bestimmung der Parameter sich gezeigt, dass die beim Agenten \mxZitat{Alpha-Beta Pruning} gewählte Heuristik die Gewinnchance des Agenten wesentlich beeinflusst. Aus diesem Grund wird der \mxZitat{Alpha-Beta Pruning}-Agent mit allen zur Verfügung stehenden Heuristiken seperat betrachtet. Die sich daraus Ergebenden Vergleiche sind in Tabelle \ref{tbl:cmp-agents} dargestellt. Der Agent \mxZitat{Alpha-Beta Pruning} wird dabei durch \mxZitat{AB} abgekürzt.
@@ -72,3 +76,4 @@ Vergleich & Gewonnene Spiele Agent 1 & Gewonnene Spiele Agent 2 & Spielzeit \\ \
 
 
 \section{Evaluierung der Bedeutung verschiedener Feldkategorien}
+
