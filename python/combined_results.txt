@@ -134,4 +134,16 @@ Average Computation Time Player 2: 0.00033247947692871093
 Total Duration: 12350.61412358284
 Average Duration: 123.5061412358284
 
+Total games: 1000
+Player 1 won 564 games
+Player 2 won 324 games
+Player 1 won in 56.4 %
+Player 2 won in 32.4 %
+Total Computation Time Player 1: 156597.06094050407
+Total Computation Time Player 2: 0.5614027976989746
+Average Computation Time Player 1: 156.59706094050406
+Average Computation Time Player 2: 0.0005614027976989746
+Total Duration: 156660.01527786255
+Average Duration: 156.66001527786256
+
 # ------------------------------------------------------------
