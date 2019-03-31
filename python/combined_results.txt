@@ -59,6 +59,18 @@ Average Computation Time Player 2: 115.7540898990631
 Total Duration: 11583.338537216187
 Average Duration: 115.83338537216187
 
+Total games: 1000
+Player 1 won 289 games
+Player 2 won 709 games
+Player 1 won in 28.9 %
+Player 2 won in 70.9 %
+Total Computation Time Player 1: 0.4913961887359619
+Total Computation Time Player 2: 149176.48743486404
+Average Computation Time Player 1: 0.0004913961887359619
+Average Computation Time Player 2: 149.17648743486404
+Total Duration: 149235.80176258087
+Average Duration: 149.23580176258088
+
 # ------------------------------------------------------------
 Random vs Alpha Beta StoredMonteCarloHeuristic (Heuristic 1)
 
