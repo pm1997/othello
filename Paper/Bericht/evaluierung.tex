@@ -4,6 +4,7 @@ Ziel dieses Kapitel ist es die im vorherigen Kapitel vorgestellte Implementierun
 Die Evaluierung der einzelnen Agenten erfolgt dabei im wesentlichen dadurch die Agenten gegeneinander spielen zu lassen. Mittels einer genügend großen Anzahl von Spielen lässt sich darart ermitteln welcher der jeweils verwendeten Agenten im Mittel die meisten Spiele gewinnt und damit besser ist.
 \\Die Bedeutung der Feldkategorien wird Anhand der Gewinnwahrscheinlichkeit einer Spielkategorie über den Spielfortschritt untersucht.
 \section{Evaluierung der einzelnen Agenten}
+\label{cpt:eval-agents}
 Nun gilt es die in Kapitel \ref{implementation} beschriebenen Agenten zu evaluieren. In Ermangelung eines Othello-Spielers, der über ein entsprechend gute Spielfähigkeiten verfügt, so dass er zu einem aussagekräftigen Vergleich herangezogen werden könnte, werden die einzelnen Agenten untereinander verglichen. Die einstellbaren Parameter wurden dabei so gewählt, dass der Agent im Laufe eines Spiels ungefähr 5 Minuten zum Treffen seiner Entscheidung benötigt. Auf die genauen Werte der Parameter soll hier nicht näher eingegangen werden. Aus Gründen der Nachvollziehbarkeit finden sie sich in den Anschnitten \nameref{eval:agents:params:subsec-mc} bzw. \nameref{eval:agents:params:subsec-ab}
 \\Bei der Bestimmung der Parameter sich gezeigt, dass die beim Agenten \mxZitat{Alpha-Beta Pruning} gewählte Heuristik die Gewinnchance des Agenten wesentlich beeinflusst. Aus diesem Grund wird der \mxZitat{Alpha-Beta Pruning}-Agent mit allen zur Verfügung stehenden Heuristiken seperat betrachtet. Die sich daraus Ergebenden Vergleiche sind in Tabelle \ref{tbl:cmp-agents} dargestellt. Der Agent \mxZitat{Alpha-Beta Pruning} wird dabei durch \mxZitat{AB} abgekürzt.
 \paragraph{Vergleich mit dem Agent \mxZitat{Random}}
@@ -20,20 +21,20 @@ Vergleich & Agent 1 & Agent 2 \\ \hline
 \hline
 0 & Random & Random  \\ \hline
 \hline
-1 & Monte Carlo & Random  \\ \hline
-2 & AB (Nijssen 2008 Heuristik) & Random\\ \hline
-3 & AB (Stored Monte Carlo Heuristik) & Random\\ \hline
-4 & AB (Cowthello Heuristik) & Random\\ \hline
-5 & AB (mit anschließendem Monte Carlo) & Random\\ \hline
+ 1 & Monte Carlo                         & Random  \\ \hline
+ 2 & AB (Nijssen 2008 Heuristik)         & Random\\ \hline
+ 3 & AB (Stored Monte Carlo Heuristik)   & Random\\ \hline
+ 4 & AB (Cowthello Heuristik)            & Random\\ \hline
+ 5 & AB (mit anschließendem Monte Carlo) & Random\\ \hline
 \hline
-6 & Random & Monte Carlo\\ \hline
-7 & Random & AB (Nijssen 2008 Heuristik)\\ \hline
-8 & Random & AB (Stored Monte Carlo Heuristik)\\ \hline
-9 & Random & AB (Cowthello Heuristik)\\ \hline
-10 & Random & AB (mit anschließendem Monte Carlo)\\ \hline
+ 6 & Random                              & Monte Carlo                         \\ \hline
+ 7 & Random                              & AB (Nijssen 2008 Heuristik)         \\ \hline
+ 8 & Random                              & AB (Stored Monte Carlo Heuristik)   \\ \hline
+ 9 & Random                              & AB (Cowthello Heuristik)            \\ \hline
+10 & Random                              & AB (mit anschließendem Monte Carlo) \\ \hline
 \hline
-11 & AB (beste) & Monte Carlo\\ \hline
-12 & Monte Carlo & AB (beste)\\ \hline
+11 & AB (beste)                          & Monte Carlo                         \\ \hline
+12 & Monte Carlo                         & AB (beste)                          \\ \hline
 \end{tabular}
 \end{center}
 \caption{Durchgeführte Vergleiche}
@@ -42,12 +43,12 @@ Vergleich & Agent 1 & Agent 2 \\ \hline
 
 \paragraph{Ergebnisse der Vergleiche}
 \label{p:vgl-result}
-Um zum einen ein möglichst aussagekräftiges Ergebnis zu erhalten und zum Anderen die zur Durchführung der Spiele erforderliche Rechenzeit zu beschränken wurden für jeden der in Tabelle \ref{tbl:cmp-agents} angegebenen Vergleiche jeweils 1000 Spiele durchgeführt. Die Ergebnisse dieser Vergleiche finden sich in Tabelle \ref{tbl:cmp-results}:
+Um zum einen ein möglichst aussagekräftiges Ergebnis zu erhalten und zum Anderen die zur Durchführung der Spiele erforderliche Rechenzeit zu beschränken wurden für jeden der in Tabelle \ref{tbl:cmp-agents} angegebenen Vergleiche jeweils bis zu 1000 Spiele durchgeführt. Bei einigen Kombinationen wurden aus Gründen der erforderlichen Rechenzeit weniger als 1000 Vergleiche durchgeführt. Ist dies der Fall, so wird dies in der entsprechenden Spalte angegeben. Die Ergebnisse dieser Vergleiche finden sich in Tabelle \ref{tbl:cmp-results}:
 
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{| c | c | c | c | c | c |} \hline
- &  & \multicolumn{2}{|c|}{Gewonnene Spiele} & \multicolumn{2}{|c|}{$\varnothing$ Spielzeit [s]} \\ \hline
+ &  & \multicolumn{2}{|c|}{Gewonnene Spiele} & \multicolumn{2}{|c|}{$\varnothing$ Rechenzeit je Spiel [s]} \\ \hline
 Vergleich & Anz. Spiele & Agent 1 & Agent 2 & Agent 1 & Agent 2 \\ \hline
 \hline
  0 & 1000 & 429  &  527 &   0,00027 &   0,00026 \\ \hline
@@ -80,4 +81,13 @@ Vergleich & Anz. Spiele & Agent 1 & Agent 2 & Agent 1 & Agent 2 \\ \hline
 
 
 \section{Evaluierung der Bedeutung verschiedener Feldkategorien}
-
+Einleitung
+\paragraph{Methode}
+Für die Beurteilung der Bedeutung einzelner Feldkategorien wurde die für die im Kapitel \ref{cpt:eval-agents} durchgeführten Vergleiche mit der \mxZitat{Stored Monte Carlo Heuristik} aufgebaute Datenbank verwendet.
+\\Diese Datenbank wurde wie in Kapitel \ref{heuristic} erläutert durch das Spielen von Partien zwischen zwei \mxZitat{Random}-Agenten aufgebaut. Im vorliegenden Fall wurden $140000$ Spiele simuliert. Nun kann für jede Zugnummer und für jeden Spieler die Gewinnwahrscheinlichkeit für das Spielen einer Feldkategorie berechnet werden in dem für jede Kategorie die Anzahl der Spiele die nach Spielen eines Feldes dieser Kategorie gewonnen wurde durch die Anzahl der Spiele die insgesamt für die jeweilige Kategorie gespielt wurde dividiert wird. Um eine Division durch $0$ zu vermeiden, wird die berechnete Gewinnwahrscheinlichkeit auf $0$ gesetzt sofern bei der jeweiligen Zugnummer nie eine derartige Feldkategorie gespielt wurde. Aufgrund der großen Anzahl von zufällig gespielten Spielen ist in diesem Fall davon auszugehen, dass es zu der jeweiligen Zugnummer keine Möglichkeit gibt eine derartige Feldkategorie zu spielen. 
+\\Insgesamt ergibt sich damit pro Spieler eine Relation $\lbrace1, ..., 60\rbrace\times\lbrace0, ..., 8\rbrace\mapsto\lbrack0,1\rbrack$ die für die Zugnummer und für die und die Feldkategorie jeweils die Wahrscheinlichkeit angibt.
+  
+\paragraph{Ergebnisse}
+Um die große Anzahl von $60\ \mathtt{Zugnummern} * 9\ \mathtt{Zugkategorien} = 540$ Wahrscheinlichkeitswerten pro Spieler übersichtlich darstellen zu können werden diese grafisch aufbereitet. Da hierfür ausschließlich zweidimensionale Diagramme zum Einsatz kommen sollen besteht die Möglichkeit hier nach der Zugnummer oder der Feldkategorie zu schneiden. Die Abbildungen \ref{fig:win-pro-fc-0} bis \ref{fig:win-pro-fc-8} im Anhang geben die Gewinnwahrscheinlihckeiten für den Schnitt nach der Feldkategorie an.
+\\Die Abbildungen \ref{fig:win-pro-turn-0} bis \ref{fig:win-pro-turn-59} im Angang geben die Gewinnwahrscheinlichkeiten für den Schnitt nach der Zugnummer an. Da aus Platzgründen nicht alle 60 der sich daraus ergebenden Abbildungen abgedruckt werden sollen, wurde dabei die willkürlich gewählte Schrittweite von 5 Zugnummern gewählt. Die Situation für den Zug 59 wird trotzdem angegeben.
+\paragraph{Beurteilung der Ergebnisse}
