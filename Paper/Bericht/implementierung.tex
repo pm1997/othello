@@ -35,8 +35,8 @@ In Listing \ref{lst:class-vars-othello} sind alle Klassenvariablen, sowie deren 
 \item \code{\_current\_player}: Speichert den Spieler, der im modellierten Spielzustand an der Reihe ist.
 \item \code{\_last\_turn\_passed} wird verwendet um zu speichern ob der vorherige Spieler  passen musste. Dadurch kann das Spiel sobald zwei Spieler unmittelbar nacheinander passen müssen beendet werden.
 \item \code{\_game\_is\_over} wird auf \code{True} gesetzt sobald das Spiel beendet ist
-\item \code{\_fringe} In \code{\_fringe} werden alle Felder des Spielfeldes gespeichert die in eine Richtung unmittelbar neben einem bereits besetzten Feld liegen. Durch die Mitführung dieser Information muss zur Berechnung der erlaubten Züge nicht jedes mal über das Spielfeld iteriert werden um zunächst die infrage kommenden Felder zu ermitteln.
-\item \code{\_turning\_stones}: Enthält als Schlüssel alle erlaubten Züge und als Wert jeweils eine Liste jener Spielsteine die durch ausführen des Zuges umgedreht werden. Da zur Ermittlung der erlaubten Züge diese Information bereits berechnet werden muss wird sie in Form des Dictionarys vorgehalten um diese an anderer Stelle nicht erneut berechnen zu müssen.
+\item \code{\_fringe}: In \code{\_fringe} werden alle Felder des Spielfeldes gespeichert die in eine Richtung unmittelbar neben einem bereits besetzten Feld liegen. Durch die Mitführung dieser Information muss zur Berechnung der erlaubten Züge nicht jedes mal über das Spielfeld iteriert werden um zunächst die infrage kommenden Felder zu ermitteln.
+\item \code{\_turning\_stones}: Enthält als Schlüssel alle erlaubten Züge und als Wert jeweils eine Liste jener Spielsteine die durch ausführen des Zuges umgedreht werden. Da zur Ermittlung der erlaubten Züge diese Information bereits berechnet werden muss, wird sie in Form des Dictionarys vorgehalten um diese an anderer Stelle nicht erneut berechnen zu müssen.
 \item \code{\_taken\_moves}: Speichert alle ausgeführten Züge die erforderlich waren um den modellierten Spielzustand zu erreichen, da einige Algorithmen diese Information benötigen.
 \item \code{\_turn\_nr}: Speichert die Nummer des aktuellen Spielzuges, da die verwendete Strategie bei einigen Algorithmen davon abhängt, wie weit das Spiel schon fortgeschritten ist.
 \end{enumerate}
@@ -55,14 +55,14 @@ In Listing \ref{lst:class-vars-othello} sind alle Klassenvariablen, sowie deren 
 \end{lstlisting}
 \paragraph{Die Funktion \code{\_compute\_available\_moves}}
  ist in Listing \ref{lst:fct-compute-available-moves} angegeben und wird verwendet um die Inhalte des Dictionaries \code{\_turning\_stones} zu berechnern.
-\\Da beiden Spielern in der Regel nicht die gleichen Züge zur Verfügung stehen muss zunaächst der vorherige Inhalt von \code{\_turning\_stones} gelöscht werden. Dies geschieht in Zeile 2 indem die Datenstruktur neu initialisiert wird.
+\\Da beiden Spielern in der Regel nicht die gleichen Züge zur Verfügung stehen muss zunaächst der vorherige Inhalt von \code{\_turning\_stones} gelöscht werden. Dies geschieht in Zeile 2, indem die Datenstruktur neu initialisiert wird.
 \\In Zeile 3 wird eine lokale Referenz des zur Darstellung eines durch den aktuellen Spieler besetzen Feldes verwendeten Symbols erzeugt.
 \\Mit der in Zeile 4 beginnenden Schleife wird über alle in Frage kommenden Züge in der Menge \code{\_fringe} iteriert um zu ermitteln, ob dieser Zug erlaubt wäre.
 \\Dazu wird zunächst eine lokale Menge initialisiert um die durch spielen dieser Position gedrehten Steine zu speichern (Zeile 5).
-\\Nun muss ausgehend von der derzeit betrachteten Position ermittelt werden ob in irgendeine Richtung Spielsteine gedreht werden würden. Dies erfolgt durch die in Zeile 6 beginnende Schleife.
+\\Nun muss ausgehend von der derzeit betrachteten Position ermittelt werden, ob in irgendeine Richtung Spielsteine gedreht werden würden. Dies erfolgt durch die in Zeile 6 beginnende Schleife.
 \\Dazu wird zunächst das nächste Feld in diese Richtung unter Verwendung einer Hilfsfunktion ermittelt (Zeile 7) und anschließend eine weitere termporäre Menge der in dieser Richtung gedrehten Steine initialisiert (Zeile 8)
-\\Die entsprechende Richtung muss nun solange weiter verfolgt werden wie ein weiterer Nachbar in diese Richtung vorhanden ist. Dies geschieht durch die in Zeile 9 beginnedne Schleife.
-\\Da in den nachfolgenden Schritten ermittelt werden muss welcher Spieler das derzeit betrachtete Feld besetzt hat, werden die Indizes der derzeitigen  ausgepackt (Zeile 10) und dann verwendet um zu ermitteln welchen Wert das Feld detzeit hat (Zeile 11).
+\\Die entsprechende Richtung muss nun solange weiter verfolgt werden, wie ein weiterer Nachbar in diese Richtung vorhanden ist. Dies geschieht durch die in Zeile 9 beginnedne Schleife.
+\\Da in den nachfolgenden Schritten ermittelt werden muss, welcher Spieler das derzeit betrachtete Feld besetzt hat, werden die Indizes der derzeitigen  ausgepackt (Zeile 10) und dann verwendet um zu ermitteln welchen Wert das Feld detzeit hat (Zeile 11).
 \\Nun gibt es drei mögliche Fälle:
 \begin{enumerate}
 \setcounter{enumi}{0}
@@ -71,12 +71,12 @@ In Listing \ref{lst:class-vars-othello} sind alle Klassenvariablen, sowie deren 
 \item Das derzeit betrachtete Feld wird durch den Spieler selbst besetzt. In diesem Fall wird die Abfrage in Zeile 16 positiv ausgewertet. Nun werden alle Steine zwischen der Ausgangsposition und der derzeitigen gedreht. Daher wird die Menge der durch diesen Zug gedrehten Steine mit der in diese Richtung befindlichen Steine vereinigt (Zeile 17) und die Schleife verlassen (Zeile 18).
 \end{enumerate}
 In Zeile 19 wird das nächste Feld in diese Richtung berechnet.
-\\Gemäß der Regeln muss durch jeden Zug mindestens ein Stein gedreht werden. Aus diesem Grund wird nun ermittelt ob dies bei diesem Zug gegeben wäre (Zeile 20). Ist dies der Fall so werden die gedrehten Steine für diesen Zug in \code{\_stones\_to\_turn} gespeichert (Zeile 21).
+\\Gemäß der Regeln muss durch jeden Zug mindestens ein Stein gedreht werden. Aus diesem Grund wird nun ermittelt, ob dies bei diesem Zug gegeben wäre (Zeile 20). Ist dies der Fall, so werden die gedrehten Steine für diesen Zug in \code{\_stones\_to\_turn} gespeichert (Zeile 21).
 \\Hat ein Spieler nun keine Möglichkeiten einen Zug durchzuführen, so sind in \code{\_stones\_to\_turn} keine Züge enthalten. Dieser Fall muss besonders behandelt werden. Tritt er ein, so wird die Abfrage in Zeile 22 positiv ausgewertet.
 \\In diesem Fall muss nochmal unterschieden werden, ob der vorherige Spieler ebenfalls keinen Zug zur Auswahl hatte (Zeile 23).
-\\Falls ja so ist das Spiel zu ende. Dies wird durch setzen von \code{\_game\_is\_over} gespeichert (Zeile 24).
-\\Falls nein (Zeile 25), so wird gespeichert, dass der Spieler passen musste (Zeile 26) und der nächste Zug vorbereitet (Zeile 27)
-Hat der Spieler hingegen eine Zugmöglichkeit (Zeile 28) so hat er aus Sicht des folgenden Zuges nicht passen müssen. Entsprechend wird \code{\_last\_turn\_passed} wieder auf \code{False} gesetzt. 
+\\Falls ja so ist das Spiel zu ende. Dies wird durch das Setzen von \code{\_game\_is\_over} gespeichert (Zeile 24).
+\\Falls nein (Zeile 25), so wird gespeichert, dass der Spieler passen musste (Zeile 26) und der nächste Zug vorbereitet (Zeile 27).
+\\Hat der Spieler hingegen eine Zugmöglichkeit (Zeile 28) so hat er aus Sicht des folgenden Zuges nicht passen müssen. Entsprechend wird \code{\_last\_turn\_passed} wieder auf \code{False} gesetzt. 
 \begin{lstlisting}[caption = {Die Funktion \code{\_compute\_available\_moves}}, language = python, captionpos = t , numbers=left, label={lst:fct-compute-available-moves}]
     def _compute_available_moves(self):
         self._turning_stones = dict()
@@ -109,7 +109,7 @@ Hat der Spieler hingegen eine Zugmöglichkeit (Zeile 28) so hat er aus Sicht des
             self._last_turn_passed = False
 \end{lstlisting}
 \paragraph{Weitere Funktionen der Klasse \mxZitat{Othello}}
-Die Klasse \mxZitat{Othello} enthält weitere Funktionen auf die hier jedoch nicht im Detail eingegangen werden soll. Dennoch sei hier jeweils kurz deren Verwendungszweck der wichtigsten Funktionen genannt:
+Die Klasse \mxZitat{Othello} enthält weitere Funktionen, auf welche hier jedoch nicht im Detail eingegangen werden soll. Dennoch sei hier jeweils kurz deren Verwendungszweck der wichtigsten Funktionen genannt:
 \begin{enumerate}
 \item \code{play\_position} verändert den Spielzustand dahingehend, dass der übergebene Zug, sofern er erlaubt ist, ausgeführt wird, die entsprechenden Steine des Gegners gedreht und dessen Zug vorbereitet wird. Dabei wird auch die \code{\_fringe} entsprechend aktualisiert.
 \item \code{set\_available\_moves} verändert \code{\_stones\_to\_turn} dahingehend, dass nur noch übergebene Positionen enthalten sind. Kann damit zum Filtern der erlaubten Züge verwendet werden.
@@ -292,15 +292,15 @@ Das genaue Verhalten des Agenten kann durch die folgenden Paramter beeinflusst w
     \item Die Anzahl der Züge die durch den Präprozessor gelangen
     \item Die Prozentuale Abweichung vom Mittelwert der Wertigkeiten der Züge
 \end{itemize}
-\item \code{heuristic}: Eine der in \ref{heuristic} beschriebenen. Wird im Präprozessor zur Bewertung von Spielzuständen herangezogen.
-\item \code{use\_multiprocessing}: Boolscher Wert der angibt ob die $N$ simulierten Spiele unter Verwendung mehrerer Prozesse durchgeführt werden sollen. Bei Systemen mit mehr als einem Prozessor können damit durch Parallelisierung Geschwindigkeitsvorteile erreicht werden. 
+\item \code{heuristic}: Eine der in  Kapitel \ref{heuristic} beschriebenen. Wird im Präprozessor zur Bewertung von Spielzuständen herangezogen.
+\item \code{use\_multiprocessing}: Boolscher Wert, der angibt ob die $N$ simulierten Spiele unter Verwendung mehrerer Prozesse durchgeführt werden sollen. Bei Systemen mit mehr als einem Prozessor können damit durch Parallelisierung Geschwindigkeitsvorteile erreicht werden. 
 \end{itemize}
 
 \subsubsection{Die Präprozessoren}
 Nachfolgend wird kurz auf die Implementierung der in Kapitel \ref{mc_algo} beschriebenen Präprozessoren eingegangen.
 \paragraph{Der feste Selektivität Präprozessor}
-Die in \ref{lst:mc-prep-fixed} abgedruckte Funktion gibt die Implementierung des Prä-\\prozessors mit fester Selektivität an.
-\\Die Funktion erhält einen Spielzustand \code{game\_state}, den Parameter \code{n\_s} der Anzahl $N_{s}$ der Züge die den Präprozessor passieren und eine Heuristik \code{heuristic} die zur Bewertung der Spielzüge herangezogen wird. In der sich über die Zeilen 3 bis 5 erstreckenden Anweisungen wird eine nach der Bewertung des einzelnen Zuges gemäß der Heuristik sortierte Liste von Zügen erstellt. In Zeile 6 werden dann nur die ersten \code{n\_s} Züge im Spielzustand \code{game\_state} gesetzt.
+Die in Listing \ref{lst:mc-prep-fixed} abgedruckte Funktion gibt die Implementierung des Präprozessors mit fester Selektivität an.
+\\Die Funktion erhält einen Spielzustand \code{game\_state}, den Parameter \code{n\_s} der Anzahl $N_{s}$ der Züge, die den Präprozessor passieren und eine Heuristik \code{heuristic}, die zur Bewertung der Spielzüge herangezogen wird. In der sich über die Zeilen 3 bis 5 erstreckenden Anweisungen wird eine nach der Bewertung des einzelnen Zuges gemäß der Heuristik sortierte Liste von Zügen erstellt. In Zeile 6 werden dann nur die ersten \code{n\_s} Züge im Spielzustand \code{game\_state} gesetzt.
 \begin{lstlisting}[caption = {Die Funktion \code{preprocess\_fixed\_slectivity}}, language = python, captionpos = t , numbers=left, label={lst:mc-prep-fixed}]
 	@staticmethod	    
 	def preprocess_fixed_selectivity(game_state: Othello, n_s, heuristic):
@@ -310,9 +310,9 @@ Die in \ref{lst:mc-prep-fixed} abgedruckte Funktion gibt die Implementierung des
     game_state.set_available_moves(heuristic_values[:n_s][0])
 \end{lstlisting}
 \paragraph{Der variable Selektivität Präprozessor}
-In \ref{lst:mc-prep-var} ist die Implementierung des Präprozessors mit variabler Selektivität angegeben.
-\\Wie der Präprozessor mit fester Selektivität erhält auch diese Funktion einen Spielzustand \code{game\_state} und eine Heuristik \code{heuristic}. Anders als bei dem oben beschriebenen Präprozessor wird hier jedoch ein Wert \code{p\_s} zur Beschreibung der maximalen prozentualen Abweichung $p_{s}$ vom Mittelwert der Wertigkeit der Züge übergeben.
-\\Für die Berechnung wid zunächst der Wert der Heuristik für alle Spielzüge berechnet (Zeile 3). Daraufhin wird in der Zeile 5 der Durchschnittliche Wert berechnet und mit der Anweisung in den zeilen 6 und 7 nur jene Züge im Spielzustand gesetzt, die einen Wert größer als $p_{s}$ multipliziert mit dem Durchschnittlichen Wert haben.
+In Listing \ref{lst:mc-prep-var} ist die Implementierung des Präprozessors mit variabler Selektivität angegeben.
+\\Wie der Präprozessor mit fester Selektivität, erhält auch diese Funktion einen Spielzustand \code{game\_state} und eine Heuristik \code{heuristic}. Anders als bei dem oben beschriebenen Präprozessor wird hier jedoch ein Wert \code{p\_s} zur Beschreibung der maximalen prozentualen Abweichung $p_{s}$ vom Mittelwert der Wertigkeit der Züge übergeben.
+\\Für die Berechnung wid zunächst der Wert der Heuristik für alle Spielzüge berechnet (Zeile 3). Daraufhin wird in der Zeile 5 der durchschnittliche Wert berechnet und mit der Anweisung in den Zeilen 6 und 7 nur jene Züge im Spielzustand gesetzt, die einen Wert größer als $p_{s}$ multipliziert mit dem durchschnittlichen Wert haben.
 \newpage
 \begin{lstlisting}[caption = {Die Funktion \code{preprocess\_variable\_slectivity}}, language = python, captionpos = t , numbers=left, label={lst:mc-prep-var}]
 	@staticmethod
@@ -328,14 +328,14 @@ In \ref{lst:mc-prep-var} ist die Implementierung des Präprozessors mit variable
 Eine Funktion \code{get\_move} wird von allen Agenten bereitgestellt und in der \code{main-game.py} zur Auswahl eines Zuges gerufen. Beschrieben wird der Zug durch ein Paar, welches die Koordinaten auf dem Spielbrett darstellt.
 \\Nachfolgend wird die in Listing \ref{lst:ab1} abgedruckte Funktion diskutiert:
 \vspace{0.5cm}
-Als Parameter erhält die Fuktion den Spielzustand \code{game\state}, zu dem die Entscheidung über den nächsten Zug getroffen werden soll. In Zeile 2 wird nun überprüft, ob die Verwendung der Starttabellen aktiviert ist und zusätzlich in dem aktuellen Spiel weniger als 21 Züge gespielt wurden. Die zweite Komponente der \code{if}-Abfrage erfolgt, da die Startbibliothek maximal Strategien bis zum 20-ten Zug enthält.
-\\Ist dies der Fall so werden in Zeile 3 alle gemäß der Startbibliothek in Frage kommenden Züge ermittelt. Steht mindestens ein Zug zur Auswal (Z. 4) so wird dieser gespielt (Z. 5). Nun werden die im vorherigen Zug ermittelten Wahrscheinlichekiten gelöscht(Z. 6) und das Symbol, welches zur Repräsentation des eigenen Spielers verwendet wird zwischengespeichert (Z.6)
-\\Ist die Option zur Verwendung eines Präprozessors aktiviert wird die Abfrage in Zeile 8 positiv ausgewertet. In diesem Fall wird der selektierte Präprozessor aufgerufen (Z. 9). Danach wird ermittelt ob die Option zur verwendung mehrer Prozesse aktiviert ist (Z. 10). Ist dies nicht der Fall, so werden \code{big\_n} zufällige Spiele gespielt (Z. 11). Die dazu aufgerufene Hilfsfunktion gibt ein Object des Typs \mxZitat{Dictionary} zurück. Dieses enthält für jeden möglichen Zug die Anzahl der gewonnen Spiele wenn dieser Zug zuerst gespielt wurde und die Gesamtanzahl von Spielen.\\
-Ist die option zur Verwendung mehrere Prozesse aktiviert, so wird der \code{else}-Zweig in den Zeilen 12 bis 20 ausgeführt:
-\\Dazu wird zunächst die Anzahl der Verfügbaren Prozessorkerne ermittelt (Z. 13). Im weiteren Verlauf werden entsprechend viele Prozesse verwendet. So können alle verfügbaren Prozessorkerne genutzt werden, ohne einen zu großen Verwaltungsaufwand für die Prozesse zu generieren. In Zeile 14 wird dann ein entsprechender Pool von Prozessen angelegt und durch die Anweisung der Zeilen 15 und 16 spezifiziert, dass mittels dieser Prozesse so häufig wie Prozesse vorhanden sind asynchron jeweils \code{big\_n} geteilt durch die Anzahl der Prozesse zufällige Spiele simuliert werden. Da die entsprechende Funktion eine Ganzzahl erwartet, kommt an dieser Stelle die Ganzzahldivison \code{//} zum Einsatz. Dadurch ergibt die Summe aller durchgeführten Simulationen ggf. nicht \code{big\_n}; bei entsprechend großen Werten kann dies jedoch vernachlässigt werden.
-\\Da die Spiele asynchron simuliert werden muss die Berechnung zunächst durch Aufruf der Funktion \code{get} an jedem Listenelement angestoßen werden. Für das erste Element geschieht dies in Zeile 17. Für die weiteren Elemente erfolgt dies in der Schleife zur Zusammenführung der Ergebnisse. In Zeile 20 werden dann alle Prozesse wieder geschlossen.
-\\Nun muss anhand der Daten zu gewonnenen und insgesamt gespielten Spiele für jeden Zug die Gewinnwahrscheinlichkeit berechnet werden. Dies erfolgt in den Zeilen 21 bis 23 indem der Quotinet aus den beiden Werten gebildet wird (Z. 23)
-\\Nun wird jener Zugmit der größten Gewinnwahrscheinlichkeit ermittelt (Z. 24) und and die aufrufende Funktion zurückgegeben (Z. 25).      
+\\Als Parameter erhält die Fuktion den Spielzustand \code{game\state}, zu dem die Entscheidung über den nächsten Zug getroffen werden soll. In Zeile 2 wird nun überprüft, ob die Verwendung der Starttabellen aktiviert ist und zusätzlich in dem aktuellen Spiel weniger als 21 Züge gespielt wurden. Die zweite Komponente der \code{if}-Abfrage erfolgt, da die Startbibliothek maximal Strategien bis zum 20-ten Zug enthält.
+\\Ist dies der Fall, so werden in Zeile 3 alle gemäß der Startbibliothek in Frage kommenden Züge ermittelt. Steht mindestens ein Zug zur Auswahl (Z. 4), so wird dieser gespielt (Z. 5). Nun werden die im vorherigen Zug ermittelten Wahrscheinlichekiten gelöscht(Z. 6) und das Symbol, welches zur Repräsentation des eigenen Spielers verwendet wird zwischengespeichert (Z.6).
+\\Ist die Option zur Verwendung eines Präprozessors aktiviert, wird die Abfrage in Zeile 8 positiv ausgewertet. In diesem Fall wird der selektierte Präprozessor aufgerufen (Z. 9). Danach wird ermittelt ob die Option zur verwendung mehrer Prozesse aktiviert ist (Z. 10). Ist dies nicht der Fall, so werden \code{big\_n} zufällige Spiele gespielt (Z. 11). Die dazu aufgerufene Hilfsfunktion gibt ein Object des Typs \mxZitat{Dictionary} zurück. Dieses enthält für jeden möglichen Zug die Anzahl der gewonnen Spiele wenn dieser Zug zuerst gespielt wurde und die Gesamtanzahl von Spielen.\\
+Ist die Option zur Verwendung mehrere Prozesse aktiviert, so wird der \code{else}-Zweig in den Zeilen 12 bis 20 ausgeführt:
+\\Dazu wird zunächst die Anzahl der verfügbaren Prozessorkerne ermittelt (Z. 13). Im weiteren Verlauf werden entsprechend viele Prozesse verwendet. So können alle verfügbaren Prozessorkerne genutzt werden, ohne einen zu großen Verwaltungsaufwand für die Prozesse zu generieren. In Zeile 14 wird dann ein entsprechender Pool von Prozessen angelegt und durch die Anweisung der Zeilen 15 und 16 spezifiziert, dass mittels dieser Prozesse so häufig wie Prozesse vorhanden sind asynchron jeweils \code{big\_n} geteilt durch die Anzahl der Prozesse zufällige Spiele simuliert werden. Da die entsprechende Funktion eine Ganzzahl erwartet, kommt an dieser Stelle die Ganzzahldivison \code{//} zum Einsatz. Dadurch ergibt die Summe aller durchgeführten Simulationen ggf. nicht \code{big\_n}; bei entsprechend großen Werten kann dies jedoch vernachlässigt werden.
+\\Da die Spiele asynchron simuliert werden, muss die Berechnung zunächst durch Aufruf der Funktion \code{get} an jedem Listenelement angestoßen werden. Für das erste Element geschieht dies in Zeile 17. Für die weiteren Elemente erfolgt dies in der Schleife zur Zusammenführung der Ergebnisse. In Zeile 20 werden dann alle Prozesse wieder geschlossen.
+\\Nun muss anhand der Daten zu gewonnenen und insgesamt gespielten Spiele für jeden Zug die Gewinnwahrscheinlichkeit berechnet werden. Dies erfolgt in den Zeilen 21 bis 23 indem der Quotient aus den beiden Werten gebildet wird (Z. 23)
+\\Nun wird jener Zug mit der größten Gewinnwahrscheinlichkeit ermittelt (Z. 24) und and die aufrufende Funktion zurückgegeben (Z. 25).      
 \begin{lstlisting}[caption = {get\_move Funktion des Monte-Carlo Agenten}, language = python, captionpos = t , numbers=left, label={lst:ab1}]
     def get_move(self, game_state: Othello):
         if self.use_start_lib and game_state.get_turn_nr() < 21: 
@@ -379,7 +379,7 @@ Auch das detaillierte Verhalten des Agenten \mxZitat{Alpha-Beta Pruning} kann du
 \end{itemize}
 \subsubsection{Die Funktion \code{value}}
 Die in Listing \ref{lst:ab-value} abgedruckte Funktion \code{value} entspricht im wesentlichen der in Listing \ref{lst:abprun} abgedruckten und in \ref{ab-basics-impl} besprochenen \mxZitat{value}-Funktion des Alpha-Beta Abschneiden Algorithmus.
-\\Hier soll einzig auf den sich unterscheidenden Basisfall (Zeile 3-6) eingegangen werden. Ist ein Endzustand erreicht, so ist das Spiel beendet und die Abfrage in Zeile 3 wird positiv ausgewertet. In diesem Fall wird der Wert der \code{utility}-Funktion für den aktuellen Spieler zurück gegeben (Z. 4). Um das Gewinnen bzw. Verlieren jedoch deutlich stärker zu gewichten als die Bewertungen der Heuristik wird dies zuvor mit $1000$ multipliziert.
+\\Hier soll einzig auf den sich unterscheidenden Basisfall (Zeile 3-6) eingegangen werden. Ist ein Endzustand erreicht, so ist das Spiel beendet und die Abfrage in Zeile 3 wird positiv ausgewertet. In diesem Fall wird der Wert der \code{utility}-Funktion für den aktuellen Spieler zurück gegeben (Z. 4). Um das Gewinnen bzw. Verlieren jedoch deutlich stärker zu gewichten als die Bewertungen der Heuristik, wird dies zuvor mit $1000$ multipliziert.
 \\Ist die maximale Suchtiefe erreicht, so wird die Abfrage in Zeile 5 positiv ausgewertet. In diesem Fall wird die Heuristik zur Zustandsbewertung herangezogen (Z. 6)
 \begin{lstlisting}[caption = {\code{value} Funktion des Alpha-Beta Spielers}, language = python, captionpos = t , numbers=left, label={lst:ab-value}]
     @staticmethod
@@ -399,16 +399,16 @@ Die in Listing \ref{lst:ab-value} abgedruckte Funktion \code{value} entspricht i
         return val
 \end{lstlisting}
 \paragraph{Änderungen an \code{value\_monte\_carlo}}
-Wird statt der Heuristik zur Bewertung der \mxZitat{Monte-Carlo Agent} herangezogen so wird statt der Funktion \code{value} die angepasste Funktion \code{value\_monte\_carlo} aufgerufen. Dabei wird in dem in Listing \ref{lst:ab-value} in Zeile 6 beschriebenen \code{if}-Zweig eine Bewertung aller möglichen Züge vorgenommen und die Gewinnwahrscheinlichkeit des besten Zuges zurückgegeben. 
+Wird statt der Heuristik zur Bewertung der \mxZitat{Monte-Carlo Agent} herangezogen, so wird statt der Funktion \code{value} die angepasste Funktion \code{value\_monte\_carlo} aufgerufen. Dabei wird in dem in Listing \ref{lst:ab-value} in Zeile 6 beschriebenen \code{if}-Zweig eine Bewertung aller möglichen Züge vorgenommen und die Gewinnwahrscheinlichkeit des besten Zuges zurückgegeben. 
 
 \subsubsection{Die Funktion \code{get\_move}}
 Eine Funktion \code{get\_move} wird von allen Agenten bereitgestellt und in der \code{main-game.py} zur Auswahl eines Zuges gerufen. Beschrieben wird der Zug durch ein Paar, welches die Koordinaten auf dem Spielbrett darstellt.
 \\Nachfolgend wird die in Listing \ref{lst:ab-get-move} abgedruckte Funktion diskutiert:
-\\Die Übergabeparameter, sowie die Zeilen bis einschließlich 5 sind identisch zu der Implmentierung der im Kapitel \ref{mc-getmove} diskutierten \code{get\_move}-Funktion des \mxZitat{Monte-Carlo}-Agenten.
+\\Die Übergabeparameter, sowie die Zeilen bis einschließlich 5 \improvement{anders} sind identisch zu der Implmentierung der im Kapitel \ref{mc-getmove} diskutierten \code{get\_move}-Funktion des \mxZitat{Monte-Carlo}-Agenten.
 \\In Zeile 6 wird ein Wörterbuch zur Speicherung der Bewertungen der Züge gemäß der \code{value}-Funktion angelegt. In diesem wird später die Bewertung als Schlüssel und als dazugehörigen Wert die Liste aller Züge die diese Bewertung erhalten haben gespeichert werden. Diese Datenstruktur wird durch die Schleife in den Zeilen 7 bis einschließlich 17 aufgbaut in dem über alle legalen Züge iteriert wird:
 \\In den Zeilen 8 bzw. 9 wird der Ausgangszustand kopiert und der in der aktuellen Schleifeniteration betrachtete Zug \code{move} ausgeführt. Nun wird die Bewertung mittels der \code{value}-Funktion vorgenommen. Dabei wird unterschieden ob gemäß des Parameters \code{\_use\_monte\_carlo} in der Tiefe \code{\_search\_depth} mittels der Funktion \code{value\_monte\_carlo} das Monte-Carlo Prinzip zur Bewertung herangezogen werden soll (Z. 10f) oder ob mittels der Funktion \code{value} die Heuristik verwendet wird (Z. 13f).
-\\Nun wird überprüft ob bereits Spielzüge mit dieser Bewertung in \code{best\_moves} gespeichert sind (Z. 15) Ist dies nicht der Fall, so wird die Bewertung mit der leeren Liste initialisiert (Z. 16). Anschließend wird der gerade betrachtete Zug \code{move} an die entsprechende Liste angehängt.
-\\Sobald alle legalen Züge betrachtet wurden, wird die maximale Bewertung ermittelt (Z. 18) und ein zufälliger Zug mit dieser Bewertung zurückgegeben (Z. 19)
+\\Nun wird überprüft ob bereits Spielzüge mit dieser Bewertung in \code{best\_moves} gespeichert sind (Z. 15). Ist dies nicht der Fall, so wird die Bewertung mit der leeren Liste initialisiert (Z. 16). Anschließend wird der gerade betrachtete Zug \code{move} an die entsprechende Liste angehängt.
+\\Sobald alle legalen Züge betrachtet wurden, wird die maximale Bewertung ermittelt (Z. 18) und ein zufälliger Zug mit dieser Bewertung zurückgegeben (Z. 19).
 \begin{lstlisting}[caption = {get\_move Funktion des Alpha-Beta Spielers}, language = python, captionpos = t , numbers=left, label={lst:ab-get-move}]
     def get_move(self, game_state: Othello):
         if self._use_start_lib and game_state.get_turn_nr() < 21:
