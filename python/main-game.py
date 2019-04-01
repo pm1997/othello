@@ -5,30 +5,24 @@ This file manges the main game.
 from othello import Othello
 from util import UtilMethods
 
-from Players.playerRandom import PlayerRandom
-from Players.playerMonteCarlo import PlayerMonteCarlo
-from Players.playerMachineLearning import PlayerMachineLearning
-from Players.playerHuman import PlayerHuman
-from Players.playerAlphaBetaPruning import PlayerAlphaBetaPruning
+from Agents.random import Random
+from Agents.monteCarlo import MonteCarlo
+from Agents.human import Human
+from Agents.alphaBetaPruning import AlphaBetaPruning
 
 import time
-from constants import PLAYER_ONE, PLAYER_TWO, PRINT_SYMBOLS
-from ml_database import ml_database
+from constants import PLAYER_ONE, PLAYER_TWO, PRINT_SYMBOLS, COLUMN_NAMES
 
 if __name__ == '__main__':
-    # from machine_learning import Database
-    # db = Database()
-    # db._reset_database()
     print("Welcome to Othello")
 
     # Create a list of Player Types
     available_players = list()
     # Use pairs of the form (description: String, class: Player) to store a player type
-    available_players.append(("Human Player", PlayerHuman))
-    available_players.append(("AI Player - Random", PlayerRandom))
-    available_players.append(("AI Player - Monte Carlo", PlayerMonteCarlo))
-    available_players.append(("AI Player - Alpha-Beta Pruning", PlayerAlphaBetaPruning))
-    available_players.append(("AI Player - Machine Learning", PlayerMachineLearning))
+    available_players.append(("Human Player", Human))
+    available_players.append(("AI Player - Random", Random))
+    available_players.append(("AI Player - Monte Carlo", MonteCarlo))
+    available_players.append(("AI Player - Alpha-Beta Pruning", AlphaBetaPruning))
 
     # Ask the user to select a type of player as first player.
     selection_player_one = UtilMethods.select_one(available_players,
@@ -66,10 +60,11 @@ if __name__ == '__main__':
         game.play_position(move)
         # Print the new state of the board
         game.print_board()
+
+        print(f"Played position: ({COLUMN_NAMES[move[1]]}{move[0] + 1})")
     # calculate the playing time
     duration = time.time() - start
 
-    ml_database.store_database()
     # Inform the User on the fact that the game is over
     print("Game is over")
     # Print the playing time

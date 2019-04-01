@@ -2,8 +2,7 @@
 This file contains various utility methods.
 E.g. to ask the user for a certain selection
 """
-
-from constants import COLUMN_NUMBERS, COLUMN_NAMES
+from constants import COLUMN_NUMBERS
 
 
 class UtilMethods:
@@ -133,22 +132,3 @@ class UtilMethods:
         """
         result = (int(move[1]) - 1), COLUMN_NUMBERS[move[0]]
         return result
-
-    @staticmethod
-    def calculate_opposite_move(moves):
-        """calculate the point symmetric moves of one given game"""
-        new_turns = list()
-        for move in moves:
-            # move is a char and a int , eg. 'd3'
-            # translate this move to a x and y coordinate
-            (row, column) = UtilMethods.translate_move_to_pair(move)
-            if column < 8 and row < 7:
-                # mirror row and column at point 3.5,3.5 => middle of board
-                row -= 7
-                row = abs(row) % 7
-                column -= 7
-                column = abs(column) % 7
-            new_turns.append(COLUMN_NAMES[column] + str(row + 1))
-        print(f"old:{moves}")
-        print(f"new:{new_turns}")
-        return new_turns

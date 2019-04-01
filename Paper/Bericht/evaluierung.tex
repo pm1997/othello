@@ -1,1 +1,104 @@
 \chapter{Evaluierung}
+Ziel dieses Kapitel ist es die im vorherigen Kapitel vorgestellte Implementierung zu testen. Dabei ergeben sich im wesentlichen zwei Testaspekte: Zum einen die vorgestellten Agenten und zum anderen die Bedeutung der in Kapitel \ref{impl:stored-mc} eingeführten Feldkategorien.
+\paragraph{}
+Die Evaluierung der einzelnen Agenten erfolgt dabei im wesentlichen dadurch die Agenten gegeneinander spielen zu lassen. Mittels einer genügend großen Anzahl von Spielen lässt sich darart ermitteln welcher der jeweils verwendeten Agenten im Mittel die meisten Spiele gewinnt und damit besser ist.
+\\Die Bedeutung der Feldkategorien wird Anhand der Gewinnwahrscheinlichkeit einer Spielkategorie über den Spielfortschritt untersucht.
+\section{Evaluierung der einzelnen Agenten}
+\label{cpt:eval-agents}
+Nun gilt es die in Kapitel \ref{implementation} beschriebenen Agenten zu evaluieren. In Ermangelung eines Othello-Spielers, der über ein entsprechend gute Spielfähigkeiten verfügt, so dass er zu einem aussagekräftigen Vergleich herangezogen werden könnte, werden die einzelnen Agenten untereinander verglichen. Die einstellbaren Parameter wurden dabei so gewählt, dass der Agent im Laufe eines Spiels ungefähr 5 Minuten zum Treffen seiner Entscheidung benötigt. Auf die genauen Werte der Parameter soll hier nicht näher eingegangen werden. Aus Gründen der Nachvollziehbarkeit finden sie sich in den Anschnitten \nameref{eval:agents:params:subsec-mc} bzw. \nameref{eval:agents:params:subsec-ab}
+\\Bei der Bestimmung der Parameter sich gezeigt, dass die beim Agenten \mxZitat{Alpha-Beta Pruning} gewählte Heuristik die Gewinnchance des Agenten wesentlich beeinflusst. Aus diesem Grund wird der \mxZitat{Alpha-Beta Pruning}-Agent mit allen zur Verfügung stehenden Heuristiken seperat betrachtet. Die sich daraus Ergebenden Vergleiche sind in Tabelle \ref{tbl:cmp-agents} dargestellt. Der Agent \mxZitat{Alpha-Beta Pruning} wird dabei durch \mxZitat{AB} abgekürzt.
+\paragraph{Vergleich mit dem Agent \mxZitat{Random}}
+Grundsätzlich gilt, dass der durch einen Agenten zur Auswahl von Spielzügen benötigte Rechenaufwand nur dann gerechtfertigt ist, wenn sich dieser in irgendeinen Vorteil bietet, also besser spielt als ein Agent der beliebige Spielzüge durchführt. Aus diesem Grund werden alle Agenten zunächst mit dem \mxZitat{Random}-Agenten verglichen. Daraus ergeben sich zunächst die Vergleiche 1 bis 5.
+\\Da ein Agent möglicherweise über bessere Gewinnchancen verfügt, wenn er als ein bestimmter Spieler auftritt gilt es außerdem zu Prüfen wie sich die Agenten verhalten, wenn sie auf der anderen Position verwendet werden. Daraus ergeben sich die Vergleiche 6 bis 10. 
+
+\paragraph{Vergleich der Agenten \mxZitat{Alpha-Beta Pruning} und \mxZitat{Monte Carlo}}
+Bisher wurden die Agenten \mxZitat{Alpha-Beta Pruning} und \mxZitat{Monte Carlo} lediglich mit dem \mxZitat{Random}-Agenten verglichen. Interessant ist daher auch die Fragestellung wie die beiden Agenten gegeneinander Spielen. Hier sei vorweggegriffen, dass Anhand der im Abschnitt \nameref{p:vgl-result} dargestellten Ergebnisse der Vergleiche 2 bis 5 bzw. 7 bis 10 festgestellt werden konnte, dass der Agent \mxZitat{Alpha-Beta Pruning} mit der Heuristik \mxZitat{???} \unsure{ermitteln} die besten Ergebnisse erzielt. Daher wird diese für den Vergleich der Agenten untereinander herangezogen. Aus den oben beschriebenen Gründen ergeben sich daraus die beiden Vergleiche 11 und 12.
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{| c | c | c |} \hline
+Vergleich & Agent 1 & Agent 2 \\ \hline
+\hline
+0 & Random & Random  \\ \hline
+\hline
+ 1 & Monte Carlo                         & Random  \\ \hline
+ 2 & AB (Nijssen 2008 Heuristik)         & Random\\ \hline
+ 3 & AB (Stored Monte Carlo Heuristik)   & Random\\ \hline
+ 4 & AB (Cowthello Heuristik)            & Random\\ \hline
+ 5 & AB (mit anschließendem Monte Carlo) & Random\\ \hline
+\hline
+ 6 & Random                              & Monte Carlo                         \\ \hline
+ 7 & Random                              & AB (Nijssen 2008 Heuristik)         \\ \hline
+ 8 & Random                              & AB (Stored Monte Carlo Heuristik)   \\ \hline
+ 9 & Random                              & AB (Cowthello Heuristik)            \\ \hline
+10 & Random                              & AB (mit anschließendem Monte Carlo) \\ \hline
+\hline
+11 & AB (beste)                          & Monte Carlo                         \\ \hline
+12 & Monte Carlo                         & AB (beste)                          \\ \hline
+\end{tabular}
+\end{center}
+\caption{Durchgeführte Vergleiche}
+\label{tbl:cmp-agents}
+\end{table}
+
+\paragraph{Ergebnisse der Vergleiche}
+\label{p:vgl-result}
+Um zum einen ein möglichst aussagekräftiges Ergebnis zu erhalten und zum Anderen die zur Durchführung der Spiele erforderliche Rechenzeit zu beschränken wurden für jeden der in Tabelle \ref{tbl:cmp-agents} angegebenen Vergleiche jeweils bis zu 1000 Spiele durchgeführt. Bei einigen Kombinationen wurden aus Gründen der erforderlichen Rechenzeit weniger als 1000 Vergleiche durchgeführt. Ist dies der Fall, so wird dies in der entsprechenden Spalte angegeben. Die Ergebnisse dieser Vergleiche finden sich in Tabelle \ref{tbl:cmp-results}:
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{| c | c | c | c | c | c |} \hline
+\multicolumn{2}{|c|}{}  & \multicolumn{2}{|c|}{Gewonnene Spiele} & \multicolumn{2}{|c|}{$\varnothing$ Rechenzeit je Spiel [s]} \\ \hline
+Vergleich & Anz. Spiele & Agent 1 & Agent 2 & Agent 1 & Agent 2 \\ \hline
+\hline
+ 0 & 1000 & 429  &  527 &   0,00027 &   0,00026 \\ \hline
+ \hline
+ 1 & 1000 & 1000 &    0 & 118,21435 &   0,00235 \\ \hline
+ 2 & -    & -    & -    & -         & -         \\ \hline
+ 3 & T.M. & -    & -    & -         & -         \\ \hline
+ 4 & 1000 &  564 &  324 & 156,59706 &   0,00056 \\ \hline
+ 5 & P.M. & -    & -    & -         & -         \\ \hline
+ \hline
+ 6 & 1000 &    0 & 1000 &   0,00235 & 120,86694 \\ \hline
+ 7 & M.Z, & -    & -    & -         & -         \\ \hline
+ 8 & 1000 &  446 &  550 &   0,00034 & 234,01762 \\ \hline
+ 9 & 1000 &  289 &  709 &   0,00049 & 149,17649 \\ \hline
+10 & S.K. & -    & -    & -         & -         \\ \hline
+\hline
+11 & -    & -    & -    & -         & -         \\ \hline
+12 & -    & -    & -    & -         & -         \\ \hline
+\end{tabular}
+\end{center}
+\caption{Ergebnisse der Vergleiche}
+\label{tbl:cmp-results}
+\end{table}
+
+\subsection*{Parameter des \mxZitat{Monte Carlo}-Agenten}
+\label{eval:agents:params:subsec-mc}
+
+\subsection*{Parameter des \mxZitat{Alpha-Beta Pruning}-Agenten}
+\label{eval:agents:params:subsec-ab}
+
+
+\section{Evaluierung der Bedeutung verschiedener Feldkategorien}
+Einleitung
+\subsection{Methode und Ergebnisse}
+\paragraph{Methode}
+Für die Beurteilung der Bedeutung einzelner Feldkategorien wurde die für die im Kapitel \ref{cpt:eval-agents} durchgeführten Vergleiche mit der \mxZitat{Stored Monte Carlo Heuristik} aufgebaute Datenbank verwendet.
+\\Diese Datenbank wurde wie in Kapitel \ref{heuristic} erläutert durch das Spielen von Partien zwischen zwei \mxZitat{Random}-Agenten aufgebaut. Im vorliegenden Fall wurden $140000$ Spiele simuliert. Nun kann für jede Zugnummer und für jeden Spieler die Gewinnwahrscheinlichkeit für das Spielen einer Feldkategorie berechnet werden in dem für jede Kategorie die Anzahl der Spiele die nach Spielen eines Feldes dieser Kategorie gewonnen wurde durch die Anzahl der Spiele die insgesamt für die jeweilige Kategorie gespielt wurde dividiert wird. Um eine Division durch $0$ zu vermeiden, wird die berechnete Gewinnwahrscheinlichkeit auf $0$ gesetzt sofern bei der jeweiligen Zugnummer nie eine derartige Feldkategorie gespielt wurde. Aufgrund der großen Anzahl von zufällig gespielten Spielen ist in diesem Fall davon auszugehen, dass es zu der jeweiligen Zugnummer keine Möglichkeit gibt eine derartige Feldkategorie zu spielen. 
+\\Insgesamt ergibt sich damit pro Spieler eine Relation $\lbrace1, ..., 60\rbrace\times\lbrace0, ..., 8\rbrace\mapsto\lbrack0,1\rbrack$ die für die Zugnummer und für die und die Feldkategorie jeweils die Wahrscheinlichkeit angibt.
+  
+\paragraph{Ergebnisse}
+Um die große Anzahl von $60\ \mathtt{Zugnummern} * 9\ \mathtt{Zugkategorien} = 540$ Wahrscheinlichkeitswerten pro Spieler übersichtlich darstellen zu können werden diese grafisch aufbereitet. Da hierfür ausschließlich zweidimensionale Diagramme zum Einsatz kommen sollen besteht die Möglichkeit hier nach der Zugnummer oder der Feldkategorie zu schneiden. Die Abbildungen \ref{fig:win-pro-fc-0} bis \ref{fig:win-pro-fc-8} im Anhang geben die Gewinnwahrscheinlihckeiten für den Schnitt nach der Feldkategorie an.
+\\Die Abbildungen \ref{fig:win-pro-turn-0} bis \ref{fig:win-pro-turn-59} im Angang geben die Gewinnwahrscheinlichkeiten für den Schnitt nach der Zugnummer an. Da aus Platzgründen nicht alle 60 der sich daraus ergebenden Abbildungen abgedruckt werden sollen, wurde dabei die willkürlich gewählte Schrittweite von 5 Zugnummern gewählt. Die Situation für den Zug 59 wird trotzdem angegeben.
+
+\subsection{Besprechung der Ergebnisse}
+Bei der Betrachtung der Diagramme fallen einige Aspkete sofort auf:
+\begin{enumerate}
+\item Spieler Zwei besitzt fast durchgehend eine höhere Gewinnwahrscheinlichkeit als Spieler 1
+\\Dies liegt vermutlich darin begründet, dass Spieler 1 das Spiel eröffnet. Fasst man zwei aufeinanderfolgende Züge nun als Halbzüge eines kompletten Spielzuges auf, so kann Spieler 2 immer direkt auf den Zug des Spieler 1 reagieren.
+\item Einige Feldkategorien spielen erst nach einer gewissen Zugnummer eine Rolle
+\\Dies liegt darin begründet, dass ein Spielstein nur neben ein bereits besetzes Feld gelegt werden darf. Zu Beginn des Spiels sind jedoch nur die vier Steine in der Mitte des Spielfeldes gesetzt. Entsprechend dauert es einige Züge bis gewisse Feldkategorien wie bspw. die Eckfelder überhaupt erreicht werden können.
+\item Die Gewinnwahrscheinlichkeit für einen einzelnen Spieler schlägt zwischen zwei aufeinanderfolgenden Zugnummern sehr stark aus. Bei der darauf folgenden Zugnummer erreicht sie jedoch wieder das ursprüngliche Niveau.
+\\Üblicherweise wechseln sich die Spieler mit ihren Zügen ab. Demnach würden die Spieler bei jeder zweiten Zugnummer gar keinen Zug durchführen können, da sie nicht an der Reihe sind. Gelegentlich muss ein Spieler jedoch aus Mangel an möglichen Zügen aussetzen. Dadurch führt ein Spieler seine Züge nun zu den Zugnummern aus zu denen er vorher gar nicht spielen konnte. Da sich durch das aussetzen in der Regel ein Nachteil ergibt wird in diesem Fall die Gewinnwahrscheinlichkeit geringer. Über viele Spiele verteilt ergeben sich daraus die beschriebenen Schwankungen.
+\end{enumerate}

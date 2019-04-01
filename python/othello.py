@@ -4,6 +4,7 @@ Functions to calculate available moves, make moves, etc. are included as well.
 """
 
 import copy
+import numpy as np
 from constants import PRINT_SYMBOLS, COLUMN_NAMES, EMPTY_CELL, DIRECTIONS, PLAYER_ONE, PLAYER_TWO
 
 
@@ -13,22 +14,24 @@ class Othello:
     Contains functions to calculate available moves, etc. as well
     """
 
-    # Representation of the board. A list of Lists 
-    _board = [[0 for _ in range(8)] for _ in range(8)]
-    # Stores the player who's turn it is in the current state
-    _current_player = None
+    def __init__(self):
+        # Representation of the board. A list of Lists
+        self._board = np.full((8, 8), EMPTY_CELL, dtype='int8')
 
-    # Stores whether the last player had to pass. Used to determine the end of the game. 
-    _last_turn_passed = False
-    # Is set to 'True' once the Game is finished.
-    _game_is_over = False
+        # Stores the player who's turn it is in the current state
+        self._current_player = None
 
-    # Store all fields next to the ones already taken.
-    _fringe = set()
-    # Stores legal moves as key and the set of the stones turned after making that move as value
-    _turning_stones = dict()
-    _taken_moves = dict()
-    _turn_nr = 0
+        # Stores whether the last player had to pass. Used to determine the end of the game.
+        self._last_turn_passed = False
+        # Is set to 'True' once the Game is finished.
+        self._game_is_over = False
+
+        # Store all fields next to the ones already taken.
+        self._fringe = set()
+        # Stores legal moves as key and the set of the stones turned after making that move as value
+        self._turning_stones = dict()
+        self._taken_moves = []
+        self._turn_nr = 0
 
     def deepcopy(self):
         """
@@ -109,7 +112,11 @@ class Othello:
         for row in range(8):
             board_string += f"{row + 1} |"
             for col in range(8):
-                board_string += f" {PRINT_SYMBOLS[self._board[row][col]]} |"
+                available_moves = self.get_available_moves()
+                if (row, col) in available_moves:
+                    board_string += f" * |"
+                else:
+                    board_string += f" {PRINT_SYMBOLS[self._board[row][col]]} |"
             board_string += "\n"
             board_string += "  +" + 8 * "---+" + "\n"
         return board_string
@@ -155,6 +162,16 @@ class Othello:
         """
         return self._turn_nr
 
+    def get_taken_mvs_text(self):
+        """
+        :return: deepcopy of list of taken moves like ["d2","e3"]
+        """
+        taken_mvs_dict = {}
+        for i in range(len(self._taken_moves)):
+            row, col = self._taken_moves[i]
+            taken_mvs_dict[i] = COLUMN_NAMES[col] + str(row + 1)
+        return taken_mvs_dict
+
     def get_taken_mv(self):
         """
         :return: deepcopy of list of taken moves like ["d2","e3"]
@@ -165,7 +182,7 @@ class Othello:
         """
         Returns the winner of the game.
         The player with the most stones on the board is the winner.
-        If both Players own the same number of stones, the winner is None and it is a tie
+        If both Agents own the same number of stones, the winner is None and it is a tie
         """
         stats = self.get_statistics()
         if stats[PLAYER_ONE] == stats[PLAYER_TWO]:
@@ -178,7 +195,7 @@ class Othello:
     def utility(self, player):
         """
         Returns:
-          1: if the give player is the winner
+          1: if the given player is the winner
           0: if it is a tie
          -1: If the given player lost
         """
@@ -294,7 +311,7 @@ class Othello:
             for (row2, column2) in self._turning_stones[position]:
                 # Turn the stone. The field is now owned by the current player
                 self._board[row2][column2] = current_symbol
-            self._taken_moves[self._turn_nr] = COLUMN_NAMES[column] + str(row + 1)
+            self._taken_moves.append(position)
             self._turn_nr += 1
             # The position is occupied now. Remove it from fringe
             self._fringe.remove(position)
