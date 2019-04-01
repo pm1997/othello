@@ -73,10 +73,26 @@ Vergleich & Anz. Spiele & Agent 1 & Agent 2 & Agent 1 & Agent 2 \\ \hline
 \label{tbl:cmp-results}
 \end{table}
 
-\subsection*{Parameter des \mxZitat{Monte Carlo}-Agenten}
+\subsection{Anpassung der Parameter der verschiedenen Agenten}
+In Kapitel \ref{cpt:eval-agents} bereits beschrieben, soll die Gesamtberechnungsdauer eines Agenten pro Spiel etwa 5 Minuten betragen. Dementsprechend wurden die Parameter der einzelnen Agenten so angepasst, dass sich die Berechnungsdauer meistens unterhalb dieser Zeit befindet. Aufgrund der unterschiedlichen möglichen Spielabläufe existieren eine sehr unterschiedliche Spiellänge. Es gibt sehr schnelle Spiele, welche nicht einmal 60 Züge beinhalten aber auch sehr lange Spiele, bei denen je Zug viele mögliche Zugpositionen evaluiert werden müssen. Zur Sicherstellung der Vergleichbarkeit wurde ein Surface mit einem i7 und 2,11 GHz Basisgeschwindigkeit, als Vergleichsgerät festgelegt. 
+\\Nun wurden die verfügbaren Parameter der Agenten auf die o.g. Spezifikationen angepasst.
+\subsubsection*{Parameter des \mxZitat{Monte Carlo}-Agenten}
 \label{eval:agents:params:subsec-mc}
-
-\subsection*{Parameter des \mxZitat{Alpha-Beta Pruning}-Agenten}
+Der Monte Carlo Agent besitzt folgende Parameter (siehe Kapitel \ref{mc_params}):
+\begin{itemize}
+\item \code{big\_n}
+\item \code{use\_start\_libs}
+\item \code{preprocessor}
+\item \code{preprocessor\_parameter}
+\item \code{heuristic}
+\item \code{use\_multiprocessing} 
+\end{itemize}
+Der Parameter \code{use\_multiprocessing} wird aktiviert, da es bei dem Monte Carlo Agenten nur einen negativen Effekt bis 80 Spiele ( Wert des Parameters \code{big\_n}) je Zug gibt. Ist \code{big\_n} größer als diese Anzahl können durch die Nutzung mehrerer Prozessorkerne mehr Spiele in fünf Minuten berechnet werden. Da dadurch die Gewinnwahrscheinlichkeit des Agenten steigt, wird der Parameter \code{use\_multiprocessing}.
+\\Der Parameter \code{preprocessor} wird auf \mxZitat{-1} gesetzt (deaktiviert). Durch die Nutzung eines Preprozessors wird die Anzahl der Zugmöglichkeiten je Zug verkleinert. Dadurch können ebenfalls mehr Spiele in der vorgegeben Zeit durchgeführt werden. Allerdings können dann auch Zugmöglichkeiten wegfallen, welche zu einem Sieg des Agenten geführt hätten. Deshalb wurde dieser Parameter deaktiviert, damit aus allen Zugmöglichkeiten ausgewählt werden kann.
+\\Durch die Deaktivierung des Parameters \code{preprocessor}, werden automatisch die Parameter \\\code{preprocessor\_parameter} und {heuristic} deaktiviert, da diese nur im Prepozessor verwendet werden.
+\\\code{use\_start\_libs} verkürzen die Berechnungsdauer der ersten Züge enorm, da die Züge aus der Starttabellen gelesen werden und nicht berechnet werden. Dadurch können mehr Spiele durchgeführt werden, ohne dass dies einen negativen Effekt auf das Spiel hat. Einerseits können die Felder, welche durch in der Eröffnungsphase gesetzt werden im weiteren Spiel noch mehrfach gedreht werden, andererseits sind keine willkürlichen Züge in der Tabelle gespeichert, sondern \mxZitat{gute} Eröffnungszüge.
+\\Nachdem alle Parameter bis auf \code{big\_n} gesetzt sind, wird dieser empirisch ermittelt, indem mehrere Spiele mit unterschiedlichen \code{big\_n} gespielt werden. Aus dieser Testreihe ergab sich einen \code{big\_n} Wert von \mxZitat{2000}. Die Gesamtdauer der Spiele beträgt meistens drei bis fünf Minuten. Wird der Parameter weiter erhöht, wird die Gesamtspielzeit des Agenten von fünf Minuten überschritten.
+\subsubsection*{Parameter des \mxZitat{Alpha-Beta Pruning}-Agenten}
 \label{eval:agents:params:subsec-ab}
 
 
