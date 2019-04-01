@@ -1,17 +1,17 @@
 \chapter{Evaluierung}
 Ziel dieses Kapitel ist es die im vorherigen Kapitel vorgestellte Implementierung zu testen. Dabei ergeben sich im wesentlichen zwei Testaspekte: Zum einen die vorgestellten Agenten und zum anderen die Bedeutung der in Kapitel \ref{impl:stored-mc} eingeführten Feldkategorien.
 \paragraph{}
-Die Evaluierung der einzelnen Agenten erfolgt dabei im wesentlichen dadurch die Agenten gegeneinander Spielen zu lassen. Mittels einer genügend großen Anzahl von Spielen lässt sich darart ermitteln welcher der jeweils verwendeten Agenten im Mittel die meisten Spiele gewinnt und damit besser ist.
+Die Evaluierung der einzelnen Agenten erfolgt dabei im wesentlichen dadurch die Agenten gegeneinander spielen zu lassen. Mittels einer genügend großen Anzahl von Spielen lässt sich darart ermitteln welcher der jeweils verwendeten Agenten im Mittel die meisten Spiele gewinnt und damit besser ist.
 \\Die Bedeutung der Feldkategorien wird Anhand der Gewinnwahrscheinlichkeit einer Spielkategorie über den Spielfortschritt untersucht.
 \section{Evaluierung der einzelnen Agenten}
-Nun gilt es die in Kapitel \ref{implementation} beschriebenen Agenten zu evaluieren. In Ermangelung eines Othello-Spielers der über ein entsprechend gute Spielfähigen verfügt, so dass er zu einem aussagekräftigen Vergleich herangezogen werden könnte, werden die einzelnen Agenten untereinander verglichen. Die einstellbaren Parameter wurden dabei so gewählt, dass der Agent im Laufe eines Spiels ungefähr 5 Minuten zum Treffen seiner Entscheidung benötigt. Auf die genauen Werte der Parameter soll hier nicht näher eingegangen werden. Aus Gründen der Nachvollziehbarkeit finden sie sich in den Anschnitten \ref{eval:agents:params:subsec-mc} bzw. \ref{eval:agents:params:subsec-ab}
+Nun gilt es die in Kapitel \ref{implementation} beschriebenen Agenten zu evaluieren. In Ermangelung eines Othello-Spielers, der über ein entsprechend gute Spielfähigkeiten verfügt, so dass er zu einem aussagekräftigen Vergleich herangezogen werden könnte, werden die einzelnen Agenten untereinander verglichen. Die einstellbaren Parameter wurden dabei so gewählt, dass der Agent im Laufe eines Spiels ungefähr 5 Minuten zum Treffen seiner Entscheidung benötigt. Auf die genauen Werte der Parameter soll hier nicht näher eingegangen werden. Aus Gründen der Nachvollziehbarkeit finden sie sich in den Anschnitten \nameref{eval:agents:params:subsec-mc} bzw. \nameref{eval:agents:params:subsec-ab}
 \\Bei der Bestimmung der Parameter sich gezeigt, dass die beim Agenten \mxZitat{Alpha-Beta Pruning} gewählte Heuristik die Gewinnchance des Agenten wesentlich beeinflusst. Aus diesem Grund wird der \mxZitat{Alpha-Beta Pruning}-Agent mit allen zur Verfügung stehenden Heuristiken seperat betrachtet. Die sich daraus Ergebenden Vergleiche sind in Tabelle \ref{tbl:cmp-agents} dargestellt. Der Agent \mxZitat{Alpha-Beta Pruning} wird dabei durch \mxZitat{AB} abgekürzt.
 \paragraph{Vergleich mit dem Agent \mxZitat{Random}}
 Grundsätzlich gilt, dass der durch einen Agenten zur Auswahl von Spielzügen benötigte Rechenaufwand nur dann gerechtfertigt ist, wenn sich dieser in irgendeinen Vorteil bietet, also besser spielt als ein Agent der beliebige Spielzüge durchführt. Aus diesem Grund werden alle Agenten zunächst mit dem \mxZitat{Random}-Agenten verglichen. Daraus ergeben sich zunächst die Vergleiche 1 bis 5.
 \\Da ein Agent möglicherweise über bessere Gewinnchancen verfügt, wenn er als ein bestimmter Spieler auftritt gilt es außerdem zu Prüfen wie sich die Agenten verhalten, wenn sie auf der anderen Position verwendet werden. Daraus ergeben sich die Vergleiche 6 bis 10. 
 
 \paragraph{Vergleich der Agenten \mxZitat{Alpha-Beta Pruning} und \mxZitat{Monte Carlo}}
-Bisher wurden die Agenten \mxZitat{Alpha-Beta Pruning} und \mxZitat{Monte Carlo} lediglich mit dem \mxZitat{Random}-Agenten verglichen. Interessant ist daher auch die Fragestellung wie die beiden Agenten gegeneinander Spielen. Hier sei vorweggefriffen, dass Anhand der im Abschnitt \nameref{p:vgl-result} dargestellten Ergebnisse der Vergleiche 2 bis 5 bzw. 7 bis 10 festgestellt werden konnte, dass der Agent \mxZitat{Alpha-Beta Pruning} mit der Heuristik \mxZitat{???} \unsure{ermitteln} die besten Ergebnisse erzielt. Daher wird diese für den Vergleich der Agenten untereinander herangezogen. Aus den oben beschriebenen Gründen ergeben sich daraus die beiden Vergleiche 11 und 12.
+Bisher wurden die Agenten \mxZitat{Alpha-Beta Pruning} und \mxZitat{Monte Carlo} lediglich mit dem \mxZitat{Random}-Agenten verglichen. Interessant ist daher auch die Fragestellung wie die beiden Agenten gegeneinander Spielen. Hier sei vorweggegriffen, dass Anhand der im Abschnitt \nameref{p:vgl-result} dargestellten Ergebnisse der Vergleiche 2 bis 5 bzw. 7 bis 10 festgestellt werden konnte, dass der Agent \mxZitat{Alpha-Beta Pruning} mit der Heuristik \mxZitat{???} \unsure{ermitteln} die besten Ergebnisse erzielt. Daher wird diese für den Vergleich der Agenten untereinander herangezogen. Aus den oben beschriebenen Gründen ergeben sich daraus die beiden Vergleiche 11 und 12.
 
 \begin{table}[ht]
 \begin{center}
@@ -36,13 +36,13 @@ Vergleich & Agent 1 & Agent 2 \\ \hline
 12 & Monte Carlo & AB (beste)\\ \hline
 \end{tabular}
 \end{center}
-\caption{Liste der Äquivalenzklassen}
+\caption{Durchgeführte Vergleiche}
 \label{tbl:cmp-agents}
 \end{table}
 
 \paragraph{Ergebnisse der Vergleiche}
 \label{p:vgl-result}
-Um zum einen ein möglichst aussagekräftiges Ergebnis zu erhalten und zum Anderen die zur Durchführung der Spiele erforderliche Rechenzeit zu beschränken wurden für jeden der in Tabelle \ref{tbl:cmp-agents} angegebenen Vergleiche jeweils 100 Spiele durchgeführt. Die Ergebnisse dieser vergleiche finden sich in Tabelle \ref{tbl:cmp-results}:
+Um zum einen ein möglichst aussagekräftiges Ergebnis zu erhalten und zum Anderen die zur Durchführung der Spiele erforderliche Rechenzeit zu beschränken wurden für jeden der in Tabelle \ref{tbl:cmp-agents} angegebenen Vergleiche jeweils 1000 Spiele durchgeführt. Die Ergebnisse dieser Vergleiche finden sich in Tabelle \ref{tbl:cmp-results}:
 
 \begin{table}[ht]
 \begin{center}
@@ -50,22 +50,25 @@ Um zum einen ein möglichst aussagekräftiges Ergebnis zu erhalten und zum Ander
  &  & \multicolumn{2}{|c|}{Gewonnene Spiele} & \multicolumn{2}{|c|}{$\varnothing$ Spielzeit [s]} \\ \hline
 Vergleich & Anz. Spiele & Agent 1 & Agent 2 & Agent 1 & Agent 2 \\ \hline
 \hline
-0 & 1000 & 481 & 480 & 0,027235 & 0,027235  \\ \hline
-1 & 0 & 0 & 0 & 0& 0 \\ \hline
-2 & 0 & 0 & 0 & 0& 0  \\ \hline
-3 & 0 & 0 & 0 & 0 & 0 \\ \hline
-4 & 1000 & 564 & 324 & 156,597061 & 0,000561 \\ \hline
-5 & 0 & 0 & 0 & 0 & 0\\ \hline
-6 & 0 & 0 & 0 & 0 & 0\\ \hline
-7 & 0 & 0 & 0 & 0 & 0\\ \hline
-8 & 0 & 0 & 0 & 0& 0 \\ \hline
-9 & 1000 & 289 & 709 & 0,000492 & 149,176487 \\ \hline
-10 & 0 & 0 & 0 & 0 & 0\\ \hline
-11 & 0 & 0 & 0 & 0 & 0\\ \hline
-12 & 0 & 0 & 0 & 0 & 0\\ \hline
+ 0 & 1000 & 429  &  527 &   0,00027 &   0,00026 \\ \hline
+ \hline
+ 1 & 1000 & 1000 &    0 & 118,21435 &   0,00235 \\ \hline
+ 2 & -    & -    & -    & -         & -         \\ \hline
+ 3 & T.M. & -    & -    & -         & -         \\ \hline
+ 4 & 1000 &  564 &  324 & 156,59706 &   0,00056 \\ \hline
+ 5 & P.M. & -    & -    & -         & -         \\ \hline
+ \hline
+ 6 & 1000 &    0 & 1000 &   0,00235 & 120,86694 \\ \hline
+ 7 & M.Z, & -    & -    & -         & -         \\ \hline
+ 8 & 1000 &  446 &  550 &   0,00034 & 234,01762 \\ \hline
+ 9 & 1000 &  289 &  709 &   0,00049 & 149,17649 \\ \hline
+10 & S.K. & -    & -    & -         & -         \\ \hline
+\hline
+11 & -    & -    & -    & -         & -         \\ \hline
+12 & -    & -    & -    & -         & -         \\ \hline
 \end{tabular}
 \end{center}
-\caption{Liste der Äquivalenzklassen}
+\caption{Ergebnisse der Vergleiche}
 \label{tbl:cmp-results}
 \end{table}
 
