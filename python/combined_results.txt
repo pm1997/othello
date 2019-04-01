@@ -15,6 +15,19 @@ Player 1 won in 45.4 %
 Player 2 won in 50.25 %
 total duration: 108.93046951293945
 average duration: 0.05446523475646973
+
+Total games: 1000
+Player 1 won 429 games
+Player 2 won 527 games
+Player 1 won in 42.9 %
+Player 2 won in 52.7 %
+Total Computation Time Player 1: 0.26889491081237793
+Total Computation Time Player 2: 0.26349568367004395
+Average Computation Time Player 1: 0.00026889491081237793
+Average Computation Time Player 2: 0.00026349568367004395
+Total Duration: 48.49994969367981
+Average Duration: 0.04849994969367981
+
 #----------------------------------------------------------
 
 # Random vs Monte Carlo 1400 Spiele je Zug __---------------
@@ -74,6 +87,18 @@ Average Computation Time Player 2: 158.399225358963
 Total Duration: 15847.898064613342
 Average Duration: 158.47898064613344
 
+Total games: 1000
+Player 1 won 446 games
+Player 2 won 550 games
+Player 1 won in 44.6 %
+Player 2 won in 55.0 %
+Total Computation Time Player 1: 0.33623576164245605
+Total Computation Time Player 2: 234017.62054395676
+Average Computation Time Player 1: 0.0003362357616424561
+Average Computation Time Player 2: 234.01762054395675
+Total Duration: 234069.59801197052
+Average Duration: 234.06959801197053
+
 # ------------------------------------------------------------
 Random vs Alpha Beta Nijssen07Heuristic (Heuristic 0)
 
@@ -88,6 +113,10 @@ Average Computation Time Player 1: 0.0002891397476196289
 Average Computation Time Player 2: 182.04209469795228
 Total Duration: 18210.045891046524
 Average Duration: 182.10045891046525
+
+# ------------------------------------------------------------
+Random vs Alpha Beta MonteCarlo (Simon)
+
 
 # ------------------------------------------------------------
 Alpha Beta Nijssen07Heuristic  vs Random (Heuristic 0)
