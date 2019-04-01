@@ -72,6 +72,11 @@ Average Computation Time Player 2: 115.7540898990631
 Total Duration: 11583.338537216187
 Average Duration: 115.83338537216187
 
+# ++++++++++++++++++++++++++++++++++++
+# TODO 9 ##############################
+# ++++++++++++++++++++++++++++++++++++
+
+
 # ------------------------------------------------------------
 Random vs Alpha Beta StoredMonteCarloHeuristic (Heuristic 1)
 
@@ -114,8 +119,12 @@ Average Computation Time Player 2: 182.04209469795228
 Total Duration: 18210.045891046524
 Average Duration: 182.10045891046525
 
+# ++++++++++++++++++++++++++++++++++++
+# TODO 7 ##############################
+# ++++++++++++++++++++++++++++++++++++
+
 # ------------------------------------------------------------
-Random vs Alpha Beta MonteCarlo (Simon)
+Random vs Alpha Beta MonteCarlo (S.K.)
 
 
 # ------------------------------------------------------------
@@ -133,6 +142,10 @@ Average Computation Time Player 2: 0.00032700300216674804
 Total Duration: 15273.387269735336
 Average Duration: 152.73387269735338
 
+# ++++++++++++++++++++++++++++++++++++
+# TODO 2 #############################
+# ++++++++++++++++++++++++++++++++++++
+
 # ------------------------------------------------------------
 Alpha Beta StoredMonteCarloHeuristic vs Random (Heuristic 1)
 
@@ -147,6 +160,8 @@ Average Computation Time Player 1: 186.9029140686989
 Average Computation Time Player 2: 0.0003688216209411621
 Total Duration: 18699.62310886383
 Average Duration: 186.9962310886383
+
+T.M.
 
 # ------------------------------------------------------------
 Alpha Beta CowthelloHeuristic vs Random (Heuristic 2)
@@ -174,5 +189,7 @@ Average Computation Time Player 1: 156.59706094050406
 Average Computation Time Player 2: 0.0005614027976989746
 Total Duration: 156660.01527786255
 Average Duration: 156.66001527786256
+# ------------------------------------------------------------
+Alpha Beta MonteCarlo Random (P.M.)
 
 # ------------------------------------------------------------
