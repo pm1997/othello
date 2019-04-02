@@ -54,10 +54,10 @@ Vergleich & Anz. Spiele & Agent 1 & Agent 2 & Agent 1 & Agent 2 \\ \hline
  0 & 1000 & 429  &  527 &   0,00027 &   0,00026 \\ \hline
  \hline
  1 & 1000 & 1000 &    0 & 118,21435 &   0,00235 \\ \hline
- 2 & -    & -    & -    & -         & -         \\ \hline
+ 2 & P.M.   & -    & -    & -         & -         \\ \hline
  3 & T.M. & -    & -    & -         & -         \\ \hline
  4 & 1000 &  564 &  324 & 156,59706 &   0,00056 \\ \hline
- 5 & P.M. & -    & -    & -         & -         \\ \hline
+ 5 & 200 & 132   & 60   & 550,9348  & 0,00045   \\ \hline
  \hline
  6 & 1000 &    0 & 1000 &   0,00235 & 120,86694 \\ \hline
  7 & M.Z, & -    & -    & -         & -         \\ \hline
@@ -72,9 +72,9 @@ Vergleich & Anz. Spiele & Agent 1 & Agent 2 & Agent 1 & Agent 2 \\ \hline
 \caption{Ergebnisse der Vergleiche}
 \label{tbl:cmp-results}
 \end{table}
-
+\newpage
 \section{Anpassung der Parameter der verschiedenen Agenten}
-In Kapitel \ref{cpt:eval-agents} bereits beschrieben, soll die Gesamtberechnungsdauer eines Agenten pro Spiel etwa 5 Minuten betragen. Dementsprechend wurden die Parameter der einzelnen Agenten so angepasst, dass sich die Berechnungsdauer meistens unterhalb dieser Zeit befindet. Aufgrund der unterschiedlichen möglichen Spielabläufe existieren eine sehr unterschiedliche Spiellänge. Es gibt sehr schnelle Spiele, welche nicht einmal 60 Züge beinhalten aber auch sehr lange Spiele, bei denen je Zug viele mögliche Zugpositionen evaluiert werden müssen. Zur Sicherstellung der Vergleichbarkeit wurde ein Surface mit einem i7 und 2,11 GHz Basisgeschwindigkeit, als Vergleichsgerät festgelegt. 
+In Kapitel \ref{cpt:eval-agents} bereits beschrieben, soll die Gesamtberechnungsdauer eines Agenten pro Spiel etwa 5 Minuten betragen. Dementsprechend wurden die Parameter der einzelnen Agenten so angepasst, dass sich die Berechnungsdauer meistens unterhalb dieser Zeit befindet. Aufgrund der unterschiedlichen möglichen Spielabläufe existieren eine sehr unterschiedliche Spiellänge. Es gibt sehr schnelle Spiele, welche nicht einmal 60 Züge beinhalten aber auch sehr lange Spiele, bei denen je Zug viele mögliche Zugpositionen evaluiert werden müssen. Zur Sicherstellung der Vergleichbarkeit wurde ein Surface mit einem i7 und 2,11 GHz Basisgeschwindigkeit, als Vergleichsgerät festgelegt. Aus Gründen der schnelleren Ausführung der Tests, der langen Laufzeit und der stromsparenden Berechnung wurden die Tests aus Tabelle \ref{tbl:cmp-results} auf mehreren Servern durchgeführt.
 \\Nun wurden die verfügbaren Parameter der Agenten auf die o.g. Spezifikationen angepasst.
 \subsection*{Parameter des \mxZitat{Monte Carlo}-Agenten}
 \label{eval:agents:params:subsec-mc}
@@ -94,8 +94,21 @@ Der Parameter \code{use\_multiprocessing} wird aktiviert, da es bei dem Monte Ca
 \\Nachdem alle Parameter bis auf \code{big\_n} gesetzt sind, wird dieser empirisch ermittelt, indem mehrere Spiele mit unterschiedlichen \code{big\_n} gespielt werden. Aus dieser Testreihe ergab sich einen \code{big\_n} Wert von \mxZitat{2000}. Die Gesamtdauer der Spiele beträgt meistens drei bis fünf Minuten. Wird der Parameter weiter erhöht, wird die Gesamtspielzeit des Agenten von fünf Minuten überschritten.
 \subsection*{Parameter des \mxZitat{Alpha-Beta Pruning}-Agenten}
 \label{eval:agents:params:subsec-ab}
-
-
+Das gleiche Vorgehen aus dem vorherigen Abschnitt wird nun ebenfalls auf den \mxZitat{Alpha-Beta Pruning}-Agenten angewendet.
+Dieser Agent besitzt folgende Parameter:
+\begin{itemize}
+\item \code{\_use\_start\_libs}
+\item \code{\_search\_depth}
+\item \code{\_heuristic}
+\item \code{\_use\_monte\_carlo}
+\item \code{\_mc\_count}
+\end{itemize}
+\code{\_use\_start\_libs} wird immer aktiviert, da die Ausführungszeit eines Spiels merklich verkleinert wird. Je nach Spielzug des Gegners können bis zu 21 Züge aus der Datenbank  gelesen werden und müssen nicht berechnet werden.
+\\\code{\_heuristic} wurde jeweils variiert, damit ein Vergleich der Heuristiken möglich ist. Bei der Verwendung einer Heuristik wurden die Parameter \code{\_use\_monte\_carlo} und \code{\_mc\_count} deaktiviert (\code{\_use\_monte\_carlo} wird auf \mxZitat{False} gesetzt). Die ermittelte Suchtiefe (\code{\_search\_depth}) beträgt \mxZitat{5}. Bei höheren Suchtiefen wird das Berechnungszeitlimit von fünf Minuten überschritten.
+\vspace{0.5cm}
+\\Neben Heuristiken kann die Alpha-Beta Suche auch Monte Carlo zur Ermittlung des Spielzustandswertes nach der Alpha-Beta Suche genutzt werden.
+\\\code{\_use\_monte\_carlo} wird dazu aktiviert (Wert auf \mxZitat{True} gesetzt). \code{\_mc\_count} gibt die Anzahl der durchgeführten Monte Carlo Spiele je Blattknoten an. Dieser Parameter wurde auf \mxZitat{10} gesetzt, da die Alpha-Beta Suche ohne eine anschließende Aktion relativ lange dauert. Deshalb können in den Blattknoten im Vergleich zum reinen Monte Carlo Agenten nicht annähernd so viele Spiele durchgeführt werden. 
+\\\code{\_search\_depth} wurde durch empirisches Testen der Laufzeit auf \mxZitat{2} festgelegt.
 \section{Evaluierung der Bedeutung verschiedener Feldkategorien}
 Einleitung
 \subsection{Methode und Ergebnisse}
@@ -116,5 +129,8 @@ Bei der Betrachtung der Diagramme fallen einige Aspekte sofort auf:
 \item Einige Feldkategorien spielen erst nach einer gewissen Zugnummer eine Rolle
 \\Dies liegt darin begründet, dass ein Spielstein nur neben ein bereits besetztes Feld gelegt werden darf. Zu Beginn des Spiels sind jedoch nur die vier Steine in der Mitte des Spielfeldes gesetzt. Entsprechend dauert es einige Züge bis gewisse Feldkategorien wie bspw. die Eckfelder überhaupt erreicht werden können.
 \item Die Gewinnwahrscheinlichkeit für einen einzelnen Spieler schlägt zwischen zwei aufeinanderfolgenden Zugnummern sehr stark aus. Bei der darauf folgenden Zugnummer erreicht sie jedoch wieder das ursprüngliche Niveau.
-\\Üblicherweise wechseln sich die Spieler mit ihren Zügen ab. Demnach würden die Spieler bei jeder zweiten Zugnummer gar keinen Zug durchführen können, da sie nicht an der Reihe sind. Gelegentlich muss ein Spieler jedoch aus Mangel an möglichen Zügen aussetzen. Dadurch führt ein Spieler seine Züge nun zu den Zugnummern aus zu denen er vorher gar nicht spielen konnte. Da sich durch das aussetzen in der Regel ein Nachteil ergibt wird in diesem Fall die Gewinnwahrscheinlichkeit geringer. Über viele Spiele verteilt ergeben sich daraus die beschriebenen Schwankungen.
+\\Üblicherweise wechseln sich die Spieler mit ihren Zügen ab. Demnach würden die Spieler bei jeder zweiten Zugnummer gar keinen Zug durchführen können, da sie nicht an der Reihe sind. Die Spieler spielen zufällig, d.h. sie spielen auch Züge, in welchen sie verlieren. Außerdem gruppieren die Feldkategorien mehrere Felder miteinander. Dadurch kann es vorkommen, dass einzelne Züge sich gegenseitig ausgleichen oder verstärken.
+\\Der Spieler 2 kann in seinem letzten Zug noch viele Steine umdrehen und das Spiel wenden. Der vorletzte Zug kann zwar ebenfalls viele Steine wenden, muss aber so gewählt werden, dass der letzte Zug nicht mehr Steine wendet, als durch den vorletzten Zug \mxZitat{gewonnene} Steine erzielt wurden. Dadurch ist die Gewinnwahrscheinlichkeit des zweiten Spielers im letzten Zug höher als die des ersten Spielers. Umgekehrt gilt aber ebenfalls, dass die Gewinnwahrscheinlichkeit des ersten Spielers im vorletzten Zug höher ist, als die des zweiten Spielers.
+\\Wendet man diese Regel auf die vorangegangenen Züge an, ergibt sich das deutlich sichtbare Zick-Zack Muster, welches sich über den Verlauf des Spiels sich etwa 50 Prozent annähert.
+\\Über viele Spiele verteilt ergeben sich daraus die beschriebenen Schwankungen.
 \end{enumerate}
