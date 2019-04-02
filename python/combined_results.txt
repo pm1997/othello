@@ -164,7 +164,17 @@ Average Computation Time Player 2: 0.0003688216209411621
 Total Duration: 18699.62310886383
 Average Duration: 186.9962310886383
 
-T.M.
+Total games: 1000
+Player 1 won 458 games
+Player 2 won 454 games
+Player 1 won in 45.8 %
+Player 2 won in 45.4 %
+Total Computation Time Player 1: 271860.35981440544
+Total Computation Time Player 2: 0.3145773410797119
+Average Computation Time Player 1: 271.86035981440546
+Average Computation Time Player 2: 0.0003145773410797119
+Total Duration: 271917.7613954544
+Average Duration: 271.9177613954544
 
 # ------------------------------------------------------------
 Alpha Beta CowthelloHeuristic vs Random (Heuristic 2)
