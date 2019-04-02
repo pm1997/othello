@@ -119,9 +119,15 @@ Dieser Agent besitzt folgende Parameter:
 Einleitung
 \subsection{Methode und Ergebnisse}
 \paragraph{Methode}
-Für die Beurteilung der Bedeutung einzelner Feldkategorien wurde die, für die im Kapitel \ref{cpt:eval-agents} durchgeführten Vergleiche, mit der \mxZitat{Stored Monte Carlo Heuristik} aufgebaute Datenbank, verwendet.\improvement{entschachteln}
-\\Diese Datenbank wurde, wie in Kapitel \ref{heuristic} erläutert, durch das Spielen von Partien zwischen zwei \mxZitat{Random}-Agenten aufgebaut. Im vorliegenden Fall wurden $140.000$ Spiele simuliert. Nun kann für jede Zugnummer und für jeden Spieler die Gewinnwahrscheinlichkeit für das Spielen einer Feldkategorie berechnet werden, indem für jede Kategorie die Anzahl der Spiele, die nach Spielen eines Feldes dieser Kategorie gewonnen wurde, durch die Anzahl der Spiele, die insgesamt für die jeweilige Kategorie gespielt wurden, dividiert wird. Um eine Division durch $0$ zu vermeiden, wird die berechnete Gewinnwahrscheinlichkeit auf $0$ gesetzt sofern bei der jeweiligen Zugnummer nie eine derartige Feldkategorie gespielt wurde. Aufgrund der großen Anzahl von zufällig gespielten Spielen ist in diesem Fall davon auszugehen, dass es zu der jeweiligen Zugnummer keine Möglichkeit gibt eine derartige Feldkategorie zu spielen. 
-\\Insgesamt ergibt sich damit pro Spieler eine Relation $\lbrace0, ..., 59\rbrace\times\lbrace0, ..., 8\rbrace\mapsto\lbrack0,1\rbrack$, die für die Zugnummer und für die Feldkategorie jeweils die Wahrscheinlichkeit angibt.
+Für die Beurteilung der Bedeutung einzelner Feldkategorien wurde die mit der \mxZitat{Stored Monte Carlo Heuristik} aufgebaute Datenbank verwendet. Diese wurde zur Durchführung der in Kapitel \ref{cpt:eval-agents} durchgeführten Vergleiche aufgebaut.
+\\Zu diesem Zweck wurden, wie in Kapitel \ref{heuristic} erläutert, mehrere Partien zwischen zwei \mxZitat{Random}-Agenten gespielt und die Ergebnisse gespeichert. Im vorliegenden Fall wurden $140.000$ Spiele simuliert. Nun kann für jedenSpieler zu jeder Zugnummer und jede Feldkategorie die Gewinnwahrscheinlichkeit für das Spielen einer Feldkategorie berechnet werden als: 
+\vspace{0.25cm}
+\begin{center}
+$\dfrac{\mathtt{Anzahl\ gewonnene\ Spiele}}{\mathtt{Anzahl\ insgesamt\ gespielte\ Spiele}}$.
+\end{center}
+\vspace{0.25cm}
+Um eine Division durch $0$ zu vermeiden, wird die berechnete Gewinnwahrscheinlichkeit auf $0$ gesetzt sofern bei der jeweiligen Zugnummer nie eine derartige Feldkategorie gespielt wurde. Aufgrund der großen Anzahl von zufällig gespielten Spielen ist in diesem Fall davon auszugehen, dass es zu der jeweiligen Zugnummer keine Möglichkeit gibt eine derartige Feldkategorie zu spielen. 
+\\Insgesamt ergibt sich damit pro Spieler eine Relation $\lbrace0, ..., 59\rbrace\times\lbrace0, ..., 8\rbrace\mapsto\lbrack0,1\rbrack$, die für die Zugnummer und für die Feldkategorie jeweils die Gewinnwahrscheinlichkeit angibt.
   
 \paragraph{Ergebnisse}
 Um die große Anzahl von $60\ \mathtt{Zugnummern} * 9\ \mathtt{Zugkategorien} = 540$ Wahrscheinlichkeitswerten pro Spieler übersichtlich darstellen zu können, werden diese grafisch aufbereitet. Da hierfür ausschließlich zweidimensionale Diagramme zum Einsatz kommen, sollen besteht die Möglichkeit hier nach der Zugnummer oder der Feldkategorie zu schneiden. Die Abbildungen \ref{fig:win-pro-fc-0} bis \ref{fig:win-pro-fc-8} im Anhang geben die Gewinnwahrscheinlichkeiten für den Schnitt nach der Feldkategorie an.
@@ -130,13 +136,11 @@ Um die große Anzahl von $60\ \mathtt{Zugnummern} * 9\ \mathtt{Zugkategorien} = 
 \subsection{Besprechung der Ergebnisse}
 Bei der Betrachtung der Diagramme fallen einige Aspekte sofort auf:
 \begin{enumerate}
-\item Spieler Zwei besitzt fast durchgehend eine höhere Gewinnwahrscheinlichkeit als Spieler 1
+\item \textbf{Spieler Zwei besitzt fast durchgehend eine höhere Gewinnwahrscheinlichkeit als Spieler 1:}
 \\Dies liegt vermutlich darin begründet, dass Spieler 1 das Spiel eröffnet. Fasst man zwei aufeinanderfolgende Züge nun als Halbzüge eines kompletten Spielzuges auf, so kann Spieler 2 immer direkt auf den Zug des Spieler 1 reagieren.
-\item Einige Feldkategorien spielen erst nach einer gewissen Zugnummer eine Rolle
+\item \textbf{Einige Feldkategorien spielen erst nach einer gewissen Zugnummer eine Rolle:}
 \\Dies liegt darin begründet, dass ein Spielstein nur neben ein bereits besetztes Feld gelegt werden darf. Zu Beginn des Spiels sind jedoch nur die vier Steine in der Mitte des Spielfeldes gesetzt. Entsprechend dauert es einige Züge bis gewisse Feldkategorien wie bspw. die Eckfelder überhaupt erreicht werden können.
-\item Die Gewinnwahrscheinlichkeit für einen einzelnen Spieler schlägt zwischen zwei aufeinanderfolgenden Zugnummern sehr stark aus. Bei der darauf folgenden Zugnummer erreicht sie jedoch wieder das ursprüngliche Niveau.
-\\Üblicherweise wechseln sich die Spieler mit ihren Zügen ab. Demnach würden die Spieler bei jeder zweiten Zugnummer gar keinen Zug durchführen können, da sie nicht an der Reihe sind. Die Spieler spielen zufällig, d.h. sie spielen auch Züge, in welchen sie verlieren. Außerdem gruppieren die Feldkategorien mehrere Felder miteinander. Dadurch kann es vorkommen, dass einzelne Züge sich gegenseitig ausgleichen oder verstärken.
-\\Der Spieler 2 kann in seinem letzten Zug noch viele Steine umdrehen und das Spiel wenden. Der vorletzte Zug kann zwar ebenfalls viele Steine wenden, muss aber so gewählt werden, dass der letzte Zug nicht mehr Steine wendet, als durch den vorletzten Zug \mxZitat{gewonnene} Steine erzielt wurden. Dadurch ist die Gewinnwahrscheinlichkeit des zweiten Spielers im letzten Zug höher als die des ersten Spielers. Umgekehrt gilt aber ebenfalls, dass die Gewinnwahrscheinlichkeit des ersten Spielers im vorletzten Zug höher ist, als die des zweiten Spielers.
-\\Wendet man diese Regel auf die vorangegangenen Züge an, ergibt sich das deutlich sichtbare Zick-Zack Muster, welches sich über den Verlauf des Spiels sich etwa 50 Prozent annähert.
-\\Über viele Spiele verteilt ergeben sich daraus die beschriebenen Schwankungen.
+\item \textbf{Die Gewinnwahrscheinlichkeit für einen einzelnen Spieler schwankt für die Zugnummern sehr stark:}
+\\Dabei fällt auf, dass jeweils die Wahrscheinlichkeiten bei geraden Zugnummern und die Wahrscheinlichkeiten bei ungeraden Zugnummern auf einem ungefähr gleichen Niveau liegen. Zwischen zwei aufeinanderfolgenden Zügen gibt es hingegen eine deutliche Schwankung. 
+\\?\unsure{Warum}
 \end{enumerate}
