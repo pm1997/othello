@@ -101,20 +101,22 @@ Der Parameter \code{big\_n} wurde, nachdem alle übrigen Parameter festgesetzt w
 \subsection*{Parameter des \mxZitat{Alpha-Beta Pruning}-Agenten}
 \label{eval:agents:params:subsec-ab}
 Das gleiche Vorgehen aus dem vorherigen Abschnitt wird nun ebenfalls auf den \mxZitat{Alpha-Beta Pruning}-Agenten angewendet.
-Dieser Agent besitzt folgende Parameter:
+Dabei werden die Parameter wie folgt festgesetzt:
 \begin{itemize}
-\item \code{\_use\_start\_libs}
-\item \code{\_search\_depth}
-\item \code{\_heuristic}
-\item \code{\_use\_monte\_carlo}
-\item \code{\_mc\_count}
+\item \code{\_use\_start\_libs}: $\mathtt{True}$
+\item \code{\_search\_depth}: $2$
+\item \code{\_heuristic}: variert je nach Vergleich
+\item \code{\_use\_monte\_carlo}: variert je nach Vergleich
+\item \code{\_mc\_count}: variert je nach Vergleich
 \end{itemize}
-\code{\_use\_start\_libs} wird immer aktiviert, da die Ausführungszeit eines Spiels merklich verkleinert wird. Je nach Spielzug des Gegners können bis zu 21 Züge aus der Datenbank  gelesen werden und müssen nicht berechnet werden.
-\\\code{\_heuristic} wurde jeweils variiert, damit ein Vergleich der Heuristiken möglich ist. Bei der Verwendung einer Heuristik wurden die Parameter \code{\_use\_monte\_carlo} und \code{\_mc\_count} deaktiviert (\code{\_use\_monte\_carlo} wird auf \mxZitat{False} gesetzt). Die ermittelte Suchtiefe (\code{\_search\_depth}) beträgt \mxZitat{5}. Bei höheren Suchtiefen wird das Berechnungszeitlimit von fünf Minuten überschritten.
+\code{\_use\_start\_libs} wird auf \code{True} gesetzt, da so die Verwendung mehrerer Prozessorkerne aktiviert wird und damit die Ausführungszeit eines Spiels merklich veringert wird. Je nach Spielzug des Gegners können bis zu 21 Züge aus der Datenbank  gelesen werden und müssen nicht berechnet werden.
+\\\code{\_search\_depth} wurde durch empirisches Testen der Laufzeit auf \mxZitat{2} festgelegt.
+\\\code{\_heuristic} wurde jeweils variiert, damit ein Vergleich der Heuristiken möglich ist. Bei der Verwendung einer Heuristik wurden die Optionen hinter den Parametern \code{\_use\_monte\_carlo} und \code{\_mc\_count} deaktiviert \code{\_use\_monte\_carlo} wird auf dazu auf \mxZitat{False} gesetzt. 
+%Die ermittelte Suchtiefe (\code{\_search\_depth}) beträgt \mxZitat{5}. Bei höheren Suchtiefen wird das Berechnungszeitlimit von fünf Minuten überschritten.
 \vspace{0.5cm}
 \\Neben Heuristiken kann die Alpha-Beta Suche auch Monte Carlo zur Ermittlung des Spielzustandswertes nach der Alpha-Beta Suche genutzt werden.
-\\\code{\_use\_monte\_carlo} wird dazu aktiviert (Wert auf \mxZitat{True} gesetzt). \code{\_mc\_count} gibt die Anzahl der durchgeführten Monte Carlo Spiele je Blattknoten an. Dieser Parameter wurde auf \mxZitat{10} gesetzt, da die Alpha-Beta Suche ohne eine anschließende Aktion relativ lange dauert. Deshalb können in den Blattknoten im Vergleich zum reinen Monte Carlo Agenten nicht annähernd so viele Spiele durchgeführt werden. 
-\\\code{\_search\_depth} wurde durch empirisches Testen der Laufzeit auf \mxZitat{2} festgelegt.
+\\\code{\_use\_monte\_carlo} wird dazu auf \mxZitat{True} gesetzt, die Option also aktiviert aktiviert. \code{\_mc\_count} gibt dann die Anzahl der in den Blattknoten durchgeführten Monte Carlo Spiele an. Dieser Parameter wurde in diesem Fall auf $10$ gesetzt, da bereits die Alpha-Beta Suche ohne eine Bewertung des Zustands mit Monte Carlo relativ lange dauert. Deshalb können in den Blattknoten im Vergleich zum reinen Monte Carlo Agenten nicht annähernd so viele Spiele durchgeführt werden. 
+
 \section{Evaluierung der Bedeutung verschiedener Feldkategorien}
 Einleitung
 \subsection{Methode und Ergebnisse}
