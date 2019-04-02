@@ -57,7 +57,7 @@ Um zum einen ein möglichst aussagekräftiges Ergebnis zu kommen gilt es eine au
  \hline
  1 & 1000 & 1000 & 100,0 &    0 &   0,0   & 118,21435 &   0,00235 \\ \hline
  2 & P.M. & -    & -     & -    & -     & -         & -         \\ \hline
- 3 & T.M. & -    & -     & -    & -     & -         & -         \\ \hline
+ 3 & 1000 & 458  &  45,8 &  454 & 45,4  & 271,86036 & 0,00031   \\ \hline
  4 & 1000 &  564 &  56,4 &  324 &  32,4 & 156,59706 &   0,00056 \\ \hline
  5 &  200 &  132 &  66,0 &   60 &  30,0 & 550,9348  &   0,00045 \\ \hline
  \hline
@@ -77,8 +77,8 @@ Um zum einen ein möglichst aussagekräftiges Ergebnis zu kommen gilt es eine au
 \newpage
 
 \section{Anpassung der Parameter der verschiedenen Agenten}
-Der Wahl der Parameter lag die Prämisse zugrunde, dass die Gesamtberechnungsdauer eines Agenten pro Spiel etwa fünf Minuten betragen sollte. Zur Ermittlung der Werte wurde ein  Mircosoft® Surface™ der XXX.\unsure{ergänzen} Generation mit einer CPU der Intel® Core™ i7 Familie mit 2,11 GHz Taktrate, als Referenzgerät festgelegt. Dementsprechend wurden die Parameter der einzelnen Agenten so angepasst, dass die Berechnungsdauer im Mittel unterhalb dieser Marke liegt. Einzelne Spielabläufe können sich jedoch sehr stark unterscheiden. Entsprechend können sich bei einzelnen Spielen auch größere Abweichungen ergeben. Dabei gibt es sehr schnelle Spiele, bei denen bspw. ein Spieler gewinnt ohne dass das komplette Spielfeld besetzt ist, aber auch sehr lange Spiele, bei denen für jeden Zug viele mögliche Folgezüge evaluiert werden müssen.
-\\Da die Testsläufe über eine sehr lange Laufzeit verfügen wurden die in Tabelle \ref{tbl:cmp-results} angegebenen Tests nicht auf dem zur Ermittlung der Parameter herangezogenen Mircosoft® Surface™ ermittelt. Zum Einsatz kamen stattdessen virtualisierte Server die auf einer Intel® Xeon® Gold 6140 CPU mit einer Taktrate von 2,3GHz aufbauen. Da die Verfasser dieser Arbeit die Server für andere Projekte bereits angemietet haben, jedoch nicht auslasten entstehen ihnen so durch die Berechnung der Vergleiche keine zusätzlichen Energiekosten. Darüber hinaus ist es möglich das Mircosoft® Surface™ anderweitig zu verwenden.
+Der Wahl der Parameter lag die Prämisse zugrunde, dass die Gesamtberechnungsdauer eines Agenten pro Spiel etwa fünf Minuten betragen sollte. Zur Ermittlung der Werte wurde ein  Mircosoft® Surface Pro™ der 6. Generation mit einer CPU der Intel® Core™ i7 Familie mit 2,11 GHz Taktrate, als Referenzgerät festgelegt. Dementsprechend wurden die Parameter der einzelnen Agenten so angepasst, dass die Berechnungsdauer im Mittel unterhalb dieser Marke liegt. Einzelne Spielabläufe können sich jedoch sehr stark unterscheiden. Entsprechend können sich bei einzelnen Spielen auch größere Abweichungen ergeben. Dabei gibt es sehr schnelle Spiele, bei denen bspw. ein Spieler gewinnt ohne dass das komplette Spielfeld besetzt ist, aber auch sehr lange Spiele, bei denen für jeden Zug viele mögliche Folgezüge evaluiert werden müssen.
+\\Da die Testsläufe über eine sehr lange Laufzeit verfügen wurden die in Tabelle \ref{tbl:cmp-results} angegebenen Tests nicht auf dem zur Ermittlung der Parameter herangezogenen Mircosoft® Surface Pro™ ermittelt. Zum Einsatz kamen stattdessen virtualisierte Server die auf einer Intel® Xeon® Gold 6140 CPU mit einer Taktrate von 2,3 GHz bzw. auf einer Intel® Xeon® Broadwell E5-2680 v4 CPU mit einer Taktrate von 2.4 GHz aufbauen. Da die Verfasser dieser Arbeit die Server für andere Projekte bereits angemietet haben, jedoch nicht auslasten, entstehen ihnen so durch die Berechnung der Vergleiche keine zusätzlichen Energiekosten. Darüber hinaus ist es möglich das Mircosoft® Surface Pro™ anderweitig zu verwenden.
 \\Nachfolgend werden die Ergebnisse der Anpassung der Parameter gemäß dem oben Beschriebenen Verfahren diskutiert.
 \subsection{Parameter des \mxZitat{Monte Carlo}-Agenten}
 \label{eval:agents:params:subsec-mc}
