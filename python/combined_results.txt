@@ -129,7 +129,19 @@ Average Duration: 182.10045891046525
 M.Z.
 
 # ------------------------------------------------------------
-Random vs Alpha Beta MonteCarlo (S.K.)
+Random vs Alpha Beta MonteCarlo
+
+Total games: 200
+Player 1 won 33 games
+Player 2 won 166 games
+Player 1 won in 16.5 %
+Player 2 won in 83.0 %
+Total Computation Time Player 1: 0.13822054862976074
+Total Computation Time Player 2: 143571.4234571457
+Average Computation Time Player 1: 0.0006911027431488037
+Average Computation Time Player 2: 717.8571172857285
+Total Duration: 143587.00269126892
+Average Duration: 717.9350134563446
 
 
 # ------------------------------------------------------------
