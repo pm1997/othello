@@ -382,14 +382,15 @@ Dieser Zug wird an die übergeordnete Funktion zurückgegeben.
 \item $\mathtt{prob\_sum}(\mathtt{available\_moves}, \mathtt{turn\_nr}, \mathtt{player}) = \sum\limits_{\mathtt{move} \in \mathtt{available\_moves}} \mathtt{db\_prob}(\mathtt{move},\mathtt{turn\_nr}, \mathtt{player})$
 \item Auswahlwahrscheinlichkeit des Zuges $\mathtt{move}$:
 \\$P(\mathtt{move} \mid \mathtt{available\_moves} \land \mathtt{turn\_nr} \land \mathtt{player}) = \frac{ \mathtt{db\_prob}(\mathtt{move}, \mathtt{turn\_nr}, \mathtt{player})}{\mathtt{prob\_sum}(\mathtt{available\_moves}, \mathtt{turn\_nr}, \mathtt{player})} $
-\item Zuordnung der zufällig ausgewählten Zahl zu einem Zug
+\item Zuordnung der zufällig ausgewählten Zahl zu einem Zug:
 \\$\mathtt{map\_move}: [ 0, \mathtt{prob\_sum}] \rightarrow \mathtt{available\_moves} $
 \\ In der folgenden Formel werden folgende Änderungen zur Steigerung der Verständlichkeit getroffen:
 \begin{itemize}
 \item $\mathtt{a\_m}$ ist die abkürzende Schreibweise für $\mathtt{available\_moves}$
 \item Die Parameter $\mathtt{turn\_nr}$ und $\mathtt{player}$ werden in der Funktion $\mathtt{db\_prob}$ nicht angegeben, da diese in dieser Funktion konstante Parameter sind.
 \end{itemize}
-$\mathtt{map\_move}(\mathtt{random\_nr}) = \{ \mathtt{a\_m}[i] \in \mathtt{a\_m} \mid i \in \{0, .. , len(\mathtt{a\_m}) - 1\} \land (\sum\limits_{\mathtt{k} = 0}^{i - 1}{(\mathtt{db\_prob}(\mathtt{a\_m}[k])) < \mathtt{random\_nr}} \\\land (\sum\limits_{\mathtt{k} = 0}^{i}{(\mathtt{db\_prob}(\mathtt{a\_m}[k])) >= \mathtt{random\_nr}}  \}$, wobei $\mathtt{random\_nr} \in [0, \mathtt{prob\_sum}]$
+$\mathtt{map\_move}(\mathtt{random\_nr}) = \{ \mathtt{a\_m}[i] \in \mathtt{a\_m} \mid i \in \{0, .. , len(\mathtt{a\_m}) - 1\} \land (\sum\limits_{\mathtt{k} = 0}^{i - 1}{\mathtt{db\_prob}\mathtt{a\_m}[k] < \mathtt{random\_nr}} \\\land \sum\limits_{\mathtt{k} = 0}^{i}{\mathtt{db\_prob}\mathtt{a\_m}[k] >= \mathtt{random\_nr}}  \}$, wobei $\mathtt{random\_nr} \in [0, \mathtt{prob\_sum}]$
+\\Die Menge enthält immer nur ein Element, welches zurückgegeben wird, da die zweite Bedingung alle Züge unter der zufälligen Zahl herausfiltert in Verbindung mit der dritten Bedingung alle Züge über dem Intervall herausfiltert.
 \end{itemize}
 Durch die zufällige Auswahl eines Zuges aus der Summe $\mathtt{prob\_sum}$ werden Züge mit einer hohen Gewinnwahrscheinlichkeit bevorteilt, aber Züge mit einer geringen Gewinnwahrscheinlichkeit werden zwar seltener, aber dennoch ausgewählt.
 
