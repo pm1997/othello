@@ -273,12 +273,12 @@ Die Implementierung des Agenten \mxZitat{Random} befindet sich in der Datei \cod
 \\In der mit der Arbeit entwickelten Implementierung ist dies derartig umgesetzt, dass der Agent die Liste der möglichen Züge aus dem Spielzustand abruft und einen zufälligen Index der Liste auswählt um dann den dort angegebenen Zug zu spielen.
 
 \subsection{Monte Carlo}
-Hinter diesem Agenten steht das im Kapitel \ref{mc_algo} erläuterte Prinzip, der zufällig gespielten Spiele zur Ermittlung des Spielzuges mit der höchsten Gewinnwahrscheinlichkeit. Dabei werden ausgehend von einem derzietigen Spielzustand $N$ Spiele simuliert in dem für beide Spieler der Agent \mxZitat{Random} verwendet wird. Dabei wird für den jeweils ersten simulierten Zug gespeichert wie oft dieser durchgeführt wurde und wie häufig dies in einer gewonnenen Simulation resultierte. In dem nicht simulierten Spiel wird dann jener Spielzug ausgeführt, bei dem der Quotient aus der Anzahl der nach spielen dieses Zuges gewonnen Spiele und der Anzahl der simulierten Spiele die mit diesem Zug begonnen wurden, am größten ist.
+Hinter diesem Agenten steht das im Kapitel \ref{mc_algo} erläuterte Prinzip, der zufällig gespielten Spiele zur Ermittlung des Spielzuges mit der höchsten Gewinnwahrscheinlichkeit. Dabei werden ausgehend von einem derzeitigen Spielzustand $N$ Spiele simuliert in dem für beide Spieler der Agent \mxZitat{Random} verwendet wird. Dabei wird für den jeweils ersten simulierten Zug gespeichert wie oft dieser durchgeführt wurde und wie häufig dies in einer gewonnenen Simulation resultierte. In dem nicht simulierten Spiel wird dann jener Spielzug ausgeführt, bei dem der Quotient aus der Anzahl der nach spielen dieses Zuges gewonnen Spiele und der Anzahl der simulierten Spiele die mit diesem Zug begonnen wurden, am größten ist.
 \\Nachfolgend wird dieses Prinzip anhand des Quellcodes nochmals erläutert.
 \\Die Spielerklasse \mxZitat{MonteCarlo} ist in der Datei \mxZitat{python/Agents/monteCarlo.py} zu finden.
 \subsubsection{Parameter}
 \label{mc_params}
-Das genaue Verhalten des Agenten kann durch die folgenden Paramter beeinflusst werden: 
+Das genaue Verhalten des Agenten kann durch die folgenden Parameter beeinflusst werden: 
 \begin{itemize}
 \item \code{big\_n}: Die Anzahl $N$ der zufällig gespielten Spiele je Zug
 \item \code{use\_start\_libs}: Bool'scher Wert ob Startbibliotheken verwendet werden sollen
@@ -295,6 +295,7 @@ Das genaue Verhalten des Agenten kann durch die folgenden Paramter beeinflusst w
 \end{itemize}
 \item \code{heuristic}: Eine der in  Kapitel \ref{heuristic} beschriebenen. Wird im Präprozessor zur Bewertung von Spielzuständen herangezogen.
 \item \code{use\_multiprocessing}: Boolscher Wert, der angibt ob die $N$ simulierten Spiele unter Verwendung mehrerer Prozesse durchgeführt werden sollen. Bei Systemen mit mehr als einem Prozessor können damit durch Parallelisierung Geschwindigkeitsvorteile erreicht werden. 
+\item \code{use\_weighted\_random}: Boolscher Wert, der angibt ob die Züge mit einer höheren Gewinnwahrscheinlichkeit stärker in der Random Funktion gewichtet werden sollen.
 \end{itemize}
 
 \subsubsection{Die Präprozessoren}
@@ -364,6 +365,41 @@ Ist die Option zur Verwendung mehrere Prozesse aktiviert, so wird der \code{else
         selected_move = max(self.move_probability.items(), key=operator.itemgetter(1))[0]
         return selected_move
 \end{lstlisting}
+
+\subsubsection{Nutzung der gewichteten Random Funktion}
+Die gewichtete Zufalls Funktion bevorzugt bei der Auswahl eines Zuges Züge mit einer höheren Gewinnwahrscheinlichkeit des aktuellen Spielers. Die Funktion ist in Listing \ref{lst:wmc1} abgebildet.
+Die gewichtete Auswahl eines Zuges wird auch in Abbildung \ref{fig:rand1} verdeutlicht.
+\\\mxPicture{12.7cm}{rand2}{Auswahl eines gewichteten zufälligen Zuges}{Auswahl eines gewichteten zufälligen Zuges}{fig:rand1}{}
+
+\begin{lstlisting}[caption = {get\_weighted\_random Funktion des Monte-Carlo Agenten}, language = python, captionpos = t , numbers=left, label={lst:wmc1}]
+    def get_weighted_random(possible_moves, turn_nr, own_symbol):
+        prob_sum = 0.0
+        for move in possible_moves:
+            prob_sum += MonteCarlo._ml_database.get_likelihood(move, turn_nr, own_symbol)
+        chose = random.uniform(0.0, prob_sum)
+        move_nr = 0
+        prob_sum = 0.0
+        for move in possible_moves:
+            move_nr += 1
+            prob_sum += MonteCarlo._ml_database.get_likelihood(move, turn_nr, own_symbol)
+            if prob_sum >= chose:
+                return move
+        return possible_moves[-1]
+\end{lstlisting}
+Der Funktion werden die aktuell verfügbaren Zugmöglichkeiten (\code{possible\_moves}), die Zugnummer \\(\code{turn\_nr}) und das aktuelle Spielersymbol (\code{own\_symbol}) übergeben (Z. 1).
+\\Für jeden verfügbaren Zug wird die Gewinnwahrscheinlichkeit des Spielers bei Durchführung dieses Zuges ermittelt (Z.3f., Abb. (1)) und aufsummiert (Z. 2 - 4, Abb. (2)). Die Gewinnwahrscheinlichkeit eines Zuges wird durch die Verwendung der in Kapitel \ref{impl:stored-mc} erläuterten Datenbank ermittelt (siehe \nameref{para:db}).
+\\Nach der Summenbildung der Gewinnwahrscheinlichkeiten (\code{prob\_sum}) wird eine zufällige Zahl im Intervall [0,\code{prob\_sum}] ermittelt (Z. 5, Abb. (3)).
+\\Diese Zahl wird wieder einem Zug zugeordnet (Z. 8 - 13, Abb. (4)), welcher an die übergeordnete Funktion zurückgegeben wird.
+\\Es gelten folgende mathematische Zusammenhänge der Zugauswahl des Spielers $\mathtt{player}$ eines bestimmten Zuges ($\mathtt{move}$) aus den verfügbaren Zügen ($\mathtt{available\_moves}$):
+\begin{itemize}
+\item $\mathtt{move} \in \mathtt{available\_moves} $
+\item $\mathtt{db\_prob}(\mathtt{move}, \mathtt{turn\_nr}, \mathtt{player}) = P(\mathtt{win} \mid \mathtt{move} \land \mathtt{turn\_nr} \land \mathtt{player} )$: Gewinnwahrscheinlichkeit des Spielers bei der Durchführung des Zuges $\mathtt{move}$ in Zugnummer $\mathtt{turn\_nr}$. Die Wahrscheinlichkeit wird aus der Datenbank ermittelt:
+\\ $P(\mathtt{win} \mid \mathtt{move} \land \mathtt{turn\_nr} \land \mathtt{player}) = \frac{\mathtt{won\_games}(\mathtt{player}, \mathtt{move}, \mathtt{turn\_nr})}{\mathtt{total\_played\_games}(\mathtt{move}, \mathtt{turn\_nr})} $
+\item $\mathtt{prob\_sum}(\mathtt{available\_moves}, \mathtt{turn\_nr}, \mathtt{player}) = \sum\limits_{\mathtt{move} \in \mathtt{available\_moves}} \mathtt{db\_prob}(\mathtt{move},\mathtt{turn\_nr}, \mathtt{player})$
+\item Auswahlwahrscheinlichkeit des Zuges $\mathtt{move}$:
+\\$P(\mathtt{move} \mid \mathtt{available\_moves} \land \mathtt{turn\_nr} \land \mathtt{player}) = \frac{ \mathtt{db\_prob}(\mathtt{move}, \mathtt{turn\_nr}, \mathtt{player})}{\mathtt{prob\_sum}(\mathtt{available\_moves}, \mathtt{turn\_nr}, \mathtt{player})} $
+\end{itemize}
+Durch die zufällige Auswahl eines Zuges aus der Summe $\mathtt{prob\_sum}$ werden Züge mit einer hohen Gewinnwahrscheinlichkeit bevorteilt, aber Züge mit einer geringen Gewinnwahrscheinlichkeit werden zwar seltener, aber dennoch ausgewählt.
 
 \subsection{Alpha-Beta Pruning}
 Der Agent \mxZitat{Alpha-Beta Pruning} basiert auf dem in Kapitel \ref{ab-pruning} beschriebenen Prinzip des Alpha-Beta Abschneidens. Wie bereits erläutert handelt es sich dabei um eine Tiefensuche, bei der weniger vielversprechende Zweige nicht bis zum Ende ausgewertet werden.
