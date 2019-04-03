@@ -50,7 +50,7 @@ Um zum einen ein möglichst aussagekräftiges Ergebnis zu kommen gilt es eine au
 \begin{center}
 \begin{tabular}{| c | c | c | c | c | c | c | c |} \hline
 \multirow{3}{*}{Vgl.} & \multirow{3}{*}{\shortstack{Anz.\\Spiele}} & \multicolumn{4}{c|}{Gewonnene Spiele} & \multicolumn{2}{c|}{$\varnothing$ Rechenzeit je Spiel [s]} \\ \cline{3-8}
-                      &                              & \multicolumn{2}{c}{Agent 1} & \multicolumn{2}{c|}{Agent 2} & \multirow{2}{*}{Agent 1} & \multirow{2}{*}{Agent 2} \\ \cline{3-6}
+                      &                              & \multicolumn{2}{c|}{Agent 1} & \multicolumn{2}{c|}{Agent 2} & \multirow{2}{*}{Agent 1} & \multirow{2}{*}{Agent 2} \\ \cline{3-6}
                       &                              & Anz. & Anteil [\%]            & Anz. & Anteil [\%]            &                          &                          \\ \hline
 \hline
  0 & 1000 &  429 &  42,9 &  527 &  52,7 &   0,00027 &   0,00026 \\ \hline
@@ -65,7 +65,7 @@ Um zum einen ein möglichst aussagekräftiges Ergebnis zu kommen gilt es eine au
  7 & M.Z, & -    & -     & -    & -     & -         & -         \\ \hline
  8 & 1000 &  446 &  44,6 &  550 &  55,0 &   0,00034 & 234,01762 \\ \hline
  9 & 1000 &  289 &  28,9 &  709 &  70,9 &   0,00049 & 149,17649 \\ \hline
-10 & S.K. & -    & -     & -    & -     & -         & -         \\ \hline
+10 &  200 &   33 &  16,5 & 166  &  83,0 &   0,00069 & 717,85712 \\ \hline
 \hline
 11 & -    & -    & -     & -    & -     & -         & -         \\ \hline
 12 & -    & -    & -     & -    & -     & -         & -         \\ \hline
@@ -91,8 +91,8 @@ Die beim Monte Carlo Agenten gemäß Kapitel \ref{mc_params} zur Verfügung steh
 \item \code{heuristic}: $\mathtt{None}$
 \item \code{use\_multiprocessing}: $\mathtt{True}$
 \end{itemize}
-Der Parameter \code{big\_n} wurde, nachdem alle übrigen Parameter festgesetzt wurden  empirisch ermittelt, indem mehrere Spiele mit unterschiedlichen \code{big\_n} gespielt wurden und die benötigte Spielzeit mit dem Zielwert von fünf Minutenn verglichen wurde. Aus dieser Testreihe ergab sich einen \code{big\_n} Wert von $2000$. Die Gesamtdauer der Spiele beträgt dabei meist drei bis fünf Minuten. Wird der Parameter weiter erhöht, wird die Gesamtspielzeit des Agenten von fünf Minuten überschritten.
-\\Das setzen des Wertes\code{use\_start\_libs} auf \code{True} verkürzt die Berechnungsdauer der ersten Züge enorm, da die Züge aus der Starttabellen gelesen werden und nicht berechnet werden. Dadurch steht im Anschluss mehr Zeit für die simulation von Spielen zur Verfügung, ohne dass dies dabei einen negativen Effekt auf das Zeitlimit von fünf Minuten hat. Zwar können die Felder, welche durch in der Eröffnungsphase gesetzt werden im weiteren Spiel noch mehrfach gedreht werden, andererseits sind keine willkürlichen Züge in der Tabelle gespeichert, sondern bewährte Eröffnungszüge.
+Der Parameter \code{big\_n} wurde, nachdem alle übrigen Parameter festgesetzt wurden  empirisch ermittelt, indem mehrere Spiele mit unterschiedlichen \code{big\_n} gespielt wurden und die benötigte Spielzeit mit dem Zielwert von fünf Minuten verglichen wurde. Aus dieser Testreihe ergab sich einen \code{big\_n} Wert von $2000$. Die Gesamtdauer der Spiele beträgt dabei meist drei bis fünf Minuten. Wird der Parameter weiter erhöht, wird die Gesamtspielzeit des Agenten von fünf Minuten überschritten.
+\\Das setzen des Wertes\code{use\_start\_libs} auf \code{True} verkürzt die Berechnungsdauer der ersten Züge enorm, da die Züge aus der Starttabellen gelesen werden und nicht berechnet werden. Dadurch steht im Anschluss mehr Zeit für die Simulation von Spielen zur Verfügung, ohne dass dies dabei einen negativen Effekt auf das Zeitlimit von fünf Minuten hat. Zwar können die Felder, welche durch in der Eröffnungsphase gesetzt werden im weiteren Spiel noch mehrfach gedreht werden, andererseits sind keine willkürlichen Züge in der Tabelle gespeichert, sondern bewährte Eröffnungszüge.
 \\Der Parameter \code{preprocessor} wird auf \mxZitat{None} gesetzt. Damit wird der Präprozessor deaktiviert. Durch die Nutzung eines Präprozessors wird die Anzahl der Zugmöglichkeiten je Zug verkleinert. Dadurch können innerhalb des Zeitlimits von fünf Minuten theoretisch ebenfalls mehr Spiele durchgeführt werden. Jedoch muss zur Verwendung des Präprozessors eine Heuristik verwendet werden, die ebenfalls berechnet werden muss. Da sich der beschriebene Vorteil damit ausglicht wird im Sinne eines einfacheren Algorithmus aud den Präprozessor verzichtet.
 %Allerdings können dann auch Zugmöglichkeiten wegfallen, welche zu einem Sieg des Agenten geführt hätten. Deshalb wurde dieser Parameter deaktiviert, damit aus allen Zugmöglichkeiten ausgewählt werden kann.
 \\Durch die Deaktivierung des Präprozessors, werden die Parameter \\\code{preprocessor\_parameter} und \code{heuristic}, da diese nur im Prepozessor verwendet werden, überhaupt nicht initialisiert. Damit stehen sie auf dem Standardwert für nicht initialisierte Paramter: \code{None}.
@@ -104,18 +104,18 @@ Das gleiche Vorgehen aus dem vorherigen Abschnitt wird nun ebenfalls auf den \mx
 Dabei werden die Parameter wie folgt festgesetzt:
 \begin{itemize}
 \item \code{\_use\_start\_libs}: $\mathtt{True}$
-\item \code{\_search\_depth}: $2$
+\item \code{\_search\_depth}: $5$ bei Verwendung der Heuristiken, $2$ bei Verwendung von Monte Carlo
 \item \code{\_heuristic}: variert je nach Vergleich
 \item \code{\_use\_monte\_carlo}: variert je nach Vergleich
 \item \code{\_mc\_count}: variert je nach Vergleich
 \end{itemize}
 \code{\_use\_start\_libs} wird auf \code{True} gesetzt, da so die Verwendung mehrerer Prozessorkerne aktiviert wird und damit die Ausführungszeit eines Spiels merklich veringert wird. Je nach Spielzug des Gegners können bis zu 21 Züge aus der Datenbank  gelesen werden und müssen nicht berechnet werden.
-\\\code{\_search\_depth} wurde durch empirisches Testen der Laufzeit auf \mxZitat{2} festgelegt.
 \\\code{\_heuristic} wurde jeweils variiert, damit ein Vergleich der Heuristiken möglich ist. Bei der Verwendung einer Heuristik wurden die Optionen hinter den Parametern \code{\_use\_monte\_carlo} und \code{\_mc\_count} deaktiviert \code{\_use\_monte\_carlo} wird auf dazu auf \mxZitat{False} gesetzt. 
-%Die ermittelte Suchtiefe (\code{\_search\_depth}) beträgt \mxZitat{5}. Bei höheren Suchtiefen wird das Berechnungszeitlimit von fünf Minuten überschritten.
+Die ermittelte Suchtiefe (\code{\_search\_depth}) beträgt \mxZitat{5}. Bei höheren Suchtiefen wird das Berechnungszeitlimit von fünf Minuten überschritten.
 \vspace{0.5cm}
 \\Neben Heuristiken kann die Alpha-Beta Suche auch Monte Carlo zur Ermittlung des Spielzustandswertes nach der Alpha-Beta Suche genutzt werden.
-\\\code{\_use\_monte\_carlo} wird dazu auf \mxZitat{True} gesetzt, die Option also aktiviert aktiviert. \code{\_mc\_count} gibt dann die Anzahl der in den Blattknoten durchgeführten Monte Carlo Spiele an. Dieser Parameter wurde in diesem Fall auf $10$ gesetzt, da bereits die Alpha-Beta Suche ohne eine Bewertung des Zustands mit Monte Carlo relativ lange dauert. Deshalb können in den Blattknoten im Vergleich zum reinen Monte Carlo Agenten nicht annähernd so viele Spiele durchgeführt werden. 
+\\\code{\_use\_monte\_carlo} wird dazu auf \mxZitat{True} gesetzt, die Option also aktiviert aktiviert. \code{\_mc\_count} gibt dann die Anzahl der in den Blattknoten durchgeführten Monte Carlo Spiele an. Dieser Parameter wurde in diesem Fall auf $10$ gesetzt, da bereits die Alpha-Beta Suche ohne eine Bewertung des Zustands mit Monte Carlo relativ lange dauert. Deshalb können in den Blattknoten im Vergleich zum reinen Monte Carlo Agenten nicht annähernd so viele Spiele durchgeführt werden.
+\\\code{\_search\_depth} wurde durch empirisches Testen der Laufzeit auf \mxZitat{2} festgelegt. 
 
 \section{Evaluierung der Bedeutung verschiedener Feldkategorien}
 Im nachfolgenden Abschnitt wird anhand der für die \mxZitat{Stored Monte Carlo}-Heuristik erstellten Datenbank die Bedeutung verschiedener Feldkategorien im Spielverlauf betrachtet.
