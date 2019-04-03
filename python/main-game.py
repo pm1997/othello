@@ -9,7 +9,6 @@ from Agents.random import Random
 from Agents.monteCarlo import MonteCarlo
 from Agents.human import Human
 from Agents.alphaBetaPruning import AlphaBetaPruning
-from Agents.weightedMonteCarlo import WeightedMonteCarlo
 
 import time
 from constants import PLAYER_ONE, PLAYER_TWO, PRINT_SYMBOLS, COLUMN_NAMES
@@ -24,7 +23,6 @@ if __name__ == '__main__':
     available_players.append(("AI Player - Random", Random))
     available_players.append(("AI Player - Monte Carlo", MonteCarlo))
     available_players.append(("AI Player - Alpha-Beta Pruning", AlphaBetaPruning))
-    available_players.append(("AI Player - Weighted Monte Carlo", WeightedMonteCarlo))
 
     # Ask the user to select a type of player as first player.
     selection_player_one = UtilMethods.select_one(available_players,
