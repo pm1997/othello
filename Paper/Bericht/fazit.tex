@@ -8,27 +8,38 @@ Zsf \todo{Add}
 Wie in Tabelle \ref{tbl:cmp-results} anhand der Vergleiche 1 bzw. 6 deutlich wird, hat der \mxZitat{Monte Carlo}-Agent sämtliche der insgesamt 2000 Testspielen gegen den \mxZitat{Random}-Agenten gewonnen. Dabei ist bis auf eine geringe Abweichung der durchschnittlich benötigten Rechenzeit pro Spiel unerheblich ob der Agent als Spieler 1 oder Spieler 2 auftritt. Damit ist der mit dem Spiel des Agenten verbundene Rechenaufwand in so fern berechtigt, dass er bessere Ergebnisse liefert als ein Spieler der zufällige Züge durchführt.
 \\Im Vergleich mit menschlichen Spielern ist jedoch davon auszugehen, dass diese keine zufälligen Züge ausführen. Stattdessen ist, ein entsprechendes Spielniveau vorausgesetzt, damit zu rechnen, dass ein Spieler Kenntnisse über das Spiel und durch Erfahrung verfeinerte Strategien einbringt. Dieser Vergleich konnte im Rahmen der Arbeit leider nicht durchgeführt werden und ist damit eine Fragestellung für weitere Untersuchungen.  
 \paragraph{Weitere Variationsmöglichkeiten}
-In den zur Bestimmung der für den Agenten verwendeten Parameter konnte beobachtet werden, dass die Gewinnwahrscheinlichkeit des Agenten von der Anzahl der simulierten Spiele abhängt. In den betrachteten Fällen konnte durch die Erhöhung der Anzahl simulierter Spiele, also die Erhöhung des Parameters \code{big\_n}, im allgemeinen eine Verbesserung der Gewinnwahrscheinlichkeit des Agenten erzielt werden. Gleichzietig zeigte \cite{nijssen_2007}, dass sich dieser Effekt mit steigender Größe von \code{big\_n} abschwächt. Zusätzlich dazu steigt mit der Anzahl der durchgeführten Simulationen auch die benötigte Rechenzeit. Zu Untersuchen wäre daher ob das überschreiten der Rechnezeit von fünf Minuten auf dem Referenzgerät eine weitere Verbesserung bringt und damit den erhöhten Auwand rechtfertigt.
+In den zur Bestimmung der für den Agenten verwendeten Parameter konnte beobachtet werden, dass die Gewinnwahrscheinlichkeit des Agenten von der Anzahl der simulierten Spiele abhängt. In den betrachteten Fällen konnte durch die Erhöhung der Anzahl simulierter Spiele, also die Erhöhung des Parameters \code{big\_n}, im allgemeinen eine Verbesserung der Gewinnwahrscheinlichkeit des Agenten erzielt werden. Gleichzeitig zeigte \cite{nijssen_2007}, dass sich dieser Effekt mit steigender Größe von \code{big\_n} abschwächt. Zusätzlich dazu steigt mit der Anzahl der durchgeführten Simulationen auch die benötigte Rechenzeit. Zu Untersuchen wäre daher ob das überschreiten der Rechenzeit von fünf Minuten auf dem Referenzgerät eine weitere Verbesserung bringt und damit den erhöhten Aufwand rechtfertigt.
 
 \subsection{Der Agent \mxZitat{Alpha-Beta Pruning}}
 Zsf \todo{add}
 \paragraph{Im Vergleich zum Agenten \mxZitat{Ramdom}}
 Im Vergleich mit dem zufällig spielenden Agenten gewann der Agent \mxZitat{Alpha-Beta Pruning} in allen \unsure{Immer noch so?} Fällen mehr Spiele. Deutlich wird auch, dass der Erfolg des Agenten im wesentlichen von der verwendeten Heuristik abhängt. Auf die einzelnen Heuristiken, wird im Abschnitt \ref{sect:Fazit:Heuristiken} genauer eingegangen.
 \\An dieser Stelle ist festzuhalten, dass auch der \mxZitat{Alpha Beta Pruning}-Agent, die Wahl einer guten Heuristik vorausgesetzt, den Rechenaufwand in so fern rechtfertigt, das Spiel des Agenten besser ist als das des Zufällig agierenden. Wie oben ist auch hier die Gewinnwahrscheinlichkeit gegen menschliche Spieler Gegenstand weiterer Untersuchungen.
-\\Auffällig ist außerde,, dass im Vergleich zu dem \mxZitat{Monte Carlo}-Agenten eine deutlich längere Rechenzeit benötigt wird um zu einem insgesamt schlechteren Ergebnis zu kommen. Auf die Performance der beiden Agenten im direkten Vergleich wird in Abschnitt \ref{subsec:Fazit:AgentenVgl} eingegangen.
+\\Auffällig ist außerdem, dass im Vergleich zu dem \mxZitat{Monte Carlo}-Agenten eine deutlich längere Rechenzeit benötigt wird um zu einem insgesamt schlechteren Ergebnis zu kommen. Auf die Performance der beiden Agenten im direkten Vergleich wird in Abschnitt \ref{subsec:Fazit:AgentenVgl} eingegangen.
 \todo{MC}
 \paragraph{Weitere Variationsmöglichkeiten}
-Gemäß der in Kapitel \ref{ab-pruning} beschriebenen Theorie hinter dem Agenten \mxZitat{Alpha-Beta Pruning} kann durch eine größere Suchtiefe \code{search\_depth} die Genauigkeit mit der die Bewertung eines Zuges der realitätsgetreuen Bewertung entspricht erhöht werden. Da sich der Suchbaum mit jeder Ebene stärker verzweigt ist in diesem Fall jedoch mit einer exponentiell steigenden Rechenzeit zu rechnen. Mit der vorgestellten Implemntierung wäre dies unter dem Zeitaspekt jedoch keine Oprion. Entsprechend stellt sich hier die Frage in wie weit der Algorithmus des Alpha Beta Abschneidens parallelisiert werden kann um alle verfügbaren Prozessoren eines Computersystems zu benutzen und damit innerhalb der fünf Minuten Rechenzeit die der Anwender bereit ist zu warten, den Suchbaum noch tiefer zu durchsuchen.
+Gemäß der in Kapitel \ref{ab-pruning} beschriebenen Theorie hinter dem Agenten \mxZitat{Alpha-Beta Pruning} kann durch eine größere Suchtiefe \code{search\_depth} die Genauigkeit mit der die Bewertung eines Zuges der realitätsgetreuen Bewertung entspricht erhöht werden. Da sich der Suchbaum mit jeder Ebene stärker verzweigt ist in diesem Fall jedoch mit einer exponentiell steigenden Rechenzeit zu rechnen. Mit der vorgestellten Implementierung wäre dies unter dem Zeitaspekt jedoch keine Oprion. Entsprechend stellt sich hier die Frage in wie weit der Algorithmus des Alpha Beta Abschneidens parallelisiert werden kann um alle verfügbaren Prozessoren eines Computersystems zu benutzen und damit innerhalb der fünf Minuten Rechenzeit die der Anwender bereit ist zu warten, den Suchbaum noch tiefer zu durchsuchen.
 
 
 \subsection{Vergleich der Agenten \mxZitat{Monte Carlo} und \mxZitat{Alpha-Beta Pruning}}
 \label{subsec:Fazit:AgentenVgl}
+Der \mxZitat{Monte Carlo} Agent spielt deutlich besser als der \mxZitat{Random} Agent. Der \mxZitat{Alpha-Beta Pruning} Agent ist bei der Verwendung der \mxZitat{Cowthello} Heuristik ebenfalls deutlich besser als der \mxZitat{Random} Agent, aber dennoch schlechter als der \mxZitat{Monte Carlo} Agent bei ähnlicher Spieldauer.
+\\Da der \mxZitat{Monte Carlo} Agent in der Spieltheorie einfach nur aus einer gewissen Anzahl an zufälligen Spielen ab der aktuellen Spielposition den besten Folgezug zurückgibt, besitzt dieser Agent keinerlei Wissen über das Spielprinzip des Spiels Othello. 
+\\Dies sollte durch die Verwendung des \mxZitat{Alpha-Beta Pruning} Agenten verbessert werden. Dieser basiert grundlegend auf einer angepassten MiniMax-Suche. Diese deckt den Aspekt des Spiels ab, dass gute Züge des eines Spielers gleichzeitig schlechte Züge des Gegners sind.
+\\Der erwartete Effekt trat allerdings nicht ein. Dies kann mehrere Gründe haben:
+\begin{itemize}
+\item Die verfügbaren Heuristiken, welche in den Blattknoten der \mxZitat{Alpha-Beta Pruning} Suche verwendet werden, sind zu ungenau. Beispielsweise wurde in Kapitel \ref{fz:h_smc} festgestellt, dass die Heuristik \mxZitat{Stored Monte-Carlo} ungeeignet ist. Durch die große Spanne der Gewinnwahrscheinlichkeiten des \mxZitat{Alpha-Beta Pruning} Agenten je nach verwendeter Heuristik ist es denkbar, dass noch bessere Heuristiken existieren.
+\item Die \mxZitat{Alpha-Beta Pruning} Suche benötigt sehr viel Zeit. Durch die große Verzweigung existieren sehr viele Blattknoten, für welche ein Wert ermittelt werden muss. Dies geschieht durch die Verwendung einer Heuristik oder der \mxZitat{Monte Carlo} Suche.
+\\In der Zeit, welche der \mxZitat{Alpha-Beta Pruning} Agent zur Suche benötigt, kann der \mxZitat{Monte Carlo} Agent deutlich mehr zufällige Spiele berechnen. Dadurch wird der Vorteil des \mxZitat{Alpha-Beta Pruning} Agenten durch die große Anzahl der durchgeführten Züge ausgeglichen.
+\item Die \mxZitat{Alpha-Beta Pruning} Suche besitzt eine zu geringe Suchtiefe. Durch eine größere Suchtiefe werden bessere Ergebnisse erreicht. Allerdings steigt die Berechnungszeit eines Zuges selbst bei der Erhöhung der Suchtiefe nur um eins sehr stark an. Dadurch kann der Agent nur bis zu einer bestimmten Suche (max. 5) eine \mxZitat{Alpha-Beta Pruning} Suche durchführen, bevor die Wartedauer auf den nächsten Zug den erwarteten Nutzen übersteigt. 
+\end{itemize} 
 \section{Bewertung der Heuristiken}
 \label{sect:Fazit:Heuristiken}
 Max
 \subsection{Die Heuristik \mxZitat{Nijssen 07}}
 Max
 \subsection{Die Heuristik \mxZitat{Stored Monte-Carlo}}
+\label{fz:h_smc}
 Der \mxZitat{Stored Monte-Carlo} Agent gewinnt in beiden Spielkombinationen häufiger als der \mxZitat{Random} Agent (siehe Abbildung \ref{tbl:cmp-results} Vergleiche 3 und 8). Im Vergleich mit den anderen Heuristiken ist die Gewinnwahrscheinlichkeit sehr gering.
 \\Im Spiel \mxZitat{AB (Stored Monte Carlo Heuristik) } gegen \mxZitat{Random} (siehe Vergleich 3) gewinnt der Agent in 1000 Spielen nur vier Spiele mehr als der zufällige Spieler (458 zu 454). In den 1000 Spielen \mxZitat{Random} gegen \mxZitat{AB (Stored Monte Carlo Heuristik) } gewinnt die Heuristik mit 446 zu 550 gewonnenen Spielen (siehe Vergleich 8).
 \\Aus Vergleichen 3 und 8 lassen sich folgende Erkenntnisse ableiten:
@@ -40,23 +51,35 @@ Der \mxZitat{Stored Monte-Carlo} Agent gewinnt in beiden Spielkombinationen häu
 \end{itemize}
 Die Nutzung der Heuristik \mxZitat{Stored Monte-Carlo} wird aus den o.g. Ergebnissen nicht empfohlen.
 \\Es gibt mehrere mögliche Ursachen der schlechten Gewinnwahrscheinlichkeiten der Heuristik.
-\\Die erste Ursache ist, dass die Datenbank, auf welcher die Datenbank basiert, nicht die Gewinnwahrscheinlichkeit des Spielers bei der Durchführung eines Zuges in der aktuellen Zugnummer im aktuellen Spiel liefert. Stattdessen gibt die Datenbank die Gewinnwahrscheinlichkeit des Spielers zurück, der in der aktuellen Zugnummer den Zug ausführt, zurück.
+\vspace{0.5cm}
+\\Die erste Ursache ist, dass die Datenbank, auf welcher die Heuristik basiert, nicht die Gewinnwahrscheinlichkeit des Spielers bei der Durchführung eines Zuges in der aktuellen Zugnummer im aktuellen Spiel liefert. Stattdessen gibt die Datenbank die Gewinnwahrscheinlichkeit des Spielers zurück, der in der aktuellen Zugnummer den Zug ausführt, zurück.
 \\Der Unterschied zwischen den Aussagen besteht darin, dass die Datenbank den aktuellen Spielzustand (bereits durchgeführte Spielzüge) vernachlässigt und nur die statistische Wahrscheinlichkeit über alle Züge zurückgibt, in welchen in der aktuellen Zugnummer der Zug zu einem Gewinn geführt hat.
 \\Dadurch können Spielsituationen auftreten, in welchen der Zug mit der höchsten Gewinnwahrscheinlichkeit der Datenbank schlechter ist als ein Zug mit einer geringeren Gewinnwahrscheinlichkeit, da die jeweilige Spielsituation die Wahrscheinlichkeiten stark beeinflusst.
-\\Eine zweite mögliche Ursache ist, dass durch die Zusammenfassung der Spielfelder in zehn Spielkategorien eine zu starke Vereinfachung des Spielfeldes darstellt. Das Spielfeld ist zwar symmetrisch aufgebaut, es könnten aber dennoch Seiteneffekte auftreten.
+\vspace{0.5cm}
+\\Es müsste auch evaluiert werden, ob die Zusammenfassung der Spielfelder in zehn Spielkategorien eine zu starke Vereinfachung des Spielfeldes darstellt. Das Spielfeld ist zwar symmetrisch aufgebaut, es könnten aber dennoch Seiteneffekte auftreten.
+\vspace{0.5cm}
 \\Dies führt zu einer weiteren möglichen Ursache der schlechten Heuristik. Aus den in der Datenbank gespeicherten Tripel aus gewonnen Spielen des ersten / zweiten Spielers und der Gesamtanzahl der durchgeführten Spiele wird nur die Gewinnwahrscheinlichkeit berechnet. Die Gesamtanzahl der durchgeführten Spiele wird allerdings nicht berücksichtigt. Es kann durchaus vorkommen, dass einzelne Feldkategorien unterschiedlich oft gespielt werden. So kann eine Feldkategorie sehr selten gespielt werden, dann aber eine relativ hohe Gewinnwahrscheinlichkeit besitzen, und eine Feldkategorie sehr oft mit einer geringeren Gewinnwahrscheinlichkeit gespielt werden. Die Heuristik bevorzugt in diesem Fall die selten gespielte Feldkategorie, da die Gewinnwahrscheinlichkeit höher ist. Da die Gesamtanzahl aller durchgeführten Spielzüge einer Zugnummer konstant sind (140.000), ist es u.U. auch sinnvoll die Gesamtanzahl der Spiele einer Feldkategorie der verfügbaren Feldkategorien in die Berechnung der Heuristik einzubinden.
 
 \subsection{Die Heuristik \mxZitat{Cowthello}}
-Die \mxZitat{Cowthello} Heuristik bietet die höchsten Gewinnwahrscheinlichkeiten der \mxZitat{Alpha-Beta Pruning} Heuristiken mit einer relativ kurzen Ausführungszeit. Folgende Ergebnisse können aus den Vergleichen 4 und 9 der Tabelle \ref{tbl:cmp-results} abgeleitet werden:
+Die \mxZitat{Cowthello} Heuristik bietet die höchsten Gewinnwahrscheinlichkeiten der \mxZitat{Alpha-Beta Pruning} Heuristiken. Folgende Ergebnisse können aus den Vergleichen 4 und 9 der Tabelle \ref{tbl:cmp-results} abgeleitet werden:
 \begin{itemize}
 \item In den 1000 Spielen des \mxZitat{Alpha-Beta Pruning} Agenten mit der \mxZitat{Cowthello} Heuristik gegen den \mxZitat{Random} Agenten gewinnt der \mxZitat{Alpha-Beta Pruning} Agent 564 zu 324 Spiele.
 \item Die große Zahl von 112 unentschiedenen Spielen fällt bei dieser Heuristik ebenfalls auf.
-\item In den 1000 Spielen des \mxZitat{Alpha-Beta Pruning} Agenten mit der \mxZitat{Cowthello} Heuristik gegen den \mxZitat{Random} Agenten gewinnt der \mxZitat{Alpha-Beta Pruning} Agent 564 zu 324 Spiele.
+\item In den 1000 Spielen des \mxZitat{Random} Agenten gegen den \mxZitat{Alpha-Beta Pruning} Agenten mit der \mxZitat{Cowthello} Heuristik gewinnt der \mxZitat{Alpha-Beta Pruning} Agent 709 zu 289 Spiele.
+\item Die durchschnittliche Spielzeit des Agenten ist als zweiter Spieler ebenfalls geringer als die des Agenten als erster Spieler. Die Spielzeit der \mxZitat{Cowthello} Heuristik ist die kleinste aller verwendeten Heuristiken.
 \end{itemize}
 
 \section{Bewertung der Vorgehensweise}
 Outline: Max
 
 \section{Ausblick}
+Die in der \mxZitat{Stored Monte-Carlo} Heuristik verwendetet Datenbank kann dazu genutzt werden, um einen verbesserten Agenten zu erstellen. Diese Funktionsweise des neuen Agenten ist der des \mxZitat{Monte Carlo} Agenten mit verwendeter gewichteter Zufallsfunktion sehr ähnlich. Der Unterschied wäre das Aktualisieren der Datenbank nach der Durchführung jedes Spieles. Dadurch nähern sich die in der Datenbank gespeicherten Werte statistisch an die optimale Werte an.
+\\Dieser Prozess ist aber zwangsläufig mit Schreibzuggriffen oder mindestens das Verändern des Datenbankenobjektes verbunden. Dies hat zwei schwerwiegende Auswirkungen:
+\begin{itemize}
+\item Die Parallelisierung der gleichzeitigen Ausführung zufälliger Spiele ist schwieriger, da nur ein Thread gleichzeitig in die Datenbank schreiben kann.
+\item Die zusätzliche Datenbankinteraktion benötigt mehr Zeit.
+\end{itemize}
+Das Resultat der beiden Auswirkungen ist, dass die Anzahl der durchgeführten zufälligen Spiele reduziert werden muss wenn die Berechnungszeit nicht wachsen soll.
+\\Es ist zu evaluieren, ob der Mehrwert der Datenbanknutzung größer ist als der bisherige \mxZitat{Monte Carlo} Agent, welcher eine höhere Anzahl an zufällig durchgeführter Spiele besitzt.
 \paragraph{Bedeutung für die Methode}
 
