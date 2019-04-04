@@ -126,7 +126,18 @@ Average Computation Time Player 2: 182.04209469795228
 Total Duration: 18210.045891046524
 Average Duration: 182.10045891046525
 
-M.Z.
+Total games: 1000
+Player 1 won 452 games
+Player 2 won 542 games
+Player 1 won in 45.2 %
+Player 2 won in 54.2 %
+Total Computation Time Player 1: 0.4544253349304199
+Total Computation Time Player 2: 224093.28278112411
+Average Computation Time Player 1: 0.00045442533493041993
+Average Computation Time Player 2: 224.09328278112412
+Total Duration: 224147.80457353592
+Average Duration: 224.14780457353592
+
 
 # ------------------------------------------------------------
 Random vs Alpha Beta MonteCarlo
