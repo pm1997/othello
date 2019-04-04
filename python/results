@@ -1,7 +1,11 @@
-Total games: 2000
-Player 1 won 908 games
-Player 2 won 1005 games
-Player 1 won in 45.4 %
-Player 2 won in 50.25 %
-total duration: 108.93046951293945
-average duration: 0.05446523475646973
+Total games: 5
+Player 1 won 0 games
+Player 2 won 5 games
+Player 1 won in 0.0 %
+Player 2 won in 100.0 %
+Total Computation Time Player 1: 1431.148000240326
+Total Computation Time Player 2: 2446.5686979293823
+Average Computation Time Player 1: 286.2296000480652
+Average Computation Time Player 2: 489.3137395858765
+Total Duration: 3878.3266484737396
+Average Duration: 775.6653296947479
