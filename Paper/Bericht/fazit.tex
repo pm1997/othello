@@ -3,11 +3,26 @@
 \section{Bewertung der Agenten}
 In diesem Kapitel werden die Agenten \mxZitat{Monte Carlo} und \mxZitat{Alpha-Beta Pruning} verglichen.
 \subsection{Der Agent \mxZitat{Monte Carlo}}
-Der \mxZitat{Monte Carlo} besitzt eine Gewinnwahrscheinlichkeit von 100 Prozent gegen den zufälligen Agenten und eine Gewinnwahrscheinlichkeit von XXX \improvement{ergänzen} Prozent gegen den besten \mxZitat{Alpha-Beta Pruning} Agenten. Aus diesem Grund ist dieser Agent ein sehr guter Spieler. Durch die Anpassung des Parameters \code{big\_n} kann die Schwierigkeitsstufe des Spielers gesteuert werden. Je höher der Parameter ist, desto schwieriger ist es den Agenten zu besiegen. In den Standardeinstellungen werden 2000  Spiele je Zug durchgeführt. In dieser Einstellungen ist der Agent ein schwerer Computergegner. Schon ab wenigen Hundert Spielen spielt der Agent über den gesamten Spielverlauf deutlich besser als der zufällige Spieler. 
+Zsf \todo{Add}
+\paragraph{Gegen den Agenten \mxZitat{Random}}
+Wie in Tabelle \ref{tbl:cmp-results} anhand der Vergleiche 1 bzw. 6 deutlich wird, hat der \mxZitat{Monte Carlo}-Agent sämtliche der insgesamt 2000 Testspielen gegen den \mxZitat{Random}-Agenten gewonnen. Dabei ist bis auf eine geringe Abweichung der durchschnittlich benötigten Rechenzeit pro Spiel unerheblich ob der Agent als Spieler 1 oder Spieler 2 auftritt. Damit ist der mit dem Spiel des Agenten verbundene Rechenaufwand in so fern berechtigt, dass er bessere Ergebnisse liefert als ein Spieler der zufällige Züge durchführt.
+\\Im Vergleich mit menschlichen Spielern ist jedoch davon auszugehen, dass diese keine zufälligen Züge ausführen. Stattdessen ist, ein entsprechendes Spielniveau vorausgesetzt, damit zu rechnen, dass ein Spieler Kenntnisse über das Spiel und durch Erfahrung verfeinerte Strategien einbringt. Dieser Vergleich konnte im Rahmen der Arbeit leider nicht durchgeführt werden und ist damit eine Fragestellung für weitere Untersuchungen.  
+\paragraph{Weitere Variationsmöglichkeiten}
+In den zur Bestimmung der für den Agenten verwendeten Parameter konnte beobachtet werden, dass die Gewinnwahrscheinlichkeit des Agenten von der Anzahl der simulierten Spiele abhängt. In den betrachteten Fällen konnte durch die Erhöhung der Anzahl simulierter Spiele, also die Erhöhung des Parameters \code{big\_n}, im allgemeinen eine Verbesserung der Gewinnwahrscheinlichkeit des Agenten erzielt werden. Gleichzietig zeigte \cite{nijssen_2007}, dass sich dieser Effekt mit steigender Größe von \code{big\_n} abschwächt. Zusätzlich dazu steigt mit der Anzahl der durchgeführten Simulationen auch die benötigte Rechenzeit. Zu Untersuchen wäre daher ob das überschreiten der Rechnezeit von fünf Minuten auf dem Referenzgerät eine weitere Verbesserung bringt und damit den erhöhten Auwand rechtfertigt.
+
 \subsection{Der Agent \mxZitat{Alpha-Beta Pruning}}
-Der \mxZitat{Alpha-Beta Pruning} Agent ist je nach verwendeter Heuristik deutlich besser als der zufällige Agent. Allerdings ist  der Agent schlechter als der \mxZitat{Monte Carlo} Agent. Die Gewinnwahrscheinlichkeit des Agenten wird maßgeblich durch die Wahl der Heuristik beeinflusst.
+Zsf \todo{add}
+\paragraph{Im Vergleich zum Agenten \mxZitat{Ramdom}}
+Im Vergleich mit dem zufällig spielenden Agenten gewann der Agent \mxZitat{Alpha-Beta Pruning} in allen \unsure{Immer noch so?} Fällen mehr Spiele. Deutlich wird auch, dass der Erfolg des Agenten im wesentlichen von der verwendeten Heuristik abhängt. Auf die einzelnen Heuristiken, wird im Abschnitt \ref{sect:Fazit:Heuristiken} genauer eingegangen.
+\\An dieser Stelle ist festzuhalten, dass auch der \mxZitat{Alpha Beta Pruning}-Agent, die Wahl einer guten Heuristik vorausgesetzt, den Rechenaufwand in so fern rechtfertigt, das Spiel des Agenten besser ist als das des Zufällig agierenden. Wie oben ist auch hier die Gewinnwahrscheinlichkeit gegen menschliche Spieler Gegenstand weiterer Untersuchungen.
+\\Auffällig ist außerde,, dass im Vergleich zu dem \mxZitat{Monte Carlo}-Agenten eine deutlich längere Rechenzeit benötigt wird um zu einem insgesamt schlechteren Ergebnis zu kommen. Auf die Performance der beiden Agenten im direkten Vergleich wird in Abschnitt \ref{subsec:Fazit:AgentenVgl} eingegangen.
+\paragraph{Weitere Variationsmöglichkeiten}
+
+\subsection{Vergleich der Agenten \mxZitat{Monte Carlo} und \mxZitat{Alpha-Beta Pruning}}
+\label{subsec:Fazit:AgentenVgl}
 
 \section{Bewertung der Heuristiken}
+\label{sect:Fazit:Heuristiken}
 Max
 \subsection{Die Heuristik \mxZitat{Nijssen 07}}
 Max
