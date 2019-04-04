@@ -44,6 +44,9 @@ if __name__ == '__main__':
     parser.add_argument("--use_mc1", help="use monte carlo", type=bool)
     parser.add_argument("--use_mc2", help="use monte carlo", type=bool)
 
+    parser.add_argument("--use_wmc1", help="use weighted monte carlo", type=bool)
+    parser.add_argument("--use_wmc2", help="use weighted monte carlo", type=bool)
+
     args = parser.parse_args()
 
     big_number = 2000
@@ -78,6 +81,11 @@ if __name__ == '__main__':
         print(f"mc1: {args.use_mc1}")
         use_monte_carlo = args.use_mc1
 
+    use_weighted_monte_carlo = False
+    if args.use_wmc1:
+        print(f"mc1: {args.use_wmc1}")
+        use_weighted_monte_carlo = args.use_wmc1
+
     search_depth = 5
     if args.search_depth1:
         search_depth = args.search_depth1
@@ -86,7 +94,7 @@ if __name__ == '__main__':
         player_one = Random()
     elif args.agent1 == 2:
         player_one = MonteCarlo(big_number=big_number, use_start_libs=use_start_libs, preprocessor_n=preprocessor_n,
-                                heuristic=heuristic1, use_multiprocessing=use_multiprocessing)
+                                heuristic=heuristic1, use_multiprocessing=use_multiprocessing, use_weighted_random=use_weighted_monte_carlo)
     elif args.agent1 == 3:
         player_one = AlphaBetaPruning(heuristic=heuristic1, search_depth=search_depth, mc_count=big_number, use_monte_carlo=use_monte_carlo,
                                       use_start_lib=use_start_libs)
@@ -128,6 +136,11 @@ if __name__ == '__main__':
         print(f"mc2: {args.use_mc2}")
         use_monte_carlo2 = args.use_mc2
 
+    use_weighted_monte_carlo2 = False
+    if args.use_wmc2:
+        print(f"mc1: {args.use_wmc2}")
+        use_weighted_monte_carlo2 = args.use_wmc2
+
     search_depth2 = 5
     if args.search_depth2:
         search_depth2 = args.search_depth2
@@ -136,7 +149,7 @@ if __name__ == '__main__':
         player_two = Random()
     elif args.agent2 == 2:
         player_two = MonteCarlo(big_number=big_number2, use_start_libs=use_start_libs2, preprocessor_n=preprocessor_n2,
-                                heuristic=heuristic2, use_multiprocessing=use_multiprocessing2)
+                                heuristic=heuristic2, use_multiprocessing=use_multiprocessing2, use_weighted_random=use_weighted_monte_carlo2)
     elif args.agent2 == 3:
         player_two = AlphaBetaPruning(heuristic=heuristic2, search_depth=search_depth2,
                                       use_monte_carlo=use_monte_carlo2, mc_count=big_number2, use_start_lib=use_start_libs2)

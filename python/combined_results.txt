@@ -84,10 +84,6 @@ Average Computation Time Player 2: 149.17648743486404
 Total Duration: 149235.80176258087
 Average Duration: 149.23580176258088
 
-# ++++++++++++++++++++++++++++++++++++
-# TODO 9 done#########################
-# ++++++++++++++++++++++++++++++++++++
-
 # ------------------------------------------------------------
 Random vs Alpha Beta StoredMonteCarloHeuristic (Heuristic 1)
 
@@ -130,10 +126,33 @@ Average Computation Time Player 2: 182.04209469795228
 Total Duration: 18210.045891046524
 Average Duration: 182.10045891046525
 
-M.Z.
+Total games: 1000
+Player 1 won 452 games
+Player 2 won 542 games
+Player 1 won in 45.2 %
+Player 2 won in 54.2 %
+Total Computation Time Player 1: 0.4544253349304199
+Total Computation Time Player 2: 224093.28278112411
+Average Computation Time Player 1: 0.00045442533493041993
+Average Computation Time Player 2: 224.09328278112412
+Total Duration: 224147.80457353592
+Average Duration: 224.14780457353592
+
 
 # ------------------------------------------------------------
-Random vs Alpha Beta MonteCarlo (S.K.)
+Random vs Alpha Beta MonteCarlo
+
+Total games: 200
+Player 1 won 33 games
+Player 2 won 166 games
+Player 1 won in 16.5 %
+Player 2 won in 83.0 %
+Total Computation Time Player 1: 0.13822054862976074
+Total Computation Time Player 2: 143571.4234571457
+Average Computation Time Player 1: 0.0006911027431488037
+Average Computation Time Player 2: 717.8571172857285
+Total Duration: 143587.00269126892
+Average Duration: 717.9350134563446
 
 
 # ------------------------------------------------------------
@@ -151,9 +170,7 @@ Average Computation Time Player 2: 0.00032700300216674804
 Total Duration: 15273.387269735336
 Average Duration: 152.73387269735338
 
-# ++++++++++++++++++++++++++++++++++++
-# TODO 2 #############################
-# ++++++++++++++++++++++++++++++++++++
+P.M.
 
 # ------------------------------------------------------------
 Alpha Beta StoredMonteCarloHeuristic vs Random (Heuristic 1)
@@ -170,7 +187,17 @@ Average Computation Time Player 2: 0.0003688216209411621
 Total Duration: 18699.62310886383
 Average Duration: 186.9962310886383
 
-T.M.
+Total games: 1000
+Player 1 won 458 games
+Player 2 won 454 games
+Player 1 won in 45.8 %
+Player 2 won in 45.4 %
+Total Computation Time Player 1: 271860.35981440544
+Total Computation Time Player 2: 0.3145773410797119
+Average Computation Time Player 1: 271.86035981440546
+Average Computation Time Player 2: 0.0003145773410797119
+Total Duration: 271917.7613954544
+Average Duration: 271.9177613954544
 
 # ------------------------------------------------------------
 Alpha Beta CowthelloHeuristic vs Random (Heuristic 2)
@@ -199,6 +226,18 @@ Average Computation Time Player 2: 0.0005614027976989746
 Total Duration: 156660.01527786255
 Average Duration: 156.66001527786256
 # ------------------------------------------------------------
-Alpha Beta MonteCarlo Random (P.M.)
+Alpha Beta MonteCarlo Random
+
+Total games: 200
+Player 1 won 132 games
+Player 2 won 60 games
+Player 1 won in 66.0 %
+Player 2 won in 30.0 %
+Total Computation Time Player 1: 110186.95908665657
+Total Computation Time Player 2: 0.08995318412780762
+Average Computation Time Player 1: 550.9347954332828
+Average Computation Time Player 2: 0.00044976592063903807
+Total Duration: 110199.44104218483
+Average Duration: 550.9972052109241
 
 # ------------------------------------------------------------
