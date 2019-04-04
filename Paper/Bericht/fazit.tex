@@ -3,18 +3,39 @@
 \section{Bewertung der Agenten}
 In diesem Kapitel werden die Agenten \mxZitat{Monte Carlo} und \mxZitat{Alpha-Beta Pruning} verglichen.
 \subsection{Der Agent \mxZitat{Monte Carlo}}
-Der \mxZitat{Monte Carlo} besitzt eine Gewinnwahrscheinlichkeit von 100 Prozent gegen den zufälligen Agenten und eine Gewinnwahrscheinlichkeit von XXX \improvement{ergänzen} Prozent gegen den besten \mxZitat{Alpha-Beta Pruning} Agenten. Aus diesem Grund ist dieser Agent ein sehr guter Spieler. Durch die Anpassung des Parameters \code{big\_n} kann die Schwierigkeitsstufe des Spielers gesteuert werden. Je höher der Parameter ist, desto schwieriger ist es den Agenten zu besiegen. In den Standardeinstellungen werden 2000  Spiele je Zug durchgeführt. In dieser Einstellungen ist der Agent ein schwerer Computergegner. Schon ab wenigen Hundert Spielen spielt der Agent über den gesamten Spielverlauf deutlich besser als der zufällige Spieler. 
+Der \mxZitat{Monte Carlo} Agent besitzt eine Gewinnwahrscheinlichkeit von 100 Prozent gegen den zufälligen Agenten und eine Gewinnwahrscheinlichkeit von XXX \improvement{ergänzen} Prozent gegen den besten \mxZitat{Alpha-Beta Pruning} Agenten. Aus diesem Grund ist dieser Agent ein sehr guter Spieler. Durch die Anpassung des Parameters \code{big\_n} kann die Schwierigkeitsstufe des Spielers gesteuert werden. Je höher der Parameter ist, desto schwieriger ist es den Agenten zu besiegen. In den Standardeinstellungen werden 2000  Spiele je Zug durchgeführt. In dieser Einstellungen ist der Agent ein schwerer Computergegner. Schon ab wenigen Hundert Spielen spielt der Agent über den gesamten Spielverlauf deutlich besser als der zufällige Spieler.
 \subsection{Der Agent \mxZitat{Alpha-Beta Pruning}}
-Der \mxZitat{Alpha-Beta Pruning} Agent ist je nach verwendeter Heuristik deutlich besser als der zufällige Agent. Allerdings ist  der Agent schlechter als der \mxZitat{Monte Carlo} Agent. Die Gewinnwahrscheinlichkeit des Agenten wird maßgeblich durch die Wahl der Heuristik beeinflusst.
-
+Der \mxZitat{Alpha-Beta Pruning} Agent ist je nach verwendeter Heuristik deutlich besser als der zufällige Agent. Allerdings ist  der Agent schlechter als der \mxZitat{Monte Carlo} Agent. Die Gewinnwahrscheinlichkeit des Agenten wird maßgeblich durch die Wahl der Heuristik beeinflusst. Außerdem wird die Gewinnwahrscheinlichkeit auch dadurch beeinflusst, ob der Agent der erste oder zweite Spieler ist. Spielt der Agent als zweiter Spieler, ist die Gewinnwahrscheinlichkeit des Agenten unabhängig der Heuristik höher.
+\\Die unterschiedlichen Ergebnisse der Heuristiken werden in den folgenden Unterkapiteln erläutert.
 \section{Bewertung der Heuristiken}
 Max
 \subsection{Die Heuristik \mxZitat{Nijssen 07}}
 Max
 \subsection{Die Heuristik \mxZitat{Stored Monte-Carlo}}
-Patrick
+Der \mxZitat{Stored Monte-Carlo} Agent gewinnt in beiden Spielkombinationen häufiger als der \mxZitat{Random} Agent (siehe Abbildung \ref{tbl:cmp-results} Vergleiche 3 und 8). Im Vergleich mit den anderen Heuristiken ist die Gewinnwahrscheinlichkeit sehr gering.
+\\Im Spiel \mxZitat{AB (Stored Monte Carlo Heuristik) } gegen \mxZitat{Random} (siehe Vergleich 3) gewinnt der Agent in 1000 Spielen nur vier Spiele mehr als der zufällige Spieler (458 zu 454). In den 1000 Spielen \mxZitat{Random} gegen \mxZitat{AB (Stored Monte Carlo Heuristik) } gewinnt die Heuristik mit 446 zu 550 gewonnenen Spielen (siehe Vergleich 8).
+\\Aus Vergleichen 3 und 8 lassen sich folgende Erkenntnisse ableiten:
+\begin{itemize}
+\item Der Agent \mxZitat{Alpha-Beta Pruning} gewinnt bei der Verwendung der \mxZitat{Stored Monte-Carlo} als zweiter Spieler deutlich mehr Spiele als als erster Spieler.
+\item Wird der Agent als erster Spieler eingesetzt ergibt sich keine deutlich höhere Gewinnwahrscheinlichkeit als die des zufälligen Spielers. Dies bedeutet, dass der Agent sehr schlecht spielt, also quasi zufällig Züge auswählt. 
+\item Auffällig sind die 88 Spiele, welche im Vergleich unentschieden endeten. Im Gegensatz gab es im Vergleich 8 nur vier unentschiedene Spiele. Die Gewinnwahrscheinlichkeit des zufälligen Spielers bleibt allerdings annähernd gleich bei 45,4\% bzw. 44,6\%. Man könnte dieses Ergebnis so interpretieren, dass der Agent in Vergleich die Spiele zwar nicht gewinnen konnte, aber immerhin verhindern konnte, dass diese Spiele verloren wurden.
+\item Die Spiele im Vergleich 8 sind durchschnittlich 37,8 Sekunden schneller die Spiele im Vergleich 3.
+\end{itemize}
+Die Nutzung der Heuristik \mxZitat{Stored Monte-Carlo} wird aus den o.g. Ergebnissen nicht empfohlen.
+\\Es gibt mehrere mögliche Ursachen der schlechten Gewinnwahrscheinlichkeiten der Heuristik.
+\\Die erste Ursache ist, dass die Datenbank, auf welcher die Datenbank basiert, nicht die Gewinnwahrscheinlichkeit des Spielers bei der Durchführung eines Zuges in der aktuellen Zugnummer im aktuellen Spiel liefert. Stattdessen gibt die Datenbank die Gewinnwahrscheinlichkeit des Spielers zurück, der in der aktuellen Zugnummer den Zug ausführt, zurück.
+\\Der Unterschied zwischen den Aussagen besteht darin, dass die Datenbank den aktuellen Spielzustand (bereits durchgeführte Spielzüge) vernachlässigt und nur die statistische Wahrscheinlichkeit über alle Züge zurückgibt, in welchen in der aktuellen Zugnummer der Zug zu einem Gewinn geführt hat.
+\\Dadurch können Spielsituationen auftreten, in welchen der Zug mit der höchsten Gewinnwahrscheinlichkeit der Datenbank schlechter ist als ein Zug mit einer geringeren Gewinnwahrscheinlichkeit, da die jeweilige Spielsituation die Wahrscheinlichkeiten stark beeinflusst.
+\\Eine zweite mögliche Ursache ist, dass durch die Zusammenfassung der Spielfelder in zehn Spielkategorien eine zu starke Vereinfachung des Spielfeldes darstellt. Das Spielfeld ist zwar symmetrisch aufgebaut, es könnten aber dennoch Seiteneffekte auftreten.
+\\Dies führt zu einer weiteren möglichen Ursache der schlechten Heuristik. Aus den in der Datenbank gespeicherten Tripel aus gewonnen Spielen des ersten / zweiten Spielers und der Gesamtanzahl der durchgeführten Spiele wird nur die Gewinnwahrscheinlichkeit berechnet. Die Gesamtanzahl der durchgeführten Spiele wird allerdings nicht berücksichtigt. Es kann durchaus vorkommen, dass einzelne Feldkategorien unterschiedlich oft gespielt werden. So kann eine Feldkategorie sehr selten gespielt werden, dann aber eine relativ hohe Gewinnwahrscheinlichkeit besitzen, und eine Feldkategorie sehr oft mit einer geringeren Gewinnwahrscheinlichkeit gespielt werden. Die Heuristik bevorzugt in diesem Fall die selten gespielte Feldkategorie, da die Gewinnwahrscheinlichkeit höher ist. Da die Gesamtanzahl aller durchgeführten Spielzüge einer Zugnummer konstant sind (140.000), ist es u.U. auch sinnvoll die Gesamtanzahl der Spiele einer Feldkategorie der verfügbaren Feldkategorien in die Berechnung der Heuristik einzubinden.
+
 \subsection{Die Heuristik \mxZitat{Cowthello}}
-Patrick
+Die \mxZitat{Cowthello} Heuristik bietet die höchsten Gewinnwahrscheinlichkeiten der \mxZitat{Alpha-Beta Pruning} Heuristiken mit einer relativ kurzen Ausführungszeit. Folgende Ergebnisse können aus den Vergleichen 4 und 9 der Tabelle \ref{tbl:cmp-results} abgeleitet werden:
+\begin{itemize}
+\item In den 1000 Spielen des \mxZitat{Alpha-Beta Pruning} Agenten mit der \mxZitat{Cowthello} Heuristik gegen den \mxZitat{Random} Agenten gewinnt der \mxZitat{Alpha-Beta Pruning} Agent 564 zu 324 Spiele.
+\item Die große Zahl von 112 unentschiedenen Spielen fällt bei dieser Heuristik ebenfalls auf.
+\item In den 1000 Spielen des \mxZitat{Alpha-Beta Pruning} Agenten mit der \mxZitat{Cowthello} Heuristik gegen den \mxZitat{Random} Agenten gewinnt der \mxZitat{Alpha-Beta Pruning} Agent 564 zu 324 Spiele.
+\end{itemize}
 
 \section{Bewertung der Vorgehensweise}
 Outline: Max
