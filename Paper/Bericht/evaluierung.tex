@@ -48,7 +48,7 @@ Um zum einen ein möglichst aussagekräftiges Ergebnis zu kommen gilt es eine au
 
 \begin{table}[ht]
 \begin{center}
-\begin{tabular}{| c | c | c | c | c | c | c | c |} \hline
+\begin{tabu}{| c | c | c | c | c | c | c | c |} \hline
 \multirow{3}{*}{Vgl.} & \multirow{3}{*}{\shortstack{Anz.\\Spiele}} & \multicolumn{4}{c|}{Gewonnene Spiele} & \multicolumn{2}{c|}{$\varnothing$ Rechenzeit je Spiel [s]} \\ \cline{3-8}
                       &                              & \multicolumn{2}{c|}{Agent 1} & \multicolumn{2}{c|}{Agent 2} & \multirow{2}{*}{Agent 1} & \multirow{2}{*}{Agent 2} \\ \cline{3-6}
                       &                              & Anz. & Anteil [\%]            & Anz. & Anteil [\%]            &                          &                          \\ \hline
@@ -67,9 +67,10 @@ Um zum einen ein möglichst aussagekräftiges Ergebnis zu kommen gilt es eine au
  9 & 1000 &  289 &  28,9 &  709 &  70,9 &   0,00049 & 149,17649 \\ \hline
 10 &  200 &   33 &  16,5 & 166  &  83,0 &   0,00069 & 717,85712 \\ \hline
 \hline
-11 & -    & -    & -     & -    & -     & -         & -         \\ \hline
+\rowfont{\color{grey}}
+11 &    7 &    0 &   0,0 &    7 & 100,0 & 309,24247 & 490,69960 \\ \hline
 12 & -    & -    & -     & -    & -     & -         & -         \\ \hline
-\end{tabular}
+\end{tabu}
 \end{center}
 \caption{Ergebnisse der Vergleiche}
 \label{tbl:cmp-results}
