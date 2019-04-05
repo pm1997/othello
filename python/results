@@ -3,9 +3,9 @@ Player 1 won 0 games
 Player 2 won 3 games
 Player 1 won in 0.0 %
 Player 2 won in 100.0 %
-Total Computation Time Player 1: 545.3462188243866
-Total Computation Time Player 2: 2004.7831709384918
-Average Computation Time Player 1: 181.7820729414622
-Average Computation Time Player 2: 668.2610569794973
-Total Duration: 2550.477908372879
-Average Duration: 850.1593027909597
+Total Computation Time Player 1: 0.0009984970092773438
+Total Computation Time Player 2: 0.0
+Average Computation Time Player 1: 0.00033283233642578125
+Average Computation Time Player 2: 0.0
+Total Duration: 0.25864124298095703
+Average Duration: 0.08621374766031902
