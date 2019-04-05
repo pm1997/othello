@@ -15,3 +15,8 @@ venv
 *.tdo
 *.bbl
 *.blg
+*.lol
+*.lot
+*.lof
+*.bcf
+*.run.xml
