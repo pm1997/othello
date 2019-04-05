@@ -1,22 +1,22 @@
 \chapter{Fazit}
 
 \section{Bewertung der Agenten}
-In diesem Kapitel werden die Agenten \mxZitat{Monte Carlo} und \mxZitat{Alpha-Beta Pruning} verglichen.
+In diesem Kapitel werden die Agenten \mxZitat{Monte Carlo} und \mxZitat{Alpha-Beta Pruning} verglichen. \todo{Erweitern}
 \subsection{Der Agent \mxZitat{Monte Carlo}}
-Zsf \todo{Add}
-\paragraph{Gegen den Agenten \mxZitat{Random}}
+Zunächst wird auf die Leistung des Agenten \mxZitat{Monte Carlo} gegen den zufällig agierenden Agenten, sowie noch offene Fragen eingegangen. Den Abschluss dieses Abschnitts bildet schließlich die Beschreibung weiterer Anpassungsmöglichkeiten des Agenten.  
+\paragraph{Leistung gegen den Agenten \mxZitat{Random}}
 Wie in Tabelle \ref{tbl:cmp-results} anhand der Vergleiche 1 bzw. 6 deutlich wird, hat der \mxZitat{Monte Carlo}-Agent sämtliche der insgesamt 2000 Testspielen gegen den \mxZitat{Random}-Agenten gewonnen. Dabei ist bis auf eine geringe Abweichung der durchschnittlich benötigten Rechenzeit pro Spiel unerheblich ob der Agent als Spieler 1 oder Spieler 2 auftritt. Damit ist der mit dem Spiel des Agenten verbundene Rechenaufwand in so fern berechtigt, dass er bessere Ergebnisse liefert als ein Spieler der zufällige Züge durchführt.
 \\Im Vergleich mit menschlichen Spielern ist jedoch davon auszugehen, dass diese keine zufälligen Züge ausführen. Stattdessen ist, ein entsprechendes Spielniveau vorausgesetzt, damit zu rechnen, dass ein Spieler Kenntnisse über das Spiel und durch Erfahrung verfeinerte Strategien einbringt. Dieser Vergleich konnte im Rahmen der Arbeit leider nicht durchgeführt werden und ist damit eine Fragestellung für weitere Untersuchungen.  
 \paragraph{Weitere Variationsmöglichkeiten}
 In den zur Bestimmung der für den Agenten verwendeten Parameter konnte beobachtet werden, dass die Gewinnwahrscheinlichkeit des Agenten von der Anzahl der simulierten Spiele abhängt. In den betrachteten Fällen konnte durch die Erhöhung der Anzahl simulierter Spiele, also die Erhöhung des Parameters \code{big\_n}, im allgemeinen eine Verbesserung der Gewinnwahrscheinlichkeit des Agenten erzielt werden. Gleichzeitig zeigte \cite{nijssen_2007}, dass sich dieser Effekt mit steigender Größe von \code{big\_n} abschwächt. Zusätzlich dazu steigt mit der Anzahl der durchgeführten Simulationen auch die benötigte Rechenzeit. Zu Untersuchen wäre daher ob das überschreiten der Rechenzeit von fünf Minuten auf dem Referenzgerät eine weitere Verbesserung bringt und damit den erhöhten Aufwand rechtfertigt.
 
 \subsection{Der Agent \mxZitat{Alpha-Beta Pruning}}
-Zsf \todo{add}
-\paragraph{Im Vergleich zum Agenten \mxZitat{Ramdom}}
-Im Vergleich mit dem zufällig spielenden Agenten gewann der Agent \mxZitat{Alpha-Beta Pruning} in allen \unsure{Immer noch so?} Fällen mehr Spiele. Deutlich wird auch, dass der Erfolg des Agenten im wesentlichen von der verwendeten Heuristik abhängt. Auf die einzelnen Heuristiken, wird im Abschnitt \ref{sect:Fazit:Heuristiken} genauer eingegangen.
-\\An dieser Stelle ist festzuhalten, dass auch der \mxZitat{Alpha Beta Pruning}-Agent, die Wahl einer guten Heuristik vorausgesetzt, den Rechenaufwand in so fern rechtfertigt, das Spiel des Agenten besser ist als das des Zufällig agierenden. Wie oben ist auch hier die Gewinnwahrscheinlichkeit gegen menschliche Spieler Gegenstand weiterer Untersuchungen.
-\\Auffällig ist außerdem, dass im Vergleich zu dem \mxZitat{Monte Carlo}-Agenten eine deutlich längere Rechenzeit benötigt wird um zu einem insgesamt schlechteren Ergebnis zu kommen. Auf die Performance der beiden Agenten im direkten Vergleich wird in Abschnitt \ref{subsec:Fazit:AgentenVgl} eingegangen.
-\todo{MC}
+In diesem Abschnitt findet sich, ähnlich dem vorherigen, zunächst ein Vergleich des \mxZitat{Alpha-Beta-Pruning} Agenten mit dem zufällig agierenden Agenten. Im Anschluss werden weitere Variationsmöglichkeiten besprochen. 
+\paragraph{Leistung im Vergleich zum Agenten \mxZitat{Ramdom}}
+Im Vergleich mit dem zufällig spielenden Agenten gewann der Agent \mxZitat{Alpha-Beta Pruning} in den meisten Fällen mehr Spiele. Deutlich wird auch, dass der Erfolg des Agenten im wesentlichen von der Strategie zur Bewertung der Zustände in der maximalen Suchtiefe abhängt. Auf die einzelnen Heuristiken, wird im Abschnitt \ref{sect:Fazit:Heuristiken} genauer eingegangen.
+\\Kommt statt einer Heuristik in den Blättern des Baumes Monte-Carlo zum Einsatz, so werden nochmals deutlich bessere Ergebnisse erzielt. Dafür dauert die Berechnung eines einzelnen Zuges jedoch wesentlich länger. Damit ist die Kombination der Alpha-Beta Abschneiden Methode und der Monte-Carlo Methode als ein, zwar eher Rechenintensiver, jedoch erfolgreicher Ansatz zu betrachten. Besonders hervorzuheben ist dabei, dass zur Umsetzung kein Spezialwissen für Othello benötigt wird. Zu Untersuchen wäre in wie weit dieser Aspekt auf andere Spiele übertragbar ist.
+\\An dieser Stelle jedoch, ist damit festzuhalten, dass auch der \mxZitat{Alpha Beta Pruning}-Agent, die Wahl einer guten Heuristik vorausgesetzt, den Rechenaufwand in so fern rechtfertigt, das Spiel des Agenten meist besser ist als das des zufällig agierenden. Wie oben wäre auch hier die Gewinnwahrscheinlichkeit gegen menschliche Spieler Gegenstand weiterer Untersuchungen.
+\\Auffällig ist außerdem, dass im Vergleich zu dem \mxZitat{Monte Carlo}-Agenten im Spiel mit dem \mxZitat{Random}-Agenten eine deutlich längere Rechenzeit benötigt wird um zu einem insgesamt schlechteren Ergebnis zu kommen. Auf die Performance der beiden Agenten im direkten Vergleich wird in Abschnitt \ref{subsec:Fazit:AgentenVgl} eingegangen.
 \paragraph{Weitere Variationsmöglichkeiten}
 Gemäß der in Kapitel \ref{ab-pruning} beschriebenen Theorie hinter dem Agenten \mxZitat{Alpha-Beta Pruning} kann durch eine größere Suchtiefe \code{search\_depth} die Genauigkeit mit der die Bewertung eines Zuges der realitätsgetreuen Bewertung entspricht erhöht werden. Da sich der Suchbaum mit jeder Ebene stärker verzweigt ist in diesem Fall jedoch mit einer exponentiell steigenden Rechenzeit zu rechnen. Mit der vorgestellten Implementierung wäre dies unter dem Zeitaspekt jedoch keine Oprion. Entsprechend stellt sich hier die Frage in wie weit der Algorithmus des Alpha Beta Abschneidens parallelisiert werden kann um alle verfügbaren Prozessoren eines Computersystems zu benutzen und damit innerhalb der fünf Minuten Rechenzeit die der Anwender bereit ist zu warten, den Suchbaum noch tiefer zu durchsuchen.
 
@@ -37,7 +37,8 @@ Der \mxZitat{Monte Carlo} Agent spielt deutlich besser als der \mxZitat{Random} 
 \label{sect:Fazit:Heuristiken}
 Max
 \subsection{Die Heuristik \mxZitat{Nijssen 07}}
-Max
+Die Implementierung der von \cite{nijssen_2007} vorgeschlagenen Heuristik kann im hier durchgeführten Vergleich nicht überzeugen. Tritt der Agent der sie im Spiel gegen den \mxZitat{Random}-Agenten einsetzt als Spieler 1 auf, so werden bei ihrem Einsatz sogar weniger Spiele gewonnen als der zufällig spielende Agent gewinnt (Vgl. 2). Zwar spielt der Agent besser wenn er als Spieler 2 auftritt (Vgl. 7), jedoch legt das Ergebniss des Vergleiches des zufällig spielenden Agenten mit sich selbst nahe, dass der als Spieler 2 auftretende Agent im wesentlichen eine um rund 10\% höhere Gewinnchance hat. Diese Marge deckt sich im wesentlichen mit der angesprochenen Verbesserung.
+\\Damit empfiehlt sich die Heuristik, ohne weitere Verbesserungen, nicht für den Einsatz bei der Untersuchung des Spielverhaltens des \mxZitat{Alpha-Beta Pruning}-Agenten gegen einen menschlichen Spieler. 
 \subsection{Die Heuristik \mxZitat{Stored Monte-Carlo}}
 \label{fz:h_smc}
 Der \mxZitat{Stored Monte-Carlo} Agent gewinnt in beiden Spielkombinationen häufiger als der \mxZitat{Random} Agent (siehe Abbildung \ref{tbl:cmp-results} Vergleiche 3 und 8). Im Vergleich mit den anderen Heuristiken ist die Gewinnwahrscheinlichkeit sehr gering.
@@ -73,7 +74,8 @@ Die \mxZitat{Cowthello} Heuristik bietet die höchsten Gewinnwahrscheinlichkeite
 Outline: Max
 
 \section{Ausblick}
-Die in der \mxZitat{Stored Monte-Carlo} Heuristik verwendetet Datenbank kann dazu genutzt werden, um einen verbesserten Agenten zu erstellen. Diese Funktionsweise des neuen Agenten ist der des \mxZitat{Monte Carlo} Agenten mit verwendeter gewichteter Zufallsfunktion sehr ähnlich. Der Unterschied wäre das Aktualisieren der Datenbank nach der Durchführung jedes Spieles. Dadurch nähern sich die in der Datenbank gespeicherten Werte statistisch an die optimale Werte an.
+\paragraph{Weitere Verfolgung des Ansatzes der \mxZitat{Stored Monte Carlo}-Heuristik}
+\unsure{Textuelle Referenz zu Gewichtetem Random anpassen}Die in der \mxZitat{Stored Monte-Carlo} Heuristik verwendetet Datenbank kann dazu genutzt werden, um einen verbesserten Agenten zu erstellen. Diese Funktionsweise des neuen Agenten ist der des \mxZitat{Monte Carlo} Agenten mit verwendeter gewichteter Zufallsfunktion sehr ähnlich. Der Unterschied wäre das Aktualisieren der Datenbank nach der Durchführung jedes Spieles. Dadurch nähern sich die in der Datenbank gespeicherten Werte statistisch an die optimale Werte an.
 \\Dieser Prozess ist aber zwangsläufig mit Schreibzuggriffen oder mindestens das Verändern des Datenbankenobjektes verbunden. Dies hat zwei schwerwiegende Auswirkungen:
 \begin{itemize}
 \item Die Parallelisierung der gleichzeitigen Ausführung zufälliger Spiele ist schwieriger, da nur ein Thread gleichzeitig in die Datenbank schreiben kann.
