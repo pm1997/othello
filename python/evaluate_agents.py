@@ -1,4 +1,5 @@
 import argparse
+import os
 
 """
 This file add console arguments to the main game.
@@ -161,6 +162,18 @@ if __name__ == '__main__':
     durations = 0
     total_times = {PLAYER_ONE: 0, PLAYER_TWO: 0}
 
+    outfile_info_string = f"p-{player_one}_h-{heuristic1}_bn-{big_number}_sl-{use_start_libs}_pp-{preprocessor_n}_mc-{use_monte_carlo}_mp-{use_multiprocessing}\nvs\np-{player_two}_h-{heuristic2}_bn-{big_number2}_sl-{use_start_libs2}_pp-{preprocessor_n2}_mc-{use_monte_carlo2}_mp-{use_multiprocessing2}"
+    outfile_name = None
+    i = 0
+    while outfile_name is None:
+        if not os.path.isfile(f"result-{i}.txt"):
+            outfile_name = f"result-{i}.txt"
+        print(i)
+        i = i + 1
+
+    with open(outfile_name, 'w') as outfile:
+        outfile.write(outfile_info_string + "\n")
+
     for game_counter in range(games_nr):
         print(f"game: {game_counter}")
         # Store the players in a dict with the internal player codes as key to allow easy access and maintaining the correct order
@@ -207,7 +220,8 @@ if __name__ == '__main__':
         total_times[PLAYER_ONE] += times[PLAYER_ONE]
         total_times[PLAYER_TWO] += times[PLAYER_TWO]
 
-        with open("results_tmp.txt", 'a+') as outfile:
+        with open(outfile_name, 'a+') as outfile:
+            outfile.write("------------------------------------------------------------------------------------------\n")
             outfile.write(f"Total games: {(game_counter + 1)}\n")
             outfile.write(f"Player 1 won {winning_stats[PLAYER_ONE]} games\n")
             outfile.write(f"Player 2 won {winning_stats[PLAYER_TWO]} games\n")
