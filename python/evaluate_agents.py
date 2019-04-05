@@ -161,8 +161,8 @@ if __name__ == '__main__':
     durations = 0
     total_times = {PLAYER_ONE: 0, PLAYER_TWO: 0}
 
-    for game in range(games_nr):
-        print(f"game: {game}")
+    for game_counter in range(games_nr):
+        print(f"game: {game_counter}")
         # Store the players in a dict with the internal player codes as key to allow easy access and maintaining the correct order
         players = {PLAYER_ONE: player_one, PLAYER_TWO: player_two}
         times = {PLAYER_ONE: 0, PLAYER_TWO: 0}
@@ -206,6 +206,19 @@ if __name__ == '__main__':
         durations += duration
         total_times[PLAYER_ONE] += times[PLAYER_ONE]
         total_times[PLAYER_TWO] += times[PLAYER_TWO]
+
+        with open("results_tmp.txt", 'a+') as outfile:
+            outfile.write(f"Total games: {(games_nr + 1)}\n")
+            outfile.write(f"Player 1 won {winning_stats[PLAYER_ONE]} games\n")
+            outfile.write(f"Player 2 won {winning_stats[PLAYER_TWO]} games\n")
+            outfile.write(f"Player 1 won in {winning_stats[PLAYER_ONE] * 100 / (games_nr + 1)} %\n")
+            outfile.write(f"Player 2 won in {winning_stats[PLAYER_TWO] * 100 / (games_nr + 1)} %\n")
+            outfile.write(f"Total Computation Time Player 1: {total_times[PLAYER_ONE]}\n")
+            outfile.write(f"Total Computation Time Player 2: {total_times[PLAYER_TWO]}\n")
+            outfile.write(f"Average Computation Time Player 1: {total_times[PLAYER_ONE] / (games_nr + 1)}\n")
+            outfile.write(f"Average Computation Time Player 2: {total_times[PLAYER_TWO] / (games_nr + 1)}\n")
+            outfile.write(f"Total Duration: {durations}\n")
+            outfile.write(f"Average Duration: {durations / (games_nr + 1)}\n")
     print(f"Player 1 won {winning_stats[PLAYER_ONE]} games")
     print(f"Player 2 won {winning_stats[PLAYER_TWO]} games")
     print(f"Player 1 won in {winning_stats[PLAYER_ONE] * 100 / games_nr} %\n")
