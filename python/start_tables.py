@@ -18,8 +18,8 @@ class StartTables:
         # print(self._start_tables)
         # ########################################################
         # CAUTION: Call only once or on change of start tables ! #
-        # #  self.calculate_missing_start_moves()                #
-        # #########################################################
+        #    self.calculate_missing_start_moves()                #
+        # ########################################################
 
     def get_available_moves_of_start_tables(self, game: Othello):
         """
@@ -103,9 +103,9 @@ class StartTables:
             if column < 8 and row < 7:
                 # mirror row and column at point 3.5,3.5 => middle of board
                 row -= 7
-                row = abs(row) % 7
+                row = abs(row)
                 column -= 7
-                column = abs(column) % 7
+                column = abs(column)
             new_turns.append(COLUMN_NAMES[column] + str(row + 1))
         print(f"old:{moves}")
         print(f"new:{new_turns}")
