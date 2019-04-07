@@ -1,8 +1,8 @@
 %\documentclass{report}
 \documentclass[
 	12pt,
-	%BCOR=5mm,
-	%DIV=12,
+	BCOR=5mm,
+	DIV=12,
 	footheight=30pt,
 	headinclude=on,
 	footinclude=off,
@@ -13,30 +13,30 @@
 	numbers=noenddot,
 	plainfootsepline]{scrreprt}
 \input{config}
-\input{fleqn.clo}
-
+%%\input{fleqn.clo}
 \DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
-\usepackage[ngerman]{babel}
-\usepackage{graphicx}
+%%\usepackage[ngerman]{babel}
+\usepackage{adjustbox}
+%%\usepackage{graphicx}
 \usepackage{epstopdf}
 \usepackage{epsfig}
-\usepackage{a4wide}
 \usepackage{amssymb}
-%\usepackage{fancyvrb}
-\usepackage{alltt}
+\usepackage{nameref}
+%%\usepackage{alltt}
 \usepackage{theorem}
-\usepackage{stmaryrd}
-\usepackage{enumerate}
+%%\usepackage{stmaryrd}
+%%\usepackage{enumerate}
 \usepackage{xcolor}
-\usepackage{xfrac}
+%%\usepackage{xfrac}
 \usepackage{amsmath}
 \usepackage{qtree}
 \usepackage{multirow}
-\usepackage{dcolumn}
-
-\usepackage{caption}
+%%\usepackage{dcolumn}
+%%
+\usepackage{lmodern}
+%%\usepackage{caption}
 \usepackage{tabu}
-
+%%
 \usepackage{hyperref}
 \usepackage[all]{hypcap}
 \hypersetup{
@@ -47,17 +47,12 @@
         urlcolor   = [rgb]{0.5, 0.0, 0.5},
 	pdfborder  = {0 0 0}
 }
-\setlength{\mathindent}{1.3cm}
-\setlength{\textwidth}{17cm}
-\addtolength{\oddsidemargin}{-1cm}
-\addtolength{\evensidemargin}{-1cm}
-\addtolength{\topmargin}{-1cm}
+%%%\setlength{\mathindent}{1.3cm}
+%%
+%%%\usepackage{fancyhdr}
+%%\usepackage{lastpage}
 
-%\usepackage{fancyhdr}
-\usepackage{lastpage}
-\usepackage[utf8]{inputenc}
-% \renewcommand*{\familydefault}{\sfdefault}
-
+%%\usepackage[utf8]{inputenc}
 %\pagestyle{fancy}
 %\fancyfoot[C]{--- \thepage/\pageref{LastPage}\ ---}
 %
@@ -188,8 +183,6 @@
 \newcommand{\XGraphic}[2]{\includegraphics[width=#1]{#2}}
 
 \graphicspath{{./Bilder/}}
-
-\newcounter{exercise}
 
 \title{Othello \\[0.3cm]
       --- Entwicklung einer KI für das Spiel ---}
