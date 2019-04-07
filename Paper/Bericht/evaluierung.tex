@@ -9,7 +9,8 @@ Nun gilt es die in Kapitel \ref{implementation} beschriebenen Agenten zu evaluie
 \\Bei der Bestimmung der Parameter hat sich gezeigt, dass die beim Agenten \mxZitat{Alpha-Beta Pruning} gewählte Heuristik die Gewinnchance des Agenten wesentlich beeinflusst. Aus diesem Grund wird der \mxZitat{Alpha-Beta Pruning}-Agent mit allen zur Verfügung stehenden Heuristiken seperat betrachtet. Die sich daraus Ergebenden Vergleiche (Vgl.) sind in Tabelle \ref{tbl:cmp-agents} dargestellt. Der Agent \mxZitat{Alpha-Beta Pruning} wird dabei durch \mxZitat{AB} abgekürzt.
 
 \begin{table}[ht]
-\begin{center}
+\begin{adjustbox}{max width=\textwidth}
+%\begin{center}
 \begin{tabular}{| c | c | c |} \hline
 Vgl. & Agent 1 & Agent 2 \\ \hline
 \hline
@@ -32,9 +33,11 @@ Vgl. & Agent 1 & Agent 2 \\ \hline
 13 & Monte Carlo                         & AB (Cowthello Heuristik)            \\ \hline
 14 & Monte Carlo                         & AB (mit anschließendem Monte Carlo) \\ \hline
 \end{tabular}
-\end{center}
+%\end{center}
+\end{adjustbox}
 \caption{Durchgeführte Vergleiche}
 \label{tbl:cmp-agents}
+%
 \end{table}
 
 \paragraph{Vergleich mit dem Agent \mxZitat{Random}}
