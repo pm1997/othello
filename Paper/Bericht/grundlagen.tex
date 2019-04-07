@@ -19,7 +19,7 @@ Ein \blue{Spiel} besteht aus einem Tupel der Form \\[0.2cm]
 \\$\mathtt{moves} = \{ <X, Y> | X \in \{0 .. 7\} \wedge Y \in \{ 0 .. 7 \} \} $
 \\Diese geben die Koordinate der Zugposition des neuen Steines auf dem Spielbrett an. 
 \item $\mathtt{result}:\mathtt{Q} \times \mathtt{actions} \rightarrow \mathtt{Q}$ definiert das Resultat einer durchgeführten Aktion a und in einem Zustand s.
-\item $\mathtt{terminalTest}: \mathtt{Q} \rightarrow \mathbb{B}$ prüft ob ein Zustand s ein Terminalzustand ($s \in \mathtt{terminalStates}$), also Endzustand, darstellt.
+\item $\mathtt{terminalTest}: \mathtt{Q} \rightarrow \mathbb{B}$ prüft ob ein Zustand s ein Terminalzustand \\($s \in \mathtt{terminalStates}$), also Endzustand, darstellt.
 \\$ \mathtt{terminalTest}(s) = \begin{cases} \mathtt{True}\ | s \in \mathtt{terminalStates}$ 
 $\\\mathtt{False}\ | s \not\in \mathtt{terminalStates} \end{cases}$
 \item $\mathtt{utility}: \mathtt{terminalStates} \times \mathtt{Players} \rightarrow \{-1, 0, 1 \}$ gibt einen Zahlenwert aus den Eingabenwerten\\ s (Terminalzustand) und p (Spieler) zurück. \\Positive Werte stellen einen Gewinn, negative Werte einen Verlust dar. \mxZitat{0} stellt ein Unentschieden dar.
