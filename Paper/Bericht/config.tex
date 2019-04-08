@@ -40,7 +40,12 @@
 %
 
 % Uncomment the next three lines for author-year-style with footnotes (Chicago)
-\usepackage[backend=biber, autocite=footnote, style=authoryear, dashed=false]{biblatex} 	%Use Author-Year-Cites with footnotes
+%\usepackage[backend=biber, autocite=footnote, style=alphabetic,citestyle=authoryear]{biblatex} 	
+%Use Author-Year-Cites with footnotes
+\usepackage[backend=biber, style=alphabetic, citestyle=alphabetic ]{biblatex} 	
+%Use Author-Year-Cites with footnotes
+
+
 \AdaptNoteOpt\footcite\multfootcite   %will add  separators if footcite is called multiple consecutive times 
 \AdaptNoteOpt\autocite\multautocite % will add  separators if autocite is called multiple consecutive times
 
