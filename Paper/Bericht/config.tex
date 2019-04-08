@@ -6,7 +6,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[german=quotes]{csquotes} 	% correct quotes using \enquote{}
 \usepackage[T1]{fontenc}
-
+\usepackage{hyperref}
 
 %\usepackage[english]{babel}   % For english language
 %\usepackage{csquotes} 	% Richtiges Setzen der Anführungszeichen mit \enquote{}
@@ -141,3 +141,32 @@
 \ofoot[\rule{0pt}{\ht\strutbox+\dp\strutbox}\pagemark]{\rule{0pt}{\ht\strutbox+\dp\strutbox}\pagemark}
 
 \ohead{\headmark}
+
+% OTHER PACKAGES
+
+\usepackage{textcomp}
+\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
+\usepackage{adjustbox}
+\usepackage{epstopdf}
+\usepackage{epsfig}
+\usepackage{amssymb}
+\usepackage{nameref}
+\usepackage{theorem}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{qtree}
+\usepackage{multirow}
+\usepackage{lmodern}
+\usepackage{tabu}
+\usepackage{xpicture}
+
+\usepackage{hyperref}
+\usepackage[all]{hypcap}
+\hypersetup{
+	colorlinks = true, % comment this to make xdvi work
+	linkcolor  = blue,
+	citecolor  = red,
+        filecolor  = Gold,
+        urlcolor   = [rgb]{0.5, 0.0, 0.5},
+	pdfborder  = {0 0 0}
+}
