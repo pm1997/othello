@@ -1,7 +1,7 @@
 \chapter{Evaluierung}
 Ziel dieses Kapitel ist es die im vorherigen Kapitel vorgestellte Implementierung zu testen. Dabei ergeben sich im wesentlichen zwei Testaspekte: Zum einen die vorgestellten Agenten und zum anderen die Bedeutung der in Kapitel \ref{impl:stored-mc} eingeführten Feldkategorien.
-\paragraph{}
-Die Evaluierung der einzelnen Agenten erfolgt dabei im wesentlichen dadurch die Agenten gegeneinander spielen zu lassen. Mittels einer genügend großen Anzahl von Spielen lässt sich darart ermitteln welcher der jeweils verwendeten Agenten im Mittel die meisten Spiele gewinnt und damit besser ist.
+\vspace{0.5cm}
+\\Die Evaluierung der einzelnen Agenten erfolgt dabei im Wesentlichen dadurch die Agenten gegeneinander spielen zu lassen. Mittels einer genügend großen Anzahl von Spielen lässt sich darart ermitteln welcher der jeweils verwendeten Agenten im Mittel die meisten Spiele gewinnt und damit besser ist.
 \\Die Bedeutung der Feldkategorien wird Anhand der Gewinnwahrscheinlichkeit einer Spielkategorie über den Spielfortschritt untersucht.
 \section{Evaluierung der einzelnen Agenten}
 \label{cpt:eval-agents}
@@ -105,7 +105,7 @@ Der Parameter \code{big\_n} wurde, nachdem alle übrigen Parameter festgesetzt w
 %Allerdings können dann auch Zugmöglichkeiten wegfallen, welche zu einem Sieg des Agenten geführt hätten. Deshalb wurde dieser Parameter deaktiviert, damit aus allen Zugmöglichkeiten ausgewählt werden kann.
 \\Durch die Deaktivierung des Präprozessors, werden die Parameter \\\code{preprocessor\_parameter} und \code{heuristic}, da diese nur im Prepozessor verwendet werden, überhaupt nicht initialisiert. Damit stehen sie auf dem Standardwert für nicht initialisierte Paramter: \code{None}.
 \\Der Parameter \code{use\_multiprocessing} wird auf \code{True} gesetzt und die Verwendeung mehrerer Prozessoren damit aktiviert. Durch das Aufteilen der zu simulierenden Spiele auf mehrere Prozessorkerne und die Aggregation der einzelnen Werte wird zwar eine gewisse Zeit beansprucht, der positive Effekt durch die Parallelisierung überwiegt jedoch ab circa 80 simulierten Spielen. Da für ein aussagekräftiges Ergebnis bereits mehr als 80 Spiele simuliert werden müssen, können durch die Parallelierung in fünf Minuten insgesamt deutlich mehr Spiele simuliert werden und damit kann wiederum eine bessere Abschätzungen über die Gewinnwahrscheinlichkeiten beim Spielen eines bestimmten Zuges erzielt werden.
-
+\newpage
 \subsection{Parameter des \mxZitat{Alpha-Beta Pruning}-Agenten}
 \label{eval:agents:params:subsec-ab}
 Das gleiche Vorgehen aus dem vorherigen Abschnitt wird nun ebenfalls auf den \mxZitat{Alpha-Beta Pruning}-Agenten angewendet.
