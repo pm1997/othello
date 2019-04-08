@@ -62,7 +62,7 @@ In Listing \ref{lst:class-vars-othello} sind alle Klassenvariablen, sowie deren 
 \\Nun muss ausgehend von der derzeit betrachteten Position ermittelt werden, ob in irgendeine Richtung Spielsteine gedreht werden würden. Dies erfolgt durch die in Zeile 6 beginnende Schleife.
 \\Dazu wird zunächst das nächste Feld in diese Richtung unter Verwendung einer Hilfsfunktion ermittelt (Zeile 7) und anschließend eine weitere termporäre Menge der in dieser Richtung gedrehten Steine initialisiert (Zeile 8)
 \\Die entsprechende Richtung muss nun solange weiter verfolgt werden, wie ein weiterer Nachbar in diese Richtung vorhanden ist. Dies geschieht durch die in Zeile 9 beginnedne Schleife.
-\\Da in den nachfolgenden Schritten ermittelt werden muss, welcher Spieler das derzeit betrachtete Feld besetzt hat, werden die Indizes der derzeitigen  ausgepackt (Zeile 10) und dann verwendet um zu ermitteln welchen Wert das Feld detzeit hat (Zeile 11).
+\\Da in den nachfolgenden Schritten ermittelt werden muss, welcher Spieler das derzeit betrachtete Feld besetzt hat, werden die Indizes der derzeitigen  ausgepackt (Zeile 10) und dann verwendet um zu ermitteln welchen Wert das Feld derzeit hat (Zeile 11).
 \\Nun gibt es drei mögliche Fälle:
 \begin{enumerate}
 \setcounter{enumi}{0}
@@ -72,7 +72,7 @@ In Listing \ref{lst:class-vars-othello} sind alle Klassenvariablen, sowie deren 
 \end{enumerate}
 In Zeile 19 wird das nächste Feld in diese Richtung berechnet.
 \\Gemäß der Regeln muss durch jeden Zug mindestens ein Stein gedreht werden. Aus diesem Grund wird nun ermittelt, ob dies bei diesem Zug gegeben wäre (Zeile 20). Ist dies der Fall, so werden die gedrehten Steine für diesen Zug in \code{\_stones\_to\_turn} gespeichert (Zeile 21).
-\\Hat ein Spieler nun keine Möglichkeiten einen Zug durchzuführen, so sind in \code{\_stones\_to\_turn} keine Züge enthalten. Dieser Fall muss besonders behandelt werden. Tritt er ein, so wird die Abfrage in Zeile 22 positiv ausgewertet.
+\\Hat ein Spieler nun keine Möglichkeiten einen Zug durchzuführen, so sind in \\\code{\_stones\_to\_turn} keine Züge enthalten. Dieser Fall muss besonders behandelt werden. Tritt er ein, so wird die Abfrage in Zeile 22 positiv ausgewertet.
 \\In diesem Fall muss nochmal unterschieden werden, ob der vorherige Spieler ebenfalls keinen Zug zur Auswahl hatte (Zeile 23).
 \\Falls ja so ist das Spiel zu ende. Dies wird durch das Setzen von \code{\_game\_is\_over} gespeichert (Zeile 24).
 \\Falls nein (Zeile 25), so wird gespeichert, dass der Spieler passen musste (Zeile 26) und der nächste Zug vorbereitet (Zeile 27).
@@ -113,7 +113,7 @@ Die Klasse \mxZitat{Othello} enthält weitere Funktionen, auf welche hier jedoch
 \begin{enumerate}
 \item \code{play\_position} verändert den Spielzustand dahingehend, dass der übergebene Zug, sofern er erlaubt ist, ausgeführt wird, die entsprechenden Steine des Gegners gedreht und dessen Zug vorbereitet wird. Dabei wird auch die \code{\_fringe} entsprechend aktualisiert.
 \item \code{set\_available\_moves} verändert \code{\_stones\_to\_turn} dahingehend, dass nur noch übergebene Positionen enthalten sind. Kann damit zum Filtern der erlaubten Züge verwendet werden.
-\item \code{get\_available\_moves}: Gibt die erlaubten Züge zur Verwendung in den Spieler-\\implementierungen zurück
+\item \code{get\_available\_moves}: Gibt die erlaubten Züge zur Verwendung in den \\Spielerimplementierungen zurück
 \item \code{other\_player}: Gibt das Symbol des anderen Spielers zurück
 \item \code{utility}: Gibt gemäß der Definition eines Spiels 0, 1 oder -1 zurück.
 \item \code{get\_winner}: Ermittelt den Gewinner des Spiels und gibt ihn zurück.
@@ -167,12 +167,13 @@ Jede Zelle in dieser Tabelle enthält ein Tripel der Form \\$( \mathtt{won\_game
 \\Zwischen den drei Komponenten gibt es folgenden mathematischen Zusammenhang: 
 \\$\mathtt{won\_games\_player\_1} + \mathtt{won\_games\_player\_2} \le \mathtt{total\_played\_games}$
 \\Durch unentschiedene Spiele kann die Gesamtanzahl der Spiele größer als die Summe der gewonnen Spiele der zwei Spieler sein.
-In Abbildung \ref{fig:db1} ist der Initialzustand der Datenbank dargestellt (vgl. auch Abbildung \ref{fig:sym1} bzgl. der Feldkategorien). Die Startwerte der Tupel sind jeweils \mxZitat{(0, 0, 0)}, da initial noch keine Spiele gespeichert sind.
+In Abbildung \ref{fig:db1} ist der Initialzustand der Datenbank dargestellt (vgl. auch Abbildung \ref{fig:sym1} bzgl. der Feldkategorien). 
 \\\mxPicture{15cm}{db2}{Ausschnitt des Initialzustandes der Datenbank}{Ausschnitt des Initialzustandes der Datenbank}{fig:db1}{}
+Die Startwerte der Tupel sind jeweils \mxZitat{(0, 0, 0)}, da initial noch keine Spiele gespeichert sind.
 
 \paragraph{Befüllen der Datenbank}
 \label{para:train1}
-Nachdem die Datenbank im vorherigen Abschnitt initialisiert erstellt wurde, wird diese nun mit Spieldaten aus zufällig gespielten Spielen befüllt. In Listing \ref{lst:train1} ist das Spielen eines zufälligen Spieles und den Aufruf der Funktion \code{update\_fields\_stats\_for\_single\_game} abgebildet. Zunächst wird ein Othello-Spiel initialisiert (Z. 1f.). Durch die Nutzung des \mxZitat{Random}-Agenten wird ein komplettes Spiel durchgeführt (Z. 3f.). Anschließend wird der Gewinner ermittelt (Z. 5) und die Zugreihenfolge ermittelt (Z. 6). Die Funktion \code{update\_fields\_stats\_for\_single\_game} verwendet diese beiden Parameter um die Datenbank zu aktualisieren. Die Funktion wird in Listing \ref{lst:train2} abgebildet.
+Nachdem die Datenbank im vorherigen Abschnitt initialisiert erstellt wurde, wird diese nun mit Spieldaten aus zufällig gespielten Spielen befüllt. In Listing \ref{lst:train1} ist das Spielen eines zufälligen Spieles und den Aufruf der Funktion \code{update\_fields\_stats\_for\_single\_game} abgebildet. Zunächst wird ein Othello-Spiel initialisiert (Z. 1f.). Durch die Nutzung des \mxZitat{Random}-Agenten wird ein komplettes Spiel durchgeführt (Z. 3f.). Anschließend wird der Gewinner ermittelt (Z. 5) und die Zugreihenfolge ermittelt (Z. 6). Die Funktion \code{update\_fields\_stats\_for\_single\_\\game} verwendet diese beiden Parameter um die Datenbank zu aktualisieren. Die Funktion wird in Listing \ref{lst:train2} abgebildet.
 
 \begin{lstlisting}[caption = {Befüllen der Datenbank 1}, language = python, captionpos = t , numbers=left, label={lst:train1}]
 g = Othello()
@@ -224,7 +225,7 @@ def heuristic(current_player, game_state: Othello):
 Die \mxZitat{Cowthello Heuristik} wurde aus \cite{cow1} übernommen. Ihr liegt ebenfalls der in Kapitel \ref{othello-chapter} erläuterte Idee zugrunde, die einzelnen Spielfelder in Kategorien einzuteilen und jeder Kategorie einen speziellen Wert zuzuweisen. Die Heuristik unterscheidet sich von der \mxZitat{Nijssen 2007 Heuristik} nur in der genaueren Definition der Feldkategorien und unterschiedliche Gewichtungen dieser Felder.
 Die Gewichte der einzelnen Felder sind in Abbildung dargestellt. Die Unterschiede zur \mxZitat{Nijssen 2007 Heuristik} bestehen in der detaillierteren Gewichtung beispielsweise der Zentralfelder (\mxZitat{1}, \mxZitat{5} oder \mxZitat{50}) im Gegensatz zu \mxZitat{2}. Die restliche Implementierung ist identisch zur \mxZitat{Nijssen 2007 Heuristik}.
 \\\mxPicture{10cm}{cow1}{Gewichtung der einzelnen Spielfelder}{Gewichtung der einzelnen Spielfelder}{fig:cow1}{}
-
+In der Abbildung \ref{fig:cow1} wird deutlich, dass die Werte strategisch zugewiesen wurden. Beispielsweise sind die \mxZitat{X}- und \mxZitat{C}-Felder mit \mxZitat{schlechten} Werten (\mxZitat{-50}, \mxZitat{-25}) belegt. Dies spiegelt auch die Spielstrategie wieder, dass diese Felder für den aktuellen Spieler schlecht sind, da der Gegner dadurch leicht eine Ecke des Spielfeldes besetzen kann.
 \section{Start Tabellen}
 In dem Grundlagenkapitel \ref{lookup} wurden die Vor- und Nachteile von Suche vs. Nachschlagen beschrieben. In diesem Kapitel wird die Implementierung der Starttabellen mit Eröffnungszügen erklärt. Im Folgenden werden Spieltabellen und Startdatenbank synonym verwendet, da diese Tabellen als Matrix in einer Datenbank gespeichert werden.
 \\Für viele Spiele, beispielsweise für Schach, existieren Starttabellen, welche die \mxZitat{besten} Eröffnungszüge speichern. Für Othello existieren zwar mehrere Spieltabellen, aber nur wenige Eröffnungsspiele. In der Implementierung werden die 77 Eröffnungszüge von Robert Gatliff \cite{open1} verwendet. Diese bestehen jeweils aus einer Zugreihenfolge, z.B. \code{c4, c3, d3, c5, b2}. 

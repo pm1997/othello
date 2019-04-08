@@ -13,67 +13,14 @@
 	numbers=noenddot,
 	plainfootsepline]{scrreprt}
 \input{config}
-%%\input{fleqn.clo}
-\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
-%%\usepackage[ngerman]{babel}
-\usepackage{adjustbox}
-%%\usepackage{graphicx}
-\usepackage{epstopdf}
-\usepackage{epsfig}
-\usepackage{amssymb}
-\usepackage{nameref}
-%%\usepackage{alltt}
-\usepackage{theorem}
-%%\usepackage{stmaryrd}
-%%\usepackage{enumerate}
-\usepackage{xcolor}
-%%\usepackage{xfrac}
-\usepackage{amsmath}
-\usepackage{qtree}
-\usepackage{multirow}
-%%\usepackage{dcolumn}
-%%
-\usepackage{lmodern}
-%%\usepackage{caption}
-\usepackage{tabu}
-%%
-\usepackage{hyperref}
-\usepackage[all]{hypcap}
-\hypersetup{
-	colorlinks = true, % comment this to make xdvi work
-	linkcolor  = blue,
-	citecolor  = red,
-        filecolor  = Gold,
-        urlcolor   = [rgb]{0.5, 0.0, 0.5},
-	pdfborder  = {0 0 0}
-}
-%%%\setlength{\mathindent}{1.3cm}
-%%
-%%%\usepackage{fancyhdr}
-%%\usepackage{lastpage}
-
-%%\usepackage[utf8]{inputenc}
-%\pagestyle{fancy}
-%\fancyfoot[C]{--- \thepage/\pageref{LastPage}\ ---}
-%
-%\fancypagestyle{plain}{%
-%\fancyhf{}
-%\fancyfoot[C]{--- \thepage/\pageref{LastPage}\ ---}
-%\renewcommand{\headrulewidth}{0pt}
-%}
-
-%\renewcommand{\chaptermark}[1]{\markboth{\chaptername \ \thechapter.\ #1}{}}
-%\renewcommand{\sectionmark}[1]{\markright{\thesection. \ #1}{}}
-%\fancyhead[R]{\leftmark}
-%\fancyhead[L]{\rightmark}
 
 \definecolor{amethyst}{rgb}{0.2, 0.4, 0.6}
 \definecolor{orange}{rgb}{1, 0.9, 0.0}
 \definecolor{grey}{rgb}{0.5, 0.5, 0.5}
 
-\newfont{\chess}{chess20}
-\newfont{\bigchess}{chess30}
-\newcommand{\chf}{\baselineskip20pt\lineskip0pt\chess}
+%\newfont{\chess}{chess20}
+%\newfont{\bigchess}{chess30}
+%\newcommand{\chf}{\baselineskip20pt\lineskip0pt\chess}
 
 \newcommand{\blue}[1]{{\color{blue}#1}}
 \newcommand{\green}[1]{{\color{green}#1}}
@@ -86,11 +33,11 @@
 %\renewcommand{\encodingdefault}{T1}
 %\renewcommand{\ttdefault}{inconsolatag}
 
-\newcommand{\ds}{\displaystyle}
-\newcommand{\AI}{\textsc{Ai}}
-\newcommand{\cnt}{\texttt{\#}}
-\def\pair(#1,#2){\langle #1, #2 \rangle}
-\newcommand{\myFig}[1]{Figure \ref{fig:#1} on page \pageref{fig:#1}}
+%\newcommand{\ds}{\displaystyle}
+%\newcommand{\AI}{\textsc{Ai}}
+%\newcommand{\cnt}{\texttt{\#}}
+%\def\pair(#1,#2){\langle #1, #2 \rangle}
+%\newcommand{\myFig}[1]{Figure \ref{fig:#1} on page \pageref{fig:#1}}
 
 {\theorembodyfont{\sf}
 \newtheorem{Definition}{Definition}
@@ -197,14 +144,15 @@
 % ----------------------------------------------------------
 
 
+
 \begin{document}
-\TitelDerArbeit{Entwurf und Implementierung eines verteilten, direkten Suchverfahrens}
-\AutorDerArbeit{Erika Musterfrau}
-\Firma{Musterbetrieb AG}
-\Kurs{WWI14SEA}
+\TitelDerArbeit{Othello \\[0.3cm]
+      --- Entwicklung einer KI für das Spiel ---}
+\AutorDerArbeit{Patrick Müller, Max Zepnik}
+\Kurs{TINF16AIBI}
 
 \input{titlepage}
-
+\input{ewerkl}
 \pagenumbering{roman} % Römische Seitennummerierung
 \normalfont
 %\pagenumbering{gobble}
