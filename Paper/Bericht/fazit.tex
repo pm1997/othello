@@ -1,8 +1,14 @@
 \chapter{Fazit}
 \label{Fazit}
 
+In diesem Kapitel werden die Ergebnisse der Arbeit bewertet und ein Ausblick über weitere Forschungsgegenstände gegeben.
+\\Im ersten Abschnitt werden dazu zunächst die präsentierten Agenten bewertert und weitere Anpassungsmöglichkeiten aufgezeigt.
+\\Der zweite Abschnitt nimmt eine Bewertung der eingesetzten Heuristiken vor, indem die Variation der Ergebnisse eines Agenten bei der Verwendung der verschiedenen Heuristiken betrachtet wird.
+\\Im dritten und letzten Abschnitt wird schließlich der erwähnte Ausblick gegeben.   
+
 \section{Bewertung der Agenten}
-In diesem Abschnitt werden die Agenten \mxZitat{Monte Carlo} und \mxZitat{Alpha-Beta Pruning} verglichen. \todo{Erweitern}
+Zunächst werden also die präsentierten Agenten bewertet indem sie zum einen mit dem \mxZitat{Random}-Agenten und zum anderen Untereinander verglichen werden.
+\\Zu jedem Agenten werden dabei weitere Anpassungsmöglichkeiten genannt und die möglichen Auswirkungen einer solchen Anpassung besprochen.
 \subsection{Der Agent \mxZitat{Monte Carlo}}
 Zunächst wird auf die Leistung des Agenten \mxZitat{Monte Carlo} gegen den zufällig agierenden Agenten eingegangen. Dabei finden auch einige noch offene Fragen Erwähnung. Den Abschluss dieses Abschnitts bildet schließlich die Beschreibung weiterer Anpassungsmöglichkeiten des Agenten.  
 \paragraph{Leistung gegen den Agenten \mxZitat{Random}}
@@ -24,15 +30,15 @@ Gemäß der in Kapitel \ref{ab-pruning} beschriebenen Theorie hinter dem Agenten
 
 \subsection{Vergleich der Agenten \mxZitat{Monte Carlo} und \mxZitat{Alpha-Beta Pruning}}
 \label{subsec:Fazit:AgentenVgl}
-Der \mxZitat{Monte Carlo} Agent spielt deutlich besser als der \mxZitat{Random} Agent. Der \mxZitat{Alpha-Beta Pruning} Agent ist bei der Verwendung der \mxZitat{Cowthello} Heuristik ebenfalls deutlich besser als der \mxZitat{Random} Agent, aber dennoch schlechter als der \mxZitat{Monte Carlo} Agent bei ähnlicher Spieldauer.
-\\Da der \mxZitat{Monte Carlo} Agent in der Spieltheorie einfach nur aus einer gewissen Anzahl an zufälligen Spielen ab der aktuellen Spielposition den besten Folgezug zurückgibt, besitzt dieser Agent keinerlei Wissen über das Spielprinzip des Spiels Othello. 
-\\Dies sollte durch die Verwendung des \mxZitat{Alpha-Beta Pruning} Agenten verbessert werden. Dieser basiert grundlegend auf einer angepassten MiniMax-Suche. Diese deckt den Aspekt des Spiels ab, dass gute Züge des eines Spielers gleichzeitig schlechte Züge des Gegners sind.
+Der \mxZitat{Monte Carlo} Agent spielt sowohl bei der Verwendung der \mxZitat{Cowthello}-Heuristik als auch bei der Verwendung der Monte-Carlo-Variante deutlich besser als der \mxZitat{Alpha-Beta Pruning} Agent. Dieses Ergebnis kann dabei sogar bei einer im Vergleich deutlich kürzeren Rechenzeit erreicht werden.
+\\Da der \mxZitat{Monte Carlo} Agent in der Spieltheorie einfach nur ab einem aktuellen Spielzustand eine gewissen Anzahl von zufälligen Spielen simuliert und anhand der Ausgänge dieser Simulationen den besten Folgezug ermittelt, kommt dabei keinerlei Wissen über das Spielprinzip des Spiels Othello zum Einsatz. 
+\\Von der Verwendung des \mxZitat{Alpha Beta Abschneiden}-Verfahren wurde sich im Rahmen dieser Arbeit erhofft durch die Verwendung von Fachwissen in Form einer Heuristik bessere Ergebnisse zu erzielen. Das verfahren basiert grundlegend auf einer angepassten MiniMax-Suche. Dieser liegt die Tatsache zugrunde, dass gute Züge des eines Spielers gleichzeitig schlechte Züge des Gegners sind.
 \\Der erwartete Effekt trat allerdings nicht ein. Dies kann mehrere Gründe haben:
 \begin{itemize}
-\item Die verfügbaren Heuristiken, welche in den Blattknoten der \mxZitat{Alpha-Beta Pruning} Suche verwendet werden, sind zu ungenau. Beispielsweise wurde in Kapitel \ref{fz:h_smc} festgestellt, dass die Heuristik \mxZitat{Stored Monte-Carlo} ungeeignet ist. Durch die große Spanne der Gewinnwahrscheinlichkeiten des \mxZitat{Alpha-Beta Pruning} Agenten je nach verwendeter Heuristik ist es denkbar, dass noch bessere Heuristiken existieren.
+\item Die verfügbaren Heuristiken, welche in den Blattknoten der \mxZitat{Alpha-Beta Pruning} Suche verwendet werden, sind zu ungenau. Beispielsweise wurde in Kapitel \ref{fz:h_smc} festgestellt, dass die Heuristik \mxZitat{Stored Monte-Carlo} ungeeignet ist. Durch die große Spanne der Gewinnwahrscheinlichkeiten des \mxZitat{Alpha-Beta Pruning} Agenten je nach verwendeter Heuristik ist es denkbar, dass noch deutlich bessere Heuristiken entwicklet werden können.
 \item Die \mxZitat{Alpha-Beta Pruning} Suche benötigt sehr viel Zeit. Durch die große Verzweigung existieren sehr viele Blattknoten, für welche ein Wert ermittelt werden muss. Dies geschieht durch die Verwendung einer Heuristik oder der \mxZitat{Monte Carlo} Suche.
-\\In der Zeit, welche der \mxZitat{Alpha-Beta Pruning} Agent zur Suche benötigt, kann der \mxZitat{Monte Carlo} Agent deutlich mehr zufällige Spiele berechnen. Dadurch wird der Vorteil des \mxZitat{Alpha-Beta Pruning} Agenten durch die große Anzahl der durchgeführten Züge ausgeglichen.
-\item Die \mxZitat{Alpha-Beta Pruning} Suche besitzt eine zu geringe Suchtiefe. Durch eine größere Suchtiefe werden bessere Ergebnisse erreicht. Allerdings steigt die Berechnungszeit eines Zuges selbst bei der Erhöhung der Suchtiefe nur um eins sehr stark an. Dadurch kann der Agent nur bis zu einer bestimmten Suche (max. 5) eine \mxZitat{Alpha-Beta Pruning} Suche durchführen, bevor die Wartedauer auf den nächsten Zug den erwarteten Nutzen übersteigt. 
+\\In der Zeit, welche der \mxZitat{Alpha-Beta Pruning} Agent zur Suche benötigt, kann der \mxZitat{Monte Carlo} Agent deutlich mehr zufällige Spiele simulieren. Dadurch wird der Vorteil des \mxZitat{Alpha-Beta Pruning} Agenten durch die große Anzahl der durchgeführten Züge ausgeglichen.
+\item Die \mxZitat{Alpha-Beta Pruning} Suche verfügt bei den hier präsentierten Agenten über eine zu geringe Suchtiefe. Durch eine größere Suchtiefe werden bessere Ergebnisse erreicht. Allerdings steigt die Berechnungszeit eines Zuges selbst bei der Erhöhung der Suchtiefe nur um eins sehr stark an. Dadurch kann der Agent nur bis zu einer bestimmten Suche (max. 5) eine \mxZitat{Alpha-Beta Pruning} Suche durchführen, bevor die Wartedauer auf den nächsten Zug den erwarteten Nutzen übersteigt. 
 \end{itemize} 
 \section{Bewertung der Heuristiken}
 \label{sect:Fazit:Heuristiken}
@@ -84,5 +90,5 @@ Die in der \mxZitat{Stored Monte-Carlo} Heuristik verwendetet Datenbank könnte 
 \end{itemize}
 Das Resultat der beiden Auswirkungen ist, dass die Anzahl der durchgeführten zufälligen Spiele reduziert werden muss wenn die Berechnungszeit nicht wachsen soll.
 \\Es ist zu evaluieren, ob der Mehrwert der Datenbanknutzung größer ist als der bisherige \mxZitat{Monte Carlo} Agent, welcher eine höhere Anzahl an zufällig durchgeführter Spiele besitzt.
-\paragraph{Bedeutung für die Methode}
+%\paragraph{Bedeutung für die Methode}
 

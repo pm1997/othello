@@ -467,13 +467,13 @@ Wird statt der Heuristik zur Bewertung der \mxZitat{\mc\ Agent} herangezogen, so
 \subsubsection{Die Funktion \code{get\_move}}
 Eine Funktion \code{get\_move} wird von allen Agenten bereitgestellt und in der \\\code{main-game.py} zur Auswahl eines Zuges gerufen. Beschrieben wird der Zug durch ein Paar, welches die Koordinaten auf dem Spielbrett darstellt.
 \\Nachfolgend wird die in Listing \ref{lst:ab-get-move} abgedruckte Funktion diskutiert:
-\\Die Übergabeparameter, sowie die Zeilen bis einschließlich 5 \improvement{anders} sind identisch zu der Implementierung der im Kapitel \ref{mc-getmove} diskutierten \code{get\_move}-Funktion des \mxZitat{\mc}-Agenten.
+\\Die Übergabeparameter, sowie die Zeilen bis einschließlich 6 sind identisch zu der Implementierung der im Kapitel \ref{mc-getmove} diskutierten \code{get\_move}-Funktion des \mxZitat{\mc}-Agenten.
 \\In Zeile 6 wird ein Wörterbuch zur Speicherung der Bewertungen der Züge gemäß der \code{value}-Funktion angelegt. In diesem wird später die Bewertung als Schlüssel und als dazugehörigen Wert die Liste aller Züge die diese Bewertung erhalten haben gespeichert werden. Diese Datenstruktur wird durch die Schleife in den Zeilen 7 bis einschließlich 17 aufgebaut in dem über alle legalen Züge iteriert wird:
 \\In den Zeilen 8 bzw. 9 wird der Ausgangszustand kopiert und der in der aktuellen Schleifeniteration betrachtete Zug \code{move} ausgeführt. Nun wird die Bewertung mittels der \code{value}-Funktion vorgenommen. Dabei wird unterschieden ob gemäß des Parameters \code{\_use\_monte\_carlo} in der Tiefe \code{\_search\_depth} mittels der Funktion \code{value\_monte\_carlo} das \mc\ Prinzip zur Bewertung herangezogen werden soll (Z. 10f.) oder ob mittels der Funktion \code{value} die Heuristik verwendet wird (Z. 13f.).
 \\Nun wird überprüft ob bereits Spielzüge mit dieser Bewertung in \code{best\_moves} gespeichert sind (Z. 15). Ist dies nicht der Fall, so wird die Bewertung mit der leeren Liste initialisiert (Z. 16). Anschließend wird der gerade betrachtete Zug \code{move} an die entsprechende Liste angehängt.
 \\Sobald alle legalen Züge betrachtet wurden, wird die maximale Bewertung ermittelt (Z. 18) und ein zufälliger Zug mit dieser Bewertung zurückgegeben (Z. 19).
 \newpage
-\begin{lstlisting}[basicstyle=\footnotesize,caption = {get\_move Funktion des \abp Agenten}, language = python, captionpos = t , numbers=left, label={lst:ab-get-move}]
+\begin{lstlisting}[basicstyle=\footnotesize,caption = {get\_move Funktion des \abp -Agenten}, language = python, captionpos = t , numbers=left, label={lst:ab-get-move}]
     def get_move(self, game_state: Othello):
         if self._use_start_lib and game_state.get_turn_nr() < 21:
             moves = self._start_tables.get_available_moves_of_start_tables(game_state)
