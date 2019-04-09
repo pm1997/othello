@@ -181,7 +181,7 @@ moves = g.get_taken_mv()
 self.update_fields_stats_for_single_game(moves, winner)
 \end{lstlisting}
 In der Funktion \code{update\_fields\_stats\_for\_single\_game} (Listing \ref{lst:train2} Z. 9-12) wird die Liste der Züge in einzelne Züge aufgeteilt (Z. 10), welche anschließend jeweils eine Spalte in einer Datenbankzeile aktualisieren. Dazu werden die Züge, beispielsweise \mxZitat{a1}, in Zeile 11 in eine Feldkategorie umgerechnet (im Beispiel \mxZitat{0}) und ebenfalls der Methode \code{update\_field\_stat} übergeben.
-\\Diese Methode liest die Werte der durch Zugnummer und Feldkategorie festgelegte Zelle aus (Z.2). Je nachdem, welcher Spieler dieses Spiel gewonnen hat, wird die Zahl der gewonnenen Spiele des ersten, zweiten oder keinem Spieler um eins erhöht (Z. 3-6). Abschließend wird die Zahl der insgesamt durchgeführten Spiele inkrementiert (Z.7 dritte Komponente) und in die Datenbank zurückgeschrieben (Z.7).
+\\Diese Methode liest die Werte der durch Zugnummer und Feldkategorie festgelegte Zelle aus (Z. 2). Je nachdem, welcher Spieler dieses Spiel gewonnen hat, wird die Zahl der gewonnenen Spiele des ersten, zweiten oder keinem Spieler um eins erhöht (Z. 3-6). Abschließend wird die Zahl der insgesamt durchgeführten Spiele inkrementiert (Z. 7 dritte Komponente) und in die Datenbank zurückgeschrieben (Z. 7).
 \\Die Datenbank wurde mit 140.000 Spielen trainiert, um statistische Abweichungen zu minimieren. Hierbei wirkt das Gesetz der großen Zahlen, das besagt, dass sich die Wahrscheinlichkeiten eines Ereignisses bei sehr vielen Wiederholungen dem Erwartungswert annähert.
 \\Zur Auswertung der Datenbank wurde die Klasse \code{Analyse} in der Datei \\\code{analyse\_database.py} erstellt. Diese liest die Datenbank aus und liefert eine farbige Ansicht der Gewinnwahrscheinlichkeiten eines Spielers jeweils pro Zug auf dem Terminal. Neben dem dargestellten Spielbrett wird auch das Minimum, das Maximum, der Durchschnittswert und die Standardabweichung des dargestellten Spielbrettes berechnet.
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {Befüllen der Datenbank 2}, language = python, captionpos = t , numbers=left, label={lst:train2}]
@@ -249,7 +249,7 @@ def get_available_moves_of_start_tables(self, game: Othello):
 \end{lstlisting}
 Beim ersten Aufrufen der Starttabellen, wird die Datenbank initialisiert (Z. 2f.). Ab Zeile sieben werden alle Zeilen der Datenbank mit der aktuellen Zugreihenfolge des Spiels verglichen (Z. 9ff.). Wenn ein Zug in der bestehenden Zugreihenfolge abweichend von dem aktuellen Eintrag der Startdatenbank ist (Z. 11f.), wird der weitere Vergleich mit diesem Eintrag abgebrochen und mit dem folgenden Eintrag fortgefahren.
 \\Da das Spielbrett symmetrisch zum Mittelpunkt ist, wurden die Eröffnungszüge gespiegelt. Dadurch wurde die Datenbank auf 308 Züge erweitert. Diese ist in der Datei \code{start\_moves.csv} als CSV gespeichert.
-\\Die Agenten \mxZitat{Monte Carlo} und \mxZitat{Alpha-Beta Pruning} verwenden in der Standardeinstellung Starttabellen. Wenn beide Agenten gegeneinander spielen, werden die ersten Spielzüge beider Spieler sehr stark beschleunigt. Die Agenten müssen keine Züge berechnen, sondern können, bei verfügbaren Eröffnungszügen, durch das Nachschlagen in der Datenbank und die Auswahl eines Spielzuges sehr viel Spielzeit einsparen. Erst wenn die Datenbank keine passende Zugmöglichkeit mehr enthält, starten die Agenten die Berechnung des besten Zuges.
+\\Die Agenten \mxZitat{\mc} und \mxZitat{\abp} verwenden in der Standardeinstellung Starttabellen. Wenn beide Agenten gegeneinander spielen, werden die ersten Spielzüge beider Spieler sehr stark beschleunigt. Die Agenten müssen keine Züge berechnen, sondern können, bei verfügbaren Eröffnungszügen, durch das Nachschlagen in der Datenbank und die Auswahl eines Spielzuges sehr viel Spielzeit einsparen. Erst wenn die Datenbank keine passende Zugmöglichkeit mehr enthält, starten die Agenten die Berechnung des besten Zuges.
 \section{Agenten}
 \label{agenten}
 Beim Start eines Partie stehen dem Nutzer mehrere Agenten zur Auswahl die die Rolle eines Spielers übernehmen können. Die Implementierung zu diesen Agenten befindet sich in Unterverzeichnis \code{Agents}.
@@ -257,18 +257,18 @@ Beim Start eines Partie stehen dem Nutzer mehrere Agenten zur Auswahl die die Ro
 \begin{enumerate}
 \item Human
 \item Random Player
-\item Monte Carlo
-\item Alpha-Beta Pruning
+\item \mc
+\item \abp
 \end{enumerate}
 \subsection{Human Agent}
-Der \mxZitat{Human Agent} bzw. menschliche Agent stellt eine Schnittstelle die es einem menschlichen Spieler \\ermöglicht eine Spielentscheidung zu treffen. Die Implementierung findet sich in der Datei \code{human.py}
+Der \mxZitat{Human Agent} bzw. menschliche Agent stellt eine Schnittstelle die es einem menschlichen Spieler ermöglicht eine Spielentscheidung zu treffen. Die Implementierung findet sich in der Datei \code{human.py}
 \\Neben dem Spielfeld bekommt der Nutzer dabei eine Liste aller für Ihn möglichen Züge dargestellt. Durch die Eingabe eines Zuges wird dieser im Spielmodell ausgeführt und der nächste Agent wird aufgerufen. Da das Ziel dieser Arbeit darin besteht eine künstliche Intelligenz zur Wahl der Züge zu entwickeln, soll an dieser Stelle nicht weiter auf diesen Agenten eingegangen sein.
 
 \subsection{Random}
-Die Implementierung des Agenten \mxZitat{Random} befindet sich in der Datei \code{random.py}. Dieser Agent ist die einfachste Form der im Rahmen dieser Arbeit eingesetzen Strategien einer künstlichen Intelligenz. Ihr liegt die Idee zugrunde, dass der Agent einen zufälligen Zug aus der Menge der erlaubten Züge auswählt.
+Die Implementierung des Agenten \mxZitat{Random} befindet sich in der Datei \code{random.py}. Dieser Agent ist die einfachste Form der im Rahmen dieser Arbeit eingesetzten Strategien einer künstlichen Intelligenz. Ihr liegt die Idee zugrunde, dass der Agent einen zufälligen Zug aus der Menge der erlaubten Züge auswählt.
 \\In der mit der Arbeit entwickelten Implementierung ist dies derartig umgesetzt, dass der Agent die Liste der möglichen Züge aus dem Spielzustand abruft und einen zufälligen Index der Liste auswählt um dann den dort angegebenen Zug zu spielen.
 
-\subsection{Monte Carlo}
+\subsection{\mc}
 Hinter diesem Agenten steht das im Kapitel \ref{mc_algo} erläuterte Prinzip, der zufällig gespielten Spiele zur Ermittlung des Spielzuges mit der höchsten Gewinnwahrscheinlichkeit. Dabei werden ausgehend von einem derzeitigen Spielzustand $N$ Spiele simuliert in dem für beide Spieler der Agent \mxZitat{Random} verwendet wird. Dabei wird für den jeweils ersten simulierten Zug gespeichert wie oft dieser durchgeführt wurde und wie häufig dies in einer gewonnenen Simulation resultierte. In dem nicht simulierten Spiel wird dann jener Spielzug ausgeführt, bei dem der Quotient aus der Anzahl der nach spielen dieses Zuges gewonnen Spiele und der Anzahl der simulierten Spiele die mit diesem Zug begonnen wurden, am größten ist.
 \\Nachfolgend wird dieses Prinzip anhand des Quellcodes nochmals erläutert.
 \\Die Spielerklasse \mxZitat{MonteCarlo} ist in der Datei \mxZitat{python/Agents/monteCarlo.py} zu finden.
@@ -327,16 +327,16 @@ In Listing \ref{lst:mc-prep-var} ist die Implementierung des Präprozessors mit 
 Eine Funktion \code{get\_move} wird von allen Agenten bereitgestellt und in der \\\code{main-game.py} zur Auswahl eines Zuges gerufen. Beschrieben wird der Zug durch ein Paar, welches die Koordinaten auf dem Spielbrett darstellt.
 \\Nachfolgend wird die in Listing \ref{lst:ab1} abgedruckte Funktion diskutiert:
 \vspace{0.5cm}
-\\Als Parameter erhält die Fuktion den Spielzustand \code{game\state}, zu dem die Entscheidung über den nächsten Zug getroffen werden soll. In Zeile 2 wird nun überprüft, ob die Verwendung der Starttabellen aktiviert ist und zusätzlich in dem aktuellen Spiel weniger als 21 Züge gespielt wurden. Die zweite Komponente der \code{if}-Abfrage erfolgt, da die Startbibliothek maximal Strategien bis zum 20-ten Zug enthält.
-\\Ist dies der Fall, so werden in Zeile 3 alle gemäß der Startbibliothek in Frage kommenden Züge ermittelt. Steht mindestens ein Zug zur Auswahl (Z. 4), so wird dieser gespielt (Z. 5). Nun werden die im vorherigen Zug ermittelten Wahrscheinlichkeiten gelöscht(Z. 6) und das Symbol, welches zur Repräsentation des eigenen Spielers verwendet wird zwischengespeichert (Z.6).
+\\Als Parameter erhält die Funktion den Spielzustand \code{game\state}, zu dem die Entscheidung über den nächsten Zug getroffen werden soll. In Zeile 2 wird nun überprüft, ob die Verwendung der Starttabellen aktiviert ist und zusätzlich in dem aktuellen Spiel weniger als 21 Züge gespielt wurden. Die zweite Komponente der \code{if}-Abfrage erfolgt, da die Startbibliothek maximal Strategien bis zum 20-ten Zug enthält.
+\\Ist dies der Fall, so werden in Zeile 3 alle gemäß der Startbibliothek in Frage kommenden Züge ermittelt. Steht mindestens ein Zug zur Auswahl (Z. 4), so wird dieser gespielt (Z. 5). Nun werden die im vorherigen Zug ermittelten Wahrscheinlichkeiten gelöscht(Z. 6) und das Symbol, welches zur Repräsentation des eigenen Spielers verwendet wird zwischengespeichert (Z. 6).
 \\Ist die Option zur Verwendung eines Präprozessors aktiviert, wird die Abfrage in Zeile 8 positiv ausgewertet. In diesem Fall wird der selektierte Präprozessor aufgerufen (Z. 9). Danach wird ermittelt ob die Option zur Verwendung mehrerer Prozesse aktiviert ist (Z. 10). Ist dies nicht der Fall, so werden \code{big\_n} zufällige Spiele gespielt (Z. 11). Die dazu aufgerufene Hilfsfunktion gibt ein Objekt des Typs \mxZitat{Dictionary} zurück. Dieses enthält für jeden möglichen Zug die Anzahl der gewonnen Spiele wenn dieser Zug zuerst gespielt wurde und die Gesamtanzahl von Spielen.\\
-Ist die Option zur Verwendung mehrere Prozesse aktiviert, so wird der \code{else}-Zweig in den Zeilen 12 bis 20 ausgeführt:
+Ist die Verwendung mehrere Prozesse aktiviert (Option \code{use\_multiprocessing}), so wird der \code{else}-Zweig in den Zeilen 12 bis 20 ausgeführt:
 \\Dazu wird zunächst die Anzahl der verfügbaren Prozessorkerne ermittelt (Z. 13). Im weiteren Verlauf werden entsprechend viele Prozesse verwendet. So können alle verfügbaren Prozessorkerne genutzt werden, ohne einen zu großen Verwaltungsaufwand für die Prozesse zu generieren. In Zeile 14 wird dann ein entsprechender Pool von Prozessen angelegt und durch die Anweisung der Zeilen 15 und 16 spezifiziert, dass mittels dieser Prozesse so häufig wie Prozesse vorhanden sind asynchron jeweils \code{big\_n} geteilt durch die Anzahl der Prozesse zufällige Spiele simuliert werden. Da die entsprechende Funktion eine Ganzzahl erwartet, kommt an dieser Stelle die Ganzzahldivison \code{//} zum Einsatz. Dadurch ergibt die Summe aller durchgeführten Simulationen ggf. nicht \code{big\_n}; bei entsprechend großen Werten kann dies jedoch vernachlässigt werden.
 \\Da die Spiele asynchron simuliert werden, muss die Berechnung zunächst durch Aufruf der Funktion \code{get} an jedem Listenelement angestoßen werden. Für das erste Element geschieht dies in Zeile 17. Für die weiteren Elemente erfolgt dies in der Schleife zur Zusammenführung der Ergebnisse. In Zeile 20 werden dann alle Prozesse wieder geschlossen.
 \\Nun muss anhand der Daten zu gewonnenen und insgesamt gespielten Spiele für jeden Zug die Gewinnwahrscheinlichkeit berechnet werden. Dies erfolgt in den Zeilen 21 bis 23 indem der Quotient aus den beiden Werten gebildet wird (Z. 23)
  \\Nun wird jener Zug mit der größten Gewinnwahrscheinlichkeit ermittelt (Z. 24) und and die aufrufende Funktion zurückgegeben (Z. 25).      
  \newpage
-\begin{lstlisting}[basicstyle=\footnotesize,caption = {get\_move Funktion des Monte-Carlo Agenten}, language = python, captionpos = t , numbers=left, label={lst:ab1}]
+\begin{lstlisting}[basicstyle=\footnotesize,caption = {get\_move Funktion des \mc\ Agenten}, language = python, captionpos = t , numbers=left, label={lst:ab1}]
     def get_move(self, game_state: Othello):
         if self.use_start_lib and game_state.get_turn_nr() < 21: 
             moves = self.start_tables.get_available_moves_of_start_tables(game_state)
@@ -370,7 +370,7 @@ Ist die Option zur Verwendung mehrere Prozesse aktiviert, so wird der \code{else
 %\subsubsection{Nutzung der gewichteten Random Funktion}
 %Die gewichtete Zufalls Funktion bevorzugt bei der Auswahl eines Zuges Züge mit einer höheren Gewinnwahrscheinlichkeit des aktuellen Spielers. Die Funktion ist in Listing \ref{lst:wmc1} abgebildet.
 %\\Der Funktion werden die aktuell verfügbaren Zugmöglichkeiten (\code{possible\_moves}), die Zugnummer \\(\code{turn\_nr}) und das aktuelle Spielersymbol (\code{own\_symbol}) übergeben (Z. 1).
-%\\Für jeden verfügbaren Zug wird die Gewinnwahrscheinlichkeit des Spielers bei Durchführung dieses Zuges ermittelt (Z.3f.) und aufsummiert (Z. 2 - 4). Die Gewinnwahrscheinlichkeit eines Zuges wird durch die Verwendung der in Kapitel \ref{impl:stored-mc} erläuterten Datenbank ermittelt (siehe \nameref{para:db}).
+%\\Für jeden verfügbaren Zug wird die Gewinnwahrscheinlichkeit des Spielers bei Durchführung dieses Zuges ermittelt (Z. 3f.) und aufsummiert (Z. 2 - 4). Die Gewinnwahrscheinlichkeit eines Zuges wird durch die Verwendung der in Kapitel \ref{impl:stored-mc} erläuterten Datenbank ermittelt (siehe \nameref{para:db}).
 %\\Nach der Summenbildung der Gewinnwahrscheinlichkeiten (\code{prob\_sum}) wird eine zufällige Zahl im Intervall [0,\code{prob\_sum}] ermittelt (Z. 5). 
 %\\Jedem Zug wird ein Intervall, welches die Größe der Gewinnwahrscheinlichkeit des Zuges entspricht, innerhalb des Intervalls [0,\code{prob\_sum}] zugeordnet. Die Intervalle werden ab 0 beginnend aneinander angeordnet. 
 %\\Durch die Ermittlung des Intervalls der zufällig ausgewählten Zahl wird diese einem Zug zugeordnet (Z. 8 - 13). 
@@ -426,23 +426,23 @@ Ist die Option zur Verwendung mehrere Prozesse aktiviert, so wird der \code{else
 %\\Dieser Zahl (hier \mxZitat{1,3}) wird ein Intervall zugeordnet. Im Beispiel liegt \mxZitat{1,3} im Intervall des Zuges \code{f5}. Dadurch wird \code{f5} als ausgewählter Zug zurückgegeben (siehe (4)).
 %\\\mxPicture{12.7cm}{rand3}{Auswahl eines gewichteten zufälligen Zuges}{Auswahl eines gewichteten zufälligen Zuges}{fig:rand1}{}
 
-\subsection{Alpha-Beta Pruning}
-Der Agent \mxZitat{Alpha-Beta Pruning} basiert auf dem in Kapitel \ref{ab-pruning} beschriebenen Prinzip des Alpha-Beta Abschneidens. Wie bereits erläutert handelt es sich dabei um eine Tiefensuche, bei der weniger vielversprechende Zweige nicht bis zum Ende ausgewertet werden.
+\subsection{\abp}
+Der Agent \mxZitat{\abp} basiert auf dem in Kapitel \ref{ab-pruning} beschriebenen Prinzip des \ababs. Wie bereits erläutert handelt es sich dabei um eine Tiefensuche, bei der weniger vielversprechende Zweige nicht bis zum Ende ausgewertet werden.
 \\Wie in \ref{ab-depth-limited} erläutert wird dabei ab einer gewissen Suchtiefe eine Heuristik zur Bewertung eines Spielzustandes herangezogen. Dadurch, muss nicht der komplette Baum bis zum Ende ausgewertet werden.  
-\\Nachfolgend wird die in der Datei \code{alphaBetaPruning.py} bedindliche Implementierung besprochen.
+\\Nachfolgend wird die in der Datei \code{alphaBetaPruning.py} befindliche Implementierung besprochen.
 \subsubsection{Parameter}
-Auch das detaillierte Verhalten des Agenten \mxZitat{Alpha-Beta Pruning} kann durch verschiedene Parameter beeinflusst werden. Sie lauten:
+Auch das detaillierte Verhalten des Agenten \mxZitat{\abp} kann durch verschiedene Parameter beeinflusst werden. Sie lauten:
 \begin{itemize}
 \item \code{\_use\_start\_libs}: Bool'scher Wert der angibt ob Startbibliotheken verwendet werden sollen.
 \item \code{\_search\_depth}: Gibt die Tiefe an, ab der einzelne Zweige nicht weiter verfolgt werden und stattdessen die Heuristik zur Zustandsbewertung verwendet wird.
 \item \code{\_heuristic}: Eine der in Kapitel \ref{Heuristiken} beschriebenen Heuristiken.
-\item \code{\_use\_monte\_carlo}: Bool'scher Wert der angibt ob in der Tiefe \\\code{search\_depth} + 1 statt der Heuristik das Prinzip des Monte Carlo Agentens zur Bewertung der Züge verwendet werden soll.
-\item \code{\_mc\_count}: Anzahl der simuliert Spiele wenn das Monte Carlo Prinzip zur Bewertung des Zustandes verwendet wird.
+\item \code{\_use\_monte\_carlo}: Bool'scher Wert der angibt ob in der Tiefe \\\code{search\_depth} + 1 statt der Heuristik das Prinzip des \mc\ Agentens zur Bewertung der Züge verwendet werden soll.
+\item \code{\_mc\_count}: Anzahl der simuliert Spiele wenn das \mc\ Prinzip zur Bewertung des Zustandes verwendet wird.
 \end{itemize}
 \subsubsection{Die Funktion \code{value}}
-Die in Listing \ref{lst:ab-value} abgedruckte Funktion \code{value} entspricht im wesentlichen der in Listing \ref{lst:abprun} abgedruckten und in \ref{ab-basics-impl} besprochenen \mxZitat{value}-Funktion des Alpha-Beta Abschneiden Algorithmus.
+Die in Listing \ref{lst:ab-value} abgedruckte Funktion \code{value} entspricht im wesentlichen der in Listing \ref{lst:abprun} abgedruckten und in \ref{ab-basics-impl} besprochenen \mxZitat{value}-Funktion des \abab\ Algorithmus.
 \\Hier soll einzig auf den sich unterscheidenden Basisfall (Zeile 3-6) eingegangen werden. Ist ein Endzustand erreicht, so ist das Spiel beendet und die Abfrage in Zeile 3 wird positiv ausgewertet. In diesem Fall wird der Wert der \code{utility}-Funktion für den aktuellen Spieler zurück gegeben (Z. 4). Um das Gewinnen bzw. Verlieren jedoch deutlich stärker zu gewichten als die Bewertungen der Heuristik, wird dies zuvor mit $1000$ multipliziert.
-\\Ist die maximale Suchtiefe erreicht, so wird die Abfrage in Zeile 5 positiv ausgewertet. In diesem Fall wird die Heuristik zur Zustandsbewertung herangezogen (Z. 6)
+\\Ist die maximale Suchtiefe erreicht, so wird die Abfrage in Zeile 5 positiv ausgewertet. In diesem Fall wird die Heuristik zur Zustandsbewertung herangezogen (Z. 6).
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {\code{value} Funktion des Alpha-Beta Spielers}, language = python, captionpos = t , numbers=left, label={lst:ab-value}]
     @staticmethod
     def value(game_state: Othello, depth, heuristic, alpha=-1, beta=1):
@@ -462,18 +462,18 @@ Die in Listing \ref{lst:ab-value} abgedruckte Funktion \code{value} entspricht i
         return val
 \end{lstlisting}
 \paragraph{Änderungen an \code{value\_monte\_carlo}}
-Wird statt der Heuristik zur Bewertung der \mxZitat{Monte-Carlo Agent} herangezogen, so wird statt der Funktion \code{value} die angepasste Funktion \code{value\_monte\_carlo} aufgerufen. Dabei wird in dem in Listing \ref{lst:ab-value} in Zeile 6 beschriebenen \code{if}-Zweig eine Bewertung aller möglichen Züge vorgenommen und die Gewinnwahrscheinlichkeit des besten Zuges zurückgegeben. 
+Wird statt der Heuristik zur Bewertung der \mxZitat{\mc\ Agent} herangezogen, so wird statt der Funktion \code{value} die angepasste Funktion \code{value\_monte\_carlo} aufgerufen. Dabei wird in dem in Listing \ref{lst:ab-value} in Zeile 6 beschriebenen \code{if}-Zweig eine Bewertung aller möglichen Züge vorgenommen und die Gewinnwahrscheinlichkeit des besten Zuges zurückgegeben. 
 
 \subsubsection{Die Funktion \code{get\_move}}
 Eine Funktion \code{get\_move} wird von allen Agenten bereitgestellt und in der \\\code{main-game.py} zur Auswahl eines Zuges gerufen. Beschrieben wird der Zug durch ein Paar, welches die Koordinaten auf dem Spielbrett darstellt.
 \\Nachfolgend wird die in Listing \ref{lst:ab-get-move} abgedruckte Funktion diskutiert:
-\\Die Übergabeparameter, sowie die Zeilen bis einschließlich 5 \improvement{anders} sind identisch zu der Implementierung der im Kapitel \ref{mc-getmove} diskutierten \code{get\_move}-Funktion des \mxZitat{Monte-Carlo}-Agenten.
+\\Die Übergabeparameter, sowie die Zeilen bis einschließlich 5 \improvement{anders} sind identisch zu der Implementierung der im Kapitel \ref{mc-getmove} diskutierten \code{get\_move}-Funktion des \mxZitat{\mc}-Agenten.
 \\In Zeile 6 wird ein Wörterbuch zur Speicherung der Bewertungen der Züge gemäß der \code{value}-Funktion angelegt. In diesem wird später die Bewertung als Schlüssel und als dazugehörigen Wert die Liste aller Züge die diese Bewertung erhalten haben gespeichert werden. Diese Datenstruktur wird durch die Schleife in den Zeilen 7 bis einschließlich 17 aufgebaut in dem über alle legalen Züge iteriert wird:
-\\In den Zeilen 8 bzw. 9 wird der Ausgangszustand kopiert und der in der aktuellen Schleifeniteration betrachtete Zug \code{move} ausgeführt. Nun wird die Bewertung mittels der \code{value}-Funktion vorgenommen. Dabei wird unterschieden ob gemäß des Parameters \code{\_use\_monte\_carlo} in der Tiefe \code{\_search\_depth} mittels der Funktion \code{value\_monte\_carlo} das Monte-Carlo Prinzip zur Bewertung herangezogen werden soll (Z. 10f) oder ob mittels der Funktion \code{value} die Heuristik verwendet wird (Z. 13f).
+\\In den Zeilen 8 bzw. 9 wird der Ausgangszustand kopiert und der in der aktuellen Schleifeniteration betrachtete Zug \code{move} ausgeführt. Nun wird die Bewertung mittels der \code{value}-Funktion vorgenommen. Dabei wird unterschieden ob gemäß des Parameters \code{\_use\_monte\_carlo} in der Tiefe \code{\_search\_depth} mittels der Funktion \code{value\_monte\_carlo} das \mc\ Prinzip zur Bewertung herangezogen werden soll (Z. 10f.) oder ob mittels der Funktion \code{value} die Heuristik verwendet wird (Z. 13f.).
 \\Nun wird überprüft ob bereits Spielzüge mit dieser Bewertung in \code{best\_moves} gespeichert sind (Z. 15). Ist dies nicht der Fall, so wird die Bewertung mit der leeren Liste initialisiert (Z. 16). Anschließend wird der gerade betrachtete Zug \code{move} an die entsprechende Liste angehängt.
 \\Sobald alle legalen Züge betrachtet wurden, wird die maximale Bewertung ermittelt (Z. 18) und ein zufälliger Zug mit dieser Bewertung zurückgegeben (Z. 19).
 \newpage
-\begin{lstlisting}[basicstyle=\footnotesize,caption = {get\_move Funktion des Alpha-Beta Spielers}, language = python, captionpos = t , numbers=left, label={lst:ab-get-move}]
+\begin{lstlisting}[basicstyle=\footnotesize,caption = {get\_move Funktion des \abp Agenten}, language = python, captionpos = t , numbers=left, label={lst:ab-get-move}]
     def get_move(self, game_state: Othello):
         if self._use_start_lib and game_state.get_turn_nr() < 21:
             moves = self._start_tables.get_available_moves_of_start_tables(game_state)
