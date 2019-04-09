@@ -1,6 +1,6 @@
 \chapter{Othello}
 \label{othello-chapter}
-\ot\ wird auf einem 8x8 Spielbrett mit zwei Spielern gespielt. Es gibt je 64 Spielsteine, welche auf einer Seite schwarz, auf der anderen weiß sind. Der Startzustand besteht aus einem leeren Spielbrett, in welchem sich in der Mitte ein 2x2 Quadrat aus abwechselnd weißen und schwarzen Steinen befindet. Anschließend beginnt der Spieler mit den schwarzen Steinen.
+\ot\ wird auf einem 8x8 Spielbrett von zwei Spielern gespielt. Es gibt je 64 Spielsteine, welche auf einer Seite schwarz, auf der anderen weiß sind. Der Startzustand besteht aus einem leeren Spielbrett, in welchem sich in der Mitte ein 2x2 Quadrat aus abwechselnd weißen und schwarzen Steinen befindet. Anschließend beginnt der Spieler mit den schwarzen Steinen.
 \\Die Spielfelder werden in verschiedene Kategorien eingeteilt (siehe Abbildung
  \ref{fig:kat1}):
 \begin{itemize}
@@ -29,6 +29,7 @@ Die verschiedenen Varianten sind allerdings bis auf die Startposition gleich. Be
 \item Das Spiel endet ebenfalls, wenn alle Felder des Spielbrettes besetzt sind.
 \end{itemize}
 \mxPicture{15cm}{turn2}{valide Zugmöglichkeiten für Schwarz und ausgeführter Zug}{valide Zugmöglichkeiten für Schwarz und ausgeführter Zug}{fig:turn2}{}
+Aus diesen Regeln ergibt sich auch eine maximale Zuganzahl von 60 Zügen, da nach diesen alle leere Felder belegt sind.
 \newpage
 \section{Spielverlauf}
 Das Spiel wird in drei Abschnitte eingeteilt \cite{Ortiz.}:
