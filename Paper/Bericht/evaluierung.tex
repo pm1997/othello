@@ -125,11 +125,11 @@ Die ermittelte Suchtiefe (\code{\_search\_depth}) beträgt \mxZitat{5}. Bei höh
 
 \section{Evaluierung der Bedeutung verschiedener Feldkategorien}
 Im nachfolgenden Abschnitt wird anhand der für die \mxZitat{Stored Monte Carlo}-Heuristik erstellten Datenbank die Bedeutung verschiedener Feldkategorien im Spielverlauf betrachtet.
-\\Dies wird Anhand von verschiedenen Diagrammen durchgeführt. Dazu wird zunächst die Methode zur Erstellung der Diagramme besprochen. Daran schließt sich die Präsentation der Diagramme an sich an. Schließlich wird der Abschnitt durch die Besprechung der Ergebnisse beendet.
+\\Dies wird Anhand von verschiedenen Diagrammen durchgeführt. Dazu wird zunächst die Methode zur Erstellung der Diagramme besprochen. Daran schließt sich die Präsentation der Diagramme an. Schließlich wird der Abschnitt durch die Besprechung der Ergebnisse beendet.
 \subsection{Methode und Ergebnisse}
 \paragraph{Methode}
 Für die Beurteilung der Bedeutung einzelner Feldkategorien wurde die mit der \mxZitat{Stored Monte Carlo Heuristik} aufgebaute Datenbank verwendet. Diese wurde zur Durchführung der in Kapitel \ref{cpt:eval-agents} durchgeführten Vergleiche aufgebaut.
-\\Zu diesem Zweck wurden, wie in Kapitel \ref{heuristic} erläutert, mehrere Partien zwischen zwei \mxZitat{Random}-Agenten gespielt und die Ergebnisse gespeichert. Im vorliegenden Fall wurden $140.000$ Spiele simuliert. Nun kann für jedenSpieler zu jeder Zugnummer und jede Feldkategorie die Gewinnwahrscheinlichkeit für das Spielen einer Feldkategorie berechnet werden als: 
+\\Zu diesem Zweck wurden, wie in Kapitel \ref{heuristic} erläutert, mehrere Partien zwischen zwei \mxZitat{Random}-Agenten gespielt und die Ergebnisse gespeichert. Im vorliegenden Fall wurden $140.000$ Spiele simuliert. Nun kann für jeden Spieler zu jeder Zugnummer und jede Feldkategorie die Gewinnwahrscheinlichkeit für das Spielen einer Feldkategorie berechnet werden als: 
 \vspace{0.25cm}
 \begin{center}
 $\dfrac{\mathtt{Anzahl\ gewonnene\ Spiele}}{\mathtt{Anzahl\ insgesamt\ gespielte\ Spiele}}$.
@@ -140,7 +140,7 @@ Um eine Division durch $0$ zu vermeiden, wird die berechnete Gewinnwahrscheinlic
   
 \paragraph{Ergebnisse}
 Um die große Anzahl von $60\ \mathtt{Zugnummern} * 9\ \mathtt{Zugkategorien} = 540$ Wahrscheinlichkeitswerten pro Spieler übersichtlich darstellen zu können, werden diese grafisch aufbereitet. Da hierfür ausschließlich zweidimensionale Diagramme zum Einsatz kommen, sollen besteht die Möglichkeit hier nach der Zugnummer oder der Feldkategorie zu schneiden. Die Abbildungen \ref{fig:win-pro-fc-0} bis \ref{fig:win-pro-fc-8} im Anhang geben die Gewinnwahrscheinlichkeiten für den Schnitt nach der Feldkategorie an.
-\\Die Abbildungen \ref{fig:win-pro-turn-0} bis \ref{fig:win-pro-turn-59} im Anhang geben die Gewinnwahrscheinlichkeiten für den Schnitt nach der Zugnummer an. Da aus Platzgründen nicht alle 60 der sich daraus ergebenden Abbildungen abgedruckt werden sollen, wurde dabei die willkürlich gewählte Schrittweite von 5 Zugnummern gewählt. Die Situation für den Zug 59 wird trotzdem angegeben.
+\\Die Abbildungen \ref{fig:win-pro-turn-0} bis \ref{fig:win-pro-turn-59} im Anhang geben die Gewinnwahrscheinlichkeiten für den Schnitt nach der Zugnummer an. Da aus Platzgründen nicht alle 60 der sich daraus ergebenden Abbildungen abgedruckt werden sollen, wurde dabei eine willkürlich gewählte Schrittweite von 5 Zugnummern verwendet. Die Situation für den 59 und damit letzten Zug wird trotzdem angegeben.
 
 \subsection{Besprechung der Ergebnisse}
 Bei der Betrachtung der Diagramme fallen einige Aspekte sofort auf:
@@ -150,5 +150,5 @@ Bei der Betrachtung der Diagramme fallen einige Aspekte sofort auf:
 \item \textbf{Einige Feldkategorien spielen erst nach einer gewissen Zugnummer eine Rolle:}
 \\Dies liegt darin begründet, dass ein Spielstein nur neben ein bereits besetztes Feld gelegt werden darf. Zu Beginn des Spiels sind jedoch nur die vier Steine in der Mitte des Spielfeldes gesetzt. Entsprechend dauert es einige Züge bis gewisse Feldkategorien wie bspw. die Eckfelder überhaupt erreicht werden können.
 \item \textbf{Die Gewinnwahrscheinlichkeit für einen einzelnen Spieler schwankt für die Zugnummern teilweise sehr stark:}
-\\Dabei fällt auf, dass jeweils die Wahrscheinlichkeiten bei geraden Zugnummern und die Wahrscheinlichkeiten bei ungeraden Zugnummern auf einem ungefähr gleichen Niveau liegen. Zwischen zwei aufeinanderfolgenden Zügen gibt es hingegen meist eine deutliche Schwankung. 
+\\Dabei fällt auf, dass jeweils die Wahrscheinlichkeiten bei geraden Zugnummern und die Wahrscheinlichkeiten bei ungeraden Zugnummern auf einem ungefähr gleichen Niveau liegen. Zwischen zwei aufeinanderfolgenden Zügen gibt es hingegen meist eine deutliche Schwankung. Die Ursache für diese Tatsache wurde im Rahmen der Arbeit nicht weiter untersucht. 
 \end{enumerate}
