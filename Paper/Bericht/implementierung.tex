@@ -3,10 +3,10 @@
 In den folgenden Unterkapiteln  werden verschiedene Spielalgorithmen vorgestellt und implementiert. Anschließend werden diese verbessert und auch unter Berücksichtigung des Laufzeitverhaltens analysiert.
 \\Zunächst wird aber die grundsätzliche Programmstruktur erläutert und das Spielgerüst implementiert, damit unterschiedliche Spieler es ausführen können.
 \section{Grundlegende Spiel-Elemente}
-Die Python Implementierung befindet sich im Verzeichnis \mxZitat{python} des zu diesem Projekt gehörenden Git Repository. Um das Spiel zur Ausführung zu bringen werden die Pakete \mxZitat{numpy} sowie \mxZitat{pandas} benötigt. Sind diese Abhängigkeiten vorhanden, kann das Spiel durch das Ausführen des Kommandos \code{python main-game} gestartet werden.
+Die Python Implementierung befindet sich im Verzeichnis \mxZitat{python} des zu diesem Projekt gehörenden Git Repository. Um das Spiel zur Ausführung zu bringen werden die Pakete \mxZitat{numpy} sowie \mxZitat{pandas} benötigt. Sind diese Abhängigkeiten vorhanden, kann das Spiel durch das Ausführen des Kommandos \code{python3 main-game} gestartet werden. Es wird eine Pythonversion von 3.6.7 oder aktueller benötigt.
 \\Die einzelnen Komponenten wurden unter thematischen Gesichtspunkten in verschiedenen Dateien organisiert. Nachfolgend wird auf die einzelnen Dateien und deren Funktion kurz eingegangen.
 \subsection{Der Spielablauf}
-In \mxZitat{main-game.py} wird das Rahmenprogramm gestartet. In diesem werden zunächst die Spieler festgelegt. Anschließend wird ein Spiel erstellt, initialisiert und das Spielbrett ausgegeben ( siehe Listing \ref{lst:lst-main-game} Z. 2-4). Die Methode \code{game\_is\_over} gibt bei Spielende \code{True}, ansonsten \code{False} zurück. In der Schleife von Zeile 5 bis Zeile 11 wird der Agent des aktuelle Spielers ermittelt (Z. 6f.). Für diesen wird die Funktion \code{get\_move} aufgerufen. Diese gibt den nach der Strategie des jeweiligen Agenten besten Spielzug zurück. Je nach Spielagent werden unterschiedliche Algorithmen zur Ermittlung dieses Zuges verwendet. Dieser Zug wird gespielt und auf das Spielbrett angewendet (Z. 9). Abschließend wird das aktualisierte Spielbrett und der zuletzt durchgeführte Zug ausgegeben (Z. 10f.). Die Schleife wird bis zum Spielende wiederholt. Danach wird der Gewinner und die gesamte Spieldauer ermittelt und ausgegeben (Z. 12-15). 
+In \mxZitat{main-game.py} wird das Rahmenprogramm gestartet. In diesem werden zunächst die Spieler festgelegt. Anschließend wird ein Spiel erstellt, initialisiert und das Spielbrett ausgegeben (siehe Listing \ref{lst:lst-main-game} Z. 2-4). Die Methode \code{game\_is\_over} gibt bei Spielende \code{True}, ansonsten \code{False} zurück. In der Schleife von Zeile 5 bis Zeile 11 wird der Agent des aktuelle Spielers ermittelt (Z. 6f.). Für diesen wird die Funktion \code{get\_move} aufgerufen. Diese gibt den nach der Strategie des jeweiligen Agenten besten Spielzug zurück. Je nach Spielagent werden unterschiedliche Algorithmen zur Ermittlung dieses Zuges verwendet. Dieser Zug wird gespielt und auf das Spielbrett angewendet (Z. 9). Abschließend wird das aktualisierte Spielbrett und der zuletzt durchgeführte Zug ausgegeben (Z. 10f.). Die Schleife wird bis zum Spielende wiederholt. Danach wird der Gewinner und die gesamte Spieldauer ermittelt und ausgegeben (Z. 12-15). 
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {Spielablauf in \mxZitat{main-game.py}}, language = python, captionpos = t , numbers=left, label={lst:lst-main-game}]
     players = {PLAYER_ONE: player_one, PLAYER_TWO: player_two}
     game = Othello()
@@ -26,16 +26,16 @@ In \mxZitat{main-game.py} wird das Rahmenprogramm gestartet. In diesem werden zu
 \end{lstlisting}
 \subsection{Die Klasse \mxZitat{Othello}}
 \label{ot1}
-Die Klasse \mxZitat{Othello} modelliert einen Spielzustand und enthält die Grundlegende Spiellogik wie bspw. die Berechnung erlaubter Züge. Nachfolgend wird auf die Art der Speicherung eines Spielzustandes und auf die wichtigsten Funktionen dieser Klasse eingegangen.
+Die Klasse \mxZitat{Othello} modelliert einen Spielzustand und enthält die grundlegende Spiellogik wie bspw. die Berechnung erlaubter Züge. Nachfolgend wird auf die Art der Speicherung eines Spielzustandes und auf die wichtigsten Funktionen dieser Klasse eingegangen.
 \paragraph{Klassenvariablen}
 In Listing \ref{lst:class-vars-othello} sind alle Klassenvariablen, sowie deren Initialisierungswerte angegeben.
 \begin{enumerate}
 \item \code{\_board}: Bei \code{\_board} handelt es sich um eine Liste von Listen, zur Modellierung der zweidimensionalen Struktur des Spielbretts. Initialisiert wird das Spielbrett in seinem Leerzustand. Daher wird zu Beginn jedes Feld auf \code{0} zur Repräsentation des leeren Feldes gesetzt.
 \item \code{\_current\_player}: Speichert den Spieler, der im modellierten Spielzustand an der Reihe ist.
 \item \code{\_last\_turn\_passed} wird verwendet um zu speichern ob der vorherige Spieler  passen musste. Dadurch kann das Spiel sobald zwei Spieler unmittelbar nacheinander passen müssen beendet werden.
-\item \code{\_game\_is\_over} wird auf \code{True} gesetzt sobald das Spiel beendet ist
-\item \code{\_fringe}: In \code{\_fringe} werden alle Felder des Spielfeldes gespeichert die in eine Richtung unmittelbar neben einem bereits besetzten Feld liegen. Durch die Mitführung dieser Information muss zur Berechnung der erlaubten Züge nicht jedes mal über das Spielfeld iteriert werden um zunächst die infrage kommenden Felder zu ermitteln.
-\item \code{\_turning\_stones}: Enthält als Schlüssel alle erlaubten Züge und als Wert jeweils eine Liste jener Spielsteine die durch ausführen des Zuges umgedreht werden. Da zur Ermittlung der erlaubten Züge diese Information bereits berechnet werden muss, wird sie in Form des Dictionarys vorgehalten um diese an anderer Stelle nicht erneut berechnen zu müssen.
+\item \code{\_game\_is\_over} wird auf \code{True} gesetzt sobald das Spiel beendet ist.
+\item \code{\_fringe}: In \code{\_fringe} werden alle Felder des Spielfeldes gespeichert die in eine Richtung unmittelbar neben einem bereits besetzten Feld liegen. Durch die Mitführung dieser Information muss zur Berechnung der erlaubten Züge nicht jedes Mal über das Spielfeld iteriert werden um zunächst die infrage kommenden Felder zu ermitteln.
+\item \code{\_turning\_stones}: Enthält als Schlüssel alle erlaubten Züge und als Wert jeweils eine Liste jener Spielsteine, die durch ausführen des Zuges umgedreht werden. Da zur Ermittlung der erlaubten Züge diese Information bereits berechnet werden muss, wird sie in Form des Dictionarys vorgehalten um diese an anderer Stelle nicht erneut berechnen zu müssen.
 \item \code{\_taken\_moves}: Speichert alle ausgeführten Züge die erforderlich waren um den modellierten Spielzustand zu erreichen, da einige Algorithmen diese Information benötigen.
 \item \code{\_turn\_nr}: Speichert die Nummer des aktuellen Spielzuges, da die verwendete Strategie bei einigen Algorithmen davon abhängt, wie weit das Spiel schon fortgeschritten ist.
 \end{enumerate}
@@ -56,8 +56,8 @@ In Listing \ref{lst:class-vars-othello} sind alle Klassenvariablen, sowie deren 
 \\Mit der in Zeile 4 beginnenden Schleife wird über alle in Frage kommenden Züge in der Menge \code{\_fringe} iteriert um zu ermitteln, ob dieser Zug erlaubt wäre.
 \\Dazu wird zunächst eine lokale Menge initialisiert um die durch spielen dieser Position gedrehten Steine zu speichern (Zeile 5).
 \\Nun muss ausgehend von der derzeit betrachteten Position ermittelt werden, ob in irgendeine Richtung Spielsteine gedreht werden würden. Dies erfolgt durch die in Zeile 6 beginnende Schleife.
-\\Dazu wird zunächst das nächste Feld in diese Richtung unter Verwendung einer Hilfsfunktion ermittelt (Zeile 7) und anschließend eine weitere termporäre Menge der in dieser Richtung gedrehten Steine initialisiert (Zeile 8)
-\\Die entsprechende Richtung muss nun solange weiter verfolgt werden, wie ein weiterer Nachbar in diese Richtung vorhanden ist. Dies geschieht durch die in Zeile 9 beginnedne Schleife.
+\\Dazu wird zunächst das nächste Feld in diese Richtung unter Verwendung einer Hilfsfunktion ermittelt (Zeile 7) und anschließend eine weitere temporäre Menge der in dieser Richtung gedrehten Steine initialisiert (Zeile 8).
+\\Die entsprechende Richtung muss nun solange weiter verfolgt werden, wie ein weiterer Nachbar in diese Richtung vorhanden ist. Dies geschieht durch die in Zeile 9 beginnende Schleife.
 \\Da in den nachfolgenden Schritten ermittelt werden muss, welcher Spieler das derzeit betrachtete Feld besetzt hat, werden die Indizes der derzeitigen  ausgepackt (Zeile 10) und dann verwendet um zu ermitteln welchen Wert das Feld derzeit hat (Zeile 11).
 \\Nun gibt es drei mögliche Fälle:
 \begin{enumerate}
@@ -108,6 +108,7 @@ In Zeile 19 wird das nächste Feld in diese Richtung berechnet.
 \paragraph{Weitere Funktionen der Klasse \mxZitat{Othello}}
 Die Klasse \mxZitat{Othello} enthält weitere Funktionen, auf welche hier jedoch nicht im Detail eingegangen werden soll. Dennoch sei hier jeweils kurz deren Verwendungszweck der wichtigsten Funktionen genannt:
 \begin{enumerate}
+\item \code{set\_available\_moves} verändert \code{\_stones\_to\_turn} dahingehend, dass nur noch übergebene Positionen enthalten sind. Kann damit zum Filtern der erlaubten Züge verwendet werden.
 \item \code{play\_position} verändert den Spielzustand dahingehend, dass der übergebene Zug, sofern er erlaubt ist, ausgeführt wird, die entsprechenden Steine des Gegners gedreht und dessen Zug vorbereitet wird. Dabei wird auch die \code{\_fringe} entsprechend aktualisiert.
 \item \code{set\_available\_moves} verändert \code{\_stones\_to\_turn} dahingehend, dass nur noch übergebene Positionen enthalten sind. Kann damit zum Filtern der erlaubten Züge verwendet werden.
 \item \code{get\_available\_moves}: Gibt die erlaubten Züge zur Verwendung in den \\Spielerimplementierungen zurück
@@ -135,8 +136,9 @@ Wie im Abschnitt \ref{Heuristiken} besprochen werden für einige Algorithmen Fun
 \end{enumerate}
 Die Implementierung aller Heuristiken befinden sich in der Datei \code{heuristics.py}
 \subsection{Nijssen 2007 Heuristik}
-Die \mxZitat{Nijssen 2007 Heuristik} wurde aus \cite{nijssen_2007} übernommen. Ihr liegt die im Kapitel \ref{othello-chapter} erläuterte Idee zugrunde, die einzelnen Spielfelder in Kategorien einzuteilen und jeder Kategorie einen speziellen Wert zuzuweisen. Die Bewertung des Spielzustandes $s$ aus Sicht eines Spielers $\mathtt{player}$ ergibt sich dann nach der folgenden Formel: $\mathtt{heuristic}(\mathtt{player}, S) = \sum\limits_{f \in \mathtt{domain}(\mathtt{F}(s))}  w_{f} * b_{f}$ wobei $F(s)$ eine Funktion ist, die für das Spielfeld des Zustands $s$ eine Relation zurückgibt die für jedes Feld angibt durch welchen Spieler es besetzt ist oder ob es leer ist, $w_{f}$ für das dem Feld zugeordnete Gewicht und $b_{f} = \begin{cases} 1 \mathtt{,\ wenn\ F}(s)[f] = \mathtt{player} \\ -1 \mathtt{,\ wenn\ F}(s)[f] = \mathtt{other(player)} \\ 0 \mathtt{,\ sonst} \end{cases}$
-\\Für die Gewichte $b_{f}$ der im Kapitel \ref{othello-chapter} eingeführten Kategorien vergibt Nijssen die folgenden Gewichte:
+\label{nissen2007H}
+Die \mxZitat{Nijssen 2007 Heuristik} wurde aus \cite{nijssen_2007} übernommen. Ihr liegt die im Kapitel \ref{othello-chapter} erläuterte Idee zugrunde, die einzelnen Spielfelder in Kategorien einzuteilen und jeder Kategorie einen speziellen Wert zuzuweisen. Die Bewertung des Spielzustandes $s$ aus Sicht eines Spielers $\mathtt{player}$ ergibt sich dann nach der folgenden Formel:  \vspace{0.25cm}\\ $\mathtt{heuristic}(\mathtt{player}, S) = \sum\limits_{f \in \mathtt{domain}(\mathtt{F}(s))}  w_{f} * b_{f}$ \vspace{0.25cm}\\$F(s)$ ist eine Funktion ist, die für das Spielfeld des Zustands $s$ eine Relation zurückgibt, die für jedes Feld angibt, durch welchen Spieler es besetzt ist oder ob es leer ist. $w_{f}$ steht für das dem Feld zugeordnete Gewicht und \vspace{0.25cm}\\$b_{f} = \begin{cases} 1 \mathtt{,\ wenn\ F}(s)[f] = \mathtt{player} \\ -1 \mathtt{,\ wenn\ F}(s)[f] = \mathtt{other(player)} \\ 0 \mathtt{,\ sonst} \end{cases}$
+\vspace{0.25cm}\\Für die Gewichte $b_{f}$ der im Kapitel \ref{othello-chapter} eingeführten Kategorien vergibt Nijssen die folgenden Gewichte:
 \begin{enumerate}
 \item \code{Eck-Felder}: $+5$
 \item \code{X-Felder}: $-2$
@@ -155,7 +157,7 @@ Das Spielfeld ist symmetrisch zum Mittelpunkt aufgebaut. Dies bedeutet, dass Zü
 \\\mxPicture{10cm}{symmetrie}{Symmetrie des Spielfeldes}{Symmetrie des Spielfeldes}{fig:sym1}{}
 \\Die Datenbank besteht aus 60 Zeilen und neun Spalten. Die neun Spalten stellen o.g. Feldkategorien (\mxZitat{0} bis \mxZitat{8}) dar. Die c-te Spalte in der n-ten Zeile stellt die Gewinnwahrscheinlichkeiten des Spieles dar, gegeben, dass im n-ten Spielzug ein Feld der c-ten Feldkategorie gespielt wird. 
 \\Die mathematische Formel dazu lautet:
-$database_{n,c} = P( \mathtt{win} | \mathtt{move}(n) \in c)$, wobei gilt:
+$database_{n,c} = P( \mathtt{win} \mid \mathtt{move}(n) \in c)$, wobei gilt:
 \begin{itemize}
 \item $\mathtt{move}(n)$ = Feld des n-ten Spielzuges
 \item $\mathtt{c} \in \{\mathtt{Feldkategorie} -\ '\mathtt{X}'\ \}$ : $c$ ist eine Feldkategorie außer das Zentrum (\mxZitat{X})
@@ -216,8 +218,8 @@ def heuristic(current_player, game_state: Othello):
 \end{lstlisting}
 
 \subsection{Cowthello Heuristik}
-Die \mxZitat{Cowthello Heuristik} wurde aus \cite{cow1} übernommen. Ihr liegt ebenfalls der in Kapitel \ref{othello-chapter} erläuterte Idee zugrunde, die einzelnen Spielfelder in Kategorien einzuteilen und jeder Kategorie einen speziellen Wert zuzuweisen. Die Heuristik unterscheidet sich von der \mxZitat{Nijssen 2007 Heuristik} nur in der genaueren Definition der Feldkategorien und unterschiedliche Gewichtungen dieser Felder.
-Die Gewichte der einzelnen Felder sind in Abbildung dargestellt. Die Unterschiede zur \mxZitat{Nijssen 2007 Heuristik} bestehen in der detaillierteren Gewichtung beispielsweise der Zentralfelder (\mxZitat{1}, \mxZitat{5} oder \mxZitat{50}) im Gegensatz zu \mxZitat{2}. Die restliche Implementierung ist identisch zur \mxZitat{Nijssen 2007 Heuristik}.
+Die \mxZitat{Cowthello Heuristik} wurde aus \cite{cow1} übernommen. Ihr liegt ebenfalls der in Kapitel \ref{othello-chapter} erläuterte Idee zugrunde, die einzelnen Spielfelder in Kategorien einzuteilen und jeder Kategorie einen speziellen Wert zuzuweisen. Die Heuristik unterscheidet sich von der \nameref{nissen2007H} nur in der genaueren Definition der Feldkategorien und unterschiedliche Gewichtungen dieser Felder.
+Die Gewichte der einzelnen Felder sind in Abbildung dargestellt. Die Unterschiede zur \nameref{nissen2007H} bestehen in der detaillierteren Gewichtung beispielsweise der Zentralfelder (\mxZitat{1}, \mxZitat{5} oder \mxZitat{50}) im Gegensatz zu \mxZitat{2}. Die restliche Implementierung ist identisch zur \nameref{nissen2007H}.
 \\\mxPicture{10cm}{cow1}{Gewichtung der einzelnen Spielfelder}{Gewichtung der einzelnen Spielfelder}{fig:cow1}{}
 In der Abbildung \ref{fig:cow1} wird deutlich, dass die Werte strategisch zugewiesen wurden. Beispielsweise sind die \mxZitat{X}- und \mxZitat{C}-Felder mit \mxZitat{schlechten} Werten (\mxZitat{-50}, \mxZitat{-25}) belegt. Dies spiegelt auch die Spielstrategie wieder, dass diese Felder für den aktuellen Spieler schlecht sind, da der Gegner dadurch leicht eine Ecke des Spielfeldes besetzen kann.
 \section{Start Tabellen}
@@ -268,7 +270,7 @@ Die Implementierung des Agenten \mxZitat{Random} befindet sich in der Datei \cod
 \\In der mit der Arbeit entwickelten Implementierung ist dies derartig umgesetzt, dass der Agent die Liste der möglichen Züge aus dem Spielzustand abruft und einen zufälligen Index der Liste auswählt um dann den dort angegebenen Zug zu spielen.
 
 \subsection{\mc}
-Hinter diesem Agenten steht das im Kapitel \ref{mc_algo} erläuterte Prinzip, der zufällig gespielten Spiele zur Ermittlung des Spielzuges mit der höchsten Gewinnwahrscheinlichkeit. Dabei werden ausgehend von einem derzeitigen Spielzustand $N$ Spiele simuliert in dem für beide Spieler der Agent \mxZitat{Random} verwendet wird. Dabei wird für den jeweils ersten simulierten Zug gespeichert wie oft dieser durchgeführt wurde und wie häufig dies in einer gewonnenen Simulation resultierte. In dem nicht simulierten Spiel wird dann jener Spielzug ausgeführt, bei dem der Quotient aus der Anzahl der nach spielen dieses Zuges gewonnen Spiele und der Anzahl der simulierten Spiele die mit diesem Zug begonnen wurden, am größten ist.
+Hinter diesem Agenten steht das im Kapitel \ref{mc_algo} erläuterte Prinzip, der zufällig gespielten Spiele zur Ermittlung des Spielzuges mit der höchsten Gewinnwahrscheinlichkeit. Dabei werden ausgehend von einem derzeitigen Spielzustand $N$ Spiele simuliert in dem für beide Spieler der Agent \mxZitat{Random} verwendet wird. Dabei wird für den jeweils ersten simulierten Zug gespeichert wie oft dieser durchgeführt wurde und wie häufig dies in einer gewonnenen Simulation resultierte. In dem nicht simulierten Spiel wird dann jener Spielzug ausgeführt, bei dem der Quotient aus der Anzahl der nach dem Spielen dieses Zuges gewonnenen Spiele und der Anzahl der simulierten Spiele, die mit diesem Zug begonnen wurden, am größten ist.
 \\Nachfolgend wird dieses Prinzip anhand des Quellcodes nochmals erläutert.
 \\Die Spielerklasse \mxZitat{MonteCarlo} ist in der Datei \mxZitat{python/Agents/monteCarlo.py} zu finden.
 \subsubsection{Parameter}
@@ -283,7 +285,7 @@ Das genaue Verhalten des Agenten kann durch die folgenden Parameter beeinflusst 
     \item Der variable Selektivität Präprozessor
     \item Kein Präprozessor
 \end{itemize}
-\item \code{preprocessor\_parameter}: Parameter des verwendeten Preprozessors. Je nach Auswahl des Prä-\\prozessors steht dieser Parameter für:
+\item \code{preprocessor\_parameter}: Parameter des verwendeten Präprozessors. Je nach Auswahl des Präprozessors steht dieser Parameter für:
 \begin{itemize}
     \item Die Anzahl der Züge die durch den Präprozessor gelangen
     \item Die Prozentuale Abweichung vom Mittelwert der Wertigkeiten der Züge
@@ -427,7 +429,7 @@ Ist die Verwendung mehrere Prozesse aktiviert (Option \code{use\_multiprocessing
 
 \subsection{\abp}
 Der Agent \mxZitat{\abp} basiert auf dem in Kapitel \ref{ab-pruning} beschriebenen Prinzip des \ababs. Wie bereits erläutert handelt es sich dabei um eine Tiefensuche, bei der weniger vielversprechende Zweige nicht bis zum Ende ausgewertet werden.
-\\Wie in \ref{ab-depth-limited} erläutert wird dabei ab einer gewissen Suchtiefe eine Heuristik zur Bewertung eines Spielzustandes herangezogen. Dadurch, muss nicht der komplette Baum bis zum Ende ausgewertet werden.  
+\\Wie in \ref{ab-depth-limited} erläutert wird dabei ab einer gewissen Suchtiefe eine Heuristik zur Bewertung eines Spielzustandes herangezogen. Dadurch muss nicht der komplette Baum bis zum Ende ausgewertet werden.  
 \\Nachfolgend wird die in der Datei \code{alphaBetaPruning.py} befindliche Implementierung besprochen.
 \subsubsection{Parameter}
 Auch das detaillierte Verhalten des Agenten \mxZitat{\abp} kann durch verschiedene Parameter beeinflusst werden. Sie lauten:
