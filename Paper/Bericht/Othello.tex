@@ -106,7 +106,7 @@
 \newcommand{\mxZitat}[1]{\glqq{}#1\grqq{}} 
 \newcommand{\abab}{Alpha\--Beta\--Ab\-schneiden}
 \newcommand{\ababs}{Alpha\--Beta\--Ab\-schneidens}
-\newcommand{\abp}{Alpha\--Beta\--Pruning}
+\newcommand{\abp}{Alpha\--Beta\--Pru\-ning}
 \newcommand{\mc}{Monte\--Carlo}
 \vbadness=\maxdimen
 
@@ -149,6 +149,17 @@
 
 \pagenumbering{arabic}
 \setcounter{page}{1}
+
+%	Abbildungsverzeichnis
+\listoffigures
+
+%	Tabellenverzeichnis
+\listoftables
+
+%	Listingsverzeichnis
+ \lstlistoflistings
+
+
 \include{einleitung}
 \include{othello-chapter}
 \include{grundlagen}
@@ -161,15 +172,6 @@
 \newpage
 \listoftodos[Notes]
 % -----------------------------------------------------------
-
-%	Abbildungsverzeichnis
-\listoffigures
-
-%	Tabellenverzeichnis
-\listoftables
-
-%	Listingsverzeichnis
- \lstlistoflistings
 
 % 	Algorithmenverzeichnis
 %\listofalgorithms
