@@ -3,7 +3,7 @@
 In den folgenden Unterkapiteln  werden verschiedene Spielalgorithmen vorgestellt und implementiert. Anschließend werden diese verbessert und auch unter Berücksichtigung des Laufzeitverhaltens analysiert.
 \\Zunächst wird aber die grundsätzliche Programmstruktur erläutert und das Spielgerüst implementiert, damit unterschiedliche Spieler es ausführen können.
 \section{Grundlegende Spiel-Elemente}
-Die Python Implementierung befindet sich im Verzeichnis \mxZitat{python} des zu diesem Projekt gehörenden Git Repository. Um das Spiel zur Ausführung zu bringen werden die Pakete \mxZitat{numpy} sowie \mxZitat{pandas} benötigt. Sind diese Abhängigkeiten vorhanden, kann das Spiel durch das Ausführen des Kommandos \code{python3 main-game} gestartet werden. Es wird eine Pythonversion von 3.6.7 oder aktueller benötigt.
+Die Python Implementierung befindet sich im Verzeichnis \mxZitat{python} des zu diesem Projekt gehörenden Git Repository. Um das Spiel zur Ausführung zu bringen werden die Pakete \mxZitat{numpy} sowie \mxZitat{pandas} benötigt. Sind diese Abhängigkeiten vorhanden, kann das Spiel durch das Ausführen des Kommandos \code{python3 main-game} gestartet werden. Es wird eine Pythonversion von 3.6.8 oder aktueller benötigt.
 \\Die einzelnen Komponenten wurden unter thematischen Gesichtspunkten in verschiedenen Dateien organisiert. Nachfolgend wird auf die einzelnen Dateien und deren Funktion kurz eingegangen.
 \subsection{Der Spielablauf}
 In \mxZitat{main-game.py} wird das Rahmenprogramm gestartet. In diesem werden zunächst die Spieler festgelegt. Anschließend wird ein Spiel erstellt, initialisiert und das Spielbrett ausgegeben (siehe Listing \ref{lst:lst-main-game} Z. 2-4). Die Methode \code{game\_is\_over} gibt bei Spielende \code{True}, ansonsten \code{False} zurück. In der Schleife von Zeile 5 bis Zeile 11 wird der Agent des aktuelle Spielers ermittelt (Z. 6f.). Für diesen wird die Funktion \code{get\_move} aufgerufen. Diese gibt den nach der Strategie des jeweiligen Agenten besten Spielzug zurück. Je nach Spielagent werden unterschiedliche Algorithmen zur Ermittlung dieses Zuges verwendet. Dieser Zug wird gespielt und auf das Spielbrett angewendet (Z. 9). Abschließend wird das aktualisierte Spielbrett und der zuletzt durchgeführte Zug ausgegeben (Z. 10f.). Die Schleife wird bis zum Spielende wiederholt. Danach wird der Gewinner und die gesamte Spieldauer ermittelt und ausgegeben (Z. 12-15). 
@@ -312,7 +312,6 @@ Die in Listing \ref{lst:mc-prep-fixed} abgedruckte Funktion gibt die Implementie
 In Listing \ref{lst:mc-prep-var} ist die Implementierung des Präprozessors mit variabler Selektivität angegeben.
 \\Wie der Präprozessor mit fester Selektivität, erhält auch diese Funktion einen Spielzustand \code{game\_state} und eine Heuristik \code{heuristic}. Anders als bei dem oben beschriebenen Präprozessor wird hier jedoch ein Wert \code{p\_s} zur Beschreibung der maximalen prozentualen Abweichung $p_{s}$ vom Mittelwert der Wertigkeit der Züge übergeben.
 \\Für die Berechnung wid zunächst der Wert der Heuristik für alle Spielzüge berechnet (Zeile 3). Daraufhin wird in der Zeile 5 der durchschnittliche Wert berechnet und mit der Anweisung in den Zeilen 6 und 7 nur jene Züge im Spielzustand gesetzt, die einen Wert größer als $p_{s}$ multipliziert mit dem durchschnittlichen Wert haben.
-\newpage
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {Die Funktion \code{preprocess\_variable\_slectivity}}, language = python, captionpos = t , numbers=left, label={lst:mc-prep-var}]
 	@staticmethod
     def preprocess_variable_selectivity(game_state: Othello, p_s, heuristic):
@@ -368,64 +367,68 @@ Ist die Verwendung mehrere Prozesse aktiviert (Option \code{use\_multiprocessing
         return selected_move
 \end{lstlisting}
 
-%\subsubsection{Nutzung der gewichteten Random Funktion}
-%Die gewichtete Zufalls Funktion bevorzugt bei der Auswahl eines Zuges Züge mit einer höheren Gewinnwahrscheinlichkeit des aktuellen Spielers. Die Funktion ist in Listing \ref{lst:wmc1} abgebildet.
-%\\Der Funktion werden die aktuell verfügbaren Zugmöglichkeiten (\code{possible\_moves}), die Zugnummer \\(\code{turn\_nr}) und das aktuelle Spielersymbol (\code{own\_symbol}) übergeben (Z. 1).
-%\\Für jeden verfügbaren Zug wird die Gewinnwahrscheinlichkeit des Spielers bei Durchführung dieses Zuges ermittelt (Z. 3f.) und aufsummiert (Z. 2 - 4). Die Gewinnwahrscheinlichkeit eines Zuges wird durch die Verwendung der in Kapitel \ref{impl:stored-mc} erläuterten Datenbank ermittelt (siehe \nameref{para:db}).
-%\\Nach der Summenbildung der Gewinnwahrscheinlichkeiten (\code{prob\_sum}) wird eine zufällige Zahl im Intervall [0,\code{prob\_sum}] ermittelt (Z. 5). 
-%\\Jedem Zug wird ein Intervall, welches die Größe der Gewinnwahrscheinlichkeit des Zuges entspricht, innerhalb des Intervalls [0,\code{prob\_sum}] zugeordnet. Die Intervalle werden ab 0 beginnend aneinander angeordnet. 
-%\\Durch die Ermittlung des Intervalls der zufällig ausgewählten Zahl wird diese einem Zug zugeordnet (Z. 8 - 13). 
-%Dieser Zug wird an die übergeordnete Funktion zurückgegeben.
-%\\Es gelten folgende mathematische Zusammenhänge der Zugauswahl des Spielers $\mathtt{player}$ eines bestimmten Zuges ($\mathtt{move}$) aus den verfügbaren Zügen ($\mathtt{available\_moves}$):
-%\begin{itemize}
-%\item $\mathtt{move} \in \mathtt{available\_moves}; \mathtt{available\_moves}$ ist eine Liste
-%\item $\mathtt{db\_prob}(\mathtt{move}, \mathtt{turn\_nr}, \mathtt{player}) = P(\mathtt{win} \mid \mathtt{move} \land \mathtt{turn\_nr} \land \mathtt{player} )$: Gewinnwahrscheinlichkeit des Spielers bei der Durchführung des Zuges $\mathtt{move}$ in Zugnummer $\mathtt{turn\_nr}$. Die Wahrscheinlichkeit wird aus der Datenbank ermittelt:
-%\\ $P(\mathtt{win} \mid \mathtt{move} \land \mathtt{turn\_nr} \land \mathtt{player}) = \frac{\mathtt{won\_games}(\mathtt{player}, \mathtt{move}, \mathtt{turn\_nr})}{\mathtt{total\_played\_games}(\mathtt{move}, \mathtt{turn\_nr})} $
-%\item $\mathtt{prob\_sum}(\mathtt{available\_moves}, \mathtt{turn\_nr}, \mathtt{player}) = \sum\limits_{\mathtt{move} \in \mathtt{available\_moves}} \mathtt{db\_prob}(\mathtt{move},\mathtt{turn\_nr}, \mathtt{player})$
-%\item Auswahlwahrscheinlichkeit des Zuges $\mathtt{move}$:
-%\\$P(\mathtt{move} \mid \mathtt{available\_moves} \land \mathtt{turn\_nr} \land \mathtt{player}) = \frac{ \mathtt{db\_prob}(\mathtt{move}, \mathtt{turn\_nr}, \mathtt{player})}{\mathtt{prob\_sum}(\mathtt{available\_moves}, \mathtt{turn\_nr}, \mathtt{player})} $
-%\item Zuordnung der zufällig ausgewählten Zahl zu einem Zug:
-%\\$\mathtt{map\_move}: [ 0, \mathtt{prob\_sum}] \rightarrow \mathtt{available\_moves} $
-%\\ In der folgenden Formel werden folgende Änderungen zur Steigerung der Verständlichkeit getroffen:
-%\begin{itemize}
-%\item $\mathtt{a\_m}$ ist die abkürzende Schreibweise für $\mathtt{available\_moves}$
-%\item Die Parameter $\mathtt{turn\_nr}$ und $\mathtt{player}$ werden in der Funktion $\mathtt{db\_prob}$ nicht angegeben, da diese in dieser Funktion konstante Parameter sind.
-%\end{itemize}
-%$\mathtt{map\_move}(\mathtt{random\_nr}) = \{ \mathtt{a\_m}[i] \in \mathtt{a\_m} \mid i \in \{0, .. , len(\mathtt{a\_m}) - 1\} \land (\sum\limits_{\mathtt{k} = 0}^{i - 1}{\mathtt{db\_prob}\mathtt{a\_m}[k] < \mathtt{random\_nr}} \\\land \sum\limits_{\mathtt{k} = 0}^{i}{\mathtt{db\_prob}\mathtt{a\_m}[k] >= \mathtt{random\_nr}}  \}$, wobei $\mathtt{random\_nr} \in [0, \mathtt{prob\_sum}]$
-%\\Die Menge enthält immer nur ein Element, welches zurückgegeben wird, da die zweite Bedingung alle Züge unter der zufälligen Zahl herausfiltert in Verbindung mit der dritten Bedingung alle Züge über dem Intervall herausfiltert.
-%\end{itemize}
-%Durch die zufällige Auswahl eines Zuges aus der Summe $\mathtt{prob\_sum}$ werden Züge mit einer hohen Gewinnwahrscheinlichkeit bevorteilt, aber Züge mit einer geringen Gewinnwahrscheinlichkeit werden zwar seltener, aber dennoch ausgewählt.
-%
-%\begin{lstlisting}[basicstyle=\footnotesize, caption = {get\_weighted\_random Funktion des Monte-Carlo Agenten}, language = python, captionpos = t , numbers=left, label={lst:wmc1}]
-%    def get_weighted_random(possible_moves, turn_nr, own_symbol):
-%        prob_sum = 0.0
-%        for move in possible_moves:
-%            prob_sum += MonteCarlo._ml_database.get_likelihood(move, turn_nr, own_symbol)
-%        chose = random.uniform(0.0, prob_sum)
-%        move_nr = 0
-%        prob_sum = 0.0
-%        for move in possible_moves:
-%            move_nr += 1
-%            prob_sum += MonteCarlo._ml_database.get_likelihood(move, turn_nr, own_symbol)
-%            if prob_sum >= chose:
-%                return move
-%        return possible_moves[-1]
-%\end{lstlisting}
-%Nun wird das Verfahren an dem in Abbildung \ref{fig:rand1} abgebildeten Beispiels gezeigt.
-%Im Beispiel existieren folgende Zugmöglichkeiten: \code{c4}, \code{e6}, \code{f5}, \code{d3}.
-%\\Im ersten Schritt werden die Gewinnwahrscheinlichkeiten des aktuellen Spielers für die jeweiligen Züge in der aktuellen Zugnummer ermittelt. Dies sind die Ergebnisse (siehe (1)):
-%\begin{itemize}
-%\item \code{c4}: 40\%
-%\item \code{e6}: 70\%
-%\item \code{f5}: 55\%
-%\item \code{d3}: 45\%
-%\end{itemize}
-%Die Werte im Beispiel dienen der Demonstration und sind nicht aus der Datenbank entnommen.
-%\\Nun werden den Zügen Intervalle zugeordnet, welche die Länge der jeweiligen Wahrscheinlichkeit besitzen. Für den Zug \code{c4} beträgt die Länge beispielsweise \mxZitat{0,4}. 
-%\\Diese Intervalle werden aneinander angeordnet in der Reihenfolge der Zugmöglichkeiten aufsummiert (siehe (2)). Die Länge des Gesamtintervalls beträgt \mxZitat{2,1} (\mxZitat{2,1} = 40\% + 70\% + 55\% + 45\%).
-%\\Anschließend wird aus diesem geschlossenen Intervall zufällig eine Zahl ausgewählt. In dem Beispiel wurde zufällig die Zahl \mxZitat{1,3} ausgewählt (siehe (3)). 
-%\\Dieser Zahl (hier \mxZitat{1,3}) wird ein Intervall zugeordnet. Im Beispiel liegt \mxZitat{1,3} im Intervall des Zuges \code{f5}. Dadurch wird \code{f5} als ausgewählter Zug zurückgegeben (siehe (4)).
-%\\\mxPicture{12.7cm}{rand3}{Auswahl eines gewichteten zufälligen Zuges}{Auswahl eines gewichteten zufälligen Zuges}{fig:rand1}{}
+\subsubsection{Nutzung der gewichteten Zufallsfunktion}
+Wie in Abschnitt \nameref{Pseudornd-move-selection} des Kapitel \ref{mc_algo} zum \nameref{mc_algo} beschrieben, gibt es neben der Verwendung eines Präprozessors noch eine  Variante des Algorithmus bei der die Züge in den simulierten Spielen unter Verwendung von Othello spezifischem Wissens pseudozufällig ausgewählt werden. 
+\\Die gewichtete Zufallsfunktion verfolgt genau diesen Ansatz indem sie bei der Auswahl eines Zuges Züge mit einer höheren Gewinnwahrscheinlichkeit bevorzugt. Zur Beurteilung der Gewinnwahrscheinlichkeit wird die für die \mxZitat{Stored \mc}-Heuristik aufgebaute Datenbank herangezogen. Nachfolgend wird das Verfahren anhand der in Listing \ref{lst:wmc1} abgedruckten Funktion näher erläutert:
+\begin{lstlisting}[basicstyle=\footnotesize, caption = {get\_weighted\_random Funktion des Monte-Carlo Agenten}, language = python, captionpos = t , numbers=left, label={lst:wmc1}]
+    def get_weighted_random(possible_moves, turn_nr, own_symbol):
+        prob_sum = 0.0
+        for move in possible_moves:
+            prob_sum += MonteCarlo._ml_database.get_likelihood(move,turn_nr,own_symbol)
+        chose = random.uniform(0.0, prob_sum)
+        move_nr = 0
+        prob_sum = 0.0
+        for move in possible_moves:
+            move_nr += 1
+            prob_sum += MonteCarlo._ml_database.get_likelihood(move,turn_nr,own_symbol)
+            if prob_sum >= chose:
+                return move
+        return possible_moves[-1]
+\end{lstlisting}
+Der Funktion werden die aktuell verfügbaren Zugmöglichkeiten (\code{possible\_moves}), die Zugnummer (\code{turn\_nr}) und das aktuelle Spielersymbol (\code{own\_symbol}) übergeben (Z. 1).
+\\Für jeden verfügbaren Zug wird die Gewinnwahrscheinlichkeit des Spielers bei Durchführung dieses Zuges ermittelt (Z. 3f.) und aufsummiert (Z. 2 - 4). Die Gewinnwahrscheinlichkeit eines Zuges wird durch die Verwendung der in Kapitel \ref{impl:stored-mc} erläuterten Datenbank ermittelt (siehe \nameref{para:db}).
+\\Nach der Summenbildung der Gewinnwahrscheinlichkeiten (\code{prob\_sum}) wird eine zufällige Zahl im Intervall [0,\code{prob\_sum}] ermittelt (Z. 5).
+\\Jedem Zug wird ein Intervall, welches die Größe der Gewinnwahrscheinlichkeit des Zuges entspricht, innerhalb des Intervalls [0,\code{prob\_sum}] zugeordnet. Die Intervalle werden ab 0 beginnend aneinander angeordnet. 
+\\Durch die Ermittlung des Intervalls der zufällig ausgewählten Zahl wird diese einem Zug zugeordnet (Z. 8 - 13). 
+Dieser Zug wird an die übergeordnete Funktion zurückgegeben.
+\newpage
+Es gelten folgende mathematische Zusammenhänge der Zugauswahl des Spielers \\$\mathtt{player}$ eines bestimmten Zuges ($\mathtt{move}$) aus den verfügbaren Zügen\\ ($\mathtt{available\_moves}$):
+\begin{itemize}
+\item $\mathtt{move} \in \mathtt{available\_moves}; \mathtt{available\_moves}$ ist eine Liste
+\item $\mathtt{db\_prob}(\mathtt{move}, \mathtt{turn\_nr}, \mathtt{player}) = P(\mathtt{win} \mid \mathtt{move} \land \mathtt{turn\_nr} \land \mathtt{player} )$: Gewinnwahrscheinlichkeit des Spielers bei der Durchführung des Zuges $\mathtt{move}$ in Zugnummer $\mathtt{turn\_nr}$. Die Wahrscheinlichkeit wird aus der Datenbank ermittelt:
+\vspace{0.25cm}\\ $P(\mathtt{win} \mid \mathtt{move} \land \mathtt{turn\_nr} \land \mathtt{player}) = \frac{\mathtt{won\_games}(\mathtt{player}, \mathtt{move}, \mathtt{turn\_nr})}{\mathtt{total\_played\_games}(\mathtt{move}, \mathtt{turn\_nr})} $
+\item $\mathtt{prob\_sum}(\mathtt{available\_moves}, \mathtt{turn\_nr}, \mathtt{player}) \\= \hfill \sum\limits_{\mathtt{move} \in \mathtt{available\_moves}} \mathtt{db\_prob}(\mathtt{move},\mathtt{turn\_nr}, \mathtt{player})$
+\item Auswahlwahrscheinlichkeit des Zuges $\mathtt{move}$:
+\vspace{0.25cm}\\$P(\mathtt{move} \mid \mathtt{available\_moves} \land \mathtt{turn\_nr} \land \mathtt{player}) \\= \hfill \frac{ \mathtt{db\_prob}(\mathtt{move}, \mathtt{turn\_nr}, \mathtt{player})}{\mathtt{prob\_sum}(\mathtt{available\_moves}, \mathtt{turn\_nr}, \mathtt{player})} $
+\item Zuordnung der zufällig ausgewählten Zahl zu einem Zug:
+\\$\mathtt{map\_move}: [ 0, \mathtt{prob\_sum}] \rightarrow \mathtt{available\_moves} $
+\\ In der folgenden Formel werden folgende Änderungen zur Steigerung der Verständlichkeit getroffen:
+\begin{itemize}
+\item $\mathtt{a\_m}$ ist die abkürzende Schreibweise für $\mathtt{available\_moves}$
+\item Die Parameter $\mathtt{turn\_nr}$ und $\mathtt{player}$ werden in der Funktion $\mathtt{db\_prob}$ nicht angegeben, da diese in dieser Funktion konstante Parameter sind.
+\end{itemize}
+\vspace{0.25cm}
+$\mathtt{map\_move}(\mathtt{random\_nr}) = \{ \mathtt{a\_m}[i] \in \mathtt{a\_m} \mid  \\i \in \{0, .. , len(\mathtt{a\_m}) - 1\} \land (\sum\limits_{\mathtt{k} = 0}^{i - 1}{\mathtt{db\_prob}\mathtt{a\_m}[k] < \mathtt{random\_nr}} \\\land \sum\limits_{\mathtt{k} = 0}^{i}{\mathtt{db\_prob}\mathtt{a\_m}[k] >= \mathtt{random\_nr}}  \}$, wobei $\mathtt{random\_nr} \in [0, \mathtt{prob\_sum}]$
+\vspace{0.25cm}\\Die Menge enthält immer nur ein Element, welches zurückgegeben wird, da die zweite Bedingung alle Züge unter der zufälligen Zahl herausfiltert in Verbindung mit der dritten Bedingung alle Züge über dem Intervall herausfiltert.
+\end{itemize}
+Durch die zufällige Auswahl eines Zuges aus der Summe $\mathtt{prob\_sum}$ werden Züge mit einer hohen Gewinnwahrscheinlichkeit bevorteilt, aber Züge mit einer geringen Gewinnwahrscheinlichkeit werden zwar seltener, aber dennoch ausgewählt.
+\\Nun wird das Verfahren an dem in Abbildung \ref{fig:rand1} abgebildeten Beispiels gezeigt.
+\vspace{0,5cm}
+\\\mxPicture{12.7cm}{rand3}{Auswahl eines gewichteten zufälligen Zuges}{Auswahl eines gewichteten zufälligen Zuges}{fig:rand1}{}
+Im Beispiel existieren folgende Zugmöglichkeiten: \code{c4}, \code{e6}, \code{f5}, \code{d3}.
+\\Im ersten Schritt werden die Gewinnwahrscheinlichkeiten des aktuellen Spielers für die jeweiligen Züge in der aktuellen Zugnummer ermittelt. Dies sind die Ergebnisse (siehe (1)):
+\begin{itemize}
+\item \code{c4}: 40\%
+\item \code{e6}: 70\%
+\item \code{f5}: 55\%
+\item \code{d3}: 45\%
+\end{itemize}
+Die Werte im Beispiel dienen der Demonstration und sind nicht aus der Datenbank entnommen.
+\\Nun werden den Zügen Intervalle zugeordnet, welche die Länge der jeweiligen Wahrscheinlichkeit besitzen. Für den Zug \code{c4} beträgt die Länge beispielsweise \mxZitat{0,4}. 
+\\Diese Intervalle werden aneinander angeordnet in der Reihenfolge der Zugmöglichkeiten aufsummiert (siehe (2)). Die Länge des Gesamtintervalls beträgt \mxZitat{2,1} \\(\mxZitat{2,1} = 40\% + 70\% + 55\% + 45\%).
+\\Anschließend wird aus diesem geschlossenen Intervall zufällig eine Zahl ausgewählt. In dem Beispiel wurde zufällig die Zahl \mxZitat{1,3} ausgewählt (siehe (3)). 
+\\Dieser Zahl (hier \mxZitat{1,3}) wird ein Intervall zugeordnet. Im Beispiel liegt \mxZitat{1,3} im Intervall des Zuges \code{f5}. Dadurch wird \code{f5} als ausgewählter Zug zurückgegeben (siehe (4)).
+
 
 \subsection{\abp}
 Der Agent \mxZitat{\abp} basiert auf dem in Kapitel \ref{ab-pruning} beschriebenen Prinzip des \ababs. Wie bereits erläutert handelt es sich dabei um eine Tiefensuche, bei der weniger vielversprechende Zweige nicht bis zum Ende ausgewertet werden.
