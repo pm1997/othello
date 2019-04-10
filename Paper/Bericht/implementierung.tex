@@ -369,14 +369,30 @@ Ist die Verwendung mehrere Prozesse aktiviert (Option \code{use\_multiprocessing
 
 \subsubsection{Nutzung der gewichteten Zufallsfunktion}
 Wie in Abschnitt \nameref{Pseudornd-move-selection} des Kapitel \ref{mc_algo} zum \nameref{mc_algo} beschrieben, gibt es neben der Verwendung eines Präprozessors noch eine  Variante des Algorithmus bei der die Züge in den simulierten Spielen unter Verwendung von Othello spezifischem Wissens pseudozufällig ausgewählt werden. 
-\\Die gewichtete Zufallsfunktion verfolgt genau diesen Ansatz indem sie bei der Auswahl eines Zuges Züge mit einer höheren Gewinnwahrscheinlichkeit bevorzugt. Zur Beurteilung der Gewinnwahrscheinlichkeit wird die für die \mxZitat{Stored \mc}-Heuristik aufgebaute Datenbank herangezogen. Nachfolgend wird das Verfahren anhand der in Listing \ref{lst:wmc1} abgedruckten Funktion näher erläutert.
-\\Der Funktion werden die aktuell verfügbaren Zugmöglichkeiten (\code{possible\_moves}), die Zugnummer (\code{turn\_nr}) und das aktuelle Spielersymbol (\code{own\_symbol}) übergeben (Z. 1).
+\\Die gewichtete Zufallsfunktion verfolgt genau diesen Ansatz indem sie bei der Auswahl eines Zuges Züge mit einer höheren Gewinnwahrscheinlichkeit bevorzugt. Zur Beurteilung der Gewinnwahrscheinlichkeit wird die für die \mxZitat{Stored \mc}-Heuristik aufgebaute Datenbank herangezogen. Nachfolgend wird das Verfahren anhand der in Listing \ref{lst:wmc1} abgedruckten Funktion näher erläutert:
+\begin{lstlisting}[basicstyle=\footnotesize, caption = {get\_weighted\_random Funktion des Monte-Carlo Agenten}, language = python, captionpos = t , numbers=left, label={lst:wmc1}]
+    def get_weighted_random(possible_moves, turn_nr, own_symbol):
+        prob_sum = 0.0
+        for move in possible_moves:
+            prob_sum += MonteCarlo._ml_database.get_likelihood(move,turn_nr,own_symbol)
+        chose = random.uniform(0.0, prob_sum)
+        move_nr = 0
+        prob_sum = 0.0
+        for move in possible_moves:
+            move_nr += 1
+            prob_sum += MonteCarlo._ml_database.get_likelihood(move,turn_nr,own_symbol)
+            if prob_sum >= chose:
+                return move
+        return possible_moves[-1]
+\end{lstlisting}
+Der Funktion werden die aktuell verfügbaren Zugmöglichkeiten (\code{possible\_moves}), die Zugnummer (\code{turn\_nr}) und das aktuelle Spielersymbol (\code{own\_symbol}) übergeben (Z. 1).
 \\Für jeden verfügbaren Zug wird die Gewinnwahrscheinlichkeit des Spielers bei Durchführung dieses Zuges ermittelt (Z. 3f.) und aufsummiert (Z. 2 - 4). Die Gewinnwahrscheinlichkeit eines Zuges wird durch die Verwendung der in Kapitel \ref{impl:stored-mc} erläuterten Datenbank ermittelt (siehe \nameref{para:db}).
 \\Nach der Summenbildung der Gewinnwahrscheinlichkeiten (\code{prob\_sum}) wird eine zufällige Zahl im Intervall [0,\code{prob\_sum}] ermittelt (Z. 5).
 \\Jedem Zug wird ein Intervall, welches die Größe der Gewinnwahrscheinlichkeit des Zuges entspricht, innerhalb des Intervalls [0,\code{prob\_sum}] zugeordnet. Die Intervalle werden ab 0 beginnend aneinander angeordnet. 
 \\Durch die Ermittlung des Intervalls der zufällig ausgewählten Zahl wird diese einem Zug zugeordnet (Z. 8 - 13). 
 Dieser Zug wird an die übergeordnete Funktion zurückgegeben.
-\\Es gelten folgende mathematische Zusammenhänge der Zugauswahl des Spielers \\$\mathtt{player}$ eines bestimmten Zuges ($\mathtt{move}$) aus den verfügbaren Zügen\\ ($\mathtt{available\_moves}$):
+\newpage
+Es gelten folgende mathematische Zusammenhänge der Zugauswahl des Spielers \\$\mathtt{player}$ eines bestimmten Zuges ($\mathtt{move}$) aus den verfügbaren Zügen\\ ($\mathtt{available\_moves}$):
 \begin{itemize}
 \item $\mathtt{move} \in \mathtt{available\_moves}; \mathtt{available\_moves}$ ist eine Liste
 \item $\mathtt{db\_prob}(\mathtt{move}, \mathtt{turn\_nr}, \mathtt{player}) = P(\mathtt{win} \mid \mathtt{move} \land \mathtt{turn\_nr} \land \mathtt{player} )$: Gewinnwahrscheinlichkeit des Spielers bei der Durchführung des Zuges $\mathtt{move}$ in Zugnummer $\mathtt{turn\_nr}$. Die Wahrscheinlichkeit wird aus der Datenbank ermittelt:
@@ -396,23 +412,8 @@ $\mathtt{map\_move}(\mathtt{random\_nr}) = \{ \mathtt{a\_m}[i] \in \mathtt{a\_m}
 \vspace{0.25cm}\\Die Menge enthält immer nur ein Element, welches zurückgegeben wird, da die zweite Bedingung alle Züge unter der zufälligen Zahl herausfiltert in Verbindung mit der dritten Bedingung alle Züge über dem Intervall herausfiltert.
 \end{itemize}
 Durch die zufällige Auswahl eines Zuges aus der Summe $\mathtt{prob\_sum}$ werden Züge mit einer hohen Gewinnwahrscheinlichkeit bevorteilt, aber Züge mit einer geringen Gewinnwahrscheinlichkeit werden zwar seltener, aber dennoch ausgewählt.
-
-\begin{lstlisting}[basicstyle=\footnotesize, caption = {get\_weighted\_random Funktion des Monte-Carlo Agenten}, language = python, captionpos = t , numbers=left, label={lst:wmc1}]
-    def get_weighted_random(possible_moves, turn_nr, own_symbol):
-        prob_sum = 0.0
-        for move in possible_moves:
-            prob_sum += MonteCarlo._ml_database.get_likelihood(move,turn_nr,own_symbol)
-        chose = random.uniform(0.0, prob_sum)
-        move_nr = 0
-        prob_sum = 0.0
-        for move in possible_moves:
-            move_nr += 1
-            prob_sum += MonteCarlo._ml_database.get_likelihood(move,turn_nr,own_symbol)
-            if prob_sum >= chose:
-                return move
-        return possible_moves[-1]
-\end{lstlisting}
-Nun wird das Verfahren an dem in Abbildung \ref{fig:rand1} abgebildeten Beispiels gezeigt.
+\\Nun wird das Verfahren an dem in Abbildung \ref{fig:rand1} abgebildeten Beispiels gezeigt.
+\vspace{0,5cm}
 \\\mxPicture{12.7cm}{rand3}{Auswahl eines gewichteten zufälligen Zuges}{Auswahl eines gewichteten zufälligen Zuges}{fig:rand1}{}
 Im Beispiel existieren folgende Zugmöglichkeiten: \code{c4}, \code{e6}, \code{f5}, \code{d3}.
 \\Im ersten Schritt werden die Gewinnwahrscheinlichkeiten des aktuellen Spielers für die jeweiligen Züge in der aktuellen Zugnummer ermittelt. Dies sind die Ergebnisse (siehe (1)):
