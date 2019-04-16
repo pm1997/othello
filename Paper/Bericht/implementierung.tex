@@ -1,4 +1,5 @@
 \chapter{Implementierung der KI}
+\authorpatrick
 \label{implementation}
 In den folgenden Unterkapiteln  werden verschiedene Spielalgorithmen vorgestellt und implementiert. Anschließend werden diese verbessert und auch unter Berücksichtigung des Laufzeitverhaltens analysiert.
 \\Zunächst wird aber die grundsätzliche Programmstruktur erläutert und das Spielgerüst implementiert, damit unterschiedliche Spieler es ausführen können.
@@ -25,6 +26,7 @@ In \mxZitat{main-game.py} wird das Rahmenprogramm gestartet. In diesem werden zu
     print(f"Winner is {PRINT_SYMBOLS[game.get_winner()]}")
 \end{lstlisting}
 \subsection{Die Klasse \mxZitat{Othello}}
+\authormax
 \label{ot1}
 Die Klasse \mxZitat{Othello} modelliert einen Spielzustand und enthält die grundlegende Spiellogik wie bspw. die Berechnung erlaubter Züge. Nachfolgend wird auf die Art der Speicherung eines Spielzustandes und auf die wichtigsten Funktionen dieser Klasse eingegangen.
 \paragraph{Klassenvariablen}
@@ -148,6 +150,7 @@ Die \mxZitat{Nijssen 2007 Heuristik} wurde aus \cite{nijssen_2007} übernommen. 
 \item \code{Andere-Felder}: $+1$
 \end{enumerate}
 \subsection{Stored Monte-Carlo-Heuristik}
+\authorpatrick
 \label{impl:stored-mc}
 Dieser Heuristik liegt die Idee zugrunde die in mehreren Spielen gesammelten Erkenntnisse zu den Gewinnwahrscheinlichkeiten einzelner Züge zu speichern und in den darauffolgenden Spielen zur Beurteilung von Spielzuständen heranzuziehen.
 \\Die \mxZitat{Stored Monte-Carlo-Heuristik} verwendet zu diesem Zweck eine Datenbank. In dieser Datenbank wird für jede Zugnummer, jedes Feld des Spielfeldes und jeden Spieler die Häufigkeit mit der dieser im Trainingsprozess gespielten und gewonnenen wurde gespeichert. Die genaue Funktion wird in den Unterabschnitten \nameref{para:db} und \nameref{para:train1} näher erklärt. Darauf aufbauend wird die Funktionsweise der Heuristik in dem Abschnitt \nameref{para:heuristic1} erläutert.
@@ -253,6 +256,7 @@ Beim ersten Aufrufen der Starttabellen, wird die Datenbank initialisiert (Z. 2f.
 \\Da das Spielbrett symmetrisch zum Mittelpunkt ist, wurden die von von Robert Gatliff \cite{open1} übernommenen Eröffnungszüge entsprechend gespiegelt. Dadurch wurde die Datenbank auf 308 Züge erweitert. Diese ist in der Datei \code{start\_moves.csv} als CSV gespeichert.
 \\Die Agenten \mxZitat{\mc} und \mxZitat{\abp} verwenden in der Standardeinstellung diese Starttabellen. Wenn beide Agenten gegeneinander spielen, werden die ersten Spielzüge beider Spieler sehr stark beschleunigt. Die Agenten müssen keine Züge berechnen, sondern können, bei verfügbaren Eröffnungszügen, durch das Nachschlagen in der Datenbank und die Auswahl eines Spielzuges sehr viel Spielzeit einsparen. Erst wenn die Datenbank keine passende Zugreihenfolge mehr enthält, starten die Agenten die Berechnung des, nach der jeweiligen Strategie, besten Zuges. Ist sich ein Spieler dieser Tatsache bewusst, so kann er gezielt solche Zugfolgen spielen die eher ungewöhnlich und damit nicht in der Sammlung enthalten sind. In diesem Fall geht der durch die Sammlung möglicherweise erzielte Vorteil verloren.
 \section{Agenten}
+\authormax
 \label{agenten}
 Beim Start eines Partie stehen dem Nutzer mehrere Agenten zur Auswahl die die Rolle eines Spielers übernehmen können. Die Implementierung zu diesen Agenten befindet sich in Unterverzeichnis \code{Agents}.
 \\Die folgende Agenten stehen dabei zur Auswahl:
@@ -369,6 +373,7 @@ Ist die Verwendung mehrere Prozesse aktiviert (Option \code{use\_multiprocessing
 \end{lstlisting}
 
 \subsubsection{Nutzung der gewichteten Zufallsfunktion}
+\authorpatrick
 Wie in Abschnitt \nameref{Pseudornd-move-selection} des Kapitel \ref{mc_algo} zum \nameref{mc_algo} beschrieben, gibt es neben der Verwendung eines Präprozessors noch eine  Variante des Algorithmus bei der die Züge in den simulierten Spielen unter Verwendung von Othello spezifischem Wissens pseudozufällig ausgewählt werden. 
 \\Die gewichtete Zufallsfunktion verfolgt genau diesen Ansatz indem sie bei der Auswahl eines Zuges Züge mit einer höheren Gewinnwahrscheinlichkeit bevorzugt. Zur Beurteilung der Gewinnwahrscheinlichkeit wird die für die \mxZitat{Stored \mc}-Heuristik aufgebaute Datenbank herangezogen. Nachfolgend wird das Verfahren anhand der in Listing \ref{lst:wmc1} abgedruckten Funktion näher erläutert:
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {get\_weighted\_random Funktion des Monte-Carlo Agenten}, language = python, captionpos = t , numbers=left, label={lst:wmc1}]
