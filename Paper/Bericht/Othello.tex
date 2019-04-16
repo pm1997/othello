@@ -139,16 +139,16 @@
 \Kurs{TINF16AIBI}
 
 \input{titlepage}
-\input{ewerkl}
 \pagenumbering{roman} % Römische Seitennummerierung
+\input{abstract-de}
+\input{abstract-en}
+\input{ewerkl}
+
 \normalfont
 
-
 \tableofcontents
+\addcontentsline{toc}{chapter}{Inhaltsverzeichnis}
 \newpage
-
-\pagenumbering{arabic}
-\setcounter{page}{1}
 
 %	Abbildungsverzeichnis
 \listoffigures
@@ -159,6 +159,8 @@
 %	Listingsverzeichnis
  \lstlistoflistings
 
+\pagenumbering{arabic}
+\setcounter{page}{1}
 
 \include{einleitung}
 \include{othello-chapter}
