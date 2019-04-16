@@ -6,7 +6,7 @@ In den folgenden Unterkapiteln  werden verschiedene Spielalgorithmen vorgestellt
 Die Python Implementierung befindet sich im Verzeichnis \mxZitat{python} des zu diesem Projekt gehörenden Git Repository. Um das Spiel zur Ausführung zu bringen werden die Pakete \mxZitat{numpy} sowie \mxZitat{pandas} benötigt. Sind diese Abhängigkeiten vorhanden, kann das Spiel durch das Ausführen des Kommandos \code{python3 main-game} gestartet werden. Es wird eine Pythonversion von 3.6.8 oder aktueller benötigt.
 \\Die einzelnen Komponenten wurden unter thematischen Gesichtspunkten in verschiedenen Dateien organisiert. Nachfolgend wird auf die einzelnen Dateien und deren Funktion kurz eingegangen.
 \subsection{Der Spielablauf}
-In \mxZitat{main-game.py} wird das Rahmenprogramm gestartet. In diesem werden zunächst die Spieler festgelegt. Anschließend wird ein Spiel erstellt, initialisiert und das Spielbrett ausgegeben (siehe Listing \ref{lst:lst-main-game} Z. 2-4). Die Methode \code{game\_is\_over} gibt bei Spielende \code{True}, ansonsten \code{False} zurück. In der Schleife von Zeile 5 bis Zeile 11 wird der Agent des aktuelle Spielers ermittelt (Z. 6f.). Für diesen wird die Funktion \code{get\_move} aufgerufen. Diese gibt den nach der Strategie des jeweiligen Agenten besten Spielzug zurück. Je nach Spielagent werden unterschiedliche Algorithmen zur Ermittlung dieses Zuges verwendet. Dieser Zug wird gespielt und auf das Spielbrett angewendet (Z. 9). Abschließend wird das aktualisierte Spielbrett und der zuletzt durchgeführte Zug ausgegeben (Z. 10f.). Die Schleife wird bis zum Spielende wiederholt. Danach wird der Gewinner und die gesamte Spieldauer ermittelt und ausgegeben (Z. 12-15). 
+In \mxZitat{main-game.py} wird das Rahmenprogramm gestartet. In diesem werden zunächst die Spieler festgelegt. Anschließend wird ein Spiel erstellt, initialisiert und das Spielbrett ausgegeben (siehe Listing \ref{lst:lst-main-game} Z. 2-4). Die Methode \code{game\_is\_over} gibt bei Spielende \code{True}, ansonsten \code{False} zurück. In der Schleife von Zeile 5 bis Zeile 11 wird der Agent des aktuellen Spielers ermittelt (Z. 6f.). Für diesen wird die Funktion \code{get\_move} aufgerufen. Diese gibt den nach der Strategie des jeweiligen Agenten besten Spielzug zurück. Je nach Spielagent werden unterschiedliche Algorithmen zur Ermittlung dieses Zuges verwendet. Dieser Zug wird gespielt und auf das Spielbrett angewendet (Z. 9). Abschließend wird das aktualisierte Spielbrett und der zuletzt durchgeführte Zug ausgegeben (Z. 10f.). Die Schleife wird bis zum Spielende wiederholt. Danach werden der Gewinner und die gesamte Spieldauer ermittelt und ausgegeben (Z. 12-15). 
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {Spielablauf in \mxZitat{main-game.py}}, language = python, captionpos = t , numbers=left, label={lst:lst-main-game}]
     players = {PLAYER_ONE: player_one, PLAYER_TWO: player_two}
     game = Othello()
@@ -32,7 +32,7 @@ In Listing \ref{lst:class-vars-othello} sind alle Klassenvariablen, sowie deren 
 \begin{enumerate}
 \item \code{\_board}: Bei \code{\_board} handelt es sich um eine Liste von Listen, zur Modellierung der zweidimensionalen Struktur des Spielbretts. Initialisiert wird das Spielbrett in seinem Leerzustand. Daher wird zu Beginn jedes Feld auf \code{0} zur Repräsentation des leeren Feldes gesetzt.
 \item \code{\_current\_player}: Speichert den Spieler, der im modellierten Spielzustand an der Reihe ist.
-\item \code{\_last\_turn\_passed} wird verwendet um zu speichern ob der vorherige Spieler  passen musste. Dadurch kann das Spiel sobald zwei Spieler unmittelbar nacheinander passen müssen beendet werden.
+\item \code{\_last\_turn\_passed} wird verwendet, um zu speichern ob der vorherige Spieler  passen musste. Dadurch kann das Spiel sobald zwei Spieler unmittelbar nacheinander passen müssen beendet werden.
 \item \code{\_game\_is\_over} wird auf \code{True} gesetzt sobald das Spiel beendet ist.
 \item \code{\_fringe}: In \code{\_fringe} werden alle Felder des Spielfeldes gespeichert die in eine Richtung unmittelbar neben einem bereits besetzten Feld liegen. Durch die Mitführung dieser Information muss zur Berechnung der erlaubten Züge nicht jedes Mal über das Spielfeld iteriert werden um zunächst die infrage kommenden Felder zu ermitteln.
 \item \code{\_turning\_stones}: Enthält als Schlüssel alle erlaubten Züge und als Wert jeweils eine Liste jener Spielsteine, die durch ausführen des Zuges umgedreht werden. Da zur Ermittlung der erlaubten Züge diese Information bereits berechnet werden muss, wird sie in Form des Dictionarys vorgehalten um diese an anderer Stelle nicht erneut berechnen zu müssen.
@@ -50,15 +50,15 @@ In Listing \ref{lst:class-vars-othello} sind alle Klassenvariablen, sowie deren 
     _turn_nr = 0
 \end{lstlisting}
 \paragraph{Die Funktion \code{\_compute\_available\_moves}}
- ist in Listing \ref{lst:fct-compute-available-moves} angegeben und wird verwendet um die Inhalte des Dictionaries \code{\_turning\_stones} zu berechnern.
+ ist in Listing \ref{lst:fct-compute-available-moves} angegeben und wird verwendet um die Inhalte des Dictionaries \code{\_turning\_stones} zu berechnen.
 \\Da beiden Spielern in der Regel nicht die gleichen Züge zur Verfügung stehen muss zunächst der vorherige Inhalt von \code{\_turning\_stones} gelöscht werden. Dies geschieht in Zeile 2, indem die Datenstruktur neu initialisiert wird.
 \\In Zeile 3 wird eine lokale Referenz des zur Darstellung eines durch den aktuellen Spieler besetzen Feldes verwendeten Symbols erzeugt.
-\\Mit der in Zeile 4 beginnenden Schleife wird über alle in Frage kommenden Züge in der Menge \code{\_fringe} iteriert um zu ermitteln, ob dieser Zug erlaubt wäre.
+\\Mit der in Zeile 4 beginnenden Schleife wird über alle in Frage kommenden Züge in der Menge \code{\_fringe} iteriert, um zu ermitteln, ob dieser Zug erlaubt wäre.
 \\Dazu wird zunächst eine lokale Menge initialisiert um die durch spielen dieser Position gedrehten Steine zu speichern (Zeile 5).
 \\Nun muss ausgehend von der derzeit betrachteten Position ermittelt werden, ob in irgendeine Richtung Spielsteine gedreht werden würden. Dies erfolgt durch die in Zeile 6 beginnende Schleife.
 \\Dazu wird zunächst das nächste Feld in diese Richtung unter Verwendung einer Hilfsfunktion ermittelt (Zeile 7) und anschließend eine weitere temporäre Menge der in dieser Richtung gedrehten Steine initialisiert (Zeile 8).
-\\Die entsprechende Richtung muss nun solange weiter verfolgt werden, wie ein weiterer Nachbar in diese Richtung vorhanden ist. Dies geschieht durch die in Zeile 9 beginnende Schleife.
-\\Da in den nachfolgenden Schritten ermittelt werden muss, welcher Spieler das derzeit betrachtete Feld besetzt hat, werden die Indizes der derzeitigen  ausgepackt (Zeile 10) und dann verwendet um zu ermitteln welchen Wert das Feld derzeit hat (Zeile 11).
+\\Die entsprechende Richtung muss nun solange weiterverfolgt werden, wie ein weiterer Nachbar in diese Richtung vorhanden ist. Dies geschieht durch die in Zeile 9 beginnende Schleife.
+\\Da in den nachfolgenden Schritten ermittelt werden muss, welcher Spieler das derzeit betrachtete Feld besetzt hat, werden die Indizes der derzeitigen  ausgepackt (Zeile 10) und dann verwendet, um zu ermitteln welchen Wert das Feld derzeit hat (Zeile 11).
 \\Nun gibt es drei mögliche Fälle:
 \begin{enumerate}
 \setcounter{enumi}{0}
@@ -108,7 +108,7 @@ In Zeile 19 wird das nächste Feld in diese Richtung berechnet.
 \paragraph{Weitere Funktionen der Klasse \mxZitat{Othello}}
 Die Klasse \mxZitat{Othello} enthält weitere Funktionen, auf welche hier jedoch nicht im Detail eingegangen werden soll. Dennoch sei hier jeweils kurz deren Verwendungszweck der wichtigsten Funktionen genannt:
 \begin{enumerate}
-\item \code{set\_available\_moves} verändert \code{\_stones\_to\_turn} dahingehend, dass nur noch übergebene Positionen enthalten sind. Kann damit zum Filtern der erlaubten Züge verwendet werden.
+\item \code{set\_available\_moves} verändert \code{\_stones\_to\_turn} dahingehend, dass nur noch übergebene Positionen enthalten sind. Der Parameter kann damit zum Filtern der erlaubten Züge verwendet werden.
 \item \code{play\_position} verändert den Spielzustand dahingehend, dass der übergebene Zug, sofern er erlaubt ist, ausgeführt wird, die entsprechenden Steine des Gegners gedreht und dessen Zug vorbereitet wird. Dabei wird auch die \code{\_fringe} entsprechend aktualisiert.
 \item \code{set\_available\_moves} verändert \code{\_stones\_to\_turn} dahingehend, dass nur noch übergebene Positionen enthalten sind. Kann damit zum Filtern der erlaubten Züge verwendet werden.
 \item \code{get\_available\_moves}: Gibt die erlaubten Züge zur Verwendung in den \\Spielerimplementierungen zurück
@@ -123,7 +123,7 @@ Die Klasse \mxZitat{Othello} enthält weitere Funktionen, auf welche hier jedoch
 \subsection{Die übrigen Komponenten}
 Neben den zuvor detailliert besprochenen finden in der Implementierung noch die folgenden Komponenten Anwendung: 
 \begin{enumerate}
-\item Konstanten in der Datei \code{constants.py}. Durch die Verwendung von Konstanten bspw. zur Symbolisierung von welchen Spieler ein Feld besetzt ist, wird einerseits von konkreten Werten abstrahiert und diese sind, sofern erforderlich einfach austauschbar. Andererseits wird eine gewisse Konsistenz, bspw. für Mapping-Funktionen zur Ausgabe, über das ganze Programm hinweg erreicht.
+\item Konstanten in der Datei \code{constants.py}. Durch die Verwendung von Konstanten bspw. zur Symbolisierung von welchem Spieler ein Feld besetzt ist, wird einerseits von konkreten Werten abstrahiert und diese sind, sofern erforderlich einfach austauschbar. Andererseits wird eine gewisse Konsistenz, bspw. für Mapping-Funktionen zur Ausgabe, über das ganze Programm hinweg erreicht.
 \item Hilfsfunktionen in der Datei \code{util.py} werden dazu genutzt Werte vom Benutzer abzufragen.
 \end{enumerate}
 \section{Heuristiken}
@@ -134,7 +134,8 @@ Wie im Abschnitt \ref{Heuristiken} besprochen werden für einige Algorithmen Fun
 \item Stored Monte-Carlo-Heuristik
 \item Cowthello Heuristik
 \end{enumerate}
-Die Implementierung aller Heuristiken befinden sich in der Datei \code{heuristics.py}
+Die Implementierungen aller Heuristiken 
+befinden sich in der Datei \code{heuristics.py}.
 \subsection{Nijssen 2007 Heuristik}
 \label{nissen2007H}
 Die \mxZitat{Nijssen 2007 Heuristik} wurde aus \cite{nijssen_2007} übernommen. Ihr liegt die im Kapitel \ref{othello-chapter} erläuterte Idee zugrunde, die einzelnen Spielfelder in Kategorien einzuteilen und jeder Kategorie einen speziellen Wert zuzuweisen. Die Bewertung des Spielzustandes $s$ aus Sicht eines Spielers $\mathtt{player}$ ergibt sich dann nach der folgenden Formel:  \vspace{0.25cm}\\ $\mathtt{heuristic}(\mathtt{player}, S) = \sum\limits_{f \in \mathtt{domain}(\mathtt{F}(s))}  w_{f} * b_{f}$ \vspace{0.25cm}\\$F(s)$ ist eine Funktion ist, die für das Spielfeld des Zustands $s$ eine Relation zurückgibt, die für jedes Feld angibt, durch welchen Spieler es besetzt ist oder ob es leer ist. $w_{f}$ steht für das dem Feld zugeordnete Gewicht und \vspace{0.25cm}\\$b_{f} = \begin{cases} 1 \mathtt{,\ wenn\ F}(s)[f] = \mathtt{player} \\ -1 \mathtt{,\ wenn\ F}(s)[f] = \mathtt{other(player)} \\ 0 \mathtt{,\ sonst} \end{cases}$
@@ -148,11 +149,11 @@ Die \mxZitat{Nijssen 2007 Heuristik} wurde aus \cite{nijssen_2007} übernommen. 
 \end{enumerate}
 \subsection{Stored Monte-Carlo-Heuristik}
 \label{impl:stored-mc}
-Dieser Heuristik liegt die Idee zugrunde die in mehreren Spielen gesammelten Erkenntnisse zu den Gewinnwahrscheinlichkeiten einzelner Züge zu speichern und in den darauf folgenden Spielen zur Beurteilung von Spielzuständen heranzuziehen.
-\\Die \mxZitat{Stored Monte-Carlo-Heuristik} verwendet zu diesem Zweck eine Datenbank. In dieser Datenbank werden für jede Zugnummer, jedes Feld des Spielfeldes und jeden Spieler die Häufigkeit mit der dieser im Trainingsprozess gespielten und gewonnenen wurde gespeichert. Die genaue Funktion wird in den Unterabschnitten \nameref{para:db} und \nameref{para:train1} näher erklärt. Darauf aufbauend wird die Funktionsweise der Heuristik in dem Abschnitt \nameref{para:heuristic1} erläutert.
+Dieser Heuristik liegt die Idee zugrunde die in mehreren Spielen gesammelten Erkenntnisse zu den Gewinnwahrscheinlichkeiten einzelner Züge zu speichern und in den darauffolgenden Spielen zur Beurteilung von Spielzuständen heranzuziehen.
+\\Die \mxZitat{Stored Monte-Carlo-Heuristik} verwendet zu diesem Zweck eine Datenbank. In dieser Datenbank wird für jede Zugnummer, jedes Feld des Spielfeldes und jeden Spieler die Häufigkeit mit der dieser im Trainingsprozess gespielten und gewonnenen wurde gespeichert. Die genaue Funktion wird in den Unterabschnitten \nameref{para:db} und \nameref{para:train1} näher erklärt. Darauf aufbauend wird die Funktionsweise der Heuristik in dem Abschnitt \nameref{para:heuristic1} erläutert.
 \paragraph{Datenbank}
 \label{para:db}
-Die Datenbank speichert zu jeder Zugnummer die Gewinnwahrscheinlichkeiten der Spieler bei der Verwendung eines Feldes des Spielbretts. Um die Anzahl der gespeicherten Werte zu verringern werden Symmetrieeigenschaften das Spielbretts ausgenutzt. 
+Die Datenbank speichert zu jeder Zugnummer die Gewinnwahrscheinlichkeiten der Spieler bei der Verwendung eines Feldes des Spielbretts. Um die Anzahl der gespeicherten Werte zu verringern werden Symmetrieeigenschaften des Spielbretts ausgenutzt. 
 Das Spielfeld ist symmetrisch zum Mittelpunkt aufgebaut. Dies bedeutet, dass Züge, welche symmetrisch zu anderen Zügen sind, als ein Zug angesehen werden können. Das Spielfeld wird daher in zehn Feldkategorien eingeteilt. In Abbildung \ref{fig:sym1} sind die symmetrischen Felder des Othello-Spielbrettes farblich hervorgehoben. Die unterschiedlichen Farben stellen die unterschiedlichen Feldkategorien dar. Diese sind von Null bis Acht durchnummeriert. Das Zentrum ist mit \mxZitat{X} markiert. Da das Zentrum bei Spielstart schon besetzt ist, wird diese Feldkategorie nicht in der Datenbank gespeichert. Die restlichen neun Kategorien sind als Spalten in der Datenbank abgebildet. Diese wird in der Datei \code{database\_moves.csv} im CSV-Format gespeichert.
 \\\mxPicture{10cm}{symmetrie}{Symmetrie des Spielfeldes}{Symmetrie des Spielfeldes}{fig:sym1}{}
 \\Die Datenbank besteht aus 60 Zeilen und neun Spalten. Die neun Spalten stellen o.g. Feldkategorien (\mxZitat{0} bis \mxZitat{8}) dar. Die c-te Spalte in der n-ten Zeile stellt die Gewinnwahrscheinlichkeiten des Spieles dar, gegeben, dass im n-ten Spielzug ein Feld der c-ten Feldkategorie gespielt wird. 
@@ -171,7 +172,7 @@ Jede Zelle in dieser Tabelle enthält ein Tripel der Form \\$( \mathtt{won\_game
 Die Startwerte der Tupel sind jeweils \mxZitat{(0, 0, 0)}, da initial noch keine Spiele gespeichert sind.
 \paragraph{Befüllen der Datenbank}
 \label{para:train1}
-Nachdem die Datenbank im vorherigen Abschnitt initialisiert erstellt wurde, wird diese nun mit Spieldaten aus zufällig gespielten Spielen befüllt. In Listing \ref{lst:train1} ist das Spielen eines einzelnen zufälligen Spieles und den Aufruf der Funktion \code{update\_fields\_stats\_for\_single\_game} abgebildet. Zunächst wird ein Othello-Spiel initialisiert (Z. 1f.). Durch die Nutzung des \mxZitat{Random}-Agenten wird ein komplettes Spiel durchgeführt (Z. 3f.). Anschließend wird der Gewinner ermittelt (Z. 5) und die Zugreihenfolge ermittelt (Z. 6). Die Funktion \code{update\_fields\_stats\_for\_""single\_game} verwendet diese beiden Parameter um die Datenbank zu aktualisieren. Die Funktion wird in Listing \ref{lst:train2} abgebildet.
+Nachdem die Datenbank im vorherigen Abschnitt initialisiert erstellt wurde, wird diese nun mit Spieldaten aus zufällig gespielten Spielen befüllt. In Listing \ref{lst:train1} ist das Spielen eines einzelnen zufälligen Spieles und den Aufruf der Funktion \code{update\_fields\_stats\_for\_single\_game} abgebildet. Zunächst wird ein Othello-Spiel initialisiert (Z. 1f.). Durch die Nutzung des \mxZitat{Random}-Agenten wird ein komplettes Spiel durchgeführt (Z. 3f.). Anschließend wird der Gewinner ermittelt (Z. 5) und die Zugreihenfolge ermittelt (Z. 6). Die Funktion \code{update\_fields\_stats\_for\_""single\_game} verwendet diese beiden Parameter, um die Datenbank zu aktualisieren. Die Funktion wird in Listing \ref{lst:train2} abgebildet.
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {Befüllen der Datenbank 1}, language = python, captionpos = t , numbers=left, label={lst:train1}]
 g = Othello()
 g.init_game()
