@@ -228,7 +228,7 @@ def heuristic(current_player, game_state: Othello):
 Die \mxZitat{Cowthello Heuristik} wurde aus \cite{cow1} übernommen. Ihr liegt ebenfalls der in Kapitel \ref{othello-chapter} erläuterte Idee zugrunde, die einzelnen Spielfelder in Kategorien einzuteilen und jeder Kategorie einen speziellen Wert zuzuweisen. Die Heuristik unterscheidet sich von der \nameref{nissen2007H} nur in der genaueren Definition der Feldkategorien und unterschiedliche Gewichtungen dieser Felder.
 Die Gewichte der einzelnen Felder sind in Abbildung dargestellt. Die Unterschiede zur \nameref{nissen2007H} bestehen in der detaillierteren Gewichtung beispielsweise der Zentralfelder (\mxZitat{1}, \mxZitat{5} oder \mxZitat{50}) im Gegensatz zu \mxZitat{2}. Die restliche Implementierung ist identisch zur \nameref{nissen2007H}.
 \\\mxPicture{10cm}{cow1}{Gewichtung der einzelnen Spielfelder}{Gewichtung der einzelnen Spielfelder}{fig:cow1}{}
-In der Abbildung \ref{fig:cow1} wird deutlich, dass die Werte strategisch zugewiesen wurden. Beispielsweise sind die \mxZitat{X}- und \mxZitat{C}-Felder mit \mxZitat{schlechten} Werten (\mxZitat{-50}, \mxZitat{-25}) belegt. Dies spiegelt auch die Spielstrategie wieder, dass diese Felder für den aktuellen Spieler schlecht sind, da der Gegner dadurch leicht eine Ecke des Spielfeldes besetzen kann.
+In der Abbildung \ref{fig:cow1} wird deutlich, dass die Werte strategisch zugewiesen wurden. Beispielsweise sind die \mxZitat{X}- und \mxZitat{C}-Felder mit \mxZitat{schlechten} Werten (\mxZitat{-50}, \mxZitat{-25}) belegt. Dies spiegelt auch die Spielstrategie wider, dass diese Felder für den aktuellen Spieler schlecht sind, da der Gegner dadurch leicht eine Ecke des Spielfeldes besetzen kann.
 \section{Start Tabellen}
 In dem Grundlagenkapitel \ref{lookup} wurden die Vor- und Nachteile von Suche vs. Nachschlagen beschrieben. In diesem Kapitel wird darauf aufbauend die Implementierung zur Verwendung von einer Eröffnungsbibliothek in der zu Beginn des Spiels bewährte Züge nachgeschlagen werden können erläutert. In dieser Arbeit wird ein solche Bibliothek synonym mit Spieltabellen und Startdatenbank bezeichnet, da diese als eine Arte Tabelle in einer Datenbank gespeichert werden.
 \\Für viele Spiele, beispielsweise für Schach, existieren umfangreiche Eröffnungsbibliotheken, welche bewährte Eröffnungszüge speichern. Für Othello existieren zwar viele Sammlungen von durchgeführten Spielen, jedoch sind den Verfassern nur wenige Eröffnungsspiele bekannt. In der hier präsentierten Implementierung werden die 77 Eröffnungszüge von Robert Gatliff \cite{open1} verwendet. Beschreiben werden diese jeweils durch eine Zugreihenfolge, z.B. \code{c4, c3, d3, c5, b2}. 
@@ -262,8 +262,8 @@ Beim ersten Aufrufen der Starttabellen, wird die Datenbank initialisiert (Z. 2f.
 \section{Agenten}
 \authormax
 \label{agenten}
-Beim Start eines Partie stehen dem Nutzer mehrere Agenten zur Auswahl die die Rolle eines Spielers übernehmen können. Die Implementierung zu diesen Agenten befindet sich in Unterverzeichnis \code{Agents}.
-\\Die folgende Agenten stehen dabei zur Auswahl:
+Beim Start einer Partie stehen dem Nutzer mehrere Agenten zur Auswahl die die Rolle eines Spielers übernehmen können. Die Implementierung zu diesen Agenten befindet sich in Unterverzeichnis \code{Agents}.
+\\Die folgenden Agenten stehen dabei zur Auswahl:
 \begin{enumerate}
 \item Human
 \item Random Player
@@ -276,7 +276,7 @@ Der \mxZitat{Human Agent} bzw. menschliche Agent stellt eine Schnittstelle die e
 
 \subsection{Random}
 Die Implementierung des Agenten \mxZitat{Random} befindet sich in der Datei \code{random.py}. Dieser Agent ist die einfachste Form der im Rahmen dieser Arbeit eingesetzten Strategien einer künstlichen Intelligenz. Ihr liegt die Idee zugrunde, dass der Agent einen zufälligen Zug aus der Menge der erlaubten Züge auswählt.
-\\In der mit der Arbeit entwickelten Implementierung ist dies derartig umgesetzt, dass der Agent die Liste der möglichen Züge aus dem Spielzustand abruft und einen zufälligen Index der Liste auswählt um dann den dort angegebenen Zug zu spielen.
+\\In der mit der Arbeit entwickelten Implementierung ist dies derartig umgesetzt, dass der Agent die Liste der möglichen Züge aus dem Spielzustand abruft und einen zufälligen Index der Liste auswählt, um dann den dort angegebenen Zug zu spielen.
 
 \subsection{\mc}
 Hinter diesem Agenten steht das im Kapitel \ref{mc_algo} erläuterte Prinzip, der zufällig gespielten Spiele zur Ermittlung des Spielzuges mit der höchsten Gewinnwahrscheinlichkeit. Dabei werden ausgehend von einem derzeitigen Spielzustand $N$ Spiele simuliert in dem für beide Spieler der Agent \mxZitat{Random} verwendet wird. Dabei wird für den jeweils ersten simulierten Zug gespeichert wie oft dieser durchgeführt wurde und wie häufig dies in einer gewonnenen Simulation resultierte. In dem nicht simulierten Spiel wird dann jener Spielzug ausgeführt, bei dem der Quotient aus der Anzahl der nach dem Spielen dieses Zuges gewonnenen Spiele und der Anzahl der simulierten Spiele, die mit diesem Zug begonnen wurden, am größten ist.
@@ -320,7 +320,7 @@ Die in Listing \ref{lst:mc-prep-fixed} abgedruckte Funktion gibt die Implementie
 \paragraph{Der variable Selektivität Präprozessor}
 In Listing \ref{lst:mc-prep-var} ist die Implementierung des Präprozessors mit variabler Selektivität angegeben.
 \\Wie der Präprozessor mit fester Selektivität, erhält auch diese Funktion einen Spielzustand \code{game\_state} und eine Heuristik \code{heuristic}. Anders als bei dem oben beschriebenen Präprozessor wird hier jedoch ein Wert \code{p\_s} zur Beschreibung der maximalen prozentualen Abweichung $p_{s}$ vom Mittelwert der Wertigkeit der Züge übergeben.
-\\Für die Berechnung wid zunächst der Wert der Heuristik für alle Spielzüge berechnet (Zeile 3). Daraufhin wird in der Zeile 5 der durchschnittliche Wert berechnet und mit der Anweisung in den Zeilen 6 und 7 nur jene Züge im Spielzustand gesetzt, die einen Wert größer als $p_{s}$ multipliziert mit dem durchschnittlichen Wert haben.
+\\Für die Berechnung wird zunächst der Wert der Heuristik für alle Spielzüge berechnet (Zeile 3). Daraufhin wird in der Zeile 5 der durchschnittliche Wert berechnet und mit der Anweisung in den Zeilen 6 und 7 nur jene Züge im Spielzustand gesetzt, die einen Wert größer als $p_{s}$ multipliziert mit dem durchschnittlichen Wert haben.
 \newpage
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {Die Funktion \code{preprocess\_variable\_slectivity}}, language = python, captionpos = t , numbers=left, label={lst:mc-prep-var}]
 	@staticmethod
@@ -338,12 +338,12 @@ Eine Funktion \code{get\_move} wird von allen Agenten bereitgestellt und in der 
 \\Nachfolgend wird die in Listing \ref{lst:ab1} abgedruckte Funktion diskutiert:
 \vspace{0.5cm}
 \\Als Parameter erhält die Funktion den Spielzustand \code{game\state}, zu dem die Entscheidung über den nächsten Zug getroffen werden soll. In Zeile 2 wird nun überprüft, ob die Verwendung der Starttabellen aktiviert ist und zusätzlich in dem aktuellen Spiel weniger als 21 Züge gespielt wurden. Die zweite Komponente der \code{if}-Abfrage erfolgt, da die Startbibliothek maximal Strategien bis zum 20-ten Zug enthält.
-\\Ist dies der Fall, so werden in Zeile 3 alle gemäß der Startbibliothek in Frage kommenden Züge ermittelt. Steht mindestens ein Zug zur Auswahl (Z. 4), so wird dieser gespielt (Z. 5). Nun werden die im vorherigen Zug ermittelten Wahrscheinlichkeiten gelöscht(Z. 6) und das Symbol, welches zur Repräsentation des eigenen Spielers verwendet wird zwischengespeichert (Z. 6).
-\\Ist die Option zur Verwendung eines Präprozessors aktiviert, wird die Abfrage in Zeile 8 positiv ausgewertet. In diesem Fall wird der selektierte Präprozessor aufgerufen (Z. 9). Danach wird ermittelt ob die Option zur Verwendung mehrerer Prozesse aktiviert ist (Z. 10). Ist dies nicht der Fall, so werden \code{big\_n} zufällige Spiele gespielt (Z. 11). Die dazu aufgerufene Hilfsfunktion gibt ein Objekt des Typs \mxZitat{Dictionary} zurück. Dieses enthält für jeden möglichen Zug die Anzahl der gewonnen Spiele wenn dieser Zug zuerst gespielt wurde und die Gesamtanzahl von Spielen.\\
+\\Ist dies der Fall, so werden in Zeile 3 alle gemäß der Startbibliothek in Frage kommenden Züge ermittelt. Steht mindestens ein Zug zur Auswahl (Z. 4), so wird dieser gespielt (Z. 5). Nun werden die im vorherigen Zug ermittelten Wahrscheinlichkeiten gelöscht (Z. 6) und das Symbol, welches zur Repräsentation des eigenen Spielers verwendet wird zwischengespeichert (Z. 6).
+\\Ist die Option zur Verwendung eines Präprozessors aktiviert, wird die Abfrage in Zeile 8 positiv ausgewertet. In diesem Fall wird der selektierte Präprozessor aufgerufen (Z. 9). Danach wird ermittelt ob die Option zur Verwendung mehrerer Prozesse aktiviert ist (Z. 10). Ist dies nicht der Fall, so werden \code{big\_n} zufällige Spiele gespielt (Z. 11). Die dazu aufgerufene Hilfsfunktion gibt ein Objekt des Typs \mxZitat{Dictionary} zurück. Dieses enthält für jeden möglichen Zug die Anzahl der gewonnen Spiele, wenn dieser Zug zuerst gespielt wurde und die Gesamtanzahl von Spielen.\\
 Ist die Verwendung mehrere Prozesse aktiviert (Option \code{use\_multiprocessing}), so wird der \code{else}-Zweig in den Zeilen 12 bis 20 ausgeführt:
 \\Dazu wird zunächst die Anzahl der verfügbaren Prozessorkerne ermittelt (Z. 13). Im weiteren Verlauf werden entsprechend viele Prozesse verwendet. So können alle verfügbaren Prozessorkerne genutzt werden, ohne einen zu großen Verwaltungsaufwand für die Prozesse zu generieren. In Zeile 14 wird dann ein entsprechender Pool von Prozessen angelegt und durch die Anweisung der Zeilen 15 und 16 spezifiziert, dass mittels dieser Prozesse so häufig wie Prozesse vorhanden sind asynchron jeweils \code{big\_n} geteilt durch die Anzahl der Prozesse zufällige Spiele simuliert werden. Da die entsprechende Funktion eine Ganzzahl erwartet, kommt an dieser Stelle die Ganzzahldivison \code{//} zum Einsatz. Dadurch ergibt die Summe aller durchgeführten Simulationen ggf. nicht \code{big\_n}; bei entsprechend großen Werten kann dies jedoch vernachlässigt werden.
 \\Da die Spiele asynchron simuliert werden, muss die Berechnung zunächst durch Aufruf der Funktion \code{get} an jedem Listenelement angestoßen werden. Für das erste Element geschieht dies in Zeile 17. Für die weiteren Elemente erfolgt dies in der Schleife zur Zusammenführung der Ergebnisse. In Zeile 20 werden dann alle Prozesse wieder geschlossen.
-\\Nun muss anhand der Daten zu gewonnenen und insgesamt gespielten Spiele für jeden Zug die Gewinnwahrscheinlichkeit berechnet werden. Dies erfolgt in den Zeilen 21 bis 23 indem der Quotient aus den beiden Werten gebildet wird (Z. 23)
+\\Nun muss anhand der Daten zu gewonnenen und insgesamt gespielten Spielen für jeden Zug die Gewinnwahrscheinlichkeit berechnet werden. Dies erfolgt in den Zeilen 21 bis 23 indem der Quotient aus den beiden Werten gebildet wird (Z. 23)
  \\Nun wird jener Zug mit der größten Gewinnwahrscheinlichkeit ermittelt (Z. 24) und and die aufrufende Funktion zurückgegeben (Z. 25).      
  \newpage
 \begin{lstlisting}[basicstyle=\footnotesize,caption = {get\_move Funktion des \mc\ Agenten}, language = python, captionpos = t , numbers=left, label={lst:ab1}]
@@ -379,7 +379,7 @@ Ist die Verwendung mehrere Prozesse aktiviert (Option \code{use\_multiprocessing
 
 \subsubsection{Nutzung der gewichteten Zufallsfunktion}
 \authorpatrick
-Wie in Abschnitt \nameref{Pseudornd-move-selection} des Kapitel \ref{mc_algo} zum \nameref{mc_algo} beschrieben, gibt es neben der Verwendung eines Präprozessors noch eine  Variante des Algorithmus bei der die Züge in den simulierten Spielen unter Verwendung von Othello spezifischem Wissens pseudozufällig ausgewählt werden. 
+Wie in Abschnitt \nameref{Pseudornd-move-selection} des Kapitel \ref{mc_algo} zum \nameref{mc_algo} beschrieben, gibt es neben der Verwendung eines Präprozessors noch eine  Variante des Algorithmus bei der die Züge in den simulierten Spielen unter Verwendung von \ot\ spezifischen Wissens pseudozufällig ausgewählt werden. 
 \\Die gewichtete Zufallsfunktion verfolgt genau diesen Ansatz indem sie bei der Auswahl eines Zuges Züge mit einer höheren Gewinnwahrscheinlichkeit bevorzugt. Zur Beurteilung der Gewinnwahrscheinlichkeit wird die für die \mxZitat{Stored \mc}-Heuristik aufgebaute Datenbank herangezogen. Nachfolgend wird das Verfahren anhand der in Listing \ref{lst:wmc1} abgedruckten Funktion näher erläutert:
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {get\_weighted\_random Funktion des Monte-Carlo Agenten}, language = python, captionpos = t , numbers=left, label={lst:wmc1}]
     def get_weighted_random(possible_moves, turn_nr, own_symbol):
@@ -452,11 +452,11 @@ Auch das detaillierte Verhalten des Agenten \mxZitat{\abp} kann durch verschiede
 \item \code{\_search\_depth}: Gibt die Tiefe an, ab der einzelne Zweige nicht weiter verfolgt werden und stattdessen die Heuristik zur Zustandsbewertung verwendet wird.
 \item \code{\_heuristic}: Eine der in Kapitel \ref{Heuristiken} beschriebenen Heuristiken.
 \item \code{\_use\_monte\_carlo}: Bool'scher Wert der angibt ob in der Tiefe \\\code{search\_depth} + 1 statt der Heuristik das Prinzip des \mc\ Agentens zur Bewertung der Züge verwendet werden soll.
-\item \code{\_mc\_count}: Anzahl der simuliert Spiele wenn das \mc\ Prinzip zur Bewertung des Zustandes verwendet wird.
+\item \code{\_mc\_count}: Anzahl der simulierten Spiele, wenn das \mc\ Prinzip zur Bewertung des Zustandes verwendet wird.
 \end{itemize}
 \subsubsection{Die Funktion \code{value}}
 Die in Listing \ref{lst:ab-value} abgedruckte Funktion \code{value} entspricht im wesentlichen der in Listing \ref{lst:abprun} abgedruckten und in \ref{ab-basics-impl} besprochenen \mxZitat{value}-Funktion des \abab\ Algorithmus.
-\\Hier soll einzig auf den sich unterscheidenden Basisfall (Zeile 3-6) eingegangen werden. Ist ein Endzustand erreicht, so ist das Spiel beendet und die Abfrage in Zeile 3 wird positiv ausgewertet. In diesem Fall wird der Wert der \code{utility}-Funktion für den aktuellen Spieler zurück gegeben (Z. 4). Um das Gewinnen bzw. Verlieren jedoch deutlich stärker zu gewichten als die Bewertungen der Heuristik, wird dies zuvor mit $1000$ multipliziert.
+\\Hier soll einzig auf den sich unterscheidenden Basisfall (Zeile 3-6) eingegangen werden. Ist ein Endzustand erreicht, so ist das Spiel beendet und die Abfrage in Zeile 3 wird positiv ausgewertet. In diesem Fall wird der Wert der \code{utility}-Funktion für den aktuellen Spieler zurückgegeben (Z. 4). Um das Gewinnen bzw. Verlieren jedoch deutlich stärker zu gewichten als die Bewertungen der Heuristik, wird dies zuvor mit $1000$ multipliziert.
 \\Ist die maximale Suchtiefe erreicht, so wird die Abfrage in Zeile 5 positiv ausgewertet. In diesem Fall wird die Heuristik zur Zustandsbewertung herangezogen (Z. 6).
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {\code{value} Funktion des Alpha-Beta Spielers}, language = python, captionpos = t , numbers=left, label={lst:ab-value}]
     @staticmethod
