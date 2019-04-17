@@ -1,6 +1,6 @@
 \chapter{Implementierung der KI}
-\authorpatrick
 \label{implementation}
+\authorpatrick
 In den folgenden Unterkapiteln  werden verschiedene Spielalgorithmen vorgestellt und implementiert. Anschließend werden diese verbessert und auch unter Berücksichtigung des Laufzeitverhaltens analysiert.
 \\Zunächst wird aber die grundsätzliche Programmstruktur erläutert und das Spielgerüst implementiert, damit unterschiedliche Spieler es ausführen können.
 \section{Grundlegende Spiel-Elemente}
@@ -26,8 +26,8 @@ In \mxZitat{main-game.py} wird das Rahmenprogramm gestartet. In diesem werden zu
     print(f"Winner is {PRINT_SYMBOLS[game.get_winner()]}")
 \end{lstlisting}
 \subsection{Die Klasse \mxZitat{Othello}}
-\authormax
 \label{ot1}
+\authormax
 Die Klasse \mxZitat{Othello} modelliert einen Spielzustand und enthält die grundlegende Spiellogik wie bspw. die Berechnung erlaubter Züge. Nachfolgend wird auf die Art der Speicherung eines Spielzustandes und auf die wichtigsten Funktionen dieser Klasse eingegangen.
 \paragraph{Klassenvariablen}
 In Listing \ref{lst:class-vars-othello} sind alle Klassenvariablen, sowie deren Initialisierungswerte angegeben.
@@ -41,6 +41,7 @@ In Listing \ref{lst:class-vars-othello} sind alle Klassenvariablen, sowie deren 
 \item \code{\_taken\_moves}: Speichert alle ausgeführten Züge die erforderlich waren um den modellierten Spielzustand zu erreichen, da einige Algorithmen diese Information benötigen.
 \item \code{\_turn\_nr}: Speichert die Nummer des aktuellen Spielzuges, da die verwendete Strategie bei einigen Algorithmen davon abhängt, wie weit das Spiel schon fortgeschritten ist.
 \end{enumerate}
+\newpage
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {Klassenvariablen der Klasse \mxZitat{Othello}}, language = python, captionpos = t , numbers=left, label={lst:class-vars-othello}]
     _board = [[0 for _ in range(8)] for _ in range(8)]
     _current_player = None 
@@ -136,8 +137,8 @@ Wie im Abschnitt \ref{Heuristiken} besprochen werden für einige Algorithmen Fun
 \item Stored Monte-Carlo-Heuristik
 \item Cowthello Heuristik
 \end{enumerate}
-Die Implementierungen aller Heuristiken 
-befinden sich in der Datei \code{heuristics.py}.
+In der Datei \code{heuristics.py} befinden sich die Implementierungen aller Heuristiken.
+
 \subsection{Nijssen 2007 Heuristik}
 \label{nissen2007H}
 Die \mxZitat{Nijssen 2007 Heuristik} wurde aus \cite{nijssen_2007} übernommen. Ihr liegt die im Kapitel \ref{othello-chapter} erläuterte Idee zugrunde, die einzelnen Spielfelder in Kategorien einzuteilen und jeder Kategorie einen speziellen Wert zuzuweisen. Die Bewertung des Spielzustandes $s$ aus Sicht eines Spielers $\mathtt{player}$ ergibt sich dann nach der folgenden Formel:  \vspace{0.25cm}\\ $\mathtt{heuristic}(\mathtt{player}, S) = \sum\limits_{f \in \mathtt{domain}(\mathtt{F}(s))}  w_{f} * b_{f}$ \vspace{0.25cm}\\$F(s)$ ist eine Funktion ist, die für das Spielfeld des Zustands $s$ eine Relation zurückgibt, die für jedes Feld angibt, durch welchen Spieler es besetzt ist oder ob es leer ist. $w_{f}$ steht für das dem Feld zugeordnete Gewicht und \vspace{0.25cm}\\$b_{f} = \begin{cases} 1 \mathtt{,\ wenn\ F}(s)[f] = \mathtt{player} \\ -1 \mathtt{,\ wenn\ F}(s)[f] = \mathtt{other(player)} \\ 0 \mathtt{,\ sonst} \end{cases}$
@@ -150,8 +151,8 @@ Die \mxZitat{Nijssen 2007 Heuristik} wurde aus \cite{nijssen_2007} übernommen. 
 \item \code{Andere-Felder}: $+1$
 \end{enumerate}
 \subsection{Stored Monte-Carlo-Heuristik}
-\authorpatrick
 \label{impl:stored-mc}
+\authorpatrick
 Dieser Heuristik liegt die Idee zugrunde die in mehreren Spielen gesammelten Erkenntnisse zu den Gewinnwahrscheinlichkeiten einzelner Züge zu speichern und in den darauffolgenden Spielen zur Beurteilung von Spielzuständen heranzuziehen.
 \\Die \mxZitat{Stored Monte-Carlo-Heuristik} verwendet zu diesem Zweck eine Datenbank. In dieser Datenbank wird für jede Zugnummer, jedes Feld des Spielfeldes und jeden Spieler die Häufigkeit mit der dieser im Trainingsprozess gespielten und gewonnenen wurde gespeichert. Die genaue Funktion wird in den Unterabschnitten \nameref{para:db} und \nameref{para:train1} näher erklärt. Darauf aufbauend wird die Funktionsweise der Heuristik in dem Abschnitt \nameref{para:heuristic1} erläutert.
 \paragraph{Datenbank}
@@ -176,6 +177,7 @@ Die Startwerte der Tupel sind jeweils \mxZitat{(0, 0, 0)}, da initial noch keine
 \paragraph{Befüllen der Datenbank}
 \label{para:train1}
 Nachdem die Datenbank im vorherigen Abschnitt initialisiert erstellt wurde, wird diese nun mit Spieldaten aus zufällig gespielten Spielen befüllt. In Listing \ref{lst:train1} ist das Spielen eines einzelnen zufälligen Spieles und den Aufruf der Funktion \code{update\_fields\_stats\_for\_single\_game} abgebildet. Zunächst wird ein Othello-Spiel initialisiert (Z. 1f.). Durch die Nutzung des \mxZitat{Random}-Agenten wird ein komplettes Spiel durchgeführt (Z. 3f.). Anschließend wird der Gewinner ermittelt (Z. 5) und die Zugreihenfolge ermittelt (Z. 6). Die Funktion \code{update\_fields\_stats\_for\_""single\_game} verwendet diese beiden Parameter, um die Datenbank zu aktualisieren. Die Funktion wird in Listing \ref{lst:train2} abgebildet.
+\newpage
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {Befüllen der Datenbank 1}, language = python, captionpos = t , numbers=left, label={lst:train1}]
 g = Othello()
 g.init_game()
@@ -189,6 +191,7 @@ In der Funktion \code{update\_fields\_stats\_for\_single\_game} (Listing \ref{ls
 \\Diese Methode liest die Werte der durch Zugnummer und Feldkategorie festgelegte Zelle aus (Z. 2). Je nachdem, welcher Spieler dieses Spiel gewonnen hat, wird die Zahl der gewonnenen Spiele des ersten, zweiten oder keinem Spieler um eins erhöht (Z. 3-6). Abschließend wird die Zahl der insgesamt durchgeführten Spiele inkrementiert (Z. 7 dritte Komponente) und in die Datenbank zurückgeschrieben (Z. 7).
 \\Die Datenbank wurde mit 140.000 Spielen trainiert, um statistische Abweichungen zu minimieren. Hierbei wirkt das Gesetz der großen Zahlen, das besagt, dass sich die Wahrscheinlichkeiten eines Ereignisses bei sehr vielen Wiederholungen dem Erwartungswert annähert.
 \\Zur Auswertung der Datenbank wurde die Klasse \code{Analyse} in der Datei \\\code{analyse\_database.py} erstellt. Diese liest die Datenbank aus und liefert eine farbige Ansicht der Gewinnwahrscheinlichkeiten eines Spielers jeweils pro Zug auf dem Terminal. Neben dem dargestellten Spielbrett wird auch das Minimum, das Maximum, der Durchschnittswert und die Standardabweichung des dargestellten Spielbrettes berechnet. Zur Nutzung dieser Funktion wird das python-Paket \mxZitat{termcolor} benötigt.
+\newpage
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {Befüllen der Datenbank 2}, language = python, captionpos = t , numbers=left, label={lst:train2}]
 	def update_field_stat(self, turn_nr, field_type, winner):
 		(won_games_pl1, won_games_pl2, total_games_played) = self._data[turn_nr][field_type]
@@ -229,7 +232,8 @@ In der Abbildung \ref{fig:cow1} wird deutlich, dass die Werte strategisch zugewi
 \section{Start Tabellen}
 In dem Grundlagenkapitel \ref{lookup} wurden die Vor- und Nachteile von Suche vs. Nachschlagen beschrieben. In diesem Kapitel wird darauf aufbauend die Implementierung zur Verwendung von einer Eröffnungsbibliothek in der zu Beginn des Spiels bewährte Züge nachgeschlagen werden können erläutert. In dieser Arbeit wird ein solche Bibliothek synonym mit Spieltabellen und Startdatenbank bezeichnet, da diese als eine Arte Tabelle in einer Datenbank gespeichert werden.
 \\Für viele Spiele, beispielsweise für Schach, existieren umfangreiche Eröffnungsbibliotheken, welche bewährte Eröffnungszüge speichern. Für Othello existieren zwar viele Sammlungen von durchgeführten Spielen, jedoch sind den Verfassern nur wenige Eröffnungsspiele bekannt. In der hier präsentierten Implementierung werden die 77 Eröffnungszüge von Robert Gatliff \cite{open1} verwendet. Beschreiben werden diese jeweils durch eine Zugreihenfolge, z.B. \code{c4, c3, d3, c5, b2}. 
-\\Die zur Erreichung des aktuellen Spielzustandes gespielten Züge werden mit den gespeicherten Zugreihenfolgen verglichen. Wenn diese Reihenfolgen für eine oder mehrere gespeicherte Eröffnungen übereinstimmen, wir eine dieser Reihenfolgen ausgewählt und der nach dieser Reihenfolge nächste Zug gespielt. Die entsprechende Funktion \code{get\_\\available\_moves\_of\_start\_tables} ist in Listing \ref{lst:start2} abgebildet.
+\\Die zur Erreichung des aktuellen Spielzustandes gespielten Züge werden mit den gespeicherten Zugreihenfolgen verglichen. Wenn diese Reihenfolgen für eine oder mehrere gespeicherte Eröffnungen übereinstimmen, wir eine dieser Reihenfolgen ausgewählt und der nach dieser Reihenfolge nächste Zug gespielt. Die entsprechende Funktion \code{get\_available\_moves\_of\_start\_tables} ist in Listing \ref{lst:start2} abgebildet.
+\newpage
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {Befüllen der Datenbank 2}, language = python, captionpos = t , numbers=left, label={lst:start2}]
 def get_available_moves_of_start_tables(self, game: Othello):
 	if len(self._start_tables) == 0:
@@ -317,6 +321,7 @@ Die in Listing \ref{lst:mc-prep-fixed} abgedruckte Funktion gibt die Implementie
 In Listing \ref{lst:mc-prep-var} ist die Implementierung des Präprozessors mit variabler Selektivität angegeben.
 \\Wie der Präprozessor mit fester Selektivität, erhält auch diese Funktion einen Spielzustand \code{game\_state} und eine Heuristik \code{heuristic}. Anders als bei dem oben beschriebenen Präprozessor wird hier jedoch ein Wert \code{p\_s} zur Beschreibung der maximalen prozentualen Abweichung $p_{s}$ vom Mittelwert der Wertigkeit der Züge übergeben.
 \\Für die Berechnung wid zunächst der Wert der Heuristik für alle Spielzüge berechnet (Zeile 3). Daraufhin wird in der Zeile 5 der durchschnittliche Wert berechnet und mit der Anweisung in den Zeilen 6 und 7 nur jene Züge im Spielzustand gesetzt, die einen Wert größer als $p_{s}$ multipliziert mit dem durchschnittlichen Wert haben.
+\newpage
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {Die Funktion \code{preprocess\_variable\_slectivity}}, language = python, captionpos = t , numbers=left, label={lst:mc-prep-var}]
 	@staticmethod
     def preprocess_variable_selectivity(game_state: Othello, p_s, heuristic):
