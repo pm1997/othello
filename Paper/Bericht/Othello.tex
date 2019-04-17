@@ -88,8 +88,9 @@
 
 % todo definieren ----------------------------------------------------
 \usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
-\newcommand{\authorpatrick}{\todo[inline,linecolor=none,backgroundcolor=grey!25,bordercolor=black]{Patrick Müller}}
-\newcommand{\authormax}{\todo[inline,linecolor=none,backgroundcolor=grey!25,bordercolor=black]{Max Zepnik}}
+\newcommand{\authorpatricknonewline}{\colorbox{grey!25}{\parbox[c]{2.7cm}{Patrick Müller}}} 
+\newcommand{\authorpatrick}{\colorbox{grey!25}{\parbox[c]{2.7cm}{Patrick Müller}}\\} 
+\newcommand{\authormax}{\colorbox{grey!25}{\parbox[c]{2.3cm}{Max Zepnik}}\\}
 \newcommand{\unsure}[1]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red]{#1}}
 \newcommand{\change}[1]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue]{#1}}
 \newcommand{\info}[1]{\todo[linecolor=green,backgroundcolor=green!25,bordercolor=green]{#1}}

@@ -1,6 +1,6 @@
 \chapter{Grundlagen}
-\authorpatrick
 \label{basics}
+\authorpatrick
 In diesem Kapitel werden die theoretischen Grundlagen für eine Künstliche Intelligenz für das Spiel \ot\ erläutert.\\
 Zunächst werden dazu einige Begriffe der Spieltheorie eingeführt. Diese werden dann zur Beschreibung einiger deterministischer Algorithmen zum Treffen einer Spielentscheidung verwendet. Den Abschluss des Kapitels bildet schließlich die Beschreibung einer stochastischen Methode für diesen Zweck. 
 \section{Spieltheorie}
@@ -75,8 +75,8 @@ wenn Spieler am Zug$\\\mathtt{min}(\{\mathtt{MiniMax}(\mathtt{result}(s,a) \mid 
 \vspace{0.5cm}\\ Die Strategie ist eine Tiefensuche und erkundet jeden Knoten zuerst bis zu den einzelnen Blättern bevor ein Nachbarknoten ausgewählt wird. Dies setzt das mindestens einmalige Durchlaufen des gesamten Suchbaums voraus. Bei einem durchschnittlichen Verzweigungsfaktor von $f$ bei einer Tiefe von $d$ resultiert daraus eine Komplexität von $\mathcal{O}(d\textsuperscript{f})$. Bei einem einmaligen Erkunden der Knoten können die Werte aus den Blättern rekursiv von den Blättern zu den Knoten aktualisiert werden. Dadurch muss im nächsten Zug nur das Minimum aus $\mathtt{actions}$ ermittelt werden, da alle Kindknoten schon evaluiert wurden. Für übliche Spiele kann die MiniMax-Strategie allerdings nicht verwendet werden, da die Komplexität zu hoch für eine akzeptable Antwortzeit ist und der benötigte Speicherplatz für die berechneten Zustände sehr schnell wächst.
 
 \subsection{\abab}
-\authormax
 \label{ab-pruning}
+\authormax
 Der MiniMax Algorithmus berechnet nach dem Prinzip \mxZitat{depth-first} stets den kompletten \gtree. 
 \\Bei der Betrachtung des Entscheidungsverhaltens des Algorithmus fällt jedoch schnell auf, dass ein nicht unerheblicher Teil aller möglichen Züge durch einen menschlichen Spieler gar nicht erst in Betracht gezogen wird. Dies geschieht aufgrund der Tatsache, dass diese Züge in einem schlechteren Ergebnis resultieren würden als ein anderer, letztendlich ausgewählter, Zug.\newline
 Dem \abab\ (\abp) Algorithmus liegt der Gedanke zugrunde, dass die Zustände, die in einem realen Spiel nie ausgewählt würden, auch nicht berechnet werden müssen. Damit steht die dafür regulär erforderliche Rechenzeit und der entsprechende Speicher dafür zur Verfügung andere, vielversprechendere, Zweige zu verfolgen.
@@ -296,8 +296,8 @@ Das Mittelspiel jedoch hat zu viele Zugmöglichkeiten, um eine Tabelle der mögl
 \\Bei der Berechnung der Spielzüge sind die Suchtiefe und der Verzweigungsfaktor entscheidend für die Berechnungsdauer. Aus diesem Grund können im Mittelspiel keine MiniMax-Algorithmen bis zu den Blattknoten des \gtrees\ ausgeführt werden, da die Menge des benötigten Speicherplatzes außerhalb jeglicher Grenzen eines Arbeits- oder Gamingscomputers liegen.
 
 \section{\mc\ Algorithmus}
-\authormax
 \label{mc_algo}
+\authormax
 Im Gegensatz zu den bisher gezeigten Algorithmen verwendet der \mc\ Algorithmus einen stochastischen Ansatz, um einen Zug auszuwählen. Im nachfolgenden Abschnitt wird die Funktionsweise des \mc\ Algorithmus erklärt. Daran angeschlossen folgen Möglichkeiten strategische Überlegungen zum Spiel \ot\ einzubringen. Dabei sind die nachfolgenden Ausführungen stark angelehnt an jene von \cite{nijssen_2007}.
 \subsection{Algorithmus}
 Als Ausgangspunkt legt der \mc\ Algorithmus die Menge der Züge zugrunde, die ein Spieler unter Wahrung der Spielregeln wählen kann. Diese Züge seien nachfolgend Zug-Kandidaten genannt. Enthält die Menge keine Züge, so bleibt dem Spieler nichts anderes übrig als auszusetzen. Enthält die Menge nur einen Zug, so muss der Spieler diesen ausführen. Per Definition ist dies dann der bestmögliche Zug. Enthält die Menge hingegen mindestens zwei mögliche Züge, so gilt es den besten unter ihnen auszuwählen. Um den besten Zug zu ermitteln, wird das Spiel mehrfach, die Anzahl sei $N_{P}$, bis zum Ende simuliert. Während der Simulation wird jeder mögliche Zug gleich häufig gewählt. Der Rest des simulierten Spiels wird dann zufällig zu Ende gespielt. Sobald alle Durchgänge erfolgt sind, wird das durchschnittliche Ergebnis für jeden möglichen Zug berechnet. Dabei gibt es zwei Möglichkeiten dieses Ergebnis zu berechnen:\\

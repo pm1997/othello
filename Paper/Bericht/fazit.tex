@@ -1,7 +1,6 @@
 \chapter{Fazit}
 \label{Fazit}
 \authormax
-
 In diesem Kapitel werden die Ergebnisse der Arbeit bewertet und ein Ausblick über weitere Forschungsgegenstände gegeben.
 \\Im ersten Abschnitt werden dazu zunächst die präsentierten Agenten bewertet und weitere Anpassungsmöglichkeiten aufgezeigt.
 \\Der zweite Abschnitt nimmt eine Bewertung der eingesetzten Heuristiken vor, indem die Variation der Ergebnisse eines Agenten bei der Verwendung der verschiedenen Heuristiken betrachtet wird.
@@ -52,8 +51,8 @@ Im nachfolgenden Abschnitt wird auf die jeweilige Leistung der einzelnen Heurist
 Die Implementierung der von \cite{nijssen_2007} vorgeschlagenen Heuristik kann in den hier durchgeführten Vergleichen nicht überzeugen. Tritt der Agent der sie im Spiel gegen den \mxZitat{Random}-Agenten einsetzt als Spieler 1 auf, so werden bei ihrem Einsatz sogar weniger Spiele gewonnen als der zufällig spielende Agent gewinnt (Vgl. 2). Zwar spielt der Agent besser wenn er als Spieler 2 auftritt (Vgl. 7), jedoch legt das Ergebniss des Vergleiches des zufällig spielenden Agenten mit sich selbst (Vgl. 0) nahe, dass der als Spieler 2 auftretende Agent im wesentlichen eine um rund 10\% höhere Gewinnchance hat. Diese Marge deckt sich im wesentlichen mit der angesprochenen Verbesserung.
 \\Damit kann die Heuristik, ohne weitere Verbesserungen, nicht für den Einsatz empfohlen werden. Von einem Einsatz bei der Untersuchung des Spielverhaltens des \mxZitat{\abp}-Agenten gegen einen menschlichen Spieler ist abzusehen. 
 \subsection{Die Heuristik \mxZitat{Stored \mc}}
-\authorpatrick
 \label{fz:h_smc}
+\authorpatrick
 Nutzt der \mxZitat{\abp}-Agent die \mxZitat{Stored \mc} Heuristik so, gewinnt er in beiden Spielkombinationen häufiger als der \mxZitat{Random} Agent (siehe Abbildung \ref{tbl:cmp-results} Vergleiche 3 und 8). Im Vergleich mit den anderen Heuristiken ist die Gewinnwahrscheinlichkeit jedoch sehr gering.
 \\Im Spiel \mxZitat{AB (Stored \mc\ Heuristik) } gegen \mxZitat{Random} (siehe Vergleich 3) gewinnt der Agent in 1000 Spielen nur vier Spiele mehr als der zufällige Spieler (458 zu 454). In den 1000 Spielen \mxZitat{Random} gegen \mxZitat{AB (Stored \mc\ Heuristik)} gewinnt die Heuristik mit 446 zu 550 gewonnenen Spielen (siehe Vergleich 8).
 \\Aus den Vergleichen 3 und 8 lassen sich folgende Erkenntnisse ableiten:
@@ -87,7 +86,7 @@ Damit ist die \mxZitat{Cowthello}-Heuristik die beste der betrachteten Heuristik
 %\section{Bewertung der Vorgehensweise}
 
 \section{Ausblick}
-\authorpatrick
+\authorpatricknonewline
 \paragraph{Weitere Verfolgung des Ansatzes der \mxZitat{Stored \mc}-Heuristik}
 Die in der \mxZitat{Stored \mc} Heuristik verwendetet Datenbank könnte womöglich zur Erstellung eines verbesserten Agenten benutzt werden. Die Funktionsweise des neuen Agenten entspräche dabei im wesentlichen der des \mxZitat{\mc} Agenten. Der Unterschied bestünde darin, bei der Auswahl von Zügen in den simulierten Spielen einen zufälligen Zug so zu wählen, dass dieser jeweils mit einer der in der Datenbank für diesen Zug gespeicherten Wahrscheinlichkeit proportionalen Wahrscheinlichkeit ausgewählt wird. Werden die Ergebnisse der simulierten Spiele zusätzlich in der Datenbank gespeichert, so verbessert sich der Agenten mit jedem gespielten Spiel.
 \\Dieser Prozess ist aber zwangsläufig mit Schreibzuggriffen oder mindestens das Verändern des Datenbankenobjektes verbunden. Dies hat zwei schwerwiegende Auswirkungen:

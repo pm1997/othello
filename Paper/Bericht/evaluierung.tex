@@ -5,8 +5,8 @@ Ziel dieses Kapitel ist es die im vorherigen Kapitel vorgestellte Implementierun
 \\Die Evaluierung der einzelnen Agenten erfolgt dabei im Wesentlichen dadurch die Agenten gegeneinander spielen zu lassen. Mittels einer genügend großen Anzahl von Spielen lässt sich derart ermitteln welcher der jeweils verwendeten Agenten im Mittel die meisten Spiele gewinnt und damit als besserer Agent zu bewerten ist.
 \\Die Bedeutung der Feldkategorien wird Anhand der Gewinnwahrscheinlichkeit einer Spielkategorie über den Spielfortschritt untersucht.
 \section{Evaluierung der einzelnen Agenten}
-\authormax
 \label{cpt:eval-agents}
+\authormax
 Nun gilt es die in Kapitel \ref{implementation} beschriebenen Agenten zu evaluieren. In Ermangelung eines \ot-Spielers, der über ein entsprechend gute Spielfähigkeiten verfügt, so dass er zu einem aussagekräftigen Vergleich herangezogen werden könnte, werden die einzelnen Agenten untereinander verglichen. Auf die gewählten Werte der Parameter soll hier nicht näher eingegangen werden. Die letztendlich verwendeten Parameter und das Verfahren um diese zu bestimmen wird in den Anschnitten \nameref{eval:agents:params:subsec-mc} bzw. \nameref{eval:agents:params:subsec-ab} besprochen.
 \\Bei der Bestimmung der Parameter hat sich gezeigt, dass die beim Agenten \mxZitat{\abp} gewählte Stretegie zur Bewertung eines Zustandes in der maximalen Suchtiefe die Gewinnchance des Agenten wesentlich beeinflusst. Aus diesem Grund wird der \mxZitat{\abp}-Agent mit allen zur Verfügung stehenden Heuristiken und der Strategie zur Bewertung eines Zustandes den Monte-Carlo-Algorithmus heranzuziehen seperat betrachtet. Die sich daraus Ergebenden Vergleiche (Vgl.) sind in Tabelle \ref{tbl:cmp-agents} dargestellt. Der Agent \mxZitat{\abp} wird dabei durch \mxZitat{AB} abgekürzt.
 
