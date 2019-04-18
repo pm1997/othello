@@ -1,7 +1,7 @@
 \chapter{Othello}
 \label{othello-chapter}
 \authorpatrick
-\ot\ wird auf einem 8x8 Spielbrett von zwei Spielern gespielt. Es gibt je 64 Spielsteine, welche auf einer Seite schwarz, auf der anderen weiß sind. Der Startzustand besteht aus einem leeren Spielbrett, in welchem sich in der Mitte ein 2x2 Quadrat aus abwechselnd weißen und schwarzen Steinen befindet. Anschließend beginnt der Spieler mit den schwarzen Steinen.
+\ot\ wird auf einem 8x8 Felder großen Spielbrett von zwei Spielern gespielt. Es gibt je 64 Spielsteine, welche auf einer Seite schwarz, auf der anderen weiß sind. Der Startzustand besteht aus einem leeren Spielbrett, in welchem sich in der Mitte ein 2x2 Quadrat aus abwechselnd weißen und schwarzen Steinen befindet. Anschließend beginnt der Spieler mit den schwarzen Steinen.
 \\Die Spielfelder werden in verschiedene Kategorien eingeteilt (siehe Abbildung
  \ref{fig:kat1}):
 \begin{itemize}
@@ -14,7 +14,7 @@
 \end{itemize}
 Diese Kategorien sind für die spätere Strategie wichtig.
 \\\mxPicture{5.8cm}{kategorie}{Kategorien des Spielfeldes}{Kategorien des Spielfeldes}{fig:kat1}{}
-\\Von \ot\ gibt verschiedene Varianten. Eine Variante ist Reversi.
+\\Von \ot\ gibt es verschiedene Varianten. Eine Variante ist Reversi.
 Die verschiedenen Varianten sind allerdings bis auf die Startposition gleich. Bei der Variante Reversi sind die Zentralfelder noch nicht besetzt und die Spieler setzen die vier Steine selbst, während bei \ot\ die Startaufstellung fest vorgegeben ist.
 
 \section{Spielregeln}
@@ -23,7 +23,7 @@ Die verschiedenen Varianten sind allerdings bis auf die Startposition gleich. Be
 \begin{itemize}
 \item Ein Stein darf nur in ein leeres Feld gelegt werden.
 \item Es dürfen nur Steine auf Felder gelegt werden, welche einen oder mehrere gegnerischen Steine mit einem bestehenden Stein umschließen würden. Dies ist im linken Spielbrett durch grüne Felder und im mittleren Spielbrett durch das gelbe Feld hervorgehoben. Das gelbe Feld (F5) umschließt mit dem Feld D5 (blau) einen gegnerischen Stein. Es können auch mehrere Steine umschlossen werden. Allerdings dürfen sich dazwischen keine leeren Felder befinden.
-\item Von dem neu gesetzten Stein in alle Richtungen ausgehend werden die umschlossenen generischen Steine umgedreht, sodass alle Steine die eigene Farbe besitzen. In dem Beispiel ist das im dem rechten Spielbrett zu sehen. F5 umschließt dabei das Feld E5 (rot). Dieses Feld wird nun gedreht und wird schwarz.
+\item Von dem neu gesetzten Stein in alle Richtungen ausgehend werden die umschlossenen gegnerischen Steine umgedreht, sodass alle Steine die eigene Farbe besitzen. In dem Beispiel ist das im dem rechten Spielbrett zu sehen. F5 umschließt dabei das Feld E5 (rot). Dieses Feld wird nun gedreht und wird schwarz.
 \item Ist für einen Spieler kein Zug möglich muss dieser aussetzen. Ein Spieler darf allerdings nicht freiwillig aussetzen, wenn noch mindestens eine Zugmöglichkeit besteht.
 \item Der Spieler mit den meisten Steinen seiner Farbe gewinnt das Spiel.
 \item Ist für beide Spieler kein Zug mehr möglich, ist das Spiel beendet. 
@@ -43,7 +43,7 @@ Diese Abschnitte sind jeweils 20 Spielzüge lang.
 Im Eröffnungs- und Endspiel stehen im Vergleich zum Mittelspiel wenige Zugmöglichkeiten zur Verfügung, da entweder nur wenige Steine auf dem Spielbrett existieren oder das Spielbrett fast gefüllt ist und nur noch einzelne Lücken übrig sind. Im Mittelspiel existieren viele Möglichkeiten, da sich schon mindestens 20 Steine auf dem Spielbrett befinden und diese sehr gute Anlegemöglichkeiten bieten. 
 \section{Spielstrategien}
 \label{strat1}
-Wie in anderen Spielen gibt es auch in \ot\ verschiedene Strategien. Dabei kann beispielsweise offensiv gespielt werden, indem versucht wird möglichst viele Steine in einem Zug zu drehen. Es gibt auch defensive \mxZitat{stille} Züge. Ein \mxZitat{stiller} Zug dreht keinen Frontstein um und dreht möglichst nur wenige innere Steine um (vgl. \cite{Ortiz.}).
+Wie in anderen Spielen gibt es auch in \ot\ verschiedene Strategien. Dabei kann beispielsweise offensiv gespielt werden, indem versucht wird, möglichst viele Steine in einem Zug zu drehen. Es gibt auch defensive \mxZitat{stille} Züge. Ein \mxZitat{stiller} Zug dreht keinen Frontstein um und dreht möglichst nur wenige innere Steine um (vgl. \cite{Ortiz.}).
 \\ Generell ist eine häufig genutzte Strategie die eigene Mobilität zu erhöhen und die Mobilität des Gegners zu verringern. Mit dem Begriff Mobilität sind die möglichen Zugmöglichkeiten gemeint. Durch das Einschränken der gegnerischen Mobilität hat dieser weniger Zugmöglichkeiten und muss so ggf. strategisch schlechtere Züge durchführen.
 \\Die Position der Steine auf dem Spielbrett sollte ebenfalls nicht vernachlässigt werden.
 Beispielsweise sollen Züge auf X-Felder vermieden werden, da der Gegner dadurch Zugang zu den Ecken bekommt. Dadurch können ggf. die beiden Ränder und die Diagonale gedreht werden und in den Besitz des Gegners gelangen.
