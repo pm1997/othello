@@ -40,11 +40,9 @@ In einem \\\blue{Nullsummenspiel} ist die Summe der utility Funktion eines Endzu
 \item Unentschieden
 \end{itemize}
 \end{Definition}
-Durch den Startzustand $\so$ und der Funktion $\mathtt{actions}$ und $\mathtt{result}$ wird ein \blue{Spielbaum (Game Tree)} aufgespannt.
-\begin{Definition}[Spielbaum (Game Tree) (vgl. \cite{Russell.2016} S. 162)]
-Ein \blue{Spielbaum} \\besteht aus einer Wurzel, welche einen bestimmten Zustand (Startzustand $\so$) darstellt.\\ Die Kindknoten der Wurzel stellen die durch $\mathtt{actions}$ erzeugten Zustände dar. Die Kanten zwischen der Wurzel und den Kindknoten stellen jeweils die durchgeführte Aktion dar, die ausgeführt wurde, um vom Zustand $\mathtt{s}$ zum Kindknoten $\mathtt{s'}$ zu gelangen. Diese Kindknoten können wiederum weitere Knoten enthalten oder ein Endpunkt des Baumes (Blatt = Spielende) %\improvement{umformulieren ?}
- darstellen.
-\\Die mathematische Definition ist an die Definition eines binären Baumes aus \cite{StroetmannAlgo19} \\(S. 75f.) angelehnt und wird induktiv durchgeführt:
+\begin{Definition}[Spielbaum (Game Tree)]
+Durch den Startzustand $\so$ und der Funktionen $\mathtt{actions}$ und $\mathtt{result}$ wird ein \blue{Spielbaum (Game Tree)} aufgespannt.
+\\Die mathematische Definition ist an die Definition eines binären Baumes aus \cite{StroetmannAlgo19} \\(S. 75f) angelehnt und wird induktiv durchgeführt:
 \begin{itemize}
 \item $ \mathcal{T}$ ist die Menge aller Spielbäume
 \item $\mathtt{Node}: \mathtt{Q} \times \mathtt{List(actions)} \times \mathtt{List(\mathcal{T})} \rightarrow \mathcal{T} $
