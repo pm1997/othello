@@ -40,11 +40,9 @@ In einem \\\blue{Nullsummenspiel} ist die Summe der utility Funktion eines Endzu
 \item Unentschieden
 \end{itemize}
 \end{Definition}
-Durch den Startzustand $\so$ und der Funktion $\mathtt{actions}$ und $\mathtt{result}$ wird ein \blue{Spielbaum (Game Tree)} aufgespannt.
-\begin{Definition}[Spielbaum (Game Tree) (vgl. \cite{Russell.2016} S. 162)]
-Ein \blue{Spielbaum} \\besteht aus einer Wurzel, welche einen bestimmten Zustand (Startzustand $\so$) darstellt.\\ Die Kindknoten der Wurzel stellen die durch $\mathtt{actions}$ erzeugten Zustände dar. Die Kanten zwischen der Wurzel und den Kindknoten stellen jeweils die durchgeführte Aktion dar, die ausgeführt wurde, um vom Zustand $\mathtt{s}$ zum Kindknoten $\mathtt{s'}$ zu gelangen. Diese Kindknoten können wiederum weitere Knoten enthalten oder ein Endpunkt des Baumes (Blatt = Spielende) %\improvement{umformulieren ?}
- darstellen.
-\\Die mathematische Definition ist an die Definition eines binären Baumes aus \cite{StroetmannAlgo19} \\(S. 75f.) angelehnt und wird induktiv durchgeführt:
+\begin{Definition}[Spielbaum (Game Tree)]
+Durch den Startzustand $\so$ und der Funktionen $\mathtt{actions}$ und $\mathtt{result}$ wird ein \blue{Spielbaum (Game Tree)} aufgespannt.
+\\Die mathematische Definition ist an die Definition eines binären Baumes aus \cite{StroetmannAlgo19} \\(S. 75f) angelehnt und wird induktiv durchgeführt:
 \begin{itemize}
 \item $ \mathcal{T}$ ist die Menge aller Spielbäume
 \item $\mathtt{Node}: \mathtt{Q} \times \mathtt{List(actions)} \times \mathtt{List(\mathcal{T})} \rightarrow \mathcal{T} $
@@ -89,7 +87,7 @@ Dem \abab\ (\abp) Algorithmus liegt der Gedanke zugrunde, dass die Zustände, di
 \subsubsection{Demonstration an einem Beispiel}
 \begin{figure}[ht!]
 \caption[]{Beispielhafter \gtree}
-\begin{adjustbox}{max width=\textwidth}
+{\footnotesize
 \Tree 
 [.{A} 
 	[.{B} 
@@ -108,8 +106,7 @@ Dem \abab\ (\abp) Algorithmus liegt der Gedanke zugrunde, dass die Zustände, di
 		[.{M\\\color{grey}1} ].{M\\\color{grey}1} 
 	].{D} 
 ].{A}
-\end{adjustbox}
-\\\begin{adjustbox}{max width=\textwidth}
+\\
 \Tree 
 [.{A\\$\alpha = -\infty$ $\beta = +\infty$} 
 	[.{B\\$\alpha = -\infty$ $\beta = 5$} 
@@ -146,8 +143,7 @@ Dem \abab\ (\abp) Algorithmus liegt der Gedanke zugrunde, dass die Zustände, di
 		[.{M\\\color{grey}1} ].{M\\\color{grey}1} 
 	].{D\\\color{grey}$\alpha = ?$ $\beta = ?$} 
 ].{A\\$\alpha = -\infty$ $\beta = +\infty$}
-\end{adjustbox}
-\\\begin{adjustbox}{max width=\textwidth}
+\\
 \Tree 
 [.{A\\$\alpha = 5$ $\beta = +\infty$} 
 	[.{B\\$\alpha = 5$ $\beta = 5$} 
@@ -184,8 +180,7 @@ Dem \abab\ (\abp) Algorithmus liegt der Gedanke zugrunde, dass die Zustände, di
 		[.{M\\\color{grey}1} ].{M\\\color{grey}1} 
 	].{D\\\color{grey}$\alpha = ?$ $\beta = ?$} 
 ].{A\\$\alpha = 5$ $\beta = +\infty$}
-\end{adjustbox}
-\\\begin{adjustbox}{max width=\textwidth}
+\\
 \Tree 
 [.{A\\$\alpha = 5$ $\beta = 42$} 
 	[.{B\\$\alpha = 5$ $\beta = 5$} 
@@ -222,7 +217,7 @@ Dem \abab\ (\abp) Algorithmus liegt der Gedanke zugrunde, dass die Zustände, di
 		[.{M\\1} ].{M\\1} 
 	].{D\\$\alpha = 1$ $\beta = 1$}  
 ].{A\\$\alpha = 5$ $\beta = 5$}
-\end{adjustbox}
+}
 \end{figure}
 Um den Algorithmus zu verdeutlichen, betrachten wir das an \cite{Russell.2016} angelehnte folgende Beispiel. Das dargestellte Spiel besteht aus lediglich zwei Zügen, die abwechselnd durch die Spieler gewählt werden. An den Knoten der untersten Ebene des \gtrees\ werden die Werte der Zustände gemäß der $\mathtt{utility}$ Funktion angegeben. Die Werte $\alpha$ und $\beta$ geben den schlechtmöglichsten bzw. den bestmöglichen Spielausgang für einen Zweig, immer aus der Sicht des beginnenden Spielers, an. Die ausgegrauten Knoten wurden noch nicht betrachtet. Die Bäume werden von oben nach unten und links nach rechts durchlaufen.\\
 Betrachten wir nun den linken Baum in der zweiten Zeile: 
