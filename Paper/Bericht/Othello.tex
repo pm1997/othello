@@ -87,12 +87,17 @@
 %------------------------------------------------------------------------------------------------------------
 
 % todo definieren ----------------------------------------------------
-\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
-\newcommand{\unsure}[1]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red]{#1}}
-\newcommand{\change}[1]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue]{#1}}
-\newcommand{\info}[1]{\todo[linecolor=green,backgroundcolor=green!25,bordercolor=green]{#1}}
-\newcommand{\improvement}[1]{\todo[linecolor=lime,backgroundcolor=lime!25,bordercolor=lime]{#1}}
-\newcommand{\thiswillnotshow}[1]{\todo[disable]{#1}}
+%\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+%\newcommand{\unsure}[1]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red]{#1}}
+%\newcommand{\change}[1]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue]{#1}}
+%\newcommand{\info}[1]{\todo[linecolor=green,backgroundcolor=green!25,bordercolor=green]{#1}}
+%\newcommand{\improvement}[1]{\todo[linecolor=lime,backgroundcolor=lime!25,bordercolor=lime]{#1}}
+%\newcommand{\thiswillnotshow}[1]{\todo[disable]{#1}}
+
+%----Author Commands--------------------------------------
+\newcommand{\authorpatricknonewline}{\colorbox{grey!25}{\parbox[c]{2.7cm}{Patrick Müller}}} 
+\newcommand{\authorpatrick}{\colorbox{grey!25}{\parbox[c]{2.7cm}{Patrick Müller}}\\} 
+\newcommand{\authormax}{\colorbox{grey!25}{\parbox[c]{2.3cm}{Max Zepnik}}\\}
 
 %----Wörter formatieren-----------------------------------
 \newcommand{\ot}{Othello}
@@ -139,16 +144,20 @@
 \Kurs{TINF16AIBI}
 
 \input{titlepage}
-\input{ewerkl}
 \pagenumbering{roman} % Römische Seitennummerierung
+\input{abstract-de}
+\input{abstract-en}
+\input{ewerkl}
+
 \normalfont
 
-
 \tableofcontents
+\addcontentsline{toc}{chapter}{Inhaltsverzeichnis}
 \newpage
 
-\pagenumbering{arabic}
-\setcounter{page}{1}
+\input{vorwort}
+\input{abkuerzungen}
+%\ohead{Acronyms} % Neue Header-Definition
 
 %	Abbildungsverzeichnis
 \listoffigures
@@ -157,9 +166,11 @@
 \listoftables
 
 %	Listingsverzeichnis
- \lstlistoflistings
+\lstlistoflistings
+\newpage
 
-
+\pagenumbering{arabic}
+\setcounter{page}{1}
 \include{einleitung}
 \include{othello-chapter}
 \include{grundlagen}

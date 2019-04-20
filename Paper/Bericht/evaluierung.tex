@@ -1,37 +1,39 @@
 \chapter{Evaluierung}
+\authormax
 Ziel dieses Kapitel ist es die im vorherigen Kapitel vorgestellte Implementierung zu testen. Dabei ergeben sich im wesentlichen zwei Testaspekte: Zum einen die vorgestellten Agenten und zum anderen die Bedeutung der in Kapitel \ref{impl:stored-mc} eingeführten Feldkategorien.
 \vspace{0.5cm}
 \\Die Evaluierung der einzelnen Agenten erfolgt dabei im Wesentlichen dadurch die Agenten gegeneinander spielen zu lassen. Mittels einer genügend großen Anzahl von Spielen lässt sich derart ermitteln welcher der jeweils verwendeten Agenten im Mittel die meisten Spiele gewinnt und damit als besserer Agent zu bewerten ist.
-\\Die Bedeutung der Feldkategorien wird Anhand der Gewinnwahrscheinlichkeit einer Spielkategorie über den Spielfortschritt untersucht.
+\\Die Bedeutung der Feldkategorien wird anhand der Gewinnwahrscheinlichkeit einer Spielkategorie über den Spielfortschritt untersucht.
 \section{Evaluierung der einzelnen Agenten}
 \label{cpt:eval-agents}
-Nun gilt es die in Kapitel \ref{implementation} beschriebenen Agenten zu evaluieren. In Ermangelung eines \ot-Spielers, der über ein entsprechend gute Spielfähigkeiten verfügt, so dass er zu einem aussagekräftigen Vergleich herangezogen werden könnte, werden die einzelnen Agenten untereinander verglichen. Auf die gewählten Werte der Parameter soll hier nicht näher eingegangen werden. Die letztendlich verwendeten Parameter und das Verfahren um diese zu bestimmen wird in den Anschnitten \nameref{eval:agents:params:subsec-mc} bzw. \nameref{eval:agents:params:subsec-ab} besprochen.
-\\Bei der Bestimmung der Parameter hat sich gezeigt, dass die beim Agenten \mxZitat{\abp} gewählte Stretegie zur Bewertung eines Zustandes in der maximalen Suchtiefe die Gewinnchance des Agenten wesentlich beeinflusst. Aus diesem Grund wird der \mxZitat{\abp}-Agent mit allen zur Verfügung stehenden Heuristiken und der Strategie zur Bewertung eines Zustandes den Monte-Carlo-Algorithmus heranzuziehen seperat betrachtet. Die sich daraus Ergebenden Vergleiche (Vgl.) sind in Tabelle \ref{tbl:cmp-agents} dargestellt. Der Agent \mxZitat{\abp} wird dabei durch \mxZitat{AB} abgekürzt.
+\authormax
+Nun gilt es die in Kapitel \ref{implementation} beschriebenen Agenten zu evaluieren. In Ermangelung eines \ot-Spielers, der über ein entsprechend gute Spielfähigkeiten verfügt, so dass er zu einem aussagekräftigen Vergleich herangezogen werden könnte, werden die einzelnen Agenten untereinander verglichen. Auf die gewählten Werte der Parameter soll hier nicht näher eingegangen werden. Die letztendlich verwendeten Parameter und das Verfahren, um diese zu bestimmen wird in den Abschnitten \nameref{eval:agents:params:subsec-mc} bzw. \nameref{eval:agents:params:subsec-ab} besprochen.
+\\Bei der Bestimmung der Parameter hat sich gezeigt, dass die beim Agenten \mxZitat{\abp} gewählte Strategie zur Bewertung eines Zustandes in der maximalen Suchtiefe die Gewinnchance des Agenten wesentlich beeinflusst. Aus diesem Grund wird der \mxZitat{\abp}-Agent mit allen zur Verfügung stehenden Heuristiken und der Strategie zur Bewertung eines Zustandes den Monte-Carlo-Algorithmus heranzuziehen separat betrachtet. Die sich daraus ergebenden \ac{Vgl} sind in Tabelle \ref{tbl:cmp-agents} dargestellt. Der Agent \ac{AB} wird dabei abgekürzt.
 
 \begin{table}[ht]
 \begin{adjustbox}{max width=\textwidth}
 %\begin{center}
 \begin{tabular}{| c | c | c |} \hline
-Vgl. & Agent 1 & Agent 2 \\ \hline
+\ac{Vgl} & Agent 1 & Agent 2 \\ \hline
 \hline
 0  & Random                              & Random                              \\ \hline
 \hline
  1 & Monte Carlo                         & Random                              \\ \hline
- 2 & AB (Nijssen 2008 Heuristik)         & Random                              \\ \hline
- 3 & AB (Stored Monte Carlo Heuristik)   & Random                              \\ \hline
- 4 & AB (Cowthello Heuristik)            & Random                              \\ \hline
- 5 & AB (mit anschließendem Monte Carlo) & Random                              \\ \hline
+ 2 & \ac{AB} (Nijssen 2007 Heuristik)         & Random                              \\ \hline
+ 3 & \ac{AB} (Stored Monte Carlo Heuristik)   & Random                              \\ \hline
+ 4 & \ac{AB} (Cowthello Heuristik)            & Random                              \\ \hline
+ 5 & \ac{AB} (mit anschließendem Monte Carlo) & Random                              \\ \hline
 \hline
  6 & Random                              & Monte Carlo                         \\ \hline
- 7 & Random                              & AB (Nijssen 2008 Heuristik)         \\ \hline
- 8 & Random                              & AB (Stored Monte Carlo Heuristik)   \\ \hline
- 9 & Random                              & AB (Cowthello Heuristik)            \\ \hline
-10 & Random                              & AB (mit anschließendem Monte Carlo) \\ \hline
+ 7 & Random                              & \ac{AB} (Nijssen 2007 Heuristik)         \\ \hline
+ 8 & Random                              & \ac{AB} (Stored Monte Carlo Heuristik)   \\ \hline
+ 9 & Random                              & \ac{AB} (Cowthello Heuristik)            \\ \hline
+10 & Random                              & \ac{AB} (mit anschließendem Monte Carlo) \\ \hline
 \hline
-11 & AB (Cowthello Heuristik)            & Monte Carlo                         \\ \hline
-12 & AB (mit anschließendem Monte Carlo) & Monte Carlo                         \\ \hline
-13 & Monte Carlo                         & AB (Cowthello Heuristik)            \\ \hline
-14 & Monte Carlo                         & AB (mit anschließendem Monte Carlo) \\ \hline
+11 & \ac{AB} (Cowthello Heuristik)            & Monte Carlo                         \\ \hline
+12 & \ac{AB} (mit anschließendem Monte Carlo) & Monte Carlo                         \\ \hline
+13 & Monte Carlo                         & \ac{AB} (Cowthello Heuristik)            \\ \hline
+14 & Monte Carlo                         & \ac{AB} (mit anschließendem Monte Carlo) \\ \hline
 \end{tabular}
 %\end{center}
 \end{adjustbox}
@@ -40,16 +42,16 @@ Vgl. & Agent 1 & Agent 2 \\ \hline
 %
 \end{table}
 
-\paragraph{Vergleich mit dem Agent \mxZitat{Random}}
-Grundsätzlich gilt, dass der durch einen Agenten zur Auswahl von Spielzügen benötigte Rechenaufwand nur dann gerechtfertigt ist, wenn sich daraus in irgendeiner Form ein Vorteil ergibt, der Agent also besser spielt als ein Agent der beliebige Spielzüge durchführt. Aus diesem Grund werden alle Agenten zunächst mit dem \mxZitat{Random}-Agenten verglichen. Daraus ergeben sich zunächst die Vergleiche 1 bis 5.
-\\Da ein Agent möglicherweise über bessere Gewinnchancen verfügt, wenn er als ein bestimmter Spieler auftritt gilt es außerdem zu Prüfen wie sich die Agenten verhalten, wenn sie auf der anderen Position verwendet werden. Daraus ergeben sich die Vergleiche 6 bis 10. 
+\paragraph{Vergleich mit dem Agenten \mxZitat{Random}}
+Grundsätzlich gilt, dass der durch einen Agenten zur Auswahl von Spielzügen benötigte Rechenaufwand nur dann gerechtfertigt ist, wenn sich daraus in irgendeiner Form ein Vorteil ergibt, der Agent also besser spielt als ein Agent, der beliebige Spielzüge durchführt. Aus diesem Grund werden alle Agenten zunächst mit dem \mxZitat{Random}-Agenten verglichen. Daraus ergeben sich die Vergleiche 1 bis 5.
+\\Da ein Agent möglicherweise über bessere Gewinnchancen verfügt, wenn er als ein bestimmter Spieler auftritt gilt es außerdem zu prüfen wie sich die Agenten verhalten, wenn sie auf der anderen Position verwendet werden. Daraus ergeben sich die Vergleiche 6 bis 10. 
 
 \paragraph{Vergleich der Agenten \mxZitat{\abp} und \mxZitat{Monte Carlo}}
-Bisher wurden die Agenten \mxZitat{\abp} und \mxZitat{Monte Carlo} lediglich mit dem \mxZitat{Random}-Agenten verglichen. Interessant ist daher auch die Fragestellung wie die beiden Agenten gegeneinander spielen. Hier sei vorweggegriffen, dass Anhand der im Abschnitt \nameref{p:vgl-result} dargestellten Ergebnisse der Vergleiche 2 bis 4 bzw. 7 bis 9 festgestellt werden konnte, dass der Agent \mxZitat{\abp} mit der Heuristik \mxZitat{Cowthello} die besten Ergebnisse bei Verwendung einer Heuristik erzielt. Die Variation des Agenten bei der in den Blatt-Knoten die Monte-Carlo Methode verwendet erzielte im Schnitt jedoch noch bessere Ergebnisse als die verwendeten Heuristiken. Daher werden für den Vergleich der Agenten untereinander die Variante der Cowthello-Heuristik und die Variante mit anschließendem Monte-Carlo herangezogen. Da aus den oben beschriebenen Gründen jeweils beide Varienten dieser Paarungen betrachtet werden ergeben sich daraus die beiden Vergleiche 11 bis 14.
+Bisher wurden die Agenten \mxZitat{\abp} und \mxZitat{Monte Carlo} lediglich mit dem \mxZitat{Random}-Agenten verglichen. Interessant ist daher auch die Fragestellung wie die beiden Agenten gegeneinander spielen. Hier sei vorweggegriffen, dass anhand der im Abschnitt \nameref{p:vgl-result} dargestellten Ergebnisse der Vergleiche 2 bis 4 bzw. 7 bis 9 festgestellt werden konnte, dass der Agent \mxZitat{\abp} mit der Heuristik \mxZitat{Cowthello} die besten Ergebnisse bei Verwendung einer Heuristik erzielt. Die Variation des Agenten, bei der in den Blatt-Knoten die Monte-Carlo Methode verwendet wird, erzielte im Schnitt jedoch noch bessere Ergebnisse als die verwendeten Heuristiken. Daher werden für den Vergleich der Agenten untereinander die Variante der \mxZitat{Cowthello}-Heuristik und die Variante mit anschließendem Monte-Carlo herangezogen. Da aus den oben beschriebenen Gründen jeweils beide Varianten dieser Paarungen betrachtet werden ergeben sich daraus die Vergleiche 11 bis 14.
 
 \paragraph{Ergebnisse der Vergleiche}
 \label{p:vgl-result}
-Um zum einen ein möglichst aussagekräftiges Ergebnis zu kommen gilt es eine ausreichend große Anzahl von Spielen durchzuführen. Gleichzeitig steigt jedoch mit jedem weiteren Spiel die erforderliche Rechenzeit. Bei dem Versuch die Ziele von einer möglichst großen Spielzahl bei einer möglichst geringen Rechenzeit zu erreichen wurde mit verschiedenen Werten experimentiert. Zunächst wurden je Paarung 100 Spiele simuliert. Schnell stellte sich jedoch heraus, dass sich die Gewinnwahrscheinlichkeit für einzelne Agenten bei der Durchführung von 200 Spielen stark unterscheidet. Aus diesem Grund wurde für die Mehrzahl der in Tabelle \ref{tbl:cmp-agents} angegebenen Paarungen stattdessen 1000 Spiele durchgeführt. Bei einigen Kombinationen war es aus Gründen der erforderlichen Rechenzeit jedoch nicht möglich 1000 Vergleiche durchzuführen. Daher wird zu jedem Vgl. die Anzahl der durchgeführten Spiele, sowie jeweils die Gewinnwahrscheinlichkeit angegeben. Die Ergebnisse dieser Vergleiche finden sich in Tabelle \ref{tbl:cmp-results}:
+Um zum einen aussagekräftigen Ergebnis zu kommen, gilt es eine ausreichend große Anzahl von Spielen durchzuführen. Gleichzeitig steigt jedoch mit jedem weiteren Spiel die erforderliche Rechenzeit. Bei dem Versuch die Ziele von einer möglichst großen Spielzahl bei einer möglichst geringen Rechenzeit zu erreichen wurde mit verschiedenen Werten experimentiert. Zunächst wurden je Paarung 100 Spiele simuliert. Schnell stellte sich jedoch heraus, dass sich die Gewinnwahrscheinlichkeit für einzelne Agenten bei der Durchführung von 200 Spielen stark unterscheidet. Aus diesem Grund wurde für die Mehrzahl der in Tabelle \ref{tbl:cmp-agents} angegebenen Paarungen stattdessen 1000 Spiele durchgeführt. Bei einigen Kombinationen war es aus Gründen der erforderlichen Rechenzeit jedoch nicht möglich 1000 Vergleiche durchzuführen. Daher wird zu jedem \ac{Vgl} die Anzahl der durchgeführten Spiele, sowie jeweils die Gewinnwahrscheinlichkeit angegeben. Die Ergebnisse dieser Vergleiche finden sich in Tabelle \ref{tbl:cmp-results}:
 
 \begin{table}[ht]
 \begin{center}
@@ -84,8 +86,9 @@ Um zum einen ein möglichst aussagekräftiges Ergebnis zu kommen gilt es eine au
 \newpage
 
 \section{Anpassung der Parameter der verschiedenen Agenten}
-Der Wahl der Parameter lag die Prämisse zugrunde, dass die Gesamtberechnungsdauer eines Agenten pro Spiel etwa fünf Minuten betragen sollte. Zur Ermittlung der Werte wurde ein  Mircosoft® Surface Pro™ der 6. Generation mit einer CPU der Intel® Core™ i7 Familie mit 2,11 GHz Taktrate, als Referenzgerät festgelegt. Dementsprechend wurden die Parameter der einzelnen Agenten so angepasst, dass die Berechnungsdauer im Mittel unterhalb dieser Marke liegt. Einzelne Spielabläufe können sich jedoch sehr stark unterscheiden. Entsprechend können sich bei einzelnen Spielen auch größere Abweichungen ergeben. Dabei gibt es sehr schnelle Spiele, bei denen bspw. ein Spieler gewinnt ohne dass das komplette Spielfeld besetzt ist, aber auch sehr lange Spiele, bei denen für jeden Zug viele mögliche Folgezüge evaluiert werden müssen.
-\\Da die Testsläufe über eine sehr lange Laufzeit verfügen wurden die in Tabelle \ref{tbl:cmp-results} angegebenen Tests nicht auf dem zur Ermittlung der Parameter herangezogenen Mircosoft® Surface Pro™ ermittelt. Zum Einsatz kamen stattdessen virtualisierte Server die einer Intel® Xeon® Broadwell E5-2680 v4 CPU mit einer Taktrate von 2.4 GHz aufbauen. Da die Verfasser dieser Arbeit die Server für andere Projekte bereits angemietet haben, jedoch nicht auslasten, entstehen ihnen so durch die Berechnung der Vergleiche keine zusätzlichen Energiekosten. Darüber hinaus ist es möglich das Mircosoft® Surface Pro™ anderweitig zu verwenden.
+\authorpatrick
+Der Wahl der Parameter lag die Prämisse zugrunde, dass die Gesamtberechnungsdauer eines Agenten pro Spiel etwa fünf Minuten betragen sollte. Zur Ermittlung der Werte wurde ein  Mircosoft® Surface Pro™ der 6. Generation mit einer CPU der Intel® Core™ i7 Familie mit 2,11 GHz Taktrate, als Referenzgerät festgelegt. Dementsprechend wurden die Parameter der einzelnen Agenten so angepasst, dass die Berechnungsdauer im Mittel unterhalb dieser Marke liegt. Einzelne Spielabläufe können sich jedoch sehr stark unterscheiden. Entsprechend können sich bei einzelnen Spielen auch größere Abweichungen ergeben. Dabei gibt es sehr schnelle Spiele, bei denen bspw. ein Spieler gewinnt, ohne dass das komplette Spielfeld besetzt ist, aber auch sehr lange Spiele, bei denen für jeden Zug viele mögliche Folgezüge evaluiert werden müssen.
+\\Da die Testläufe über eine sehr lange Laufzeit verfügen, wurden die in Tabelle \ref{tbl:cmp-results} angegebenen Tests nicht auf dem zur Ermittlung der Parameter herangezogenen Mircosoft® Surface Pro™ ermittelt. Zum Einsatz kamen stattdessen virtualisierte Server die einer Intel® Xeon® Broadwell E5-2680 v4 CPU mit einer Taktrate von 2.4 GHz aufbauen. Da die Verfasser dieser Arbeit die Server für andere Projekte bereits angemietet haben, jedoch nicht auslasten, entstehen ihnen so durch die Berechnung der Vergleiche keine zusätzlichen Energiekosten. Darüber hinaus ist es möglich das Mircosoft® Surface Pro™ anderweitig zu verwenden.
 \\Nachfolgend werden die Ergebnisse der Anpassung der Parameter gemäß dem oben Beschriebenen Verfahren diskutiert.
 \subsection{Parameter des \mxZitat{Monte Carlo}-Agenten}
 \label{eval:agents:params:subsec-mc}
@@ -98,11 +101,11 @@ Die beim Monte Carlo Agenten gemäß Kapitel \ref{mc_params} zur Verfügung steh
 \item \code{heuristic}: $\mathtt{None}$
 \item \code{use\_multiprocessing}: $\mathtt{True}$
 \end{itemize}
-Der Parameter \code{big\_n} wurde, nachdem alle übrigen Parameter festgesetzt wurden  empirisch ermittelt, indem mehrere Spiele mit unterschiedlichen \code{big\_n} gespielt wurden und die benötigte Spielzeit mit dem Zielwert von fünf Minuten verglichen wurde. Aus dieser Testreihe ergab sich einen \code{big\_n} Wert von $2000$. Die Gesamtdauer der Spiele beträgt dabei meist drei bis fünf Minuten. Wird der Parameter weiter erhöht, wird die Gesamtspielzeit des Agenten von fünf Minuten überschritten.
-\\Das Setzen des Wertes\code{use\_start\_libs} auf \code{True} verkürzt die Berechnungsdauer der ersten Züge enorm, da die Züge aus der Starttabellen gelesen werden und nicht berechnet werden. Dadurch steht im Anschluss mehr Zeit für die Simulation von Spielen zur Verfügung, ohne dass dies dabei einen negativen Effekt auf das Zeitlimit von fünf Minuten hat. Zwar können die Felder, welche durch in der Eröffnungsphase gesetzt werden im weiteren Spiel noch mehrfach gedreht werden, andererseits sind keine willkürlichen Züge in der Tabelle gespeichert, sondern bewährte Eröffnungszüge.
-\\Der Parameter \code{preprocessor} wird auf \mxZitat{None} gesetzt. Damit wird der Präprozessor deaktiviert. Durch die Nutzung eines Präprozessors wird die Anzahl der Zugmöglichkeiten je Zug verkleinert. Dadurch können innerhalb des Zeitlimits von fünf Minuten theoretisch ebenfalls mehr Spiele pro Zugmöglichkeit durchgeführt und damit die statistische Aussagekraft erhöht werden. Jedoch muss zur Verwendung des Präprozessors eine Heuristik berechnet werden, dies nimmt entsprechend wieder Rechenzeit in Anspruch. Da sich der beschriebene Vorteil damit ausglicht wird im Sinne eines einfacheren Algorithmus aud den Präprozessor verzichtet.
-\\Da diese nur im Prepozessor verwendet werden, werden durch die Deaktivierung des Präprozessors die Parameter \code{preprocessor\_parameter} und \code{heuristic} überhaupt nicht initialisiert. Damit stehen sie auf dem Standardwert für nicht initialisierte Paramter: \code{None}.
-\\Der Parameter \code{use\_multiprocessing} wird auf \code{True} gesetzt und die Verwendung mehrerer Prozessoren damit aktiviert. Durch das Aufteilen der zu simulierenden Spiele auf mehrere Prozessorkerne und die Aggregation der einzelnen Werte wird zwar eine gewisse Zeit beansprucht, der positive Effekt durch die Parallelisierung überwiegt jedoch ab circa 80 simulierten Spielen. Da für ein aussagekräftiges Ergebnis bereits mehr als 80 Spiele simuliert werden müssen, können durch die Parallelisierung in fünf Minuten insgesamt deutlich mehr Spiele simuliert werden und damit kann wiederum eine bessere Abschätzungen über die Gewinnwahrscheinlichkeiten beim Spielen eines bestimmten Zuges erzielt werden.
+Der Parameter \code{big\_n} wurde, nachdem alle übrigen Parameter festgesetzt wurden empirisch ermittelt, indem mehrere Spiele mit unterschiedlichen \code{big\_n} gespielt wurden und die benötigte Spielzeit mit dem Zielwert von fünf Minuten verglichen wurde. Aus dieser Testreihe ergab sich einen \code{big\_n} Wert von $2000$. Die Gesamtdauer der Spiele beträgt dabei meist drei bis fünf Minuten. Wird der Parameter weiter erhöht, wird die Gesamtspielzeit des Agenten von fünf Minuten überschritten.
+\\Das Setzen des Wertes\code{use\_start\_libs} auf \code{True} verkürzt die Berechnungsdauer der ersten Züge enorm, da die Züge aus der Starttabelle gelesen werden und nicht berechnet werden. Dadurch steht im Anschluss mehr Zeit für die Simulation von Spielen zur Verfügung, ohne dass dies dabei einen negativen Effekt auf das Zeitlimit von fünf Minuten hat. Zwar können die Felder, welche in der Eröffnungsphase gesetzt werden im weiteren Spiel noch mehrfach gedreht werden, andererseits sind keine willkürlichen Züge in der Tabelle gespeichert, sondern bewährte Eröffnungszüge.
+\\Der Parameter \code{preprocessor} wird auf \mxZitat{None} gesetzt. Damit wird der Präprozessor deaktiviert. Durch die Nutzung eines Präprozessors wird die Anzahl der Zugmöglichkeiten je Zug verkleinert. Dadurch können innerhalb des Zeitlimits von fünf Minuten theoretisch ebenfalls mehr Spiele pro Zugmöglichkeit durchgeführt und damit die statistische Aussagekraft erhöht werden. Jedoch muss zur Verwendung des Präprozessors eine Heuristik berechnet werden, dies nimmt entsprechend wieder Rechenzeit in Anspruch. Da sich der beschriebene Vorteil damit ausgleicht, wird im Sinne eines einfacheren Algorithmus auf den Präprozessor verzichtet.
+\\Da diese nur im Präprozessor verwendet werden, werden durch die Deaktivierung des Präprozessors die Parameter \code{preprocessor\_parameter} und \code{heuristic} überhaupt nicht initialisiert. Damit stehen sie auf dem Standardwert für nicht initialisierte Paramter: \code{None}.
+\\Der Parameter \code{use\_multiprocessing} wird auf \code{True} gesetzt und die Verwendung mehrerer Prozessoren damit aktiviert. Durch das Aufteilen der zu simulierenden Spiele auf mehrere Prozessorkerne und die Aggregation der einzelnen Werte wird zwar eine gewisse Zeit beansprucht, der positive Effekt durch die Parallelisierung überwiegt jedoch ab circa 80 simulierten Spielen. Da für ein aussagekräftiges Ergebnis bereits mehr als 80 Spiele simuliert werden müssen, können durch die Parallelisierung in fünf Minuten insgesamt deutlich mehr Spiele simuliert werden und damit kann wiederum eine bessere Abschätzung über die Gewinnwahrscheinlichkeiten beim Spielen eines bestimmten Zuges erzielt werden.
 \newpage
 \subsection{Parameter des \mxZitat{\abp}-Agenten}
 \label{eval:agents:params:subsec-ab}
@@ -115,15 +118,16 @@ Dabei werden die Parameter wie folgt festgesetzt:
 \item \code{\_use\_monte\_carlo}: variert je nach Vergleich
 \item \code{\_mc\_count}: variert je nach Vergleich
 \end{itemize}
-\code{\_use\_start\_libs} wird auf \code{True} gesetzt, da so die Verwendung mehrerer Prozessorkerne aktiviert wird und damit die Ausführungszeit eines Spiels merklich veringert wird. Je nach Spielzug des Gegners können bis zu 21 Züge aus der Datenbank  gelesen werden und müssen nicht berechnet werden.
-\\\code{\_heuristic} wurde jeweils gemäß der Tabelle \ref{tbl:cmp-agents} variiert, damit ein Vergleich der Heuristiken möglich ist. Bei der Verwendung einer Heuristik werden die Optionen die sich hinter den Parametern \code{\_use\_monte\_carlo} und \code{\_mc\_count} verbergen deaktiviert \code{\_use\_monte\_carlo} wird auf dazu auf \mxZitat{False} gesetzt. 
-Die ermittelte Suchtiefe (\code{\_search\_depth}) beträgt \mxZitat{5}. Bei höheren Suchtiefen wird das Berechnungszeitlimit von fünf Minuten überschritten.
+\code{\_use\_start\_libs} wird auf \code{True} gesetzt, da so die Verwendung mehrerer Prozessorkerne aktiviert und damit die Ausführungszeit eines Spiels merklich verringert wird. Je nach Spielzug des Gegners können bis zu 21 Züge aus der Datenbank  gelesen und müssen nicht berechnet werden.
+\\\code{\_heuristic} wurde jeweils gemäß der Tabelle \ref{tbl:cmp-agents} variiert, damit ein Vergleich der Heuristiken möglich ist. Bei der Verwendung einer Heuristik werden die Optionen die sich hinter den Parametern \code{\_use\_monte\_carlo} und \code{\_mc\_count} verbergen deaktiviert, \code{\_use\_monte\_carlo} wird dazu auf \mxZitat{False} gesetzt. 
+Die ermittelte Suchtiefe (\code{\_search\_depth}) beträgt in diesem Fall \mxZitat{5}. Bei höheren Suchtiefen wird das Berechnungszeitlimit von fünf Minuten überschritten.
 \vspace{0.5cm}
-\\Neben Heuristiken kann die \abab\ Suche auch Monte Carlo zur Ermittlung des Spielzustandswertes nach der \abab\ Suche genutzt werden.
-\\\code{\_use\_monte\_carlo} wird dazu auf \mxZitat{True} gesetzt, die Option also aktiviert aktiviert. \code{\_mc\_count} gibt dann die Anzahl der in den Blattknoten durchgeführten Monte Carlo Spiele an. Dieser Parameter wurde in diesem Fall auf $10$ gesetzt, da bereits die \abab\ Suche ohne eine Bewertung des Zustands mit Monte Carlo relativ lange dauert. Deshalb können in den Blattknoten im Vergleich zum reinen Monte Carlo Agenten nicht annähernd so viele Spiele durchgeführt werden.
+\\Neben Heuristiken kann die \abab\ Suche auch Monte Carlo zur Ermittlung des Spielzustandswertes nach der \abab\ Suche verwenden.
+\\\code{\_use\_monte\_carlo} wird dazu auf \mxZitat{True} gesetzt, die Option also aktiviert. \\\code{\_mc\_count} gibt dann die Anzahl der in den Blattknoten durchgeführten Monte Carlo Spiele an. Dieser Parameter wurde in diesem Fall auf $10$ gesetzt, da bereits die \abab\ Suche ohne eine Bewertung des Zustands mit Monte Carlo relativ lange dauert. Deshalb können in den Blattknoten im Vergleich zum reinen Monte Carlo Agenten nicht annähernd so viele Spiele durchgeführt werden.
 \\\code{\_search\_depth} wurde in diesem Fall durch empirisches Testen der Laufzeit auf \mxZitat{2} festgelegt. 
 
 \section{Evaluierung der Bedeutung verschiedener Feldkategorien}
+\authormax
 Im nachfolgenden Abschnitt wird anhand der für die \mxZitat{Stored Monte Carlo}-Heuristik erstellten Datenbank die Bedeutung verschiedener Feldkategorien im Spielverlauf betrachtet.
 \\Dies wird Anhand von verschiedenen Diagrammen durchgeführt. Dazu wird zunächst die Methode zur Erstellung der Diagramme besprochen. Daran schließt sich die Präsentation der Diagramme an. Schließlich wird der Abschnitt durch die Besprechung der Ergebnisse beendet.
 \subsection{Methode und Ergebnisse}
@@ -139,16 +143,16 @@ Um eine Division durch $0$ zu vermeiden, wird die berechnete Gewinnwahrscheinlic
 \\Insgesamt ergibt sich damit pro Spieler eine Relation $\lbrace0, ..., 59\rbrace\times\lbrace0, ..., 8\rbrace\mapsto\lbrack0,1\rbrack$, die für die Zugnummer und für die Feldkategorie jeweils die Gewinnwahrscheinlichkeit angibt.
   
 \paragraph{Ergebnisse}
-Um die große Anzahl von $60\ \mathtt{Zugnummern} * 9\ \mathtt{Zugkategorien} = 540$ Wahrscheinlichkeitswerten pro Spieler übersichtlich darstellen zu können, werden diese grafisch aufbereitet. Da hierfür ausschließlich zweidimensionale Diagramme zum Einsatz kommen, sollen besteht die Möglichkeit hier nach der Zugnummer oder der Feldkategorie zu schneiden. Die Abbildungen \ref{fig:win-pro-fc-0} bis \ref{fig:win-pro-fc-8} im Anhang \ref{Anhang:Abb1} geben die Gewinnwahrscheinlichkeiten für den Schnitt nach der Feldkategorie an.
+Um die große Anzahl von $60\ \mathtt{Zugnummern} * 9\ \mathtt{Zugkategorien} = 540$ Wahrscheinlichkeitswerten pro Spieler übersichtlich darstellen zu können, werden diese grafisch aufbereitet. Da hierfür ausschließlich zweidimensionale Diagramme zum Einsatz kommen sollen, besteht die Möglichkeit hier nach der Zugnummer oder der Feldkategorie zu schneiden. Die Abbildungen \ref{fig:win-pro-fc-0} bis \ref{fig:win-pro-fc-8} im Anhang \ref{Anhang:Abb1} geben die Gewinnwahrscheinlichkeiten für den Schnitt nach der Feldkategorie an.
 \\Die Abbildungen \ref{fig:win-pro-turn-0} bis \ref{fig:win-pro-turn-59} im Anhang \ref{Anhang:Abb2} geben die Gewinnwahrscheinlichkeiten für den Schnitt nach der Zugnummer an. Da aus Platzgründen nicht alle 60 der sich daraus ergebenden Abbildungen abgedruckt werden sollen, wurde dabei eine willkürlich gewählte Schrittweite von 5 Zugnummern verwendet. Die Situation für den 59 und damit letzten Zug wird trotzdem angegeben.
 
 \subsection{Besprechung der Ergebnisse}
 Bei der Betrachtung der Diagramme fallen einige Aspekte sofort auf:
 \begin{enumerate}
-\item \textbf{Spieler Zwei besitzt fast durchgehend eine höhere Gewinnwahrscheinlichkeit als Spieler 1:}
+\item \textbf{Spieler 2 besitzt fast durchgehend eine höhere Gewinnwahrscheinlichkeit als Spieler 1:}
 \\Dies liegt vermutlich darin begründet, dass Spieler 1 das Spiel eröffnet. Fasst man zwei aufeinanderfolgende Züge nun als Halbzüge eines kompletten Spielzuges auf, so kann Spieler 2 immer direkt auf den Zug des Spieler 1 reagieren.
 \item \textbf{Einige Feldkategorien spielen erst nach einer gewissen Zugnummer eine Rolle:}
 \\Dies liegt darin begründet, dass ein Spielstein nur neben ein bereits besetztes Feld gelegt werden darf. Zu Beginn des Spiels sind jedoch nur die vier Steine in der Mitte des Spielfeldes gesetzt. Entsprechend dauert es einige Züge bis gewisse Feldkategorien wie bspw. die Eckfelder überhaupt erreicht werden können.
 \item \textbf{Die Gewinnwahrscheinlichkeit für einen einzelnen Spieler schwankt für die Zugnummern teilweise sehr stark:}
-\\Dabei fällt auf, dass jeweils die Wahrscheinlichkeiten bei geraden Zugnummern und die Wahrscheinlichkeiten bei ungeraden Zugnummern auf einem ungefähr gleichen Niveau liegen. Zwischen zwei aufeinanderfolgenden Zügen gibt es hingegen meist eine deutliche Schwankung. Die Ursache für diese Tatsache wurde im Rahmen der Arbeit nicht weiter untersucht. 
+\\Dabei fällt auf, dass jeweils die Wahrscheinlichkeiten bei geraden Zugnummern und die Wahrscheinlichkeiten bei ungeraden Zugnummern auf einem ungefähr gleichen Niveau liegen. Zwischen zwei aufeinanderfolgenden Zügen gibt es hingegen meist eine deutliche Schwankung. Die Ursache für dieser Auffälligkeit wurde im Rahmen der Arbeit nicht weiter untersucht. 
 \end{enumerate}
