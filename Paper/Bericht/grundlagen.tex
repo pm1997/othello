@@ -44,13 +44,19 @@ Durch den Startzustand $\so$ und der Funktion $\mathtt{actions}$ und $\mathtt{re
 \begin{Definition}[Spielbaum (Game Tree) (vgl. \cite{Russell.2016} S. 162)]
 Ein \blue{Spielbaum} \\besteht aus einer Wurzel, welche einen bestimmten Zustand (Startzustand $\so$) darstellt.\\ Die Kindknoten der Wurzel stellen die durch $\mathtt{actions}$ erzeugten Zustände dar. Die Kanten zwischen der Wurzel und den Kindknoten stellen jeweils die durchgeführte Aktion dar, die ausgeführt wurde, um vom Zustand $\mathtt{s}$ zum Kindknoten $\mathtt{s'}$ zu gelangen. Diese Kindknoten können wiederum weitere Knoten enthalten oder ein Endpunkt des Baumes (Blatt = Spielende) %\improvement{umformulieren ?}
  darstellen.
-\\Die mathematische Definition wird rekursiv durchgeführt:
-\\$\mathtt{Spielbaum}: \mathtt{Q} \times \mathtt{List(actions)} \times \mathtt{List(Spielbaum)}$
-\\$\mathtt{Node}(S,M,T) \in \mathtt{Spielbaum}$ g.d.w:
+\\Die mathematische Definition ist an die Definition eines binären Baumes aus \cite{StroetmannAlgo19} \\(S. 75f.) angelehnt und wird induktiv durchgeführt:
 \begin{itemize}
-\item $S \in Q \cup \{\Omega\}$
-\item $M = [m\textsubscript{1}, .. , m \textsubscript{n}] \in \mathtt{List(actions)}$, wobei gilt:  $\forall i \in \{1 .. n\}: m\textsubscript{i} \in \mathtt{actions}(S) $
-\item $T = [t\textsubscript{1}, .. , t \textsubscript{n}] \in \mathtt{List(Spielbaum)}$, wobei gilt: $ \forall i \in \{1 .. n\}: t\textsubscript{i} = \mathtt{result}(S, m\textsubscript{i}) $
+\item $ \mathcal{T}$ ist die Menge aller Spielbäume
+\item $\mathtt{Node}: \mathtt{Q} \times \mathtt{List(actions)} \times \mathtt{List(\mathcal{T})} \rightarrow \mathcal{T} $
+\\$\mathtt{Node}(s,a,t) \in \mathcal{T}$ g.d.w.
+\begin{itemize}
+\item $s \in \mathtt{Q}$
+\item $\forall i \in \{1 .. \mathtt{len}(a)\}: a\textsubscript{i} \in \mathtt{actions(s)} $
+\item $\forall i \in \{1 .. \mathtt{len}(t)\}: t\textsubscript{i} \in \mathcal{T} $
+\item $\forall i \in \{1 .. \mathtt{len}(t)\}: \mathtt{state}(t\textsubscript{i}) = \mathtt{result}(s,a\textsubscript{i}) $, wobei $\mathtt{state}(t)$ die Zustandskomponente des Baumes $t$ zurückgibt.
+\item Aus der vorherigen Bedingung ergibt sich: $ \mathtt{len}(a) = \mathtt{len}(t) $
+\item $s \in \mathtt{TerminalStates} \leftrightarrow t = [] \wedge a = [] $
+\end{itemize}
 \end{itemize}
 \end{Definition}
 \begin{Definition}[Suchbaum (Search Tree) (vgl. \cite{Russell.2016} S. 163)]
