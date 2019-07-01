@@ -33,6 +33,17 @@ class Othello:
         self._taken_moves = []
         self._turn_nr = 0
 
+    def __hash__(self):
+        return (self._board.__str__() \
+               + str(self._current_player) \
+               + str(self._last_turn_passed)).__hash__()
+
+    def __eq__(self, other):
+        if self.__hash__() == other.__hash__():
+            return True
+        else:
+            return False
+
     def deepcopy(self):
         """
         Returns a deepcopy of the game.

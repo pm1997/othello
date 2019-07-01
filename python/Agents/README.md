@@ -1,3 +1,3 @@
-Readme of directory python/Players:
+Readme of directory python/Agents:
 
-In this directory the whole different player implementations is located.
+In this directory the different agents implementations are located.
