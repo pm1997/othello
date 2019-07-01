@@ -4,6 +4,7 @@ from util import UtilMethods
 import random
 import heuristics
 from Agents.monteCarlo import MonteCarlo
+from functools import lru_cache
 
 
 class AlphaBetaPruning:
@@ -41,6 +42,7 @@ class AlphaBetaPruning:
                 "[Player AlphaBetaPruning] Do you want to use the start library?")
 
     @staticmethod
+    @lru_cache(maxsize=1024)
     def value(game_state: Othello, depth, heuristic, alpha=-1, beta=1):
         """
         get score for alpha beta pruning
@@ -67,6 +69,7 @@ class AlphaBetaPruning:
         return val
 
     @staticmethod
+    @lru_cache(maxsize=1024)
     def value_monte_carlo(game_state: Othello, depth, heuristic, alpha=-1, beta=1, mc_count=100):
         """
         get score for alpha beta pruning
@@ -128,5 +131,6 @@ class AlphaBetaPruning:
             best_moves[result].append(move)
 
         best_move = max(best_moves.keys())
-
+        AlphaBetaPruning.value.cache_info()
+        AlphaBetaPruning.value_monte_carlo.cache_info()
         return best_moves[best_move][random.randrange(len(best_moves[best_move]))]
