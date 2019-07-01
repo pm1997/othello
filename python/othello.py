@@ -34,15 +34,12 @@ class Othello:
         self._turn_nr = 0
 
     def __hash__(self):
-        return (self._board.__str__() \
-               + str(self._current_player) \
-               + str(self._last_turn_passed)).__hash__()
+        return (self._board.__str__() + str(self._current_player)).__hash__()
 
     def __eq__(self, other):
         if self.__hash__() == other.__hash__():
             return True
-        else:
-            return False
+        return False
 
     def deepcopy(self):
         """
