@@ -3,26 +3,33 @@
 In diesem Kapitel werden die theoretischen Grundlagen für eine künstliche Intelligenz für das Spiel \ot\ erläutert.\\
 Zunächst werden dazu einige Begriffe der Spieltheorie eingeführt. Diese werden dann zur Beschreibung einiger deterministischer Algorithmen zum Treffen einer Spielentscheidung verwendet. Den Abschluss des Kapitels bildet schließlich die Beschreibung einer stochastischen Methode für diesen Zweck. 
 \section{Spieltheorie}
-In dem folgenden Unterkapitel werden grundlegende Definitionen eingeführt. Diese sind an das Buch \mxZitat{Artificial Intelligence: A modern approach} von Stuart J. Russel und Peter Norvig \cite{Russell.2016} angelehnt.
+In dem folgenden Unterkapitel werden grundlegende Definitionen eingeführt. Diese sind an das Buch \mxZitat{Artificial Intelligence: A Modern Approach} von Stuart J. Russel und Peter Norvig \cite{Russell.2016} angelehnt.
 \begin{Definition}[Spiel (Game)(vgl. \cite{Russell.2016} S. 162)]
 Ein \blue{Spiel} besteht aus einem \\Tupel der Form \\[0.2cm]
   \hspace*{1.3cm}
-  $\mathtt{G} = \langle Q, S\textsubscript{0},\mathtt{player}, \mathtt{actions}, \mathtt{result}, \mathtt{terminalTest}, \mathtt{utility} \rangle$
-\\Sei $Q$ die Menge aller Zustände im Spiel. Ein Spielzustand besteht aus dem aktuellen Spielbrett, der Zugnummer, dem aktiven Spieler und weiteren Parametern, welche zur genauen Darstellung eines Spielzustands führen.
+  $\mathtt{G} = \langle \mathtt{Q}, S\textsubscript{0},\mathtt{Players}, \mathtt{actions}, \mathtt{result}, \mathtt{terminalTest}, \mathtt{utility} \rangle$
+\\Sei $Q$ die Menge aller Zustände im Spiel. Ein Spielzustand besteht aus dem aktuellen Spielbrett, der Zugnummer sowie dem aktiven Spieler, welche zur genauen Darstellung eines Spielzustands führen.
 \begin{itemize}
 \item $\mathtt{Q}:$ Menge aller Spielzustände
 \item $\so\ \in \mathtt{Q}$ beschreibt den Startzustand des Spiels.
-\item $\mathtt{Players}:$ Menge aller Spieler: $\mathtt{Players} = \{S,W\}$
-\item $\mathtt{player}: \mathtt{Q} \rightarrow \mathtt{Players}$ ist auf der Menge der Spielzustände definiert und gibt den aktuellen Spieler p zurück.
-\item $\mathtt{actions}: \mathtt{Q} \rightarrow 2^\mathtt{moves}$ gibt die Menge der validen Zugmöglichkeiten  eines gegeben Zustands zurück. 
-\\$\mathtt{moves}$ ist die Menge aller Zugmöglichkeiten.
-\\$\mathtt{moves} = \{ <X, Y> \mid X \in \{0 .. 7\} \wedge Y \in \{ 0 .. 7 \} \} $
-\\Diese geben die Koordinaten der Zugposition des neuen Steines auf dem Spielbrett an. 
-\item $\mathtt{result}:\mathtt{Q} \times \mathtt{actions} \rightarrow \mathtt{Q}$ definiert das Resultat einer in einem Zustand s durchgeführten Aktion a.
-\item $\mathtt{terminalTest}: \mathtt{Q} \rightarrow \mathbb{B}$ prüft ob ein Zustand s ein Terminalzustand \\($s \in \mathtt{terminalStates}$), also Endzustand, darstellt.
-\\$ \mathtt{terminalTest}(s) = \begin{cases} \mathtt{True}\ \mid s \in \mathtt{terminalStates}$ 
-$\\\mathtt{False}\ \mid s \not\in \mathtt{terminalStates} \end{cases}$
-\item $\mathtt{utility}: \mathtt{terminalStates} \times \mathtt{Players} \rightarrow \{-1, 0, 1 \}$ gibt einen Zahlenwert aus den Eingabewerten s (Terminalzustand) und p (Spieler) zurück. \\Positive Werte stellen einen Gewinn, negative Werte einen Verlust dar. \mxZitat{0} stellt ein Unentschieden dar.
+\item $\mathtt{Players}:$ Menge aller Spieler: $\mathtt{Players} = \{B,W\}$
+\item Ist die Menge $\mathtt{Moves}$ der Positionen des Spielfeldes definiert als:
+\\\begin{center}$\mathtt{Moves} = \{ \langle \mathtt{X}, \mathtt{Y} \rangle \mid \mathtt{X} \in \{a .. h\} \wedge \mathtt{Y} \in \{ 1 .. 8 \} \} $\end{center}
+wobei $\mathtt{X}$ die Spalte und $\mathtt{Y}$ die Zeile des Spielfeldes definiert,
+\\so gibt die Funktion
+\\$\mathtt{actions}: \mathtt{Q} \rightarrow 2^\mathtt{moves}$ die Menge der Positionen des Spielfeldes zurück auf die im aktuellen Zustand ein Stein gelegt werden kann. 
+\item Ist $\mathtt{S} \in \mathtt{Q}$ 
+ein Spielzustand, $\mathtt{AllowedMoves} = \{ \mathtt{actions}(\mathtt{S})\}$ 
+die Menge der Positionen des Spielfeldes die im Zug $\mathtt{S}$ 
+besetzt werden können und $\mathtt{M} \in \mathtt{AllowedMoves}$ 
+eine dieser Positionen, so ist $\mathtt{S}_{\mathtt{new}} \in \mathtt{Q} $ 
+definiert als $\mathtt{S}_{\mathtt{new}} = \mathtt{result}(\mathtt{S}, \mathtt{M})$ 
+der neue Spielzustand, nachdem im Zustand $\mathtt{S}$ 
+ein Stein auf die Position $\mathtt{M}$ gesetzt wurde.
+\item $\mathtt{terminalTest}: \mathtt{Q} \rightarrow \mathbb{B}$ prüft ob ein Zustand s ein Terminalzustand, also Endzustand, darstellt.
+\\Mittels dieser Funktion wird die Menge der $\mathtt{TerminalStates}$ definiert. Es gilt:
+$ \mathtt{TerminalStates} = \{ s \in \mathtt{Q} \mid \mathtt{terminalTest}(s)\}$
+\item $\mathtt{utility}: \mathtt{TerminalStates} \times \mathtt{Players} \rightarrow \{-1, 0, 1 \}$ trifft eine Aussage über den Ausgang eines Spiels aus Sicht des jeweils übergebenen Spielers. \\Positive Werte stellen einen Gewinn, negative Werte einen Verlust dar. \mxZitat{0} stellt ein Unentschieden dar.
 \end{itemize}
 \end{Definition}
 Eine spezielle Art von Spielen sind \blue{Nullsummenspiele}.
