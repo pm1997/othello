@@ -7,7 +7,7 @@ In dem folgenden Unterkapitel werden grundlegende Definitionen eingeführt. Dies
 \begin{Definition}[Spiel (Game)(vgl. \cite{Russell.2016} S. 162)]
 Ein \blue{Spiel} besteht aus einem \\Tupel der Form \\[0.2cm]
   \hspace*{1.3cm}
-  $\mathtt{G} = \langle \mathtt{Q}, S\textsubscript{0},\mathtt{Players}, \mathtt{actions}, \mathtt{result}, \mathtt{terminalTest}, \mathtt{utility} \rangle$
+  $\mathtt{G} = \langle \mathtt{Q}, \mathtt{S}\textsubscript{0},\mathtt{Players}, \mathtt{actions}, \mathtt{result}, \mathtt{terminalTest}, \mathtt{utility} \rangle$
 \\Sei $Q$ die Menge aller Zustände im Spiel. Ein Spielzustand besteht aus dem aktuellen Spielbrett, der Zugnummer sowie dem aktiven Spieler, welche zur genauen Darstellung eines Spielzustands führen.
 \begin{itemize}
 \item $\mathtt{Q}:$ Menge aller Spielzustände
@@ -47,12 +47,12 @@ In einem \\\blue{Nullsummenspiel} ist die Summe der utility Funktion eines Endzu
 \end{itemize}
 \end{Definition}
 \begin{Definition}[Spielbaum (Game Tree)]
-Durch den Startzustand $\so$ und der Funktionen $\mathtt{actions}$ und $\mathtt{result}$ wird ein \blue{Spielbaum (Game Tree)} aufgespannt.
-\\Die mathematische Definition ist an die Definition eines binären Baumes aus \cite{StroetmannAlgo19} \\(S. 75f) angelehnt und wird induktiv durchgeführt:
+Durch den Startzustand $\so$ und der Funktionen $\mathtt{actions}$ und $\mathtt{result}$ wird der \blue{Spielbaum (Game Tree)} aufgespannt.
+\\Zunächst wird die Menge aller möglichen Spielbäume definiert. Die mathematische Definition ist an die Definition eines binären Baumes aus \cite{StroetmannAlgo19} \\(S. 75f) angelehnt und wird induktiv durchgeführt:
 \begin{itemize}
-\item $ \mathcal{T}$ ist die Menge aller Spielbäume
-\item $\mathtt{Node}: \mathtt{Q} \times \mathtt{List(actions)} \times \mathtt{List(\mathcal{T})} \rightarrow \mathcal{T} $
-\\$\mathtt{Node}(s,a,t) \in \mathcal{T}$ g.d.w.
+\item $\mathcal{T}$ ist die Menge aller Spielbäume
+\item $\mathtt{Node}: \mathtt{Q} \times \mathtt{List}(\mathtt{Moves}) \times \mathtt{List(\mathcal{T})} \rightarrow \mathcal{T} $
+\\Es gilt $\mathtt{Node}(s,a,t) \in \mathcal{T}$ g.d.w.
 \begin{itemize}
 \item $s \in \mathtt{Q}$
 \item $\forall i \in \{1 .. \mathtt{len}(a)\}: a\textsubscript{i} \in \mathtt{actions(s)} $
@@ -62,6 +62,7 @@ Durch den Startzustand $\so$ und der Funktionen $\mathtt{actions}$ und $\mathtt{
 \item $s \in \mathtt{TerminalStates} \leftrightarrow t = [] \wedge a = [] $
 \end{itemize}
 \end{itemize}
+Der Spielbaum ist jener Baum $ \mathtt{t}_{\mathtt{GameTree}} \in \mathcal{T}$ für den gilt $\mathtt{state}(\mathtt{t}_{\mathtt{GameTree}}) = \mathtt{S}\textsubscript{0}$ 
 \end{Definition}
 \begin{Definition}[Suchbaum (Search Tree) (vgl. \cite{Russell.2016} S. 163)]
 Ein \blue{Suchbaum} \\ist ein Teil des Spielbaums. Die Wurzel des Spielbaums besteht aus dem aktuellen Spielzustand. Alle Kindknoten und Blätter entsprechen dem Spielbaum beginnend ab dem aktuellen Zustand. Es gilt also:
