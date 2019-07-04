@@ -51,8 +51,8 @@ Durch den Startzustand $\so$ und der Funktionen $\mathtt{actions}$ und $\mathtt{
 \\Die mathematische Definition ist an die Definition eines binären Baumes aus \cite{StroetmannAlgo19} \\(S. 75f) angelehnt und wird induktiv durchgeführt:
 \begin{itemize}
 \item $ \mathcal{T}$ ist die Menge aller Spielbäume
-\item $\mathtt{Node}: \mathtt{Q} \times \mathtt{List(actions)} \times \mathtt{List(\mathcal{T})} \rightarrow \mathcal{T} $
-\\$\mathtt{Node}(s,a,t) \in \mathcal{T}$ g.d.w.
+\item $\mathtt{Node}: \mathtt{Q} \times \mathtt{List}(\mathtt{Moves}) \times \mathtt{List(\mathcal{T})} \rightarrow \mathcal{T} $
+\\Es gilt $\mathtt{Node}(s,a,t) \in \mathcal{T}$ g.d.w.
 \begin{itemize}
 \item $s \in \mathtt{Q}$
 \item $\forall i \in \{1 .. \mathtt{len}(a)\}: a\textsubscript{i} \in \mathtt{actions(s)} $
