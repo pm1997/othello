@@ -1,6 +1,5 @@
 \chapter{Grundlagen}
 \label{basics}
-\authorpatrick
 In diesem Kapitel werden die theoretischen Grundlagen für eine künstliche Intelligenz für das Spiel \ot\ erläutert.\\
 Zunächst werden dazu einige Begriffe der Spieltheorie eingeführt. Diese werden dann zur Beschreibung einiger deterministischer Algorithmen zum Treffen einer Spielentscheidung verwendet. Den Abschluss des Kapitels bildet schließlich die Beschreibung einer stochastischen Methode für diesen Zweck. 
 \section{Spieltheorie}
@@ -80,7 +79,6 @@ wenn Spieler am Zug$\\\mathtt{min}(\{\mathtt{MiniMax}(\mathtt{result}(s,a) \mid 
 
 \subsection{\abab}
 \label{ab-pruning}
-\authormax
 Der MiniMax Algorithmus berechnet nach dem Prinzip der Tiefensuche (\mxZitat{depth-first}) stets den kompletten \gtree. 
 \\Bei der Betrachtung des Entscheidungsverhaltens des Algorithmus fällt jedoch schnell auf, dass ein nicht unerheblicher Teil aller möglichen Züge durch einen menschlichen Spieler gar nicht erst in Betracht gezogen wird. Dies geschieht aufgrund der Tatsache, dass diese Züge in einem schlechteren Ergebnis resultieren würden als ein anderer letztendlich ausgewählter Zug.\newline
 Dem \abab\ (\abp) Algorithmus liegt der Gedanke zugrunde, dass die Zustände, die in einem realen Spiel nie ausgewählt würden, auch nicht berechnet werden müssen. Damit steht die dafür regulär erforderliche Rechenzeit und der entsprechende Speicher dafür zur Verfügung andere, vielversprechendere Zweige zu verfolgen.
@@ -277,7 +275,6 @@ Dieses Problem lösen sogenannte Heuristiken. Dabei handelt es sich um eine Funk
 Gibt die Heuristik im Falle eines Endzustandes den Wert der Utility Funktion zurück, so kann die oben gezeigte Implementierung so angepasst werden, dass statt der Utility Funktion einfach die Heuristik ausgewertet wird. Dadurch muss nicht mehr der vollständige Zweig durchsucht werden und das Abbrechen nach einer gewissen Suchtiefe wird möglich.
  
 \subsubsection{Vorwärtsabschneiden}
-\authorpatrick
 Vorwärtsabschneiden (Forward Pruning) durchsucht nicht den kompletten \gtree , sondern durchsucht nur einen Teil. Eine Möglichkeit ist eine Strahlensuche, welche nur die \mxZitat{besten} Züge durchsucht (vgl. \cite{Russell.2016} S. 175). Die Züge mit einer geringen Erfolgswahrscheinlichkeit werden abgeschnitten und nicht bis zum Blattknoten evaluiert. Durch die Wahl des jeweiligen Zuges mit der höchsten Gewinnwahrscheinlichkeit können aber auch sehr gute bzw. schlechte Züge nicht berücksichtigt werden, wenn diese eine geringe Wahrscheinlichkeit besitzen. Durch das Abschneiden von Teilen des \gtree\ wird die Suchgeschwindigkeit deutlich erhöht. Der in dem \ot -Programm \mxZitat{Logistello} verwendete \mxZitat{Probcut} erzielt außerdem eine Gewinnwahrscheinlichkeit von 64\% gegenüber der ursprünglichen Version ohne Vorwärtsabschneiden (vgl. \cite{Russell.2016} S. 175).
 \subsubsection{Suche gegen Nachschlagen}
 \label{lookup}
@@ -299,7 +296,6 @@ Das Mittelspiel jedoch hat zu viele Zugmöglichkeiten, um eine Tabelle der mögl
 
 \section{\mc\ Algorithmus}
 \label{mc_algo}
-\authormax
 Im Gegensatz zu den bisher gezeigten Algorithmen verwendet der \mc\ Algorithmus einen stochastischen Ansatz, um einen Zug auszuwählen. Im nachfolgenden Abschnitt wird die Funktionsweise des \mc\ Algorithmus erklärt. Daran angeschlossen folgen Möglichkeiten strategische Überlegungen zum Spiel \ot\ einzubringen. Dabei sind die nachfolgenden Ausführungen stark angelehnt an jene von \cite{nijssen_2007}.
 \subsection{Algorithmus}
 Als Ausgangspunkt legt der \mc\ Algorithmus die Menge der Züge zugrunde, die ein Spieler unter Wahrung der Spielregeln wählen kann. Diese Züge seien nachfolgend Zug-Kandidaten genannt. Enthält die Menge keine Züge, so bleibt dem Spieler nichts anderes übrig als auszusetzen. Enthält die Menge nur einen Zug, so muss der Spieler diesen ausführen. Per Definition ist dies dann der bestmögliche Zug. Enthält die Menge hingegen mindestens zwei mögliche Züge, so gilt es den besten unter ihnen auszuwählen. Um den besten Zug zu ermitteln, wird das Spiel mehrfach, die Anzahl sei $N_{P}$, bis zum Ende simuliert. Während der Simulation wird jeder mögliche Zug gleich häufig gewählt. Der Rest des simulierten Spiels wird dann zufällig zu Ende gespielt. Sobald alle Durchgänge erfolgt sind, wird das durchschnittliche Ergebnis für jeden möglichen Zug berechnet. Dabei gibt es zwei Möglichkeiten dieses Ergebnis zu berechnen:\\

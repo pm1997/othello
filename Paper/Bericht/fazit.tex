@@ -1,6 +1,5 @@
 \chapter{Fazit}
 \label{Fazit}
-\authormax
 In diesem Kapitel werden die Ergebnisse der Arbeit bewertet und ein Ausblick über weitere Forschungsgegenstände gegeben.
 \\Im ersten Abschnitt werden dazu zunächst die präsentierten Agenten bewertet und weitere Anpassungsmöglichkeiten aufgezeigt.
 \\Der zweite Abschnitt nimmt eine Bewertung der eingesetzten Heuristiken vor, indem die Variation der Ergebnisse eines Agenten bei der Verwendung der verschiedenen Heuristiken betrachtet wird.
@@ -18,7 +17,6 @@ Wie in Tabelle \ref{tbl:cmp-results} anhand der Vergleiche 1 bzw. 6 deutlich wir
 In den, zur Bestimmung der für den Agenten verwendeten Parametern, durchgeführten Spielen konnte beobachtet werden, dass die Gewinnwahrscheinlichkeit des Agenten von der Anzahl der mittels der \mc\ Methode simulierten Spiele abhängt. In den betrachteten Fällen konnte durch die Erhöhung der Anzahl simulierter Spiele, also die Erhöhung des Parameters \code{big\_n}, eine Verbesserung der Gewinnwahrscheinlichkeit des Agenten erzielt werden. Gleichzeitig hat \cite{nijssen_2007} gezeigt, dass sich dieser Effekt mit steigender Größe von \code{big\_n} abschwächt. Zusätzlich dazu steigt mit der Anzahl der durchgeführten Simulationen auch die benötigte Rechenzeit. Zu untersuchen wäre daher ob das Überschreiten der Rechenzeit von fünf Minuten auf dem Referenzgerät eine weitere Verbesserung bringt und damit den erhöhten Aufwand rechtfertigt.
 
 \subsection{Der Agent \mxZitat{\abp}}
-\authorpatrick
 In diesem Abschnitt findet sich, ähnlich dem vorherigen, zunächst ein Vergleich des \mxZitat{\abp} Agenten mit dem zufällig agierenden Agenten. Im Anschluss werden weitere Variationsmöglichkeiten besprochen. 
 \paragraph{Leistung im Vergleich zum Agenten \mxZitat{Random}}
 Im Vergleich mit dem zufällig spielenden Agenten gewann der Agent \mxZitat{\abp} in allen Fällen bis auf den \ac{Vgl} 2 mehr Spiele. Deutlich wird auch, dass der Erfolg des Agenten im Wesentlichen von der Strategie zur Bewertung der Zustände in der maximalen Suchtiefe abhängt. Auf die dabei verwendeten einzelnen Heuristiken, wird im Abschnitt \ref{sect:Fazit:Heuristiken} genauer eingegangen.
@@ -42,7 +40,6 @@ Der \mxZitat{\mc} Agent spielt sowohl bei der Verwendung der \mxZitat{Cowthello}
 \item Die \mxZitat{\abp} Suche verfügt bei den hier präsentierten Agenten über eine zu geringe Suchtiefe. Durch eine größere Suchtiefe werden bessere Ergebnisse erreicht. Allerdings steigt die Berechnungszeit eines Zuges, selbst bei der Erhöhung der Suchtiefe nur um eins, sehr stark an. Dadurch kann der Agent nur bis zu einer bestimmten Tiefe (max. 5) eine \mxZitat{\abp} Suche durchführen, bevor die Wartedauer auf den nächsten Zug den erwarteten Nutzen übersteigt. 
 \end{itemize} 
 \section{Bewertung der Heuristiken}
-\authormax
 \label{sect:Fazit:Heuristiken}
 Im nachfolgenden Abschnitt wird auf die jeweilige Leistung der einzelnen Heuristiken in den durchgeführten Vergleichen eingegangen. Insbesondere bei der \mxZitat{Stored \mc\ Heuristik} werden dabei mögliche Verbesserungsmöglichkeiten besprochen.  
 \subsection{Die Heuristik \mxZitat{Nijssen 07}}
@@ -50,7 +47,6 @@ Die Implementierung der von \cite{nijssen_2007} vorgeschlagenen Heuristik kann i
 \\Damit kann die Heuristik, ohne weitere Verbesserungen, nicht für den Einsatz empfohlen werden. Von einem Einsatz bei der Untersuchung des Spielverhaltens des \mxZitat{\abp}-Agenten gegen einen menschlichen Spieler ist abzuraten. 
 \subsection{Die Heuristik \mxZitat{Stored \mc}}
 \label{fz:h_smc}
-\authorpatrick
 Nutzt der \mxZitat{\abp}-Agent die \mxZitat{Stored \mc} Heuristik so, gewinnt er in beiden Spielkombinationen häufiger als der \mxZitat{Random} Agent (siehe Abbildung \ref{tbl:cmp-results} Vergleiche 3 und 8). Im Vergleich mit den anderen Heuristiken ist die Gewinnwahrscheinlichkeit jedoch sehr gering.
 \\Im Spiel \mxZitat{AB (Stored \mc\ Heuristik) } gegen \mxZitat{Random} (siehe Vergleich 3) gewinnt der Agent in 1000 Spielen nur vier Spiele mehr als der zufällige Spieler (458 zu 454). In den 1000 Spielen \mxZitat{Random} gegen \mxZitat{AB (Stored \mc\ Heuristik)} gewinnt die Heuristik mit 446 zu 550 gewonnenen Spielen (siehe Vergleich 8).
 \\Aus den Vergleichen 3 und 8 lassen sich folgende Erkenntnisse ableiten:
@@ -84,7 +80,6 @@ Damit ist die \mxZitat{Cowthello}-Heuristik die beste der betrachteten Heuristik
 %\section{Bewertung der Vorgehensweise}
 
 \section{Ausblick}
-\authorpatricknonewline
 \paragraph{Weitere Verfolgung des Ansatzes der \mxZitat{Stored \mc}-Heuristik}
 Die in der \mxZitat{Stored \mc} Heuristik verwendete Datenbank könnte womöglich zur Erstellung eines verbesserten Agenten benutzt werden. Die Funktionsweise des neuen Agenten entspräche dabei im Wesentlichen der des \mxZitat{\mc} Agenten. Der Unterschied bestünde darin, bei der Auswahl von Zügen in den simulierten Spielen, einen zufälligen Zug so zu wählen, dass dieser jeweils mit einer, zu der in der Datenbank für diesen Zug gespeicherten Wahrscheinlichkeit, proportionalen Wahrscheinlichkeit ausgewählt wird. Werden die Ergebnisse der simulierten Spiele zusätzlich in der Datenbank gespeichert, so verbessert sich der Agenten mit jedem gespielten Spiel.
 \\Dieser Prozess ist aber zwangsläufig mit Schreibzugriffen oder zumindest dem Verändern des Datenbankenobjektes verbunden. Dies hat zwei schwerwiegende Auswirkungen:
