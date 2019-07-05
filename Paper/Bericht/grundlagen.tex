@@ -13,6 +13,7 @@ Ein \blue{Spiel} besteht aus einem \\Tupel der Form \\[0.2cm]
 \item $\mathtt{Q}:$ Menge aller Spielzustände
 \item $\so\ \in \mathtt{Q}$ beschreibt den Startzustand des Spiels.
 \item $\mathtt{Players}:$ Menge aller Spieler: $\mathtt{Players} = \{B,W\}$
+\newpage
 \item Ist die Menge $\mathtt{Moves}$ der Positionen des Spielfeldes definiert als:
 \\\begin{center}$\mathtt{Moves} = \{ \langle \mathtt{X}, \mathtt{Y} \rangle \mid \mathtt{X} \in \{a .. h\} \wedge \mathtt{Y} \in \{ 1 .. 8 \} \} $\end{center}
 wobei $\mathtt{X}$ die Spalte und $\mathtt{Y}$ die Zeile des Spielfeldes definiert,
@@ -65,30 +66,40 @@ Durch den Startzustand $\so$ und der Funktionen $\mathtt{actions}$ und $\mathtt{
 Der \blue{Spielbaum} ist jener Baum $ \mathtt{t}_{\mathtt{GameTree}} \in \mathcal{T}$ für den gilt $\mathtt{state}(\mathtt{t}_{\mathtt{GameTree}}) = \mathtt{S}\textsubscript{0}$ 
 \end{Definition}
 \begin{Definition}[Suchbaum (Search Tree) (vgl. \cite{Russell.2016} S. 163)]
-Ein \blue{Suchbaum} \\ist ein Teil des Spielbaums. Die Wurzel des Spielbaums besteht aus dem aktuellen Spielzustand. Alle Kindknoten und Blätter entsprechen dem Spielbaum beginnend ab dem aktuellen Zustand. Es gilt also:
-\\ $B \in A \wedge B = A[s]$ mit $ A \in \mathtt{Spielbaum}, B \in \mathtt{Suchbaum}(s), s \in Q$
+Ist $\mathtt{S}$ ein Spielzustand der im Laufe des Spiels erreicht wurde, so ist der von diesem Zustand ausgehende Spielbaum $\mathcal{T}_{\mathtt{S}} \in \mathcal{T}$ ein \blue{Suchbaum}.
+\\Der Suchbaum enthält damit alle möglichen Spielverläufe die das Spiel ab dem Spielzustand $\mathtt{S}$ nehmen kann. Ein Suchbaum ist somit ein Teilbaum des Spielbaumes.  
 \end{Definition}
 Mit den nun eingeführten Grundlagen der Spieltheorie werden im Folgenden einzelne Spielstrategien betrachtet. 
 \newpage
-\section{Spielstrategien}
-Es gibt verschiedene Spielstrategien. Im Folgenden werden diese kurz erläutert und anschließend verglichen.
+\section{Spielalgorithmen}
+Es gibt verschiedene Spielalgorithmen. Im Folgenden werden einige dieser Algorithmen kurz erläutert und anschließend verglichen.
 \subsection{MiniMax}
-Die erste hier erläuterte Strategie ist der MiniMax Algorithmus. Dieser ist folgendermaßen definiert (siehe \cite{Russell.2016} S.164):
-\\$\mathtt{MiniMax}(s,p) = \begin{cases} \mathtt{Utility}(s,p)$; wenn TerminalTest(s) $\\\mathtt{max}(\{\mathtt{MiniMax}(\mathtt{result}(s,a) \mid a \in \mathtt{actions}(s)\},(p +1)\%2 )\\ $; 
-wenn Spieler am Zug$\\\mathtt{min}(\{\mathtt{MiniMax}(\mathtt{result}(s,a) \mid a \in \mathtt{actions}(s) \}, (p +1)\%2)\\ $; wenn Gegner am Zug$\end{cases}$
-%\\$\mathtt{MiniMax}$ gibt in einem Endzustand einen Zahlenwert (-1,0,1) über das Spielende zurück.
-%\\In allen anderen Zuständen gibt die Funktion eine Aktion zurück, welche den besten Spielzug darstellt.
-%\\$MiniMax = \begin{cases} Q \times \mathtt{Player} \rightarrow \{-1,0,1\}$; wenn $\mathtt{Q} \in \mathtt{TerminalStates} \\ Q \times \mathtt{Player} \rightarrow \mathtt{actions}$ sonst $\end{cases}$
-\\$\mathtt{getBestMove}: Q \times \{-1,0,1\} \rightarrow \mathtt{actions}$
-\\$\mathtt{getBestMove}(s,\mathtt{score}, p) \\= \hfill \{ a \mid a \in \mathtt{actions} \land \mathtt{MiniMax}(\mathtt{result}(s,a), (p + 1) \% 2 ) == \mathtt{score}\}.\mathtt{any}()$
-\\Die Funktion $\mathtt{getBestMove}$ ermittelt eine Menge aller Züge, welche den von $\mathtt{MiniMax}$ zurückgegeben Wert besitzen und wählt aus dieser Menge einen Zug aus.
-\\Der Spieler sucht durch diese Funktion den bestmöglichen Zug aus den verfügbaren Zügen ($\mathtt{actions}$), der ihm einen für seine Züge einen Vorteil schafft, aber gleichzeitig nur \mxZitat{schlechte} Zugmöglichkeiten für den Gegner generiert. Der Gegner kann dadurch aus allen ehemals möglichen Zügen nicht den optimalen Zug spielen, da dieser in der Menge der erlaubten Züge nun nicht mehr enthalten ist. Er wiederrum wählt aus den verfügbaren $\mathtt{actions}$ nach den gleichen Vorgaben seinen besten Zug aus.
-\vspace{0.5cm}\\ Die Strategie ist eine Tiefensuche und erkundet jeden Knoten zuerst bis zu den einzelnen Blättern bevor ein Nachbarknoten ausgewählt wird. Dies setzt das mindestens einmalige Durchlaufen des gesamten Suchbaums voraus. Bei einem durchschnittlichen Verzweigungsfaktor von $f$ bei einer Tiefe von $d$ resultiert daraus eine Komplexität von $\mathcal{O}(d\textsuperscript{f})$. Bei einem einmaligen Erkunden der Knoten können die Werte aus den Blättern rekursiv von den Blättern zu den Knoten aktualisiert werden. Dadurch muss im nächsten Zug nur das Minimum aus $\mathtt{actions}$ ermittelt werden, da alle Kindknoten schon evaluiert wurden. Für übliche Spiele kann die MiniMax-Strategie allerdings nicht verwendet werden, da die Komplexität zu hoch für eine akzeptable Antwortzeit ist und der benötigte Speicherplatz für die berechneten Zustände sehr schnell wächst.
+Die erste hier erläuterte Algorithmus ist der MiniMax Algorithmus. Für dessen Definition muss zunächst die folgenden Funktionen definiert sein:
+\begin{itemize}
+\item $\mathtt{player}: \mathtt{Q} \rightarrow \mathtt{Players}$
+\\Diese Funktion gibt für einen Zustand $\mathtt{s} \in \mathtt{Q}$ den Spieler zurück der an der Reihe ist.
+\item $\mathtt{other}: \mathtt{Players} \rightarrow \mathtt{Players}$ mit:
+\\$\mathtt{other}(\mathtt{s}) = \begin{cases}
+W & \, \text{wenn} \, \mathtt{player}(\mathtt{s}) = B \\
+B & \, \text{sonst}
+\end{cases}$
+\end{itemize}
+Der MiniMax Algorithmus definiert eine Funktion $\mathtt{MiniMax}$
+\\\begin{footnotesize}$\mathtt{MiniMax}(\mathtt{s}, \mathtt{p}) = \\ \begin{cases}
+\mathtt{utility}(\mathtt{s}, \mathtt{p}) & \, \text{wenn} \, \mathtt{terminalTest}(\mathtt{s})\\
+\mathtt{max}(\{-\mathtt{MiniMax}(\mathtt{s}_{\mathtt{new}}, \mathtt{other}(\mathtt{p})) \mid \mathtt{s}_{\mathtt{new}} \in \{\mathtt{result}(\mathtt{s}, \mathtt{m}) \mid \mathtt{m} \in \mathtt{actions}(\mathtt{s})\}\}) & \, \text{sonst}
+\end{cases}$
+\end{footnotesize}
+\vspace{0.5cm}
+die das bestmögliche Spielergebnis für den Spieler $\mathtt{p}$ im Zustand $\mathtt{s}$ berechnet.
+\\Nun kann die  Menge aller Züge, welche den von $\mathtt{MiniMax}$ zurückgegeben Ausgang besitzen, ermittelt werden. Der Algorithmus wählt dann aus dieser Menge einen Zug aus.
+\\Der Algorithmus versucht den Wert des Spielausgangs aus der eigenen Sicht zu maximieren. Es gilt also immer den Zug mit dem höchsten Wert durchzuführen. Da davon auszugehen ist, dass der Gegenspieler nach dem gleichen Prinzip vorgeht und es sich um ein Nullsummenspiel handelt kann die Wertigkeit eines Folgezuges für den aktuellen Spieler durch Multiplikation der Wertigkeit des Folgezuges aus Sicht des anderen Spielers mit $-1$ ermittelt werden. Da diese Wertigkeit ebenfalls mit der Funktion $\mathtt{MiniMax}$ ermittelt wird ergibt sich ein rekursiver Aufruf.
+\vspace{0.5cm}\\ Der Algorithmis ist damit eine Tiefensuche und erkundet jeden Knoten zuerst bis zu den einzelnen Blättern bevor an der letzen Verzweigung ein Nachbarknoten ausgewertet wird. Dies setzt das mindestens einmalige Durchlaufen des gesamten Suchbaums voraus. Für übliche Spiele kann die MiniMax-Strategie allerdings nicht verwendet werden, da es zu lange dauert den Suchbaum in einer akzeptablen Antwortzeit zu durchlaufen.
 
 \subsection{\abab}
 \label{ab-pruning}
 Der MiniMax Algorithmus berechnet nach dem Prinzip der Tiefensuche (\mxZitat{depth-first}) stets den kompletten \gtree. 
-\\Bei der Betrachtung des Entscheidungsverhaltens des Algorithmus fällt jedoch schnell auf, dass ein nicht unerheblicher Teil aller möglichen Züge durch einen menschlichen Spieler gar nicht erst in Betracht gezogen wird. Dies geschieht aufgrund der Tatsache, dass diese Züge in einem schlechteren Ergebnis resultieren würden als ein anderer letztendlich ausgewählter Zug.\newline
+\\Bei der Betrachtung des Entscheidungsverhaltens des Algorithmus fällt jedoch schnell auf, dass ein nicht unerheblicher Teil aller möglichen Züge durch einen menschlichen Spieler gar nicht erst in Betracht gezogen wird. Dies geschieht aufgrund der Tatsache, dass diese Züge in einem schlechteren Ergebnis resultieren würden als ein bereits betrachteter Zug.\newline
 Dem \abab\ (\abp) Algorithmus liegt der Gedanke zugrunde, dass die Zustände, die in einem realen Spiel nie ausgewählt würden, auch nicht berechnet werden müssen. Damit steht die dafür regulär erforderliche Rechenzeit und der entsprechende Speicher dafür zur Verfügung andere, vielversprechendere Zweige zu verfolgen.
 \subsubsection{Demonstration an einem Beispiel}
 \begin{figure}[ht!]
