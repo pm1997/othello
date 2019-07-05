@@ -1,14 +1,13 @@
 import numpy as np
 from termcolor import colored
-from constants import COLUMN_NAMES, DATABASE_FILE_NAME
-from database import Database
+from constants import COLUMN_NAMES, DATABASE_FILE_NAME, DATABASE_TO_POSITIONS
 
 
 class Analyse:
 
     def __init__(self):
         """
-        import csv file and store in self._data
+        import csv file and store in self._db_data
         """
         csv = np.loadtxt(DATABASE_FILE_NAME, delimiter=';', dtype='int64')
         self._data = csv.reshape((60, 9, 3))
@@ -18,14 +17,14 @@ class Analyse:
 
     def analyse(self, player=0):
         """
-        analyse self._data
+        analyse self._db_data
         get highest probability of winning per turn row
         """
         for position in range(60):
             print(f"position: {position}")
             field_type = 0
             for cell in self._data[position]:
-                moves = Database.translate_database_to_positions(field_type)
+                moves = DATABASE_TO_POSITIONS[field_type]
                 # calculate change of winning
                 if cell[2] == 0:
                     a = 0
@@ -46,7 +45,7 @@ class Analyse:
                 # set unused moves to 100 %
                 if cell[2] == 0:
                     a = 0
-                    moves = Database.translate_database_to_positions(field_type)
+                    moves = DATABASE_TO_POSITIONS[field_type]
                     for field in moves:
                         self._data2[position][field[0]][field[1]] = "{:.2f}".format(a)
                 field_type += 1
@@ -62,7 +61,7 @@ class Analyse:
             for cell in self._data[position]:
                 # set unused moves to average value to minimize error in variance
                 if cell[2] == 0:
-                    moves = Database.translate_database_to_positions(field_type)
+                    moves = DATABASE_TO_POSITIONS[field_type]
                     for field in moves:
                         self._data2[position][field[0]][field[1]] = "{:.2f}".format(0)
                 field_type += 1

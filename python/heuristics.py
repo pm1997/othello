@@ -4,6 +4,7 @@ This file contains heuristics used to evaluate a certain game state
 
 from othello import Othello
 from util import UtilMethods
+from constants import POSITION_TO_DATABASE
 import database
 import operator
 
@@ -135,7 +136,7 @@ class CowthelloHeuristic:
     # Create a dictionary and assign each field it's value
     values = dict()
     for position in ALL_FIELDS:
-        values[position] = database.Database.translate_position_to_database(position)
+        values[position] = POSITION_TO_DATABASE[position]
 
     weight_matcher = {0: 100, 1: -25, 2: 25, 3: 10, 4: -50, 5: 1, 6: 1, 7: 50, 8: 5, 'X': 1}
     for position in ALL_FIELDS:
