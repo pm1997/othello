@@ -31,9 +31,8 @@ class Analyse:
                 else:
                     a = cell[player] / cell[2] * 100
 
-                for field in moves:
-                    self._data2[position][field[0]][field[1]] = "{:.2f}".format(a)
-                # print(a)
+                for row, column in moves:
+                    self._data2[position][row][column] = "{:.2f}".format(a)
                 field_type += 1
 
             # calculate first sum of array
@@ -42,12 +41,12 @@ class Analyse:
             field_type = 0
             for cell in self._data[position]:
 
-                # set unused moves to 100 %
+                # set unused moves to 0 %
                 if cell[2] == 0:
                     a = 0
                     moves = DATABASE_TO_POSITIONS[field_type]
-                    for field in moves:
-                        self._data2[position][field[0]][field[1]] = "{:.2f}".format(a)
+                    for row, column in moves:
+                        self._data2[position][row][column] = "{:.2f}".format(a)
                 field_type += 1
             print(f"min: {np.min(self._data2[position])}")
 
@@ -62,8 +61,8 @@ class Analyse:
                 # set unused moves to average value to minimize error in variance
                 if cell[2] == 0:
                     moves = DATABASE_TO_POSITIONS[field_type]
-                    for field in moves:
-                        self._data2[position][field[0]][field[1]] = "{:.2f}".format(0)
+                    for row, column in moves:
+                        self._data2[position][row][column] = "{:.2f}".format(0)
                 field_type += 1
             print(f"usual difference: {np.sqrt(np.var(self._data2[position], ddof=1))}")
 

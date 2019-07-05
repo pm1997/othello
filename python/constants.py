@@ -13,7 +13,8 @@ COLUMN_NUMBERS = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7
 
 # The move directions used to calculate the stones turned by a certain move
 # and the legality of that move respectively
-DIRECTIONS = {(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)}
+L = (-1, 0, 1)
+DIRECTIONS = {(a, b) for a in L for b in L if (a, b) != (0, 0)}
 
 # name of database file
 DATABASE_FILE_NAME = "database_moves.csv"

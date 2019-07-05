@@ -100,13 +100,8 @@ class StoredMonteCarloHeuristic:
 
         moves = game_state.get_available_moves()
         turn_nr = game_state.get_turn_nr()
-        move_probability = dict()
 
-        for move in moves:
-            move_probability[move] = database.db.get_likelihood(move, turn_nr, current_player)
-
-        selected_move = max(move_probability.items(), key=operator.itemgetter(1))[0]
-        return move_probability[selected_move]
+        return max([database.db.get_likelihood(move, turn_nr, current_player) for move in moves])
 
 
 class CowthelloHeuristic:

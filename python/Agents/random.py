@@ -12,9 +12,9 @@ class Random:
         """
         interface function of all players
         :param game_state: actual game state
-        :return: best move in available moves
+        :return: random move in available moves
         """
         # Get the legal moves
         possible_moves = game_state.get_available_moves()
         # Return a Random move
-        return possible_moves[rnd.randrange(len(possible_moves))]
+        return rnd.choice(possible_moves)

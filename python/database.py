@@ -30,7 +30,6 @@ class Database:
         Reset stored played / won games
         change self._db_data to array of 0
         """
-        # write 0 in each cell of _db_data array
         self._db_data = np.zeros(shape=(60, 9, 3), dtype='int64')
         # save modified array in file
         self.store_database()
@@ -58,50 +57,70 @@ class Database:
         category = POSITION_TO_DATABASE[move]
         # store data of one category in one turn number database in tree variables to compute statistic
         won_games_pl1, won_games_pl2, total_games_played = self._db_data[turn_nr][category]
+        # avoid dividing with 0
         if total_games_played == 0:
             return 0
+        # return win probability
         if current_player == PLAYER_ONE:
             return won_games_pl1 / total_games_played
         return won_games_pl2 / total_games_played
 
     def update_field_stat(self, turn_nr, field_type, winner):
+        """
+        update database with new played move
+        :param turn_nr: turn number of move to store
+        :param field_type: field category of move
+        :param winner: winner of whole played game
+        :return: nothing
+        update self._db_data at given turn number and field type
+        """
+        # get actual database entry
         (won_games_pl1, won_games_pl2, total_games_played) = self._db_data[turn_nr][field_type]
         if winner == PLAYER_ONE:
             won_games_pl1 += 1
         elif winner == PLAYER_TWO:
             won_games_pl2 += 1
+        # store updated entry at same position in database
         self._db_data[turn_nr][field_type] = (won_games_pl1, won_games_pl2, total_games_played + 1)
 
     def update_fields_stats_for_single_game(self, moves, winner):
         # update each move in game
-        for turn_nr in range(len(moves)):
+        for turn_nr in enumerate(moves):
             # translate move 1,0 to position 8
             position = POSITION_TO_DATABASE[moves[turn_nr]]
             # update array at position position
             self.update_field_stat(turn_nr, position, winner)
-            # update next move
 
     @staticmethod
     def _play_n_random_games(count):
+        """
+        play count random games
+        :param count: number of played games
+        :return: winning statistics
+        statistics = list of pair <taken moves, winner of this game>
+        """
         multi_stats = []
         for i in range(count):
+            # print each 100 games actual game played position
             if i % 100 == 0:
                 print(f"Game No: {i}")
             g = Othello()
             g.init_game()
+            # play whole game
             while not g.game_is_over():
                 g.play_position(Random.get_move(g))
             winner = g.get_winner()
+            # add winner and taken moves to statistic
             multi_stats.append((g.get_taken_mv(), winner))
         return multi_stats
 
     def train_db_multi_threaded(self, count):
         number_of_processes = mp.cpu_count()
-        pool = mp.Pool(processes=number_of_processes)
+        pool = mp.Pool()
         list_of_stats = [pool.apply_async(self._play_n_random_games, args=(count // number_of_processes,))
                          for _ in range(number_of_processes)]
-        for single_list in list_of_stats:
-            list_of_games = single_list.get()
+        for single_process_list in list_of_stats:
+            list_of_games = single_process_list.get()
             for single_game in list_of_games:
                 moves, winner = single_game
                 self.update_fields_stats_for_single_game(moves, winner)

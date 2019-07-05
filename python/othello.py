@@ -37,9 +37,7 @@ class Othello:
         return (self._board.__str__() + str(self._current_player)).__hash__()
 
     def __eq__(self, other):
-        if self.__hash__() == other.__hash__():
-            return True
-        return False
+        return self.__hash__() == other.__hash__()
 
     def deepcopy(self):
         """
@@ -231,14 +229,12 @@ class Othello:
         """
         Sets current player to the next player
         """
-        if self._current_player == PLAYER_ONE:
-            self._current_player = PLAYER_TWO
-        elif self._current_player == PLAYER_TWO:
-            self._current_player = PLAYER_ONE
+        self._current_player = self.other_player(self._current_player)
 
     def _update_fringe(self, position):
         """
         Adds the fields next to the given one to the fringe
+        position is a pair < row, column>
         """
         # Look for neighbouring fields in each direction
         for direction in DIRECTIONS:
@@ -267,11 +263,11 @@ class Othello:
         Returns None if the calculated coordinates are not on the board.
         """
         # Access the values stored in the pairs
-        (y, x), (y_step, x_step) = position, direction
+        (row, column), (row_step, column_step) = position, direction
         # Calculate the new position
-        new_position = (new_y, new_x) = (y + y_step, x + x_step)
+        new_position = (new_row, new_column) = (row + row_step, column + column_step)
         # Check whether the new position is still on the board.
-        if 0 <= new_x < 8 and 0 <= new_y < 8:
+        if 0 <= new_column < 8 and 0 <= new_row < 8:
             # If yes return it
             return new_position
         else:
@@ -325,21 +321,16 @@ class Othello:
             self._fringe.remove(position)
             # Add the unoccupied neighbors of the position to the fringe.
             self._update_fringe(position)
-            # Prepare the next turn
             self._prepare_next_turn()
-            return True
-        else:
-            # If no return false
-            return False
 
     def _compute_available_moves(self):
         """
-        Computes the legal moves in the current state and stores them for later use.
+        Computes the legal moves in the current state and stores them for later use in self._turning_stones.
         """
         # Delete the moves available in the previous turn
         self._turning_stones = dict()
-        # Get the symbol of the current player
-        own_symbol = self._current_player
+        # Get the value (0 | 1) of the current player
+        player_value = self._current_player
         # Iterate over each position in fringe to test whether it would be a legal move
         for current_position in self._fringe:
             # Create a set to store the stones that would be turned by making that move
@@ -362,10 +353,10 @@ class Othello:
                         break
                     # If the field is owned by the other player the stone might be turned.
                     # Store the position for future use
-                    elif current_value != own_symbol:
+                    elif current_value != player_value:
                         this_direction.add(next_step)
                     # If the line is ended by a field owned by the current player some stones might be turned.
-                    elif current_value == own_symbol:
+                    elif current_value == player_value:
                         # Add all stones between the starting position and the end of his line to the stones turned
                         position_turns = position_turns | this_direction
                         break
