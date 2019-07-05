@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from constants import DATABASE_FILE_NAME, PLAYER_ONE, PLAYER_TWO, DATABASE_TO_POSITIONS, POSITION_TO_DATABASE
+from constants import DATABASE_FILE_NAME, PLAYER_ONE, PLAYER_TWO, POSITION_TO_DATABASE
 from Agents.random import Random
 from othello import Othello
 import multiprocessing as mp
@@ -8,29 +8,31 @@ import multiprocessing as mp
 
 class Database:
 
-    @staticmethod
-    def translate_database_to_positions(field_type):
-        return DATABASE_TO_POSITIONS[field_type]
-
-    @staticmethod
-    def translate_position_to_database(move):
-        return POSITION_TO_DATABASE[move]
-
     def __init__(self):
+        """
+        load database data and store them in self._db_data
+        self._db_data = 3 dim array:
+            60 turns
+                9 game categories
+                       [0] : won games of player1
+                       [1] : won games of player2
+                       [2] : total played games
+        """
         # check if database file exists
         if not os.path.isfile(DATABASE_FILE_NAME):
             self._create_new_database()
         # load csv in self_data as 3 dim. array
         csv = np.loadtxt(DATABASE_FILE_NAME, delimiter=';', dtype='int64')
-        self._data = csv.reshape((60, 9, 3))
+        self._db_data = csv.reshape((60, 9, 3))
 
     def _create_new_database(self):
         """
         Reset stored played / won games
+        change self._db_data to array of 0
         """
-        # write 1.0 in each cell of _data array
-        self._data = np.zeros(shape=(60, 9, 3), dtype='int64')
-        # save modified array
+        # write 0 in each cell of _db_data array
+        self._db_data = np.zeros(shape=(60, 9, 3), dtype='int64')
+        # save modified array in file
         self.store_database()
 
     def store_database(self):
@@ -40,21 +42,22 @@ class Database:
         """
         with open(DATABASE_FILE_NAME, 'w') as outfile:
             # write 3 dim. array as list of 2 dim. array's
-            for row in self._data:
-                # write one row of matrix
+            for row in self._db_data:
+                # write one row (turn number) of matrix
                 np.savetxt(outfile, row, fmt='%d', delimiter=';')
 
     def get_likelihood(self, move, turn_nr, current_player):
         """
         calculate chance of winning for given move and turn_number
-        :param move: move in available_moves
+        :param move: move (pair row, column) in available_moves
         :param turn_nr: actual turn_number
-        :param current_player: actual player
+        :param current_player: actual player = {0, 1}
         :return: chance of winning for given field at the given turn number
         """
-        # translate move to position in array
-        position = self.translate_position_to_database(move)
-        won_games_pl1, won_games_pl2, total_games_played = self._data[turn_nr][position]
+        # translate move to category in array
+        category = POSITION_TO_DATABASE[move]
+        # store data of one category in one turn number database in tree variables to compute statistic
+        won_games_pl1, won_games_pl2, total_games_played = self._db_data[turn_nr][category]
         if total_games_played == 0:
             return 0
         if current_player == PLAYER_ONE:
@@ -62,18 +65,18 @@ class Database:
         return won_games_pl2 / total_games_played
 
     def update_field_stat(self, turn_nr, field_type, winner):
-        (won_games_pl1, won_games_pl2, total_games_played) = self._data[turn_nr][field_type]
+        (won_games_pl1, won_games_pl2, total_games_played) = self._db_data[turn_nr][field_type]
         if winner == PLAYER_ONE:
             won_games_pl1 += 1
         elif winner == PLAYER_TWO:
             won_games_pl2 += 1
-        self._data[turn_nr][field_type] = (won_games_pl1, won_games_pl2, total_games_played + 1)
+        self._db_data[turn_nr][field_type] = (won_games_pl1, won_games_pl2, total_games_played + 1)
 
     def update_fields_stats_for_single_game(self, moves, winner):
         # update each move in game
         for turn_nr in range(len(moves)):
             # translate move 1,0 to position 8
-            position = self.translate_position_to_database(moves[turn_nr])
+            position = POSITION_TO_DATABASE[moves[turn_nr]]
             # update array at position position
             self.update_field_stat(turn_nr, position, winner)
             # update next move
@@ -107,7 +110,7 @@ class Database:
         csv = np.loadtxt(file, delimiter=';')
         db1 = csv.reshape((60, 9, 3))
         r1 = 0
-        for row in self._data:
+        for row in self._db_data:
             c1 = 0
             for column in row:
                 column[0] += db1[r1][c1][0]
