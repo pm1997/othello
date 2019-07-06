@@ -50,7 +50,9 @@ class Othello:
                               copy.deepcopy(self._last_turn_passed),
                               copy.deepcopy(self._game_is_over),
                               copy.deepcopy(self._fringe),
-                              copy.deepcopy(self._turning_stones))
+                              copy.deepcopy(self._turning_stones),
+                              copy.deepcopy(self._taken_moves),
+                              copy.deepcopy(self._turn_nr))
         return copied_game
 
     def print(self):
@@ -65,7 +67,7 @@ class Othello:
         print(4 * " " + f"_fringe: {self._fringe}")
         print(4 * " " + f"_turning_stones: {self._turning_stones}")
 
-    def init_copy(self, board, current_player, last_turn_passed, game_is_over, fringe, turning_stones):
+    def init_copy(self, board, current_player, last_turn_passed, game_is_over, fringe, turning_stones, taken_moves, turn_nr):
         """
         Used to initialize a copied game with the provided values
         """
@@ -75,6 +77,8 @@ class Othello:
         self._game_is_over = game_is_over
         self._fringe = fringe
         self._turning_stones = turning_stones
+        self._taken_moves = taken_moves
+        self._turn_nr = turn_nr
 
     def init_game(self):
         """
