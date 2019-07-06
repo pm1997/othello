@@ -258,7 +258,7 @@ class MonteCarlo:
 
     def get_move(self, game_state: Othello):
         """
-        interface function of all players
+        Returns the best move according to the games simulated by MonteCarlo
         :param game_state: actual game state
         :return: best move in available moves
         """
@@ -280,14 +280,21 @@ class MonteCarlo:
 
         # Simulate big_n games
         if not self._use_multiprocessing:
+            # Simulate the games in the current process
             winning_statistics = MonteCarlo.play_n_random_games(own_symbol, game_state, self._big_n, self._use_weighted_random)
         else:
+            # Create a pool of worker processes. Set the number_of_processes explicitly
+            # Workload can be distributed equally on the processes when their number is known
             number_of_processes = mp.cpu_count()
             pool = mp.Pool(processes=number_of_processes)
-            list_of_stats = [pool.apply_async(MonteCarlo.play_n_random_games, args=(own_symbol, game_state.deepcopy(), self._big_n // number_of_processes, self._use_weighted_random)) for _ in range(number_of_processes)]
-            winning_statistics = list_of_stats[0].get()
-            for single_list in list_of_stats[1:]:
+            # Use Worker processes asynchronous
+            list_of_result_objects = [pool.apply_async(MonteCarlo.play_n_random_games, args=(own_symbol, game_state.deepcopy(), self._big_n // number_of_processes, self._use_weighted_random)) for _ in range(number_of_processes)]
+            # Collect the result of the first worker
+            winning_statistics = list_of_result_objects[0].get()
+            # Collect the result of the other workers and combine them in one single dictionary
+            for single_list in list_of_result_objects[1:]:
                 MonteCarlo.combine_statistic_dicts(winning_statistics, single_list.get())
+            # Close the worker pool.
             pool.close()
 
         # Reduce the pair of (won_games, times_played) to a winning probability
