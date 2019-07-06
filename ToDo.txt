@@ -11,6 +11,7 @@ get_statistics ohne loops
 fix stored MC Heuristik in pdf
 Dynamic search Depth
 Discussion of the remaining comparisons
+Samsoft Quelle
 
 Questions
 > Pop/Push statt deepcopy?
