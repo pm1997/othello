@@ -5,7 +5,7 @@ import util
 
 class Human:
     """
-    The PlayerHuman asks the user to select each move
+    The Human Agent asks the user to select each move
     """
 
     @staticmethod
@@ -16,7 +16,7 @@ class Human:
         :param game_state: actual game state
         :return: best move in available moves
         """
-        # Create a data structure to use with UtilMethods.select_one
+        # Create a data structure to use with util.select_one
         possibilities = []
         for move in game_state.get_available_moves():
             (row, col) = move

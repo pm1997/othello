@@ -8,7 +8,6 @@ from functools import lru_cache
 
 
 class AlphaBetaPruning:
-    # Compare https://github.com/karlstroetmann/Artificial-Intelligence/blob/master/SetlX/game-alpha-beta.stlx
 
     _start_tables = StartTables()
 
@@ -45,16 +44,17 @@ class AlphaBetaPruning:
     @lru_cache(maxsize=None)
     def value(game_state: Othello, depth, heuristic, alpha=-1, beta=1):
         """
-        get score for alpha beta pruning
-        :param game_state: actual game state
-        :param depth: do alpha beta pruning this depth
-        :param heuristic: score game state after alpha beta pruning with this heuristic
+        Get value for game_state according to alpha beta pruning
+        :param game_state: The state to evaluate
+        :param depth: do alpha beta pruning until this depth is reached
+        :param heuristic: Function reference for the heuristic used to score game state after maximum search depth is reached
         :param alpha: value of alpha
         :param beta:  value of beta
-        :return: score of move
+        :return: value of move
+        Compare https://github.com/karlstroetmann/Artificial-Intelligence/blob/master/SetlX/game-alpha-beta.stlx
         """
         if game_state.game_is_over():
-            return game_state.utility(game_state.get_current_player()) * 1000
+            return game_state.utility(game_state.get_current_player())
         if depth == 0:
             # return heuristic of game state
             return heuristic(game_state.get_current_player(), game_state)
@@ -80,9 +80,10 @@ class AlphaBetaPruning:
         :param alpha: value of alpha
         :param beta:  value of beta
         :return: score of move
+        Compare https://github.com/karlstroetmann/Artificial-Intelligence/blob/master/SetlX/game-alpha-beta.stlx
         """
         if game_state.game_is_over():
-            return game_state.utility(game_state.get_current_player()) * 1000
+            return game_state.utility(game_state.get_current_player())
         if depth == 0:
             # use monte carlo player if enabled
             # mc_count = number of played games
@@ -106,7 +107,7 @@ class AlphaBetaPruning:
 
     def get_move(self, game_state: Othello):
         """
-        interface function of all players
+        Will select the best move according to the value of the resulting game_state according to monte carlo
         :param game_state: actual game state
         :return: best move in available moves
         """
@@ -115,22 +116,29 @@ class AlphaBetaPruning:
             moves = self._start_tables.get_available_moves_of_start_tables(game_state)
             if len(moves) > 0:
                 return util.translate_move_to_pair(moves[random.randrange(len(moves))])
+        # Dict used to store a list of the moves resulting in a state with the respective value
         best_moves = dict()
+        # Evaluate each available move
         for move in game_state.get_available_moves():
+            # Play the move to get the resulting state
             next_state = game_state.deepcopy()
             next_state.play_position(move)
 
+            # Evaluate the state using the selected function
             if self._use_monte_carlo:
                 result = -AlphaBetaPruning.value_monte_carlo(next_state, self._search_depth - 1, self._heuristic,
                                                              mc_count=self._mc_count)
             else:
                 result = -AlphaBetaPruning.value(next_state, self._search_depth - 1, self._heuristic)
 
+            # Append the move to the list of states with that value
             if result not in best_moves.keys():
                 best_moves[result] = []
             best_moves[result].append(move)
 
-        best_move = max(best_moves.keys())
-        print(AlphaBetaPruning.value.cache_info())
+        # Determine the best result
+        best_result = max(best_moves.keys())
         print(AlphaBetaPruning.value_monte_carlo.cache_info())
-        return best_moves[best_move][random.randrange(len(best_moves[best_move]))]
+        print(AlphaBetaPruning.value.cache_info())
+        # Play one random move with the best possible result
+        return best_moves[best_result][random.randrange(len(best_moves[best_result]))]

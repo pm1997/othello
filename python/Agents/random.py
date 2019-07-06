@@ -5,6 +5,7 @@ import random as rnd
 class Random:
     """
     The PlayerRandom plays a random move taken from the set of legal moves
+    The static method is kept in an enclosing class to support the generic use of Agents as done in main-game.py
     """
 
     @staticmethod
