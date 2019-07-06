@@ -1,0 +1,14 @@
+Comments in:
+database.py
+evaluate_agents.py
+heuristics.py > StoredMonteCarloHeuristic
+start_tables.py
+
+ToDo
+get_move/weighted_random in mc "own_symbol" + fix in pdf
+get_available_moves cast to list + fix in pdf
+get_statistics ohne loops
+fix stored MC Heuristik in pdf
+
+Questions
+> Pop/Push statt deepcopy?
