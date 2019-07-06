@@ -50,8 +50,9 @@ if __name__ == '__main__':
     start = time.time()
     # While the game is still running continue to make turns
     while not game.game_is_over():
-        # Get the symbol for the current player
+        # Get the representation for the current player
         current_player = game.get_current_player()
+        print(f"{PRINT_SYMBOLS[current_player]}'s turn:")
         # Get the Player object assigned to that player
         player_object = players[current_player]
         # Ask the Player to calculate it's move based on the current state

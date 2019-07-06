@@ -6,9 +6,8 @@ from othello import Othello
 import  util
 from constants import POSITION_TO_DATABASE
 import database
-import operator
 
-# Generate sets of fields of similar value
+# Generate sets of fields with similar value
 ALL_FIELDS = {(a, b) for a in range(8) for b in range(8)}
 CENTER = {(3, 3), (3, 4), (4, 3), (4, 4)}
 CENTRAL_FIELDS = {(a, b) for a in range(2, 6) for b in range(2, 6)}
@@ -40,8 +39,9 @@ def get_sign(current_player, field_value):
 
 def select_heuristic(player_string):
     """
+    Asks the user to select one of the heuristics known to the function
     :param player_string: 'W' or 'B' to ask specific player to choose a heuristic
-    :return: selected heuristic
+    :return: function reference of the selected heuristic
     """
     # Create a list of all Heuristics
     available_heuristics = list()
@@ -76,7 +76,9 @@ class NijssenHeuristic:
     @staticmethod
     def heuristic(current_player, game_state: Othello):
         """
-        Calculates the value of game_state for current_player
+        Calculates the value of game_state for current_player according to the Nijssen Heuristic
+        current_player is coded as the constants EMPTY_CELL, PLAYER_ONE and PLAYER_TWO
+          form constants.py. Therefore the parameter is an integer values.
         """
         # Without any information the value is 0
         value = 0
@@ -85,9 +87,9 @@ class NijssenHeuristic:
         # Get the values assigned to each field
         weight_dict = NijssenHeuristic.values
         # Iterate over the fields with an assigned value
-        for (x, y) in NijssenHeuristic.values.keys():
+        for (row, column) in NijssenHeuristic.values.keys():
             # Add the fields value to the heuristic value if it us owned by the current player. Subtract it otherwise
-            value += get_sign(current_player, board[x][y]) * weight_dict[(x, y)]
+            value += get_sign(current_player, board[row][column]) * weight_dict[(row, column)]
         # Return the Calculated value 
         return value
 
@@ -97,7 +99,9 @@ class StoredMonteCarloHeuristic:
     @staticmethod
     def heuristic(current_player, game_state: Othello):
         """
-        Calculates the value of game_state for current_player
+        Calculates the value of game_state for current_player according to the Stored MonteCarlo Heuristic
+        current_player is coded as the constants EMPTY_CELL, PLAYER_ONE and PLAYER_TWO
+          form constants.py. Therefore the parameter is an integer values.
         """
 
         moves = game_state.get_available_moves()
@@ -142,7 +146,9 @@ class CowthelloHeuristic:
     @staticmethod
     def heuristic(current_player, game_state: Othello):
         """
-        Calculates the value of game_state for current_player
+        Calculates the value of game_state for current_player according to the Cowthello
+        current_player is coded as the constants EMPTY_CELL, PLAYER_ONE and PLAYER_TWO
+          form constants.py. Therefore the parameter is an integer values.
         """
         # Without any information the value is 0
         value = 0
