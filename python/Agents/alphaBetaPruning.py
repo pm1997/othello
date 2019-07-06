@@ -138,7 +138,9 @@ class AlphaBetaPruning:
 
         # Determine the best result
         best_result = max(best_moves.keys())
-        print(AlphaBetaPruning.value_monte_carlo.cache_info())
-        print(AlphaBetaPruning.value.cache_info())
+        if self._use_monte_carlo:
+            print(AlphaBetaPruning.value_monte_carlo.cache_info())
+        else:
+            print(AlphaBetaPruning.value.cache_info())
         # Play one random move with the best possible result
         return best_moves[best_result][random.randrange(len(best_moves[best_result]))]
