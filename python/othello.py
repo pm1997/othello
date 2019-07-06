@@ -15,7 +15,7 @@ class Othello:
     """
 
     def __init__(self):
-        # Representation of the board. A list of Lists
+        # Representation of the board. A numpy array
         self._board = np.full((8, 8), EMPTY_CELL, dtype='int8')
 
         # Stores the player who's turn it is in the current state
@@ -30,235 +30,26 @@ class Othello:
         self._fringe = set()
         # Stores legal moves as key and the set of the stones turned after making that move as value
         self._turning_stones = dict()
+        # Stores the moves taken to reach that state
         self._taken_moves = []
+        # Stores the turn number. Can be used to determine the game phase
         self._turn_nr = 0
 
     def __hash__(self):
+        """
+        Returns a hash value for the current State of the Object.
+        Uses the String Representation of board and player to obtain the hash with a built in function
+        :return: The hash value
+        """
         return (self._board.__str__() + str(self._current_player)).__hash__()
 
     def __eq__(self, other):
+        """
+        Compares two Objects using their hash values
+        :param other:
+        :return: Boolean indicating whether the Objects are identical
+        """
         return self.__hash__() == other.__hash__()
-
-    def deepcopy(self):
-        """
-        Returns a deepcopy of the game.
-        copy.deepcopy(self) does not work properly because the rows in the boards won't be copied.
-        """
-        copied_game = Othello()
-        copied_game.init_copy(copy.deepcopy(self._board),
-                              copy.deepcopy(self._current_player),
-                              copy.deepcopy(self._last_turn_passed),
-                              copy.deepcopy(self._game_is_over),
-                              copy.deepcopy(self._fringe),
-                              copy.deepcopy(self._turning_stones),
-                              copy.deepcopy(self._taken_moves),
-                              copy.deepcopy(self._turn_nr))
-        return copied_game
-
-    def print(self):
-        """
-        Used to print one Othello-Object
-        """
-        print(f"OthelloGameState[{self}]:")
-        print(4 * " " + "board: " + self._get_board_string().replace("\n", "\n" + 11 * " "))
-        print(4 * " " + "current_player: " + PRINT_SYMBOLS[self._current_player])
-        print(4 * " " + f"last_turn_passed: {self._last_turn_passed}")
-        print(4 * " " + f"game_is_over: {self._game_is_over}")
-        print(4 * " " + f"_fringe: {self._fringe}")
-        print(4 * " " + f"_turning_stones: {self._turning_stones}")
-
-    def init_copy(self, board, current_player, last_turn_passed, game_is_over, fringe, turning_stones, taken_moves, turn_nr):
-        """
-        Used to initialize a copied game with the provided values
-        """
-        self._board = board
-        self._current_player = current_player
-        self._last_turn_passed = last_turn_passed
-        self._game_is_over = game_is_over
-        self._fringe = fringe
-        self._turning_stones = turning_stones
-        self._taken_moves = taken_moves
-        self._turn_nr = turn_nr
-
-    def init_game(self):
-        """
-        Initializes a new game
-        """
-
-        # Set the stones already on the board prior to the first move
-        self._board[3][3] = PLAYER_TWO
-        self._board[4][4] = PLAYER_TWO
-        self._board[3][4] = PLAYER_ONE
-        self._board[4][3] = PLAYER_ONE
-
-        # Add the fields next to these fields to the fringe.
-        self._update_fringe((3, 3))
-        self._update_fringe((4, 4))
-        self._update_fringe((3, 4))
-        self._update_fringe((4, 3))
-
-        # Set the current player to the first player
-        self._current_player = PLAYER_ONE
-
-        # Compute the legal moves during the first turn
-        self._compute_available_moves()
-
-    def game_is_over(self):
-        """
-        Return whether the game is still active or already over
-        """
-        return self._game_is_over
-
-    def _get_board_string(self):
-        """
-        Return a string representing the current state of the board
-        """
-        board_string = ""
-        board_string += "  "
-        for i in range(8):
-            board_string += f"  {COLUMN_NAMES[i]} "
-        board_string += "\n"
-        board_string += "  +" + 8 * "---+" + "\n"
-        for row in range(8):
-            board_string += f"{row + 1} |"
-            for col in range(8):
-                available_moves = self.get_available_moves()
-                if (row, col) in available_moves:
-                    board_string += f" * |"
-                else:
-                    board_string += f" {PRINT_SYMBOLS[self._board[row][col]]} |"
-            board_string += "\n"
-            board_string += "  +" + 8 * "---+" + "\n"
-        return board_string
-
-    def print_board(self):
-        """
-        Print the current state of the board
-        """
-        print(self._get_board_string())
-
-    def get_current_player(self):
-        """
-        Returns the player who's turn it is if the game is not over; None otherwise
-        """
-        if not self._game_is_over:
-            return self._current_player
-        else:
-            return None
-
-    def get_statistics(self):
-        """
-        Iterates over the board and returns the number of Empty and the number of fields occupied by a certain player
-        """
-        # Create a dictionary with the players and the Empty Cell as key
-        # At the beginning each player has 0 stones
-        points_dict = {PLAYER_ONE: 0, PLAYER_TWO: 0, EMPTY_CELL: 0}
-        # Iterate over the board
-        for row in range(8):
-            for col in range(8):
-                # Add one to the number of fields occupied by a player for each field
-                points_dict[self._board[row][col]] += 1
-        return points_dict
-
-    def get_board(self):
-        """
-        Returns a copy of the board
-        """
-        return copy.deepcopy(self._board)
-
-    def get_turn_nr(self):
-        """
-        :return: actual turn number
-        """
-        return self._turn_nr
-
-    def get_taken_mvs_text(self):
-        """
-        :return: deepcopy of list of taken moves like ["d2","e3"]
-        """
-        taken_mvs_dict = {}
-        for i in range(len(self._taken_moves)):
-            row, col = self._taken_moves[i]
-            taken_mvs_dict[i] = COLUMN_NAMES[col] + str(row + 1)
-        return taken_mvs_dict
-
-    def get_taken_mv(self):
-        """
-        :return: deepcopy of list of taken moves like ["d2","e3"]
-        """
-        return copy.deepcopy(self._taken_moves)
-
-    def get_winner(self):
-        """
-        Returns the winner of the game.
-        The player with the most stones on the board is the winner.
-        If both Agents own the same number of stones, the winner is None and it is a tie
-        """
-        stats = self.get_statistics()
-        if stats[PLAYER_ONE] == stats[PLAYER_TWO]:
-            return None
-        elif stats[PLAYER_ONE] > stats[PLAYER_TWO]:
-            return PLAYER_ONE
-        else:
-            return PLAYER_TWO
-
-    def utility(self, player):
-        """
-        Returns:
-          1: if the given player is the winner
-          0: if it is a tie
-         -1: If the given player lost
-        """
-        winner = self.get_winner()
-        if winner is None:
-            return 0
-        elif winner == player:
-            return 1
-        else:
-            return -1
-
-    @staticmethod
-    def other_player(player):
-        """
-        Returns the other player. None if the given Player is unknown
-        """
-        if player == PLAYER_ONE:
-            return PLAYER_TWO
-        elif player == PLAYER_TWO:
-            return PLAYER_ONE
-        else:
-            return None
-
-    def _next_player(self):
-        """
-        Sets current player to the next player
-        """
-        self._current_player = self.other_player(self._current_player)
-
-    def _update_fringe(self, position):
-        """
-        Adds the fields next to the given parameter position to the fringe
-        position is a pair < row, column>
-        """
-        # Look for neighbouring fields in each direction
-        for direction in DIRECTIONS:
-            # Get the neighbour in that direction
-            next_step = Othello._next_step(position, direction)
-            # Test whether the neighbour calculated is still on the board
-            if next_step is not None:
-                (new_row, new_column) = next_step
-                # Add the neighbor to the fringe if it is not occupied by a stone
-                if self._board[new_row][new_column] == EMPTY_CELL:
-                    self._fringe.add(next_step)
-
-    def _prepare_next_turn(self):
-        """
-        Prepare the game state for the next turn
-        """
-        # Set the current player to the next player
-        self._next_player()
-        # Compute the legal moves for that player
-        self._compute_available_moves()
 
     @staticmethod
     def _next_step(position, direction):
@@ -272,63 +63,9 @@ class Othello:
         new_position = (new_row, new_column) = (row + row_step, column + column_step)
         # Check whether the new position is still on the board.
         if 0 <= new_column < 8 and 0 <= new_row < 8:
-            # If yes return it
             return new_position
         else:
-            # If no return None
             return None
-
-    def get_available_moves(self):
-        """
-        Returns all the legal moves in the current game state
-        """
-        return list(self._turning_stones.keys())
-
-    def set_available_moves(self, moves: list):
-        """
-        Can be used to reduce the number of elements in the dict self._turning_stones.
-        Will remove all elements in self._turning_stones whose key is not in the passed list moves.
-        Elements in moves that are not a key in self._turning_stones will be ignored.
-        Only takes effect if there is at least one element left in self._turning_stones
-        """
-        # Create a temp dict
-        new_moves = dict()
-        # Iterate over the moves passed to the function
-        for move in moves:
-            # Check whether the move is a legal move right now
-            if move in self._turning_stones:
-                # Add it to the temp dict
-                new_moves[move] = self._turning_stones[move]
-        # Check whether there are any moves in new-moves
-        if len(new_moves) > 0:
-            # Set the moves
-            self._turning_stones = new_moves
-
-    def play_position(self, position):
-        """
-        Play the given position as a move. Returns False if the move is illegal
-        """
-        # Check whether the move is in the set of legal moves
-        if position in self.get_available_moves():
-            # If yes play the move
-
-            # Access the coordinates in the tuple
-            (row, column) = position
-            # Get the Symbol of the current player
-            current_symbol = self._current_player
-            # Mark the given position as taken by the current player
-            self._board[row][column] = current_symbol
-            # Iterate over the set of stones turned by that move
-            for (row2, column2) in self._turning_stones[position]:
-                # Turn the stone. The field is now owned by the current player
-                self._board[row2][column2] = current_symbol
-            self._taken_moves.append(position)
-            self._turn_nr += 1
-            # The position is occupied now. Remove it from fringe
-            self._fringe.remove(position)
-            # Add the unoccupied neighbors of the position to the fringe.
-            self._update_fringe(position)
-            self._prepare_next_turn()
 
     def _compute_available_moves(self):
         """
@@ -386,3 +123,276 @@ class Othello:
         # If the player is able to play a move store the fact, that he did not pass
         else:
             self._last_turn_passed = False
+
+    def _update_fringe(self, position):
+        """
+        Adds the fields next to the given parameter position to the fringe
+        position is a pair (row, column)
+        """
+        # Look for neighbouring fields in each direction
+        for direction in DIRECTIONS:
+            # Get the neighbour in that direction
+            next_step = Othello._next_step(position, direction)
+            # Test whether the neighbour calculated is still on the board
+            if next_step is not None:
+                (new_row, new_column) = next_step
+                # Add the neighbor to the fringe if it is not occupied by a stone
+                if self._board[new_row][new_column] == EMPTY_CELL:
+                    self._fringe.add(next_step)
+
+    def _prepare_next_turn(self):
+        """
+        Prepare the game state for the next turn
+        """
+        # Set the current player to the next player
+        self._next_player()
+        # Compute the legal moves for that player
+        self._compute_available_moves()
+
+    def _next_player(self):
+        """
+        Sets current player to the next player
+        """
+        self._current_player = self.other_player(self._current_player)
+
+    def _get_board_string(self):
+        """
+        Return a string representing the current state of the board
+        """
+        available_moves = self.get_available_moves()
+        board_string = ""
+        board_string += "  "
+        for i in range(8):
+            board_string += f"  {COLUMN_NAMES[i]} "
+        board_string += "\n"
+        board_string += "  +" + 8 * "---+" + "\n"
+        for row in range(8):
+            board_string += f"{row + 1} |"
+            for col in range(8):
+                if (row, col) in available_moves:
+                    board_string += f" * |"
+                else:
+                    board_string += f" {PRINT_SYMBOLS[self._board[row][col]]} |"
+            board_string += "\n"
+            board_string += "  +" + 8 * "---+" + "\n"
+        return board_string
+
+    def init_game(self):
+        """
+        Initializes a new game
+        """
+
+        # Set the stones already on the board prior to the first move
+        self._board[3][3] = PLAYER_TWO
+        self._board[4][4] = PLAYER_TWO
+        self._board[3][4] = PLAYER_ONE
+        self._board[4][3] = PLAYER_ONE
+
+        # Add the fields next to these fields to the fringe.
+        self._update_fringe((3, 3))
+        self._update_fringe((4, 4))
+        self._update_fringe((3, 4))
+        self._update_fringe((4, 3))
+
+        # Set the current player to the first player
+        self._current_player = PLAYER_ONE
+
+        # Compute the legal moves during the first turn
+        self._compute_available_moves()
+
+    def init_copy(self, board, current_player, last_turn_passed, game_is_over, fringe, turning_stones, taken_moves, turn_nr):
+        """
+        Used to initialize a copied game with the provided values
+        """
+        self._board = board
+        self._current_player = current_player
+        self._last_turn_passed = last_turn_passed
+        self._game_is_over = game_is_over
+        self._fringe = fringe
+        self._turning_stones = turning_stones
+        self._taken_moves = taken_moves
+        self._turn_nr = turn_nr
+
+    def deepcopy(self):
+        """
+        Returns a deepcopy of the game.
+        copy.deepcopy(self) does not work properly because the rows in the boards won't be copied.
+        """
+        copied_game = Othello()
+        copied_game.init_copy(copy.deepcopy(self._board),
+                              copy.deepcopy(self._current_player),
+                              copy.deepcopy(self._last_turn_passed),
+                              copy.deepcopy(self._game_is_over),
+                              copy.deepcopy(self._fringe),
+                              copy.deepcopy(self._turning_stones),
+                              copy.deepcopy(self._taken_moves),
+                              copy.deepcopy(self._turn_nr))
+        return copied_game
+
+    def print_board(self):
+        """
+        Print the current state of the board
+        """
+        print(self._get_board_string())
+
+    def print(self):
+        """
+        Used to print one Othello-Object
+        """
+        print(f"OthelloGameState[{self}]:")
+        print(4 * " " + "board: " + self._get_board_string().replace("\n", "\n" + 11 * " "))
+        print(4 * " " + "current_player: " + PRINT_SYMBOLS[self._current_player])
+        print(4 * " " + f"last_turn_passed: {self._last_turn_passed}")
+        print(4 * " " + f"game_is_over: {self._game_is_over}")
+        print(4 * " " + f"_fringe: {self._fringe}")
+        print(4 * " " + f"_turning_stones: {self._turning_stones}")
+
+    def get_available_moves(self):
+        """
+        Returns all the legal moves in the current game state
+        """
+        return list(self._turning_stones.keys())
+
+    def get_board(self):
+        """
+        Returns a copy of the board
+        """
+        return copy.deepcopy(self._board)
+
+    def get_current_player(self):
+        """
+        Returns the player who's turn it is if the game is not over; None otherwise
+        """
+        if not self._game_is_over:
+            return self._current_player
+        else:
+            return None
+
+    def game_is_over(self):
+        """
+        Return whether the game is still active or already over
+        """
+        return self._game_is_over
+
+    def get_statistics(self):
+        """
+        Iterates over the board and returns the number of Empty and the number of fields occupied by a certain player
+        """
+        # Create a dictionary with the players and the Empty Cell as key
+        # At the beginning each player has 0 stones
+        points_dict = {PLAYER_ONE: 0, PLAYER_TWO: 0, EMPTY_CELL: 0}
+        # Iterate over the board
+        for row in range(8):
+            for col in range(8):
+                # Add one to the number of fields occupied by a player for each field
+                points_dict[self._board[row][col]] += 1
+        return points_dict
+
+    def get_taken_mv(self):
+        """
+        :return: deepcopy of list of taken moves like ["d2","e3"]
+        """
+        return copy.deepcopy(self._taken_moves)
+
+    def get_taken_mvs_text(self):
+        """
+        :return: deepcopy of list of taken moves like ["d2","e3"]
+        """
+        taken_mvs_dict = {}
+        for i in range(len(self._taken_moves)):
+            row, col = self._taken_moves[i]
+            taken_mvs_dict[i] = COLUMN_NAMES[col] + str(row + 1)
+        return taken_mvs_dict
+
+    def get_turn_nr(self):
+        """
+        :return: actual turn number
+        """
+        return self._turn_nr
+
+    def get_winner(self):
+        """
+        Returns the winner of the game.
+        The player with the most stones on the board is the winner.
+        If both Agents own the same number of stones, the winner is None and it is a tie
+        """
+        stats = self.get_statistics()
+        if stats[PLAYER_ONE] == stats[PLAYER_TWO]:
+            return None
+        elif stats[PLAYER_ONE] > stats[PLAYER_TWO]:
+            return PLAYER_ONE
+        else:
+            return PLAYER_TWO
+
+    def utility(self, player):
+        """
+        Returns value of a finished game for player. Returns:
+          1: if the given player is the winner
+          0: if it is a tie
+         -1: If the given player lost
+        """
+        winner = self.get_winner()
+        if winner is None:
+            return 0
+        elif winner == player:
+            return 1
+        else:
+            return -1
+
+    @staticmethod
+    def other_player(player):
+        """
+        Returns the other player. None if the given Player is unknown
+        """
+        if player == PLAYER_ONE:
+            return PLAYER_TWO
+        elif player == PLAYER_TWO:
+            return PLAYER_ONE
+        else:
+            return None
+
+    def set_available_moves(self, moves: list):
+        """
+        Can be used to reduce the number of elements in the dict self._turning_stones.
+        Will remove all elements in self._turning_stones whose key is not in the passed list moves.
+        Elements in moves that are not a key in self._turning_stones will be ignored.
+        Only takes effect if there is at least one element left in self._turning_stones
+        """
+        # Create a temp dict
+        new_moves = dict()
+        # Iterate over the moves passed to the function
+        for move in moves:
+            # Check whether the move is a legal move right now
+            if move in self._turning_stones:
+                # Add it to the temp dict
+                new_moves[move] = self._turning_stones[move]
+        # Check whether there are any moves in new-moves
+        if len(new_moves) > 0:
+            # Set the moves
+            self._turning_stones = new_moves
+
+    def play_position(self, position):
+        """
+        Play the given position as a move. If the move is illegal it won't be made
+        """
+        # Check whether the move is in the set of legal moves
+        if position in self.get_available_moves():
+            # If yes play the move
+
+            # Access the coordinates in the tuple
+            (row, column) = position
+            # Get the Symbol of the current player
+            current_symbol = self._current_player
+            # Mark the given position as taken by the current player
+            self._board[row][column] = current_symbol
+            # Iterate over the set of stones turned by that move
+            for (row2, column2) in self._turning_stones[position]:
+                # Turn the stone. The field is now owned by the current player
+                self._board[row2][column2] = current_symbol
+            self._taken_moves.append(position)
+            self._turn_nr += 1
+            # The position is occupied now. Remove it from fringe
+            self._fringe.remove(position)
+            # Add the unoccupied neighbors of the position to the fringe.
+            self._update_fringe(position)
+            self._prepare_next_turn()
