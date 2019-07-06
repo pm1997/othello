@@ -246,9 +246,9 @@ class Othello:
             next_step = Othello._next_step(position, direction)
             # Test whether the neighbour calculated is still on the board
             if next_step is not None:
-                (new_x, new_y) = next_step
+                (new_row, new_column) = next_step
                 # Add the neighbor to the fringe if it is not occupied by a stone
-                if self._board[new_x][new_y] == EMPTY_CELL:
+                if self._board[new_row][new_column] == EMPTY_CELL:
                     self._fringe.add(next_step)
 
     def _prepare_next_turn(self):
@@ -351,9 +351,9 @@ class Othello:
                 # Continue to go in the give direction while the new field is still on the board
                 while next_step is not None:
                     # Access the coordinates in the pair
-                    (current_x, current_y) = next_step
+                    (current_row, current_column) = next_step
                     # Get the value of the calculated position
-                    current_value = self._board[current_x][current_y]
+                    current_value = self._board[current_row][current_column]
                     # If the field is empty no the line is not ended by a stone of the current player
                     # No stone will be turned in that direction. Evaluate the next direction
                     if current_value == EMPTY_CELL:
@@ -365,7 +365,7 @@ class Othello:
                     # If the line is ended by a field owned by the current player some stones might be turned.
                     elif current_value == player_value:
                         # Add all stones between the starting position and the end of his line to the stones turned
-                        position_turns = position_turns | this_direction
+                        position_turns |= this_direction
                         break
                     # continue to walk in that direction
                     next_step = Othello._next_step(next_step, direction)
