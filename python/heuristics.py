@@ -23,10 +23,12 @@ OTHER_FIELDS = ALL_FIELDS - CENTRAL_FIELDS - CORNERS - EDGES - X_FIELDS
 
 def get_sign(current_player, field_value):
     """
-    Returns 
-      1: if the field value indicates the field is owned by the player
-      0: if the field value is unknown
-     -1: If the field value indicates the field is owned by the other player
+    Returns an indicator whether the field_value denotes a field as owned by current_player
+      1: if the field_value indicates the field is owned by the current_player
+      0: if the field_value indicates neither player owns the field
+     -1: If the field_value indicates the field is owned by opponent of current_player
+    Both current_player and field_value are coded as the constants EMPTY_CELL, PLAYER_ONE and PLAYER_TWO
+      form constants.py. Therefore both parameters are integer values.
     """
     if field_value == current_player:
         return 1
@@ -44,7 +46,7 @@ def select_heuristic(player_string):
     # Create a list of all Heuristics
     available_heuristics = list()
     # Use pairs of the form (description: String, class: Player) to store a player type
-    available_heuristics.append(("Nijssen 07 Heuristic", Nijssen07Heuristic.heuristic))
+    available_heuristics.append(("Nijssen 07 Heuristic", NijssenHeuristic.heuristic))
     available_heuristics.append(("Field Heuristic", StoredMonteCarloHeuristic.heuristic))
     available_heuristics.append(("Cowthello Heuristic", CowthelloHeuristic.heuristic))
 
@@ -54,7 +56,7 @@ def select_heuristic(player_string):
         return available_heuristics[0][1]
 
 
-class Nijssen07Heuristic:
+class NijssenHeuristic:
     """
     Is the heuristic proposed by Nijssen's paper from 2007
     """
@@ -81,9 +83,9 @@ class Nijssen07Heuristic:
         # Get the board
         board = game_state.get_board()
         # Get the values assigned to each field
-        weight_dict = Nijssen07Heuristic.values
+        weight_dict = NijssenHeuristic.values
         # Iterate over the fields with an assigned value
-        for (x, y) in Nijssen07Heuristic.values.keys():
+        for (x, y) in NijssenHeuristic.values.keys():
             # Add the fields value to the heuristic value if it us owned by the current player. Subtract it otherwise
             value += get_sign(current_player, board[x][y]) * weight_dict[(x, y)]
         # Return the Calculated value 

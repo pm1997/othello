@@ -68,7 +68,7 @@ if __name__ == '__main__':
         # Create a list of all Heuristics
         available_heuristics = list()
         # Use pairs of the form (description: String, class: Player) to store a player type
-        available_heuristics.append(("Nijssen 07 Heuristic", heuristics.Nijssen07Heuristic.heuristic))
+        available_heuristics.append(("Nijssen 07 Heuristic", heuristics.NijssenHeuristic.heuristic))
         available_heuristics.append(("Field Heuristic", heuristics.StoredMonteCarloHeuristic.heuristic))
         available_heuristics.append(("Cowthello Heuristic", heuristics.CowthelloHeuristic.heuristic))
         heuristic1 = available_heuristics[args.heuristic1][1]
@@ -123,7 +123,7 @@ if __name__ == '__main__':
         # Create a list of all Heuristics
         available_heuristics2 = list()
         # Use pairs of the form (description: String, class: Player) to store a player type
-        available_heuristics2.append(("Nijssen 07 Heuristic", heuristics.Nijssen07Heuristic.heuristic))
+        available_heuristics2.append(("Nijssen 07 Heuristic", heuristics.NijssenHeuristic.heuristic))
         available_heuristics2.append(("Field Heuristic", heuristics.StoredMonteCarloHeuristic.heuristic))
         available_heuristics2.append(("Cowthello Heuristic", heuristics.CowthelloHeuristic.heuristic))
         heuristic2 = available_heuristics2[args.heuristic2][1]
