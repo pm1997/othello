@@ -352,32 +352,32 @@ Ist die Verwendung mehrerer Prozesse aktiviert (Option \code{use\_multiprocessin
  \newpage
 \begin{lstlisting}[basicstyle=\footnotesize,caption = {get\_move Funktion des \mc\ Agenten}, language = python, captionpos = t , numbers=left, label={lst:getmovemc}]
     def get_move(self, game_state: Othello):
-        if self.use_start_lib and game_state.get_turn_nr() < 21: 
-            moves = self.start_tables.get_available_moves_of_start_tables(game_state)
+        if self._use_start_lib and game_state.get_turn_nr() < 21:
+            moves = self._start_tables.get_available_moves_of_start_tables(game_state)
             if len(moves) > 0:
-                return UtilMethods.translate_move_to_pair(
-                		moves[random.randrange(len(moves))])
-        self.move_probability.clear()
-        own_symbol = game_state.get_current_player()
-        if self.preprocessor is not None:
-            self.preprocessor(game_state, self.preprocessor_parameter, self.heuristic)
-        if not self.use_multiprocessing:
-            winning_statistics = MonteCarlo.play_n_random_games(own_symbol, game_state, 
-            		self.big_n)
+                return util.translate_move_to_pair(
+                    moves[random.randrange(len(moves))])
+        self._move_probability.clear()
+        player_value = game_state.get_current_player()
+        if self._preprocessor is not None:
+            self._preprocessor(game_state, self._preprocessor_parameter, self._heuristic)
+        if not self._use_multiprocessing:
+            winning_statistics = MonteCarlo.play_n_random_games(player_value, game_state,
+                self._big_n, self._use_weighted_random)
         else:
             number_of_processes = mp.cpu_count()
             pool = mp.Pool(processes=number_of_processes)
-            list_of_stats = [pool.apply_async(MonteCarlo.play_n_random_games, 
-            		args=(own_symbol, game_state.deepcopy(), 
-            		self.big_n // number_of_processes)) for _ in range(number_of_processes)]
-            winning_statistics = list_of_stats[0].get()
-            for single_list in list_of_stats[1:]:
+            list_of_result_objects = [pool.apply_async(MonteCarlo.play_n_random_games,
+                args=(player_value, game_state.deepcopy(),self._big_n // number_of_processes,
+                self._use_weighted_random)) for _ in range(number_of_processes)]
+            winning_statistics = list_of_result_objects[0].get()
+            for single_list in list_of_result_objects[1:]:
                 MonteCarlo.combine_statistic_dicts(winning_statistics, single_list.get())
             pool.close()
         for single_move in winning_statistics:
             (games_won, times_played) = winning_statistics[single_move]
-            self.move_probability[single_move] = games_won / times_played
-        selected_move = max(self.move_probability.items(), key=operator.itemgetter(1))[0]
+            self._move_probability[single_move] = games_won / times_played
+        selected_move = max(self._move_probability.items(), key=operator.itemgetter(1))[0]
         return selected_move
 \end{lstlisting}
 
@@ -385,16 +385,16 @@ Ist die Verwendung mehrerer Prozesse aktiviert (Option \code{use\_multiprocessin
 Wie in Abschnitt \nameref{Pseudornd-move-selection} des Kapitel \ref{mc_algo} zum \nameref{mc_algo} beschrieben, gibt es neben der Verwendung eines Präprozessors noch eine  Variante des Algorithmus bei der die Züge in den simulierten Spielen unter Verwendung von \ot\ spezifischen Wissens pseudozufällig ausgewählt werden. 
 \\Die gewichtete Zufallsfunktion verfolgt genau diesen Ansatz indem sie bei der Auswahl eines Zuges Züge mit einer höheren Gewinnwahrscheinlichkeit bevorzugt. Zur deren Beurteilung wird die für die \mxZitat{Stored \mc}-Heuristik aufgebaute Datenbank herangezogen. Nachfolgend wird das Verfahren anhand der in Listing \ref{lst:wmc1} abgedruckten Funktion näher erläutert:
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {get\_weighted\_random Funktion des Monte-Carlo Agenten}, language = python, captionpos = t , numbers=left, label={lst:wmc1}]
-    def get_weighted_random(possible_moves, turn_nr, own_symbol):
+    def get_weighted_random(possible_moves, turn_nr, player_value):
         prob_sum = 0.0
         for move in possible_moves:
-            prob_sum += MonteCarlo._ml_database.get_likelihood(move,turn_nr,own_symbol)
+            prob_sum += MonteCarlo._ml_database.get_likelihood(move, turn_nr, player_value)
         chose = random.uniform(0.0, prob_sum)
         move_nr = 0
         prob_sum = 0.0
         for move in possible_moves:
             move_nr += 1
-            prob_sum += MonteCarlo._ml_database.get_likelihood(move,turn_nr,own_symbol)
+            prob_sum += MonteCarlo._ml_database.get_likelihood(move, turn_nr, player_value)
             if prob_sum >= chose:
                 return move
         return possible_moves[-1]

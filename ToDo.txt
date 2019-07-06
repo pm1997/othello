@@ -5,7 +5,6 @@ heuristics.py > StoredMonteCarloHeuristic
 start_tables.py
 
 ToDo
-get_move/weighted_random in mc "own_symbol" + fix in pdf
 get_available_moves cast to list + fix in pdf
 get_statistics ohne loops
 fix stored MC Heuristik in pdf
