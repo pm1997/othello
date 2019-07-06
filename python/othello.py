@@ -233,7 +233,7 @@ class Othello:
 
     def _update_fringe(self, position):
         """
-        Adds the fields next to the given one to the fringe
+        Adds the fields next to the given parameter position to the fringe
         position is a pair < row, column>
         """
         # Look for neighbouring fields in each direction
@@ -282,7 +282,10 @@ class Othello:
 
     def set_available_moves(self, moves: list):
         """
-        Function will set the list of Elements as long as they are in the set right now
+        Can be used to reduce the number of elements in the dict self._turning_stones.
+        Will remove all elements in self._turning_stones whose key is not in the passed list moves.
+        Elements in moves that are not a key in self._turning_stones will be ignored.
+        Only takes effect if there is at least one element left in self._turning_stones
         """
         # Create a temp dict
         new_moves = dict()
@@ -329,7 +332,7 @@ class Othello:
         """
         # Delete the moves available in the previous turn
         self._turning_stones = dict()
-        # Get the value (0 | 1) of the current player
+        # Get the integer representation value (1 or 2) of the current player. See constants.py for details.
         player_value = self._current_player
         # Iterate over each position in fringe to test whether it would be a legal move
         for current_position in self._fringe:
