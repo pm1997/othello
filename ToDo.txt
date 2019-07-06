@@ -6,7 +6,7 @@ start_tables.py
 
 ToDo
 get_available_moves cast to list + fix in pdf
-get_statistics ohne loops
+get_statistics ohne loops +pdf fix
 fix stored MC Heuristik in pdf
 Dynamic search Depth
 Discussion of the remaining comparisons

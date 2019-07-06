@@ -35,6 +35,9 @@ class Othello:
         # Stores the turn number. Can be used to determine the game phase
         self._turn_nr = 0
 
+        # Stored to calculate get_statistics without the loops
+        self._number_of_occupied_stones = {PLAYER_ONE: 0, PLAYER_TWO: 0}
+
     def __hash__(self):
         """
         Returns a hash value for the current State of the Object.
@@ -200,7 +203,7 @@ class Othello:
         # Compute the legal moves during the first turn
         self._compute_available_moves()
 
-    def init_copy(self, board, current_player, last_turn_passed, game_is_over, fringe, turning_stones, taken_moves, turn_nr):
+    def init_copy(self, board, current_player, last_turn_passed, game_is_over, fringe, turning_stones, taken_moves, turn_nr, number_of_occupied_stones):
         """
         Used to initialize a copied game with the provided values
         """
@@ -212,6 +215,7 @@ class Othello:
         self._turning_stones = turning_stones
         self._taken_moves = taken_moves
         self._turn_nr = turn_nr
+        self._number_of_occupied_stones = number_of_occupied_stones
 
     def deepcopy(self):
         """
@@ -226,7 +230,8 @@ class Othello:
                               copy.deepcopy(self._fringe),
                               copy.deepcopy(self._turning_stones),
                               copy.deepcopy(self._taken_moves),
-                              copy.deepcopy(self._turn_nr))
+                              copy.deepcopy(self._turn_nr),
+                              copy.deepcopy(self._number_of_occupied_stones))
         return copied_game
 
     def print_board(self):
@@ -276,17 +281,9 @@ class Othello:
 
     def get_statistics(self):
         """
-        Iterates over the board and returns the number of Empty and the number of fields occupied by a certain player
+        Returns the _number_of_occupied_stones dict
         """
-        # Create a dictionary with the players and the Empty Cell as key
-        # At the beginning each player has 0 stones
-        points_dict = {PLAYER_ONE: 0, PLAYER_TWO: 0, EMPTY_CELL: 0}
-        # Iterate over the board
-        for row in range(8):
-            for col in range(8):
-                # Add one to the number of fields occupied by a player for each field
-                points_dict[self._board[row][col]] += 1
-        return points_dict
+        return self._number_of_occupied_stones
 
     def get_taken_mv(self):
         """
@@ -378,17 +375,20 @@ class Othello:
         # Check whether the move is in the set of legal moves
         if position in self.get_available_moves():
             # If yes play the move
-
             # Access the coordinates in the tuple
             (row, column) = position
             # Get the Symbol of the current player
-            current_symbol = self._current_player
+            current_player_value = self._current_player
+            other_player_value = self.other_player(current_player_value)
             # Mark the given position as taken by the current player
-            self._board[row][column] = current_symbol
+            self._board[row][column] = current_player_value
+            self._number_of_occupied_stones[current_player_value] += 1
             # Iterate over the set of stones turned by that move
             for (row2, column2) in self._turning_stones[position]:
                 # Turn the stone. The field is now owned by the current player
-                self._board[row2][column2] = current_symbol
+                self._board[row2][column2] = current_player_value
+                self._number_of_occupied_stones[current_player_value] += 1
+                self._number_of_occupied_stones[other_player_value] -= 1
             self._taken_moves.append(position)
             self._turn_nr += 1
             # The position is occupied now. Remove it from fringe

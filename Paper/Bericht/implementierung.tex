@@ -39,6 +39,7 @@ In Listing \ref{lst:class-vars-othello} sind alle Klassenvariablen, sowie deren 
 \item \code{\_turning\_stones}: Ist ein Dictionary und enthält als Schlüssel alle erlaubten Züge und als Wert jeweils eine Liste jener Spielsteine, die durch Ausführen des Zuges umgedreht werden. Da zur Ermittlung der erlaubten Züge diese Information bereits berechnet werden muss, wird sie in Form des Dictionary vorgehalten um diese an anderer Stelle nicht erneut berechnen zu müssen.
 \item \code{\_taken\_moves}: Speichert alle ausgeführten Züge die erforderlich waren um den modellierten Spielzustand zu erreichen, da einige Algorithmen diese Information benötigen.
 \item \code{\_turn\_nr}: Speichert die Nummer des aktuellen Spielzuges, da die verwendete Strategie bei einigen Algorithmen davon abhängt, wie weit das Spiel schon fortgeschritten ist.
+\item \code{\_number\_of\_occupied\_stones}: Speichert ein Dictionary welches für jeden Spieler die Anzahl der besetzten Felder mitführt. Dadurch muss dies zur Ermittlung des Gewinners nicht berechnet werden. Zur Repräsentation der Spieler werden ebenfalls die in \code{constants.py} definierten Integer-Konstanten \code{PLAYER\_ONE} und \code{PLAYER\_TWO} verwendet.
 \end{enumerate}
 \newpage
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {Klassenvariablen der Klasse \mxZitat{Othello}}, language = python, captionpos = t , numbers=left, label={lst:class-vars-othello}]
@@ -50,6 +51,7 @@ In Listing \ref{lst:class-vars-othello} sind alle Klassenvariablen, sowie deren 
     _turning_stones = dict()    
     _taken_moves = []
     _turn_nr = 0
+    _number_of_occupied_stones = {PLAYER_ONE: 0, PLAYER_TWO: 0}
 \end{lstlisting}
 \paragraph{Die Funktion \code{\_compute\_available\_moves}}
  ist in Listing \ref{lst:fct-compute-available-moves} angegeben und wird verwendet um die Inhalte des Dictionaries \code{\_turning\_stones} zu berechnen.
