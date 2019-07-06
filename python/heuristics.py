@@ -3,7 +3,7 @@ This file contains heuristics used to evaluate a certain game state
 """
 
 from othello import Othello
-from util import UtilMethods
+import  util
 from constants import POSITION_TO_DATABASE
 import database
 import operator
@@ -49,7 +49,7 @@ def select_heuristic(player_string):
     available_heuristics.append(("Cowthello Heuristic", CowthelloHeuristic.heuristic))
 
     if len(available_heuristics) > 1:
-        return UtilMethods.select_one(available_heuristics, f"[{player_string}] Please select a heuristic")
+        return util.select_one(available_heuristics, f"[{player_string}] Please select a heuristic")
     else:
         return available_heuristics[0][1]
 

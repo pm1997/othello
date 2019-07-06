@@ -1,6 +1,6 @@
 from othello import Othello
 from constants import COLUMN_NAMES
-from util import UtilMethods
+import util
 
 
 class Human:
@@ -23,4 +23,4 @@ class Human:
             description = f"({COLUMN_NAMES[col]}{row + 1})"
             possibilities.append((description, move))
         # Return the users selection
-        return UtilMethods.select_one(possibilities, "Select your move:")
+        return util.select_one(possibilities, "Select your move:")

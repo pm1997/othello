@@ -1,6 +1,6 @@
 from othello import Othello
 from start_tables import StartTables
-from util import UtilMethods
+import util
 import random
 import heuristics
 from Agents.monteCarlo import MonteCarlo
@@ -18,7 +18,7 @@ class AlphaBetaPruning:
         """
         self._search_depth = search_depth
         if self._search_depth == 0:
-            self._search_depth = UtilMethods.get_integer_selection("[Player AlphaBetaPruning] Select Search depth", 1, 10)
+            self._search_depth = util.get_integer_selection("[Player AlphaBetaPruning] Select Search depth", 1, 10)
 
         self._heuristic = heuristic
         if self._heuristic is None:
@@ -26,19 +26,19 @@ class AlphaBetaPruning:
 
         self._use_monte_carlo = use_monte_carlo
         if self._use_monte_carlo is None:
-            self._use_start_lib = UtilMethods.get_boolean_selection(
+            self._use_start_lib = util.get_boolean_selection(
                 "[Player AlphaBetaPruning] Do you want to use monte carlo after alpha-beta pruning?")
 
         if self._use_monte_carlo:
             self._mc_count = mc_count
             if self._mc_count == 0:
-                self._mc_count = UtilMethods.get_integer_selection(
+                self._mc_count = util.get_integer_selection(
                     "[Player AlphaBetaPruning - Machine Learning] Select number of played Games", 10, 75)
 
         # Ask the user to determine whether to use the start library
         self._use_start_lib = use_start_lib
         if self._use_start_lib is None:
-            self._use_start_lib = UtilMethods.get_boolean_selection(
+            self._use_start_lib = util.get_boolean_selection(
                 "[Player AlphaBetaPruning] Do you want to use the start library?")
 
     @staticmethod
@@ -114,7 +114,7 @@ class AlphaBetaPruning:
         if self._use_start_lib and game_state.get_turn_nr() < 21:  # check whether start move match
             moves = self._start_tables.get_available_moves_of_start_tables(game_state)
             if len(moves) > 0:
-                return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
+                return util.translate_move_to_pair(moves[random.randrange(len(moves))])
         best_moves = dict()
         for move in game_state.get_available_moves():
             next_state = game_state.deepcopy()

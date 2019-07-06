@@ -3,7 +3,7 @@ This file manges the main game.
 """
 
 from othello import Othello
-from util import UtilMethods
+import util
 
 from Agents.random import Random
 from Agents.monteCarlo import MonteCarlo
@@ -25,13 +25,13 @@ if __name__ == '__main__':
     available_players.append(("AI Player - Alpha-Beta Pruning", AlphaBetaPruning))
 
     # Ask the user to select a type of player as first player.
-    selection_player_one = UtilMethods.select_one(available_players,
-                                                  f"Select Mode for Player {PRINT_SYMBOLS[PLAYER_ONE]}")
+    selection_player_one = util.select_one(available_players,
+                                           f"Select Mode for Player {PRINT_SYMBOLS[PLAYER_ONE]}")
     # Initialize a new player of the selected type and store it.
     player_one = selection_player_one()
     # Ask the user to select a type of player as second player.
-    selection_player_two = UtilMethods.select_one(available_players,
-                                                  f"Select Mode for Player {PRINT_SYMBOLS[PLAYER_TWO]}")
+    selection_player_two = util.select_one(available_players,
+                                           f"Select Mode for Player {PRINT_SYMBOLS[PLAYER_TWO]}")
     # Initialize a new player of the selected type and store it.
     player_two = selection_player_two()
 

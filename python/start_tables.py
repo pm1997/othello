@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from util import UtilMethods
+import util
 from othello import Othello
 from constants import COLUMN_NAMES
 
@@ -99,7 +99,7 @@ class StartTables:
                 break
             # move is a char and a int , eg. 'd3'
             # translate this move to a x and y coordinate
-            (row, column) = UtilMethods.translate_move_to_pair(move)
+            (row, column) = util.translate_move_to_pair(move)
             if column < 8 and row < 7:
                 # mirror row and column at point 3.5,3.5 => middle of board
                 row -= 7
@@ -120,7 +120,7 @@ class StartTables:
                 break
             # move is a char and a int , eg. 'd3'
             # translate this move to a x and y coordinate
-            (row, column) = UtilMethods.translate_move_to_pair(move)
+            (row, column) = util.translate_move_to_pair(move)
             if column < 8 and row < 7:
                 # mirror row and column at diagonal 0,0; 7,7 => middle of board
                 row_temp = row

@@ -1,8 +1,8 @@
 from othello import Othello
 from start_tables import StartTables
-from util import UtilMethods
 import operator
 from Agents.random import Random
+import util
 import sys
 import random
 import heuristics
@@ -27,18 +27,18 @@ class MonteCarlo:
             self._big_n = big_number
         else:
             # Ask the user to enter the number of random games per turn
-            self._big_n = UtilMethods.get_integer_selection("[Player MonteCarlo] Select Number of Simulated Games", 100,
-                                                            sys.maxsize)
+            self._big_n = util.get_integer_selection("[Player MonteCarlo] Select Number of Simulated Games", 100,
+                                                     sys.maxsize)
         if use_weighted_random is None:
             # Ask the user to determine whether to use the start library
-            self._use_weighted_random = UtilMethods.get_boolean_selection(
+            self._use_weighted_random = util.get_boolean_selection(
                 "[Player MonteCarlo] Do you want to use a weighted random game selection?")
         else:
             self._use_weighted_random = use_weighted_random
 
         if use_start_libs is None:
             # Ask the user to determine whether to use the start library
-            self._use_start_lib = UtilMethods.get_boolean_selection(
+            self._use_start_lib = util.get_boolean_selection(
                 "[Player MonteCarlo] Do you want to use the start library?")
         else:
             self._use_start_lib = use_start_libs
@@ -58,7 +58,7 @@ class MonteCarlo:
             self._heuristic = heuristic
 
         if use_multiprocessing is None:
-            self._use_multiprocessing = UtilMethods.get_boolean_selection("[Player Monte Carlo] Use Multiprocessing?")
+            self._use_multiprocessing = util.get_boolean_selection("[Player Monte Carlo] Use Multiprocessing?")
         else:
             self._use_multiprocessing = use_multiprocessing
 
@@ -98,14 +98,14 @@ class MonteCarlo:
         available_preprocessors.append(
             ("Variable Selectivity Preprocessor (VSP)", MonteCarlo.preprocess_variable_selectivity))
         # Ask the user to select a type of preprocessor.
-        preprocessor = UtilMethods.select_one(available_preprocessors, "[Player MonteCarlo] Select a preprocessor mode")
+        preprocessor = util.select_one(available_preprocessors, "[Player MonteCarlo] Select a preprocessor mode")
         preprocessor_parameter = None
         if preprocessor == MonteCarlo.preprocess_fixed_selectivity:
-            preprocessor_parameter = UtilMethods.get_integer_selection(
+            preprocessor_parameter = util.get_integer_selection(
                 "[Player MonteCarlo]>>[Fixed Selectivity Preprocessor] Please select the number of moves passing the preprocessor",
                 1, 64)
         elif preprocessor == MonteCarlo.preprocess_variable_selectivity:
-            preprocessor_parameter = UtilMethods.get_float_selection(
+            preprocessor_parameter = util.get_float_selection(
                 "[Player MonteCarlo]>>[Variable Selectivity Preprocessor] Please select the percentage of the average move value needed to pass the preprocessor",
                 0, 1)
 
@@ -266,7 +266,7 @@ class MonteCarlo:
         if self._use_start_lib and game_state.get_turn_nr() < 21:  # check whether start move match
             moves = self._start_tables.get_available_moves_of_start_tables(game_state)
             if len(moves) > 0:
-                return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
+                return util.translate_move_to_pair(moves[random.randrange(len(moves))])
         # Create a dictionary to store information on won/lost ratios
         # winning_statistics = dict()
         # empty dictionary or win probabilities
