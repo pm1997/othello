@@ -7,4 +7,3 @@ start_tables.py
 ToDo
 fix stored MC Heuristik in pdf
 Discussion of the remaining comparisons (pdf)
-Discuss no pop/push (Threadsave)
