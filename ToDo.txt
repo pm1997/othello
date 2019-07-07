@@ -6,8 +6,6 @@ start_tables.py
 
 ToDo
 fix stored MC Heuristik in pdf
-Dynamic search Depth
 Discussion of the remaining comparisons (pdf)
-
-Questions
-> Pop/Push statt deepcopy?
+Discuss no pop/push (Threadsave)
+Heuristics Comment for class use

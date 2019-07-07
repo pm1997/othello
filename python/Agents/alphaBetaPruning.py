@@ -108,7 +108,7 @@ class AlphaBetaPruning:
     def get_move(self, game_state: Othello):
         """
         Will select the best move according to the value of the resulting game_state according to monte carlo
-        :param game_state: actual game state
+        :param game_state: current game state
         :return: best move in available moves
         """
         # Use start library if it is selected and still included
@@ -116,6 +116,13 @@ class AlphaBetaPruning:
             moves = self._start_tables.get_available_moves_of_start_tables(game_state)
             if len(moves) > 0:
                 return util.translate_move_to_pair(moves[random.randrange(len(moves))])
+        # According to experience the number of moves to consider decreases relevantly after reaching a certain
+        # turn number. Therefore it is possible to increase the search depth without loosing to much time.
+        # We dynamicly increase the serach depth after reaching turn_number 40
+        search_depth = self._search_depth
+        turn_number = game_state.get_turn_nr()
+        if turn_number > 40:
+            search_depth += turn_number // 10
         # Dict used to store a list of the moves resulting in a state with the respective value
         best_moves = dict()
         # Evaluate each available move
@@ -126,7 +133,7 @@ class AlphaBetaPruning:
 
             # Evaluate the state using the selected function
             if self._use_monte_carlo:
-                result = -AlphaBetaPruning.value_monte_carlo(next_state, self._search_depth - 1, self._heuristic,
+                result = -AlphaBetaPruning.value_monte_carlo(next_state, search_depth - 1, self._heuristic,
                                                              mc_count=self._mc_count)
             else:
                 result = -AlphaBetaPruning.value(next_state, self._search_depth - 1, self._heuristic)
