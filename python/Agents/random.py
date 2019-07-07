@@ -17,5 +17,8 @@ class Random:
         """
         # Get the legal moves
         possible_moves = game_state.get_available_moves()
+        # As the dict_keys Object returned by the function does not support indexing and Indexing is required here
+        # Convert it to a list
+        possible_moves = list(possible_moves)
         # Return a Random move
         return rnd.choice(possible_moves)

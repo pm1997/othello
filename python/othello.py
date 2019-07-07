@@ -256,7 +256,7 @@ class Othello:
         """
         Returns all the legal moves in the current game state
         """
-        return list(self._turning_stones.keys())
+        return self._turning_stones.keys()
 
     def get_board(self):
         """
