@@ -8,4 +8,3 @@ ToDo
 fix stored MC Heuristik in pdf
 Discussion of the remaining comparisons (pdf)
 Discuss no pop/push (Threadsave)
-Heuristics Comment for class use

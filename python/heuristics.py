@@ -59,6 +59,8 @@ def select_heuristic(player_string):
 class NijssenHeuristic:
     """
     Is the heuristic proposed by Nijssen's paper from 2007
+    The static method and variables are kept in an enclosing class to support the generic use of heuristics
+       as done in main-game.py
     """
     # Create a dictionary and assign each field it's value
     values = dict()
@@ -96,6 +98,12 @@ class NijssenHeuristic:
 
 class StoredMonteCarloHeuristic:
 
+    """
+    Contains the Stored Monte Carlo Heuristic
+    The static method is kept in an enclosing class to support the generic use of heuristics
+       as done in main-game.py
+    """
+
     @staticmethod
     def heuristic(current_player, game_state: Othello):
         """
@@ -113,6 +121,8 @@ class StoredMonteCarloHeuristic:
 class CowthelloHeuristic:
     """
     Is the heuristic proposed by http://www.aurochs.org/games/cowthello/cowthello.js
+    The static method and variables are kept in an enclosing class to support the generic use of heuristics
+       as done in main-game.py
 
     corner,     nextCorner, helpCorner, edge,       edge,       helpCorner, nextCorner, corner,
     nextCorner, nextNext,   normal,     normal,     normal,     normal,     nextNext,   nextCorner,
