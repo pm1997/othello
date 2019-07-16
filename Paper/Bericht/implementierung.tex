@@ -32,16 +32,15 @@ Die Klasse \mxZitat{Othello} modelliert einen Spielzustand und enthält die grun
 In Listing \ref{lst:class-vars-othello} sind alle Klassenvariablen, sowie deren Initialisierungswerte angegeben.
 \begin{enumerate}
 \item \code{\_board}: Bei \code{\_board} handelt es sich um ein Array des Paketes \code{numpy}, zur Modellierung der zweidimensionalen Struktur des Spielbretts. Initialisiert wird das Spielbrett in seinem Leerzustand. Daher wird zu Beginn jedes Feld auf den Wert der in \code{constants.py} definierten Integer-Konstante \code{EMPTY\_CELL} zur Repräsentation des leeren Feldes gesetzt.
-\item \code{\_current\_player}: Speichert den Spieler, der im modellierten Spielzustand an der Reihe ist. Zur Repräsentation der Spieler werden die ebenfalls in \code{constants.py} definierten Integer-Konstanten \code{PLAYER\_ONE} und \code{PLAYER\_TWO} verwendet.
-\item \code{\_last\_turn\_passed} wird verwendet, um zu speichern ob der vorherige Spieler passen musste. Dadurch kann das Spiel sobald zwei Spieler unmittelbar nacheinander passen müssen beendet werden.
+\item \code{\_current\_player}: Speichert den Spieler, der im modellierten Spielzustand an der Reihe ist. Zur Repräsentation der Spieler werden die ebenfalls in \\\code{constants.py} definierten Integer-Konstanten \code{PLAYER\_ONE} und \\\code{PLAYER\_TWO} verwendet.
+\item \code{\_last\_turn\_passed} wird verwendet, um zu speichern ob der vorherige Spieler passen musste. Dadurch kann das Spiel, sobald zwei Spieler unmittelbar nacheinander passen müssen, beendet werden.
 \item \code{\_game\_is\_over} wird auf \code{True} gesetzt sobald das Spiel beendet ist.
 \item \code{\_fringe}: In \code{\_fringe} werden alle Felder des Spielfeldes gespeichert die in eine Richtung unmittelbar neben einem bereits besetzten Feld liegen. Durch die Mitführung dieser Information muss zur Berechnung der erlaubten Züge nicht jedes Mal über das Spielfeld iteriert werden um zunächst die infrage kommenden Felder zu ermitteln.
-\item \code{\_turning\_stones}: Ist ein Dictionary und enthält als Schlüssel alle erlaubten Züge und als Wert jeweils eine Liste jener Spielsteine, die durch Ausführen des Zuges umgedreht werden. Da zur Ermittlung der erlaubten Züge diese Information bereits berechnet werden muss, wird sie in Form des Dictionary vorgehalten um diese an anderer Stelle nicht erneut berechnen zu müssen.
-\item \code{\_taken\_moves}: Speichert alle ausgeführten Züge die erforderlich waren um den modellierten Spielzustand zu erreichen, da einige Algorithmen diese Information benötigen.
+\item \code{\_turning\_stones}: Ist ein Dictionary und enthält als Schlüssel alle erlaubten Züge und als Wert jeweils eine Liste jener Spielsteine, die durch das Ausführen des Zuges umgedreht werden. Da zur Ermittlung der erlaubten Züge diese Information bereits berechnet werden muss, wird sie in Form des Dictionary vorgehalten um diese an anderer Stelle nicht erneut berechnen zu müssen.
+\item \code{\_taken\_moves}: Speichert alle ausgeführten Züge die erforderlich waren, um den modellierten Spielzustand zu erreichen, da einige Algorithmen diese Information benötigen.
 \item \code{\_turn\_nr}: Speichert die Nummer des aktuellen Spielzuges, da die verwendete Strategie bei einigen Algorithmen davon abhängt, wie weit das Spiel schon fortgeschritten ist.
-\item \code{\_number\_of\_occupied\_stones}: Speichert ein Dictionary welches für jeden Spieler die Anzahl der besetzten Felder mitführt. Dadurch muss dies zur Ermittlung des Gewinners nicht berechnet werden. Zur Repräsentation der Spieler werden ebenfalls die in \code{constants.py} definierten Integer-Konstanten \code{PLAYER\_ONE} und \code{PLAYER\_TWO} verwendet.
+\item \code{\_number\_of\_occupied\_stones}: Speichert ein Dictionary welches für jeden Spieler die Anzahl der besetzten Felder mitführt. Dadurch muss dies zur Ermittlung des Gewinners nicht berechnet werden. Zur Repräsentation der Spieler werden ebenfalls die in \code{constants.py} definierten Integer-Konstanten \\\code{PLAYER\_ONE} und \code{PLAYER\_TWO} verwendet.
 \end{enumerate}
-\newpage
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {Klassenvariablen der Klasse \mxZitat{Othello}}, language = python, captionpos = t , numbers=left, label={lst:class-vars-othello}]
     _board = np.full((8, 8), EMPTY_CELL, dtype='int8')
     _current_player = None 
@@ -163,18 +162,19 @@ Die \mxZitat{Nijssen Heuristik} wurde aus \cite{nijssen_2007} übernommen. Ihr l
 \subsection{Stored Monte-Carlo-Heuristik}
 \label{impl:stored-mc}
 Dieser Heuristik liegt die Idee zugrunde die in mehreren Spielen gesammelten Erkenntnisse zu den Gewinnwahrscheinlichkeiten einzelner Züge zu speichern und in den darauffolgenden Spielen zur Beurteilung von Spielzuständen heranzuziehen.
-\\Die \mxZitat{Stored Monte-Carlo-Heuristik} verwendet zu diesem Zweck eine Datenbank. In dieser Datenbank wird für jede Zugnummer, jedes Feld des Spielfeldes und jeden Spieler die Häufigkeit mit der dieser im Trainingsprozess gespielt und gewonnenen wurde gespeichert. Die genaue Funktion wird in den Unterabschnitten \nameref{para:db} und \nameref{para:train1} näher erklärt. Darauf aufbauend wird die Funktionsweise der Heuristik in dem Abschnitt \nameref{para:heuristic1} erläutert.
+\\Die \mxZitat{Stored Monte-Carlo-Heuristik} verwendet zu diesem Zweck eine Datenbank. In dieser Datenbank wird für jede Zugnummer, Werte für jedes Feld des Spielfeldes gespeichert. Diese Werte bestehen aus der Gesamtanzahl der gespielten Spiele, welche in diesem Zug, das jeweilige Feld besetzten und, für jeden Spieler getrennt, die Häufigkeit, mit der der Spieler anschließend gewonnenen hat. Die genaue Funktion wird in den Unterabschnitten \nameref{para:db} und \nameref{para:train1} näher erklärt. Darauf aufbauend wird die Funktionsweise der Heuristik in dem Abschnitt \nameref{para:heuristic1} erläutert.
 \paragraph{Datenbank}
 \label{para:db}
-Die Datenbank speichert zu jeder Zugnummer die Gewinnwahrscheinlichkeiten der Spieler bei der Verwendung eines Feldes des Spielbretts. Um die Anzahl der gespeicherten Werte zu verringern werden Symmetrieeigenschaften des Spielbretts ausgenutzt. 
-Das Spielfeld ist symmetrisch zum Mittelpunkt aufgebaut. Dies bedeutet, dass Züge, welche symmetrisch zu anderen Zügen sind, als ein Zug angesehen werden können. Das Spielfeld wird daher in zehn Feldkategorien eingeteilt. In Abbildung \ref{fig:sym1} sind die symmetrischen Felder des Othello-Spielbrettes farblich hervorgehoben. Die unterschiedlichen Farben stellen die unterschiedlichen Feldkategorien dar. Diese sind von Null bis Acht durchnummeriert. Das Zentrum ist mit \mxZitat{X} markiert. Da das Zentrum bei Spielstart schon besetzt ist, wird diese Feldkategorie nicht in der Datenbank gespeichert. Die restlichen neun Kategorien sind als Spalten in der Datenbank abgebildet. Diese wird in der Datei \code{database\_moves.csv} im CSV-Format gespeichert.
+Die Datenbank speichert zu jeder Zugnummer die Gewinnwahrscheinlichkeiten der Spieler. Diese werden für je eine Auswahl der Spielfelder des Spielbretts angegeben. Um die Anzahl der gespeicherten Werte zu verringern, werden die Symmetrieeigenschaften des Spielbretts ausgenutzt. 
+Das Spielfeld ist symmetrisch zum Mittelpunkt aufgebaut. Dies bedeutet, dass Züge, welche symmetrisch zu anderen Zügen sind, als ein Zug angesehen werden können. Das Spielfeld wird daher in zehn Feldkategorien eingeteilt. In Abbildung \ref{fig:sym1} sind die symmetrischen Felder des Othello-Spielbrettes farblich hervorgehoben. Die unterschiedlichen Farben stellen die unterschiedlichen Feldkategorien dar. Diese sind von Null bis Acht durchnummeriert. Das Zentrum ist mit \mxZitat{X} markiert. Da das Zentrum bei Spielstart schon besetzt ist, wird diese Feldkategorie nicht in der Datenbank gespeichert. Mathematisch ist eine Feldkategorie eine disjunkte Teilmenge (Partition) aller Felder. Die restlichen neun Kategorien sind als Spalten in der Datenbank abgebildet. Diese wird in der Datei \code{database\_moves.csv} im CSV-Format gespeichert.
 \\\mxPicture{10cm}{symmetrie}{Symmetrie des Spielfeldes}{Symmetrie des Spielfeldes}{fig:sym1}{}
-\\Die Datenbank besteht aus 60 Zeilen und neun Spalten. Die neun Spalten stellen o.g. Feldkategorien (\mxZitat{0} bis \mxZitat{8}) dar. Die c-te Spalte in der n-ten Zeile stellt die Gewinnwahrscheinlichkeiten des Spieles dar, gegeben, dass im n-ten Spielzug ein Feld der c-ten Feldkategorie gespielt wird. 
+\\Die Datenbank besteht aus 60 Zeilen und neun Spalten. Die neun Spalten stellen o.g. Feldkategorien (\mxZitat{0} bis \mxZitat{8} ohne \mxZitat{X}) dar. Die c-te Spalte in der n-ten Zeile stellt die Gewinnwahrscheinlichkeiten des Spieles dar, gegeben, dass im n-ten Spielzug ein Feld der c-ten Feldkategorie gespielt wird. 
 \\Die mathematische Formel dazu lautet:
 $database_{n,c} = P( \mathtt{win} \mid \mathtt{move}(n) \in c)$, wobei gilt:
 \begin{itemize}
 \item $\mathtt{move}(n)$ = Feld des n-ten Spielzuges
-\item $\mathtt{c} \in \{\mathtt{Feldkategorie} -\ '\mathtt{X}'\ \}$ : $c$ ist eine Feldkategorie außer das Zentrum (\mxZitat{X})
+\item $\mathtt{Fields}$ = Menge aller möglichen Spielfeldpositionen (Paare $\langle x ,y \rangle$)
+\item $\mathtt{c} \in \{\mathtt{Fields} -\ \{\langle d,4 \rangle\,\langle e,4 \rangle\,\langle d,5 \rangle\,\langle e,5 \rangle\} \}$ : $c$ ist eine Teilmenge der Spielfelder außer die Zentrumsfelder (Kategorie \mxZitat{X})
 \end{itemize}
 Jede Zelle in dieser Tabelle enthält ein Tripel der Form \\$( \mathtt{won\_games\_player\_1}, \mathtt{won\_games\_player\_2}, \mathtt{total\_played\_games})$. 
 \\Die erste Komponente stellt die Anzahl der gewonnenen Spiele des ersten Spielers dar, die zweite Komponente speichert die Anzahl der Spiele, welche der zweite Spieler gewonnen hat und die dritte Komponente gibt die Gesamtanzahl der gespielten Spiele dieser Spielkategorie an. Die genaue Funktionsweise wird in Abschnitt \nameref{para:train1} erklärt.
@@ -392,13 +392,13 @@ Wie in Abschnitt \nameref{Pseudornd-move-selection} des Kapitel \ref{mc_algo} zu
     def get_weighted_random(possible_moves, turn_nr, player_value):
         prob_sum = 0.0
         for move in possible_moves:
-            prob_sum += MonteCarlo._ml_database.get_likelihood(move, turn_nr, player_value)
+            prob_sum += MonteCarlo._ml_database.get_likelihood(move,turn_nr,player_value)
         chose = random.uniform(0.0, prob_sum)
         move_nr = 0
         prob_sum = 0.0
         for move in possible_moves:
             move_nr += 1
-            prob_sum += MonteCarlo._ml_database.get_likelihood(move, turn_nr, player_value)
+            prob_sum += MonteCarlo._ml_database.get_likelihood(move,turn_nr,player_value)
             if prob_sum >= chose:
                 return move
         return possible_moves[-1]
