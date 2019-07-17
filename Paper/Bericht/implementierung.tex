@@ -174,7 +174,7 @@ $database_{n,c} = P( \mathtt{win} \mid \mathtt{move}(n) \in c)$, wobei gilt:
 \begin{itemize}
 \item $\mathtt{move}(n)$ = Feld des n-ten Spielzuges
 \item $\mathtt{Fields}$ = Menge aller möglichen Spielfeldpositionen (Paare $\langle x ,y \rangle$)
-\item $\mathtt{c} \in \{\mathtt{Fields} -\ \{\langle d,4 \rangle\,\langle e,4 \rangle\,\langle d,5 \rangle\,\langle e,5 \rangle\} \}$ : $c$ ist eine Teilmenge der Spielfelder außer die Zentrumsfelder (Kategorie \mxZitat{X})
+\item $\mathtt{c} \subset \{\mathtt{Fields} -\ \{\langle d,4 \rangle\,\langle e,4 \rangle\,\langle d,5 \rangle\,\langle e,5 \rangle\} \}$ : $c$ ist eine echte Teilmenge der Spielfelder außer die Zentrumsfelder (Kategorie \mxZitat{X})
 \end{itemize}
 Jede Zelle in dieser Tabelle enthält ein Tripel der Form \\$( \mathtt{won\_games\_player\_1}, \mathtt{won\_games\_player\_2}, \mathtt{total\_played\_games})$. 
 \\Die erste Komponente stellt die Anzahl der gewonnenen Spiele des ersten Spielers dar, die zweite Komponente speichert die Anzahl der Spiele, welche der zweite Spieler gewonnen hat und die dritte Komponente gibt die Gesamtanzahl der gespielten Spiele dieser Spielkategorie an. Die genaue Funktionsweise wird in Abschnitt \nameref{para:train1} erklärt.
