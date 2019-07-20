@@ -124,17 +124,23 @@ class Database:
         :param count: number of games to play
         :return:
         """
+        # Create a pool of worker processes.
+        # Workload can be distributed equally on the processes when their number is known
         number_of_processes = mp.cpu_count()
         pool = mp.Pool()
+        # Use Worker processes asynchronous
         # split calculation in number_of_processes parts to calculate multi threaded
         list_of_stats = [pool.apply_async(self._play_n_random_games, args=(count // number_of_processes,))
                          for _ in range(number_of_processes)]
+        # Collect the result of the first worker
         # update statistics of number_of_processes results sequential
         for single_process_list in list_of_stats:
             list_of_games = single_process_list.get()
             for single_game in list_of_games:
                 moves, winner = single_game
                 self.update_fields_stats_for_single_game(moves, winner)
+        # Close the worker pool.
+        pool.close()
 
 
 db = Database()
