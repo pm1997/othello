@@ -250,10 +250,10 @@ weglassen.  Ähnliches gilt für einen Kommentar wie:
 
             # If no return false -->
 
-Sie sollten nochmal komplett über das Programm drüber gehen und diese Art von
+<!--Sie sollten nochmal komplett über das Programm drüber gehen und diese Art von
 Kommentaren löschen.  Viel wichtiger sind die Beschreibungen der Funktionen:
 Es sollte immer da stehen, was rein kommt, was raus kommt und welche
-Member-Variablen gegebenenfalls verändert werden.
+Member-Variablen gegebenenfalls verändert werden. -->
 
 <!-- Bei der Methode set_available_moves in der Klasse Othello achreiben Sie:
 
