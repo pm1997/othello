@@ -158,7 +158,7 @@ class MonteCarlo:
         prob_sum = 0.0
         # get sum of all chances in possible moves
         for move in possible_moves:
-            prob_sum += MonteCarlo._ml_database.get_likelihood(move, turn_nr, player_value)
+            prob_sum += MonteCarlo._ml_database.get_change_of_winning(move, turn_nr, player_value)
 
         # choose a random float between 0 and calculated sum
         chose = random.uniform(0.0, prob_sum)
@@ -168,7 +168,7 @@ class MonteCarlo:
         # iterate over possible move to get
         for move in possible_moves:
             move_nr += 1
-            prob_sum += MonteCarlo._ml_database.get_likelihood(move, turn_nr, player_value)
+            prob_sum += MonteCarlo._ml_database.get_change_of_winning(move, turn_nr, player_value)
             if prob_sum >= chose:
                 # if prob_sum >= chose return move
                 return move

@@ -49,6 +49,6 @@ DATABASE_TO_POSITIONS = {0: [(0, 0), (0, 7), (7, 0), (7, 7)],
                           'X': [(3, 3), (3, 4), (4, 3), (4, 4)]}
 
 POSITION_TO_DATABASE = {}
-for (field_type, fields) in DATABASE_TO_POSITIONS.items():
+for (field_category, fields) in DATABASE_TO_POSITIONS.items():
     for field in fields:
-        POSITION_TO_DATABASE[field] = field_type
+        POSITION_TO_DATABASE[field] = field_category

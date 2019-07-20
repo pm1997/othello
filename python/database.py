@@ -45,17 +45,17 @@ class Database:
                 # write one row (turn number) of matrix
                 np.savetxt(outfile, row, fmt='%d', delimiter=';')
 
-    def get_likelihood(self, move, turn_nr, current_player):
+    def get_change_of_winning(self, move, turn_nr, current_player):
         """
         calculate chance of winning for given move and turn_number
-        :param move: move (pair row, column) in available_moves
+        :param move: move is a pair <row, column> in available_moves
         :param turn_nr: actual turn_number
-        :param current_player: actual player = {0, 1}
+        :param current_player: use constants PLAYER_ONE and PLAYER_TWO
         :return: chance of winning for given field at the given turn number
         """
         # translate move to category in array
         category = POSITION_TO_DATABASE[move]
-        # store data of one category in one turn number database in tree variables to compute statistic
+        # access data of one category in one turn number of the database to compute statistic
         won_games_pl1, won_games_pl2, total_games_played = self._db_data[turn_nr][category]
         # avoid dividing with 0
         if total_games_played == 0:
@@ -84,7 +84,11 @@ class Database:
         self._db_data[turn_nr][field_type] = (won_games_pl1, won_games_pl2, total_games_played + 1)
 
     def update_fields_stats_for_single_game(self, moves, winner):
-        # update each move in game
+        """
+        update statistics of each taken move in game
+        :param moves: list of taken moves
+        :param winner: PLAYER_ONE or PLAYER_TWO
+        """
         for turn_nr in enumerate(moves):
             # translate move 1,0 to position 8
             position = POSITION_TO_DATABASE[moves[turn_nr]]
@@ -115,30 +119,22 @@ class Database:
         return multi_stats
 
     def train_db_multi_threaded(self, count):
+        """
+        play count random games and update database winning statistics
+        :param count: number of games to play
+        :return:
+        """
         number_of_processes = mp.cpu_count()
         pool = mp.Pool()
+        # split calculation in number_of_processes parts to calculate multi threaded
         list_of_stats = [pool.apply_async(self._play_n_random_games, args=(count // number_of_processes,))
                          for _ in range(number_of_processes)]
+        # update statistics of number_of_processes results sequential
         for single_process_list in list_of_stats:
             list_of_games = single_process_list.get()
             for single_game in list_of_games:
                 moves, winner = single_game
                 self.update_fields_stats_for_single_game(moves, winner)
-
-    def sum_databases(self, file):
-        csv = np.loadtxt(file, delimiter=';')
-        db1 = csv.reshape((60, 9, 3))
-        r1 = 0
-        for row in self._db_data:
-            c1 = 0
-            for column in row:
-                column[0] += db1[r1][c1][0]
-                column[1] += db1[r1][c1][1]
-                column[2] += db1[r1][c1][2]
-                c1 += 1
-            r1 += 1
-        self.store_database()
-        print("finished merge")
 
 
 db = Database()
