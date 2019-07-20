@@ -23,7 +23,7 @@ class StartTables:
 
     def get_available_moves_of_start_tables(self, game: Othello):
         """
-        search moves with identical game tree and get next element of these start table game tree
+        search self._start_table for move sequences starting with the one of game and get next elements of those
         :return: list of available moves
         """
         if len(self._start_tables) == 0:
@@ -32,9 +32,9 @@ class StartTables:
         turn_nr = game.get_turn_nr()
         available_moves = []
         taken_mv = game.get_taken_mvs_text()
-        for game in self._start_tables:
+        for move_sequence in self._start_tables:
             turn = 0
-            for move in game:
+            for move in move_sequence:
                 # move was played
                 if turn < turn_nr:
                     if taken_mv[turn] != move:
