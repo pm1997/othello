@@ -320,6 +320,7 @@ leisten, denn einerseits kennt jeder, der ernsthaft mit Numpy
 arbeitet, die Methode zeros, andererseits kann jemand, der es nicht
 weiß, dies sofort online nachschlagen. -->
 
+<!--
 In der Datei database.py implementieren Sie die Methode
 
     def get_likelihood(self, move, turn_nr, current_player):
@@ -366,11 +367,11 @@ def update_fields_stats_for_single_game(self, moves, winner):
             # update next move
 
 Außerdem ist unklar, wofür der letzte Kommentar steht.
-
+-->
 In der Datei database.py implementieren Sie die Funktion
-_play_n_random_games.  Diese Funktion enthält keine Kommentare und
+_play_n_random_games.  Diese Funktion <!--enthält keine Kommentare und -->
 sollte auf jeden Fall im Abschnitt 4.2.2 diskutiert werden.
-
+<!--
 In der Datei database.py implementieren Sie die Funktion
 
     def train_db_multi_threaded(self, count):
@@ -427,6 +428,7 @@ Die zweite for-Schleife innerhalb der äußeren for-Schleife hat die Form:
                 self._data2[position][field[0]][field[1]] = "{:.2f}".format(a)
         field_type += 1
 
+
 Erst mal ist der Kommentar irreführend, denn wenn cell[2] == 0 ist, wird a ja
 auf 0 gesetzt und nich auf 100.  Damit wird dann auch
 
@@ -470,7 +472,8 @@ Am Ende findet sich die Zeile:
 
 Was Sie mit "usual difference" meinen, ist die Standard-Abweichung (Englisch:
 standard deviation) dafür gibt es aber die Funktion np.std.  
-
+-->
+<!--
 Sie definieren die Klasse StoredMonteCarloHeuristic, die aber nur eine
 einzige statische Methode enthält.  So etwas ist überstrukturiert.
 
@@ -503,4 +506,4 @@ das Dictionary sparen:
         turn_nr = game_state.get_turn_nr()
 
         return max([database.db.get_likelihood(move, turn_nr, current_player) for move in moves])
-
+-->

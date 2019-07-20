@@ -3,7 +3,7 @@ This file contains heuristics used to evaluate a certain game state
 """
 
 from othello import Othello
-import  util
+import util
 from constants import POSITION_TO_DATABASE
 import database
 
