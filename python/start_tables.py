@@ -75,9 +75,9 @@ class StartTables:
             # ---------------------------------------------------------
             # | WARNING: Only call each method once !!!               |
             # | If you use these functions do following:              |
-            # | uncomment line 82; => run code                        |
-            # | comment line 82; uncomment line 83; run code          |
-            # | uncomment line 83 !                                   |
+            # | uncomment ..opposite..; => run code                   |
+            # | comment ..opposite..; uncomment ..diagonal..; run code|
+            # | comment ..diagonal.. !                                |
             # ---------------------------------------------------------
             # | new_moves.append(self.calculate_opposite_move(game))  |
             # | new_moves.append(self.calculate_diagonal_moves(game)) |
