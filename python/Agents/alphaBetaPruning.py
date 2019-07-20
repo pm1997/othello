@@ -118,7 +118,7 @@ class AlphaBetaPruning:
                 return util.translate_move_to_pair(moves[random.randrange(len(moves))])
         # According to experience the number of moves to consider decreases relevantly after reaching a certain
         # turn number. Therefore it is possible to increase the search depth without loosing to much time.
-        # We dynamicly increase the serach depth after reaching turn_number 40
+        # We dynamically increase the search depth after reaching turn_number 40
         search_depth = self._search_depth
         turn_number = game_state.get_turn_nr()
         if turn_number > 40:
@@ -143,6 +143,8 @@ class AlphaBetaPruning:
                 best_moves[result] = []
             best_moves[result].append(move)
 
+        AlphaBetaPruning.value_monte_carlo.cache_clear()
+        AlphaBetaPruning.value.cache_clear()
         # Determine the best result
         best_result = max(best_moves.keys())
         if self._use_monte_carlo:

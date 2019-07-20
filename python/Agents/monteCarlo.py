@@ -228,7 +228,7 @@ class MonteCarlo:
         :param player_value: The representation for the observed player
         :param game_state: The game_state to use
         :param number_of_games: The number of games played
-        :param use_weighted_random: Boolean determiningthe algorithm variant
+        :param use_weighted_random: Boolean determining the algorithm variant
         :return: Dict with available moves as keys and integer pairs of (games_won, times_played)
         """
         winning_statistics = dict()
