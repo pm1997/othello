@@ -51,7 +51,11 @@ class StartTables:
         return available_moves
 
     def calculate_missing_start_moves(self):
-        """calculate the point symmetric moves of whole database"""
+        """
+        The first version of the database contains no point symmetric move sequences.
+        This function calculates the point symmetric moves of the whole database.
+        Use with caution
+        """
         if len(self._start_tables) == 0:
             self._init_start_tables()
 
@@ -70,6 +74,10 @@ class StartTables:
             # add move and opposite move to new start table
             # ---------------------------------------------------------
             # | WARNING: Only call each method once !!!               |
+            # | If you use these functions do following:              |
+            # | uncomment line 82; => run code                        |
+            # | comment line 82; uncomment line 83; run code          |
+            # | uncomment line 83 !                                   |
             # ---------------------------------------------------------
             # | new_moves.append(self.calculate_opposite_move(game))  |
             # | new_moves.append(self.calculate_diagonal_moves(game)) |
