@@ -72,16 +72,16 @@ class StartTables:
         # calculate for all start sequences in start table
         for move_sequence in self._start_tables:
             # add move and opposite move to new start table
-            # ---------------------------------------------------------
-            # | WARNING: Only call each method once !!!               |
-            # | If you use these functions do following:              |
-            # | uncomment ..opposite..; => run code                   |
-            # | comment ..opposite..; uncomment ..diagonal..; run code|
-            # | comment ..diagonal.. !                                |
-            # ---------------------------------------------------------
-            # | new_moves.append(self.calculate_opposite_move(game))  |
-            # | new_moves.append(self.calculate_diagonal_moves(game)) |
-            # ---------------------------------------------------------
+            # |----------------------------------------------------------------|
+            # | WARNING: Only call each method once !!!                        |
+            # | If you use these functions do following:                       |
+            # | uncomment ..opposite..; => run code                            |
+            # | comment ..opposite..; uncomment ..diagonal..; run code         |
+            # | comment ..diagonal.. !                                         |
+            # |----------------------------------------------------------------|
+            # | new_moves.append(self.calculate_opposite_move(move_sequence))  |
+            # | new_moves.append(self.calculate_diagonal_moves(move_sequence)) |
+            # |----------------------------------------------------------------|
             new_moves.append(move_sequence)
 
         # new_moves = self.remove_duplicates(new_moves)
