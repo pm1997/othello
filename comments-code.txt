@@ -368,9 +368,9 @@ def update_fields_stats_for_single_game(self, moves, winner):
 
 Außerdem ist unklar, wofür der letzte Kommentar steht.
 -->
-In der Datei database.py implementieren Sie die Funktion
-_play_n_random_games.  Diese Funktion <!--enthält keine Kommentare und -->
-sollte auf jeden Fall im Abschnitt 4.2.2 diskutiert werden.
+<!-- In der Datei database.py implementieren Sie die Funktion
+_play_n_random_games.  Diese Funktion <!--enthält keine Kommentare und
+sollte auf jeden Fall im Abschnitt 4.2.2 diskutiert werden. -->
 <!--
 In der Datei database.py implementieren Sie die Funktion
 
