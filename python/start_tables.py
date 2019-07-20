@@ -40,8 +40,8 @@ class StartTables:
                     if taken_mv[turn] != move:
                         # move is different to start_table
                         break
-                # if start sequence is finished and shorter than longest sequence the gab is filled with "i8" fields
-                elif move != "i8" or move != "nan":  # i8 = invalid field
+                # if start sequence is finished
+                elif move != "nan":
                     available_moves.append(move)
                     break
                 turn += 1
@@ -99,10 +99,12 @@ class StartTables:
                 f.write("%s\n" % csv_row)
 
     @staticmethod
-    def calculate_opposite_move(moves):
-        """calculate the point symmetric moves of one given game"""
+    def calculate_opposite_move(move_sequence):
+        """
+        calculate the point symmetric moves of one given move sequence
+        """
         new_turns = list()
-        for move in moves:
+        for move in move_sequence:
             if move[0] not in {"a", "b", "c", "d", "e", "f", "g", "h"}:
                 break
             # move is a char and a int , eg. 'd3'
@@ -115,15 +117,17 @@ class StartTables:
                 column -= 7
                 column = abs(column)
             new_turns.append(COLUMN_NAMES[column] + str(row + 1))
-        print(f"old:{moves}")
+        print(f"old:{move_sequence}")
         print(f"new:{new_turns}")
         return new_turns
 
     @staticmethod
-    def calculate_diagonal_moves(moves):
-        """calculate the point symmetric moves of one given game"""
+    def calculate_diagonal_moves(move_sequence):
+        """
+        calculate the point symmetric move of one given move_sequence
+        """
         new_turns = list()
-        for move in moves:
+        for move in move_sequence:
             if move[0] not in {"a", "b", "c", "d", "e", "f", "g", "h"}:
                 break
             # move is a char and a int , eg. 'd3'
@@ -135,6 +139,6 @@ class StartTables:
                 row = column
                 column = row_temp
             new_turns.append(COLUMN_NAMES[column] + str(row + 1))
-        print(f"old:{moves}")
+        print(f"old:{move_sequence}")
         print(f"new:{new_turns}")
         return new_turns
