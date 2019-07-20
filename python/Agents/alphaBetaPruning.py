@@ -143,13 +143,13 @@ class AlphaBetaPruning:
                 best_moves[result] = []
             best_moves[result].append(move)
 
-        AlphaBetaPruning.value_monte_carlo.cache_clear()
-        AlphaBetaPruning.value.cache_clear()
         # Determine the best result
         best_result = max(best_moves.keys())
         if self._use_monte_carlo:
             print(AlphaBetaPruning.value_monte_carlo.cache_info())
+            AlphaBetaPruning.value_monte_carlo.cache_clear()
         else:
             print(AlphaBetaPruning.value.cache_info())
+            AlphaBetaPruning.value.cache_clear()
         # Play one random move with the best possible result
         return best_moves[best_result][random.randrange(len(best_moves[best_result]))]
