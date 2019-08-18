@@ -87,7 +87,7 @@ class AlphaBetaPruning:
         if depth == 0:
             # use monte carlo player if enabled
             # mc_count = number of played games
-            mc = MonteCarlo(big_number=mc_count, use_start_libs=False, preprocessor_n=-1, heuristic=heuristic, use_multiprocessing=False)
+            mc = MonteCarlo(big_number=mc_count, use_start_libs=False, preprocessor_n=-1, heuristic=heuristic, use_multiprocessing=True)
             # get best move
             move = mc.get_move(game_state)
             # return winnings stats of best move
