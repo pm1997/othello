@@ -185,8 +185,9 @@ Jede Zelle in dieser Tabelle enthält ein Tripel der Form \\$( \mathtt{won\_game
 Die Startwerte der Tupel sind jeweils \mxZitat{(0, 0, 0)}, da initial noch keine Spiele gespeichert sind.
 \paragraph{Befüllen der Datenbank}
 \label{para:train1}
-Nachdem die Datenbank im vorherigen Abschnitt initialisiert erstellt wurde, wird diese nun mit Spieldaten aus zufällig gespielten Spielen befüllt. In Listing \ref{lst:train1} ist das Spielen eines einzelnen zufälligen Spieles und den Aufruf der Funktion \code{update\_fields\_stats\_for\_single\_game} abgebildet. Zunächst wird ein Othello-Spiel initialisiert (Z. 1f.). Durch die Nutzung des im Kapitel \ref{agenten} näher erläuterten \mxZitat{Random}-Agenten wird ein komplettes Spiel durchgeführt (Z. 3f). Anschließend wird der Gewinner (Z. 5) und die Zugreihenfolge ermittelt (Z. 6). Die Funktion \code{update\_fields\_stats\_for\_""single\_game} verwendet diese beiden Parameter, um die Datenbank zu aktualisieren. Sie wird in Listing \ref{lst:train2} abgebildet.
-\newpage
+Nachdem die Datenbank im vorherigen Abschnitt initialisiert erstellt wurde, wird diese nun mit Spieldaten aus zufällig gespielten Spielen befüllt. Dies wird in der Funktion \code{train\_db\_multi\_threaded(self, count)} durchgeführt, welche \code{count} Spiele spielt und mit deren Ergebnisse die Datenbank  aktualisiert. Die \code{count} Spiele werden gleichmäßig auf alle Prozessoren aufgeteilt und in der Funktion \code{\_play\_n\_random\_games(count)} durchgeführt. In dieser Funktion spielen zwei \mxZitat{Random}-Agenten gegeneinander. Die daraus gewonnenen Spielinformationen (Zugreihenfolge, Gewinner des Spiels) werden von der Funktion \code{update\_fields\_\\stats\_for\_single\_game} verarbeitet. 
+\\In Listing \ref{lst:train1} ist das Spielen eines einzelnen zufälligen Spieles und den Aufruf der Funktion \code{update\_fields\_stats\_for\_single\_game} abgebildet. Zunächst wird ein Othello-Spiel initialisiert (Z. 1f.). Durch die Nutzung des im Kapitel \ref{agenten} näher erläuterten \mxZitat{Random}-Agenten wird ein komplettes Spiel durchgeführt (Z. 3f). Anschließend wird der Gewinner (Z. 5) und die Zugreihenfolge ermittelt (Z. 6). Die Funktion \code{update\_fields\_stats\_for\_""single\_game} verwendet diese beiden Parameter, um die Datenbank zu aktualisieren. Sie wird in Listing \ref{lst:train2} abgebildet.
+
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {Befüllen der Datenbank 1}, language = python, captionpos = t , numbers=left, label={lst:train1}]
 g = Othello()
 g.init_game()
@@ -196,25 +197,29 @@ winner = g.get_winner()
 moves = g.get_taken_mv()
 self.update_fields_stats_for_single_game(moves, winner)
 \end{lstlisting}
-In der Funktion \code{update\_fields\_stats\_for\_single\_game} (Listing \ref{lst:train2} Z. 9-12) wird die Liste der Züge in einzelne Züge aufgeteilt (Z. 10), welche anschließend jeweils eine Spalte in einer Datenbankzeile aktualisieren. Dazu werden die Züge, beispielsweise \mxZitat{a1}, in Zeile 11 in eine Feldkategorie umgerechnet (im Beispiel \mxZitat{0}) und ebenfalls der Methode \code{update\_field\_stat} übergeben.
-\\Diese Methode liest die Werte der durch Zugnummer und Feldkategorie festgelegten Zelle aus (Z. 2). Je nachdem, welcher Spieler dieses Spiel gewonnen hat, wird die Zahl der gewonnenen Spiele des ersten, zweiten oder keinem Spieler um eins erhöht (Z. 3-6). Abschließend wird die Zahl der insgesamt durchgeführten Spiele inkrementiert (Z. 7 dritte Komponente) und in die Datenbank zurückgeschrieben (Z. 7).
+In der Funktion \code{update\_fields\_stats\_for\_single\_game} (Listing \ref{lst:train2} Z. 9-12) wird die Liste der Züge in einzelne Züge aufgeteilt (Z. 13), welche anschließend jeweils eine Spalte in einer Datenbankzeile aktualisieren. Dazu werden die Züge, beispielsweise \mxZitat{a1}, in Zeile 15 in eine Feldkategorie umgerechnet (im Beispiel \mxZitat{0}) und ebenfalls der Methode \code{update\_field\_stat} übergeben (Z. 17).
+\\Diese Methode liest die Werte der durch Zugnummer und Feldkategorie festgelegten Zelle aus (Z. 2f.). Je nachdem, welcher Spieler dieses Spiel gewonnen hat, wird die Zahl der gewonnenen Spiele des ersten, zweiten oder keinem Spieler um eins erhöht (Z. 4-7). Abschließend wird die Zahl der insgesamt durchgeführten Spiele inkrementiert (Z. 10 dritte Komponente) und in die Datenbank zurückgeschrieben (Z. 9f.).
 \\Die Datenbank wurde mit 140.000 Spielen trainiert, um statistische Abweichungen zu minimieren. Hierbei wirkt das Gesetz der großen Zahlen, das besagt, dass sich die Wahrscheinlichkeiten eines Ereignisses bei sehr vielen Wiederholungen dem Erwartungswert annähert.
 \\Zur Auswertung der Datenbank wurde die Klasse \code{Analyse} in der Datei \\\code{analyse\_database.py} erstellt. Diese liest die Datenbank aus und liefert eine farbige Ansicht der Gewinnwahrscheinlichkeiten eines Spielers jeweils pro Zug auf dem Terminal. Neben dem dargestellten Spielbrett wird auch das Minimum, das Maximum, der Durchschnittswert und die Standardabweichung des dargestellten Spielbrettes berechnet. Zur Nutzung dieser Funktion wird das python-Paket \mxZitat{termcolor} benötigt.
 \newpage
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {Befüllen der Datenbank 2}, language = python, captionpos = t , numbers=left, label={lst:train2}]
-	def update_field_stat(self, turn_nr, field_type, winner):
-		(won_games_pl1, won_games_pl2, total_games_played) = self._data[turn_nr][field_type]
-		if winner == PLAYER_ONE:
-			won_games_pl1 += 1
-		elif winner == PLAYER_TWO:
-			won_games_pl2 += 1
-		self._data[turn_nr][field_type] = (won_games_pl1, won_games_pl2, 
-			total_games_played + 1)
+	    def update_field_stat(self, turn_nr, field_type, winner):
+        (won_games_pl1, won_games_pl2, total_games_played) = \
+        	self._db_data[turn_nr][field_type]
+        if winner == PLAYER_ONE:
+            won_games_pl1 += 1
+        elif winner == PLAYER_TWO:
+            won_games_pl2 += 1
+        # store updated entry at same position in database
+        self._db_data[turn_nr][field_type] = \
+        	(won_games_pl1, won_games_pl2, total_games_played + 1)
 
-	def update_fields_stats_for_single_game(self, moves, winner):
-		for turn_nr in range(len(moves)):
-			position = self.translate_position_to_database(moves[turn_nr])
-			self.update_field_stat(turn_nr, position, winner)
+    def update_fields_stats_for_single_game(self, moves, winner):
+        for turn_nr in enumerate(moves):
+            # translate move 1,0 to position 8
+            position = POSITION_TO_DATABASE[moves[turn_nr]]
+            # update array at position position
+            self.update_field_stat(turn_nr, position, winner)
 \end{lstlisting}
 
 \paragraph{Heuristik}
@@ -243,7 +248,7 @@ In dem Grundlagenkapitel \ref{lookup} wurden die Vor- und Nachteile von Suche vs
 \\Für viele Spiele, beispielsweise für Schach, existieren umfangreiche Eröffnungsbibliotheken, welche bewährte Eröffnungszüge speichern. Für Othello existieren zwar viele Sammlungen von durchgeführten Spielen, jedoch sind den Verfassern nur wenige Eröffnungsspiele bekannt. In der hier präsentierten Implementierung werden die 77 Eröffnungszüge von Robert Gatliff \cite{open1} verwendet. Beschrieben werden diese jeweils durch eine Zugreihenfolge, z.B. \code{c4, c3, d3, c5, b2}. 
 \\Die zur Erreichung des aktuellen Spielzustandes gespielten Züge werden mit den gespeicherten Zugreihenfolgen verglichen. Wenn diese Reihenfolgen für eine oder mehrere gespeicherte Eröffnungen übereinstimmen, wird eine dieser Reihenfolgen ausgewählt und der nach dieser Reihenfolge nächste Zug gespielt. Die entsprechende Funktion \code{get\_available\_moves\_of\_start\_tables} ist in Listing \ref{lst:start2} abgebildet.
 \newpage
-\begin{lstlisting}[basicstyle=\footnotesize, caption = {Befüllen der Datenbank 2}, language = python, captionpos = t , numbers=left, label={lst:start2}]
+\begin{lstlisting}[basicstyle=\footnotesize, caption = {Methode zur Bestimmung verfügbarer Startzüge }, language = python, captionpos = t , numbers=left, label={lst:start2}]
 def get_available_moves_of_start_tables(self, game: Othello):
 	if len(self._start_tables) == 0:
 		self._init_start_tables()
