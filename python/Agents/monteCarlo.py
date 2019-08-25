@@ -1,8 +1,8 @@
 from othello import Othello
 from start_tables import StartTables
-from util import UtilMethods
 import operator
 from Agents.random import Random
+import util
 import sys
 import random
 import heuristics
@@ -27,18 +27,18 @@ class MonteCarlo:
             self._big_n = big_number
         else:
             # Ask the user to enter the number of random games per turn
-            self._big_n = UtilMethods.get_integer_selection("[Player MonteCarlo] Select Number of Simulated Games", 100,
-                                                            sys.maxsize)
+            self._big_n = util.get_integer_selection("[Player MonteCarlo] Select Number of Simulated Games", 100,
+                                                     sys.maxsize)
         if use_weighted_random is None:
             # Ask the user to determine whether to use the start library
-            self._use_weighted_random = UtilMethods.get_boolean_selection(
+            self._use_weighted_random = util.get_boolean_selection(
                 "[Player MonteCarlo] Do you want to use a weighted random game selection?")
         else:
             self._use_weighted_random = use_weighted_random
 
         if use_start_libs is None:
             # Ask the user to determine whether to use the start library
-            self._use_start_lib = UtilMethods.get_boolean_selection(
+            self._use_start_lib = util.get_boolean_selection(
                 "[Player MonteCarlo] Do you want to use the start library?")
         else:
             self._use_start_lib = use_start_libs
@@ -58,7 +58,7 @@ class MonteCarlo:
             self._heuristic = heuristic
 
         if use_multiprocessing is None:
-            self._use_multiprocessing = UtilMethods.get_boolean_selection("[Player Monte Carlo] Use Multiprocessing?")
+            self._use_multiprocessing = util.get_boolean_selection("[Player Monte Carlo] Use Multiprocessing?")
         else:
             self._use_multiprocessing = use_multiprocessing
 
@@ -98,14 +98,14 @@ class MonteCarlo:
         available_preprocessors.append(
             ("Variable Selectivity Preprocessor (VSP)", MonteCarlo.preprocess_variable_selectivity))
         # Ask the user to select a type of preprocessor.
-        preprocessor = UtilMethods.select_one(available_preprocessors, "[Player MonteCarlo] Select a preprocessor mode")
+        preprocessor = util.select_one(available_preprocessors, "[Player MonteCarlo] Select a preprocessor mode")
         preprocessor_parameter = None
         if preprocessor == MonteCarlo.preprocess_fixed_selectivity:
-            preprocessor_parameter = UtilMethods.get_integer_selection(
+            preprocessor_parameter = util.get_integer_selection(
                 "[Player MonteCarlo]>>[Fixed Selectivity Preprocessor] Please select the number of moves passing the preprocessor",
                 1, 64)
         elif preprocessor == MonteCarlo.preprocess_variable_selectivity:
-            preprocessor_parameter = UtilMethods.get_float_selection(
+            preprocessor_parameter = util.get_float_selection(
                 "[Player MonteCarlo]>>[Variable Selectivity Preprocessor] Please select the percentage of the average move value needed to pass the preprocessor",
                 0, 1)
 
@@ -147,18 +147,18 @@ class MonteCarlo:
             [m for m, v in heuristic_value_dict.items() if v >= p_s * average_heuristic_value])
 
     @staticmethod
-    def get_weighted_random(possible_moves, turn_nr, own_symbol):
+    def get_weighted_random(possible_moves, turn_nr, player_value):
         """
         get weighted random move: prefer moves with higher chance of winning
         :param possible_moves: list of available moves in current game state
         :param turn_nr: actual turn number
-        :param own_symbol: actual player
+        :param player_value: actual player
         :return: random move
         """
         prob_sum = 0.0
         # get sum of all chances in possible moves
         for move in possible_moves:
-            prob_sum += MonteCarlo._ml_database.get_likelihood(move, turn_nr, own_symbol)
+            prob_sum += MonteCarlo._ml_database.get_change_of_winning(move, turn_nr, player_value)
 
         # choose a random float between 0 and calculated sum
         chose = random.uniform(0.0, prob_sum)
@@ -168,7 +168,7 @@ class MonteCarlo:
         # iterate over possible move to get
         for move in possible_moves:
             move_nr += 1
-            prob_sum += MonteCarlo._ml_database.get_likelihood(move, turn_nr, own_symbol)
+            prob_sum += MonteCarlo._ml_database.get_change_of_winning(move, turn_nr, player_value)
             if prob_sum >= chose:
                 # if prob_sum >= chose return move
                 return move
@@ -176,9 +176,9 @@ class MonteCarlo:
         return possible_moves[-1]
 
     @staticmethod
-    def play_weighted_random_game(own_symbol, simulated_game):
+    def play_weighted_random_game(player_value, simulated_game):
         """
-        :param own_symbol: player symbol (PLAYER_ONE, PLAYER_TWO)
+        :param player_value: player value (PLAYER_ONE, PLAYER_TWO)
         :param simulated_game: copy of game state
         :return: won, first_move, taken_moves
             won: player wins random game
@@ -189,20 +189,20 @@ class MonteCarlo:
         possible_moves = simulated_game.get_available_moves()
 
         # choose winning moves more times than loss moves
-        first_move = MonteCarlo.get_weighted_random(possible_moves, simulated_game.get_turn_nr(), own_symbol)
+        first_move = MonteCarlo.get_weighted_random(possible_moves, simulated_game.get_turn_nr(), player_value)
         # play move
         simulated_game.play_position(first_move)
         # play whole remaining game
         while not simulated_game.game_is_over():
             possible_moves2 = simulated_game.get_available_moves()
-            move = MonteCarlo.get_weighted_random(possible_moves2, simulated_game.get_turn_nr(), own_symbol)
+            move = MonteCarlo.get_weighted_random(possible_moves2, simulated_game.get_turn_nr(), player_value)
             simulated_game.play_position(move)
-        won = 1 if simulated_game.get_winner() == own_symbol else 0
+        won = 1 if simulated_game.get_winner() == player_value else 0
 
         return first_move, won  # , simulated_game.get_taken_mv()
 
     @staticmethod
-    def play_random_game(own_symbol, simulated_game):
+    def play_random_game(player_value, simulated_game):
         """
         Play the given simulated_game to an end and return the first move and whether the game was won or not
         """
@@ -217,12 +217,20 @@ class MonteCarlo:
             # Play the random move
             simulated_game.play_position(move)
         # Decide whether the game was won
-        won = 1 if simulated_game.get_winner() == own_symbol else 0
+        won = 1 if simulated_game.get_winner() == player_value else 0
         # Return the first move and whether the game was won or not
         return first_move, won
 
     @staticmethod
-    def play_n_random_games(own_symbol, game_state: Othello, number_of_games, use_weighted_random):
+    def play_n_random_games(player_value, game_state: Othello, number_of_games, use_weighted_random):
+        """
+        Plays number_of_games random games for player_value starting at game_state
+        :param player_value: The representation for the observed player
+        :param game_state: The game_state to use
+        :param number_of_games: The number of games played
+        :param use_weighted_random: Boolean determining the algorithm variant
+        :return: Dict with available moves as keys and integer pairs of (games_won, times_played)
+        """
         winning_statistics = dict()
         # Get the set of legal moves
         possible_moves = game_state.get_available_moves()
@@ -236,9 +244,9 @@ class MonteCarlo:
             simulated_game = game_state.deepcopy()
             # Play one random game and access the returned information
             if use_weighted_random:
-                first_played_move, won = MonteCarlo.play_weighted_random_game(own_symbol, simulated_game)
+                first_played_move, won = MonteCarlo.play_weighted_random_game(player_value, simulated_game)
             else:
-                first_played_move, won = MonteCarlo.play_random_game(own_symbol, simulated_game)
+                first_played_move, won = MonteCarlo.play_random_game(player_value, simulated_game)
             # Access the statistics stored for the move selected in the random game
             (won_games, times_played) = winning_statistics[first_played_move]
             # Increment the counters accordingly
@@ -247,6 +255,13 @@ class MonteCarlo:
 
     @staticmethod
     def combine_statistic_dicts(base, added):
+        """
+        Combines the two dictionaries base and added by adding the values stored in them
+        They have to contain pairs of integers.
+        :param base: The base dict
+        :param added: The dict to add
+        :return: The combined dict
+        """
         for move in base:
             if move in added:
                 (b_won, b_played) = base[move]
@@ -258,7 +273,7 @@ class MonteCarlo:
 
     def get_move(self, game_state: Othello):
         """
-        interface function of all players
+        Returns the best move according to the games simulated by MonteCarlo
         :param game_state: actual game state
         :return: best move in available moves
         """
@@ -266,13 +281,13 @@ class MonteCarlo:
         if self._use_start_lib and game_state.get_turn_nr() < 21:  # check whether start move match
             moves = self._start_tables.get_available_moves_of_start_tables(game_state)
             if len(moves) > 0:
-                return UtilMethods.translate_move_to_pair(moves[random.randrange(len(moves))])
+                return util.translate_move_to_pair(moves[random.randrange(len(moves))])
         # Create a dictionary to store information on won/lost ratios
         # winning_statistics = dict()
         # empty dictionary or win probabilities
         self._move_probability.clear()
         # Get the own symbol
-        own_symbol = game_state.get_current_player()
+        player_value = game_state.get_current_player()
         # Check whether to preprocess the available moves
         if self._preprocessor is not None:
             # Preprocess the available moves
@@ -280,14 +295,21 @@ class MonteCarlo:
 
         # Simulate big_n games
         if not self._use_multiprocessing:
-            winning_statistics = MonteCarlo.play_n_random_games(own_symbol, game_state, self._big_n, self._use_weighted_random)
+            # Simulate the games in the current process
+            winning_statistics = MonteCarlo.play_n_random_games(player_value, game_state, self._big_n, self._use_weighted_random)
         else:
+            # Create a pool of worker processes. Set the number_of_processes explicitly
+            # Workload can be distributed equally on the processes when their number is known
             number_of_processes = mp.cpu_count()
             pool = mp.Pool(processes=number_of_processes)
-            list_of_stats = [pool.apply_async(MonteCarlo.play_n_random_games, args=(own_symbol, game_state.deepcopy(), self._big_n // number_of_processes, self._use_weighted_random)) for _ in range(number_of_processes)]
-            winning_statistics = list_of_stats[0].get()
-            for single_list in list_of_stats[1:]:
+            # Use Worker processes asynchronous
+            list_of_result_objects = [pool.apply_async(MonteCarlo.play_n_random_games, args=(player_value, game_state.deepcopy(), self._big_n // number_of_processes, self._use_weighted_random)) for _ in range(number_of_processes)]
+            # Collect the result of the first worker
+            winning_statistics = list_of_result_objects[0].get()
+            # Collect the result of the other workers and combine them in one single dictionary
+            for single_list in list_of_result_objects[1:]:
                 MonteCarlo.combine_statistic_dicts(winning_statistics, single_list.get())
+            # Close the worker pool.
             pool.close()
 
         # Reduce the pair of (won_games, times_played) to a winning probability

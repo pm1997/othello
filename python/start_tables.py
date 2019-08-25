@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from util import UtilMethods
+import util
 from othello import Othello
 from constants import COLUMN_NAMES
 
@@ -23,7 +23,7 @@ class StartTables:
 
     def get_available_moves_of_start_tables(self, game: Othello):
         """
-        search moves with identical game tree and get next element of these start table game tree
+        search self._start_table for move sequences starting with the one of game and get next elements of those
         :return: list of available moves
         """
         if len(self._start_tables) == 0:
@@ -32,16 +32,16 @@ class StartTables:
         turn_nr = game.get_turn_nr()
         available_moves = []
         taken_mv = game.get_taken_mvs_text()
-        for game in self._start_tables:
+        for move_sequence in self._start_tables:
             turn = 0
-            for move in game:
+            for move in move_sequence:
                 # move was played
                 if turn < turn_nr:
                     if taken_mv[turn] != move:
                         # move is different to start_table
                         break
-                # if start sequence is finished and shorter than longest sequence the gab is filled with "i8" fields
-                elif move != "i8" or move != "nan":  # i8 = invalid field
+                # if start sequence is finished
+                elif move != "nan":
                     available_moves.append(move)
                     break
                 turn += 1
@@ -51,7 +51,11 @@ class StartTables:
         return available_moves
 
     def calculate_missing_start_moves(self):
-        """calculate the point symmetric moves of whole database"""
+        """
+        The first version of the database contains no point symmetric move sequences.
+        This function calculates the point symmetric moves of the whole database.
+        Use with caution
+        """
         if len(self._start_tables) == 0:
             self._init_start_tables()
 
@@ -66,15 +70,19 @@ class StartTables:
         new_moves.append(header)
 
         # calculate for all start sequences in start table
-        for game in self._start_tables:
+        for move_sequence in self._start_tables:
             # add move and opposite move to new start table
-            # ---------------------------------------------------------
-            # | WARNING: Only call each method once !!!               |
-            # ---------------------------------------------------------
-            # | new_moves.append(self.calculate_opposite_move(game))  |
-            # | new_moves.append(self.calculate_diagonal_moves(game)) |
-            # ---------------------------------------------------------
-            new_moves.append(game)
+            # |----------------------------------------------------------------|
+            # | WARNING: Only call each method once !!!                        |
+            # | If you use these functions do following:                       |
+            # | uncomment ..opposite..; => run code                            |
+            # | comment ..opposite..; uncomment ..diagonal..; run code         |
+            # | comment ..diagonal.. !                                         |
+            # |----------------------------------------------------------------|
+            # | new_moves.append(self.calculate_opposite_move(move_sequence))  |
+            # | new_moves.append(self.calculate_diagonal_moves(move_sequence)) |
+            # |----------------------------------------------------------------|
+            new_moves.append(move_sequence)
 
         # new_moves = self.remove_duplicates(new_moves)
         # store new start table in file 'start_moves.csv'
@@ -91,15 +99,17 @@ class StartTables:
                 f.write("%s\n" % csv_row)
 
     @staticmethod
-    def calculate_opposite_move(moves):
-        """calculate the point symmetric moves of one given game"""
+    def calculate_opposite_move(move_sequence):
+        """
+        calculate the point symmetric moves of one given move sequence
+        """
         new_turns = list()
-        for move in moves:
+        for move in move_sequence:
             if move[0] not in {"a", "b", "c", "d", "e", "f", "g", "h"}:
                 break
             # move is a char and a int , eg. 'd3'
             # translate this move to a x and y coordinate
-            (row, column) = UtilMethods.translate_move_to_pair(move)
+            (row, column) = util.translate_move_to_pair(move)
             if column < 8 and row < 7:
                 # mirror row and column at point 3.5,3.5 => middle of board
                 row -= 7
@@ -107,26 +117,28 @@ class StartTables:
                 column -= 7
                 column = abs(column)
             new_turns.append(COLUMN_NAMES[column] + str(row + 1))
-        print(f"old:{moves}")
+        print(f"old:{move_sequence}")
         print(f"new:{new_turns}")
         return new_turns
 
     @staticmethod
-    def calculate_diagonal_moves(moves):
-        """calculate the point symmetric moves of one given game"""
+    def calculate_diagonal_moves(move_sequence):
+        """
+        calculate the point symmetric move of one given move_sequence
+        """
         new_turns = list()
-        for move in moves:
+        for move in move_sequence:
             if move[0] not in {"a", "b", "c", "d", "e", "f", "g", "h"}:
                 break
             # move is a char and a int , eg. 'd3'
             # translate this move to a x and y coordinate
-            (row, column) = UtilMethods.translate_move_to_pair(move)
+            (row, column) = util.translate_move_to_pair(move)
             if column < 8 and row < 7:
                 # mirror row and column at diagonal 0,0; 7,7 => middle of board
                 row_temp = row
                 row = column
                 column = row_temp
             new_turns.append(COLUMN_NAMES[column] + str(row + 1))
-        print(f"old:{moves}")
+        print(f"old:{move_sequence}")
         print(f"new:{new_turns}")
         return new_turns

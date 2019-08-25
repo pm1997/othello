@@ -1,0 +1,4 @@
+ToDo
+fix stored MC Heuristik in pdf
+Discussion of the remaining comparisons (pdf)
+In der Datei database.py implementieren Sie die Funktion _play_n_random_games.  Diese Funktion <!--enthält keine Kommentare und --> sollte auf jeden Fall im Abschnitt 4.2.2 diskutiert werden.

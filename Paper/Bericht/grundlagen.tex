@@ -1,36 +1,44 @@
 \chapter{Grundlagen}
 \label{basics}
-\authorpatrick
 In diesem Kapitel werden die theoretischen Grundlagen für eine künstliche Intelligenz für das Spiel \ot\ erläutert.\\
 Zunächst werden dazu einige Begriffe der Spieltheorie eingeführt. Diese werden dann zur Beschreibung einiger deterministischer Algorithmen zum Treffen einer Spielentscheidung verwendet. Den Abschluss des Kapitels bildet schließlich die Beschreibung einer stochastischen Methode für diesen Zweck. 
 \section{Spieltheorie}
-In dem folgenden Unterkapitel werden grundlegende Definitionen eingeführt. Diese sind an das Buch \mxZitat{Artificial Intelligence: A modern approach} von Stuart J. Russel und Peter Norvig \cite{Russell.2016} angelehnt.
+In dem folgenden Unterkapitel werden grundlegende Definitionen eingeführt. Diese sind an das Buch \mxZitat{Artificial Intelligence: A Modern Approach} von Stuart J. Russel und Peter Norvig \cite{Russell.2016} angelehnt.
 \begin{Definition}[Spiel (Game)(vgl. \cite{Russell.2016} S. 162)]
 Ein \blue{Spiel} besteht aus einem \\Tupel der Form \\[0.2cm]
   \hspace*{1.3cm}
-  $\mathtt{G} = \langle Q, S\textsubscript{0},\mathtt{player}, \mathtt{actions}, \mathtt{result}, \mathtt{terminalTest}, \mathtt{utility} \rangle$
-\\Sei $Q$ die Menge aller Zustände im Spiel. Ein Spielzustand besteht aus dem aktuellen Spielbrett, der Zugnummer, dem aktiven Spieler und weiteren Parametern, welche zur genauen Darstellung eines Spielzustands führen.
+  $\mathtt{G} = \langle \mathtt{Q}, \mathtt{S}\textsubscript{0},\mathtt{Players}, \mathtt{actions}, \mathtt{result}, \mathtt{terminalTest}, \mathtt{utility} \rangle$
+\\Sei $Q$ die Menge aller Zustände im Spiel. Ein Spielzustand besteht aus dem aktuellen Spielbrett, der Zugnummer sowie dem aktiven Spieler, welche zur genauen Darstellung eines Spielzustands führen.
 \begin{itemize}
 \item $\mathtt{Q}:$ Menge aller Spielzustände
 \item $\so\ \in \mathtt{Q}$ beschreibt den Startzustand des Spiels.
-\item $\mathtt{Players}:$ Menge aller Spieler: $\mathtt{Players} = \{S,W\}$
-\item $\mathtt{player}: \mathtt{Q} \rightarrow \mathtt{Players}$ ist auf der Menge der Spielzustände definiert und gibt den aktuellen Spieler p zurück.
-\item $\mathtt{actions}: \mathtt{Q} \rightarrow 2^\mathtt{moves}$ gibt die Menge der validen Zugmöglichkeiten  eines gegeben Zustands zurück. 
-\\$\mathtt{moves}$ ist die Menge aller Zugmöglichkeiten.
-\\$\mathtt{moves} = \{ <X, Y> \mid X \in \{0 .. 7\} \wedge Y \in \{ 0 .. 7 \} \} $
-\\Diese geben die Koordinaten der Zugposition des neuen Steines auf dem Spielbrett an. 
-\item $\mathtt{result}:\mathtt{Q} \times \mathtt{actions} \rightarrow \mathtt{Q}$ definiert das Resultat einer in einem Zustand s durchgeführten Aktion a.
-\item $\mathtt{terminalTest}: \mathtt{Q} \rightarrow \mathbb{B}$ prüft ob ein Zustand s ein Terminalzustand \\($s \in \mathtt{terminalStates}$), also Endzustand, darstellt.
-\\$ \mathtt{terminalTest}(s) = \begin{cases} \mathtt{True}\ \mid s \in \mathtt{terminalStates}$ 
-$\\\mathtt{False}\ \mid s \not\in \mathtt{terminalStates} \end{cases}$
-\item $\mathtt{utility}: \mathtt{terminalStates} \times \mathtt{Players} \rightarrow \{-1, 0, 1 \}$ gibt einen Zahlenwert aus den Eingabewerten s (Terminalzustand) und p (Spieler) zurück. \\Positive Werte stellen einen Gewinn, negative Werte einen Verlust dar. \mxZitat{0} stellt ein Unentschieden dar.
+\item $\mathtt{Players}:$ Menge aller Spieler: $\mathtt{Players} = \{B,W\}$
+\newpage
+\item Ist die Menge $\mathtt{Moves}$ der Positionen des Spielfeldes definiert als:
+\begin{center}$\mathtt{Moves} = \{ \langle \mathtt{X}, \mathtt{Y} \rangle \mid \mathtt{X} \in \{a .. h\} \wedge \mathtt{Y} \in \{ 1 .. 8 \} \} $
+\end{center}
+wobei $\mathtt{X}$ die Spalte und $\mathtt{Y}$ die Zeile des Spielfeldes definiert,
+\\so gibt die Funktion
+\\$\mathtt{actions}: \mathtt{Q} \rightarrow 2^\mathtt{Moves}$ die Menge der Positionen des Spielfeldes zurück auf die im aktuellen Zustand ein Stein gelegt werden kann. 
+\item Ist $\mathtt{S} \in \mathtt{Q}$ 
+ein Spielzustand, $\mathtt{AllowedMoves} = \{ \mathtt{actions}(\mathtt{S})\}$ 
+die Menge der Positionen des Spielfeldes die im Zug $\mathtt{S}$ 
+besetzt werden können und $\mathtt{M} \in \mathtt{AllowedMoves}$ 
+eine dieser Positionen, so ist $\mathtt{S}_{\mathtt{new}} \in \mathtt{Q} $ 
+definiert als $\mathtt{S}_{\mathtt{new}} = \mathtt{result}(\mathtt{S}, \mathtt{M})$ 
+der neue Spielzustand, nachdem im Zustand $\mathtt{S}$ 
+ein Stein auf die Position $\mathtt{M}$ gesetzt wurde.
+\item $\mathtt{terminalTest}: \mathtt{Q} \rightarrow \mathbb{B}$ prüft ob ein Zustand s ein Terminalzustand, also Endzustand, darstellt.
+\\Mittels dieser Funktion wird die Menge der $\mathtt{TerminalStates}$ definiert. Es gilt:
+$ \mathtt{TerminalStates} = \{ s \in \mathtt{Q} \mid \mathtt{terminalTest}(s)\}$
+\item $\mathtt{utility}: \mathtt{TerminalStates} \times \mathtt{Players} \rightarrow \{-1, 0, 1 \}$ trifft eine Aussage über den Ausgang eines Spiels aus Sicht des jeweils übergebenen Spielers. \\Positive Werte stellen einen Gewinn, negative Werte einen Verlust dar. \mxZitat{0} stellt ein Unentschieden dar.
 \end{itemize}
 \end{Definition}
 Eine spezielle Art von Spielen sind \blue{Nullsummenspiele}.
 \begin{Definition}[Nullsummenspiele (vgl. \cite{Russell.2016} S. 161)]
 In einem \\\blue{Nullsummenspiel} ist die Summe der utility Funktion eines Endzustandes ($\mathtt{terminalState}$) über alle Spieler 0. Es gilt also:
 \vspace{0.2cm}
-\\$\forall s \in \mathtt{terminalStates}: \sum\limits_{p \in Players} utility(s, p) = 0$
+\\$\forall s \in \mathtt{TerminalStates}: \sum\limits_{p \in \mathtt{Players}} \mathtt{utility}(s, p) = 0$
 \vspace{0.2cm}
 %\\Dies bedeutet, dass wenn ein Spieler gewinnt mindestens ein Gegenspieler verliert.
 \\In \ot\ spielen zwei Spieler gegeneinander. Es gibt also nur die drei Möglichkeiten:
@@ -41,12 +49,12 @@ In einem \\\blue{Nullsummenspiel} ist die Summe der utility Funktion eines Endzu
 \end{itemize}
 \end{Definition}
 \begin{Definition}[Spielbaum (Game Tree)]
-Durch den Startzustand $\so$ und der Funktionen $\mathtt{actions}$ und $\mathtt{result}$ wird ein \blue{Spielbaum (Game Tree)} aufgespannt.
-\\Die mathematische Definition ist an die Definition eines binären Baumes aus \cite{StroetmannAlgo19} \\(S. 75f) angelehnt und wird induktiv durchgeführt:
+Durch den Startzustand $\so$ und der Funktionen $\mathtt{actions}$ und $\mathtt{result}$ wird der \blue{Spielbaum (Game Tree)} aufgespannt.
+\\Zunächst wird die Menge aller möglichen Spielbäume definiert. Die mathematische Definition ist an die Definition eines binären Baumes aus \cite{StroetmannAlgo19} \\(S. 75f) angelehnt und wird induktiv durchgeführt:
 \begin{itemize}
-\item $ \mathcal{T}$ ist die Menge aller Spielbäume
-\item $\mathtt{Node}: \mathtt{Q} \times \mathtt{List(actions)} \times \mathtt{List(\mathcal{T})} \rightarrow \mathcal{T} $
-\\$\mathtt{Node}(s,a,t) \in \mathcal{T}$ g.d.w.
+\item $\mathcal{T}$ ist die Menge aller Spielbäume
+\item $\mathtt{Node}: \mathtt{Q} \times \mathtt{List}(\mathtt{Moves}) \times \mathtt{List(\mathcal{T})} \rightarrow \mathcal{T} $
+\\Es gilt $\mathtt{Node}(s,a,t) \in \mathcal{T}$ g.d.w.
 \begin{itemize}
 \item $s \in \mathtt{Q}$
 \item $\forall i \in \{1 .. \mathtt{len}(a)\}: a\textsubscript{i} \in \mathtt{actions(s)} $
@@ -56,33 +64,43 @@ Durch den Startzustand $\so$ und der Funktionen $\mathtt{actions}$ und $\mathtt{
 \item $s \in \mathtt{TerminalStates} \leftrightarrow t = [] \wedge a = [] $
 \end{itemize}
 \end{itemize}
+Der \blue{Spielbaum} ist jener Baum $ \mathtt{t}_{\mathtt{GameTree}} \in \mathcal{T}$ für den gilt $\mathtt{state}(\mathtt{t}_{\mathtt{GameTree}}) = \mathtt{S}\textsubscript{0}$ 
 \end{Definition}
 \begin{Definition}[Suchbaum (Search Tree) (vgl. \cite{Russell.2016} S. 163)]
-Ein \blue{Suchbaum} \\ist ein Teil des Spielbaums. Die Wurzel des Spielbaums besteht aus dem aktuellen Spielzustand. Alle Kindknoten und Blätter entsprechen dem Spielbaum beginnend ab dem aktuellen Zustand. Es gilt also:
-\\ $B \in A \wedge B = A[s]$ mit $ A \in \mathtt{Spielbaum}, B \in \mathtt{Suchbaum}(s), s \in Q$
+Ist $\mathtt{S}$ ein Spielzustand der im Laufe des Spiels erreicht wurde, so ist der von diesem Zustand ausgehende Spielbaum $\mathcal{T}_{\mathtt{S}} \in \mathcal{T}$ ein \blue{Suchbaum}.
+\\Der Suchbaum enthält damit alle möglichen Spielverläufe die das Spiel ab dem Spielzustand $\mathtt{S}$ nehmen kann. Ein Suchbaum ist somit ein Teilbaum des Spielbaumes.  
 \end{Definition}
-Mit den nun eingeführten Grundlagen der Spieltheorie werden im Folgenden einzelne Spielstrategien betrachtet. 
+Mit den nun eingeführten Grundlagen der Spieltheorie werden im Folgenden einzelne Spielalgorithmen betrachtet. 
 \newpage
-\section{Spielstrategien}
-Es gibt verschiedene Spielstrategien. Im Folgenden werden diese kurz erläutert und anschließend verglichen.
+\section{Spielalgorithmen}
+Es gibt verschiedene Spielalgorithmen. Im Folgenden werden einige dieser Algorithmen kurz erläutert und anschließend verglichen.
 \subsection{MiniMax}
-Die erste hier erläuterte Strategie ist der MiniMax Algorithmus. Dieser ist folgendermaßen definiert (siehe \cite{Russell.2016} S.164):
-\\$\mathtt{MiniMax}(s,p) = \begin{cases} \mathtt{Utility}(s,p)$; wenn TerminalTest(s) $\\\mathtt{max}(\{\mathtt{MiniMax}(\mathtt{result}(s,a) \mid a \in \mathtt{actions}(s)\},(p +1)\%2 )\\ $; 
-wenn Spieler am Zug$\\\mathtt{min}(\{\mathtt{MiniMax}(\mathtt{result}(s,a) \mid a \in \mathtt{actions}(s) \}, (p +1)\%2)\\ $; wenn Gegner am Zug$\end{cases}$
-%\\$\mathtt{MiniMax}$ gibt in einem Endzustand einen Zahlenwert (-1,0,1) über das Spielende zurück.
-%\\In allen anderen Zuständen gibt die Funktion eine Aktion zurück, welche den besten Spielzug darstellt.
-%\\$MiniMax = \begin{cases} Q \times \mathtt{Player} \rightarrow \{-1,0,1\}$; wenn $\mathtt{Q} \in \mathtt{TerminalStates} \\ Q \times \mathtt{Player} \rightarrow \mathtt{actions}$ sonst $\end{cases}$
-\\$\mathtt{getBestMove}: Q \times \{-1,0,1\} \rightarrow \mathtt{actions}$
-\\$\mathtt{getBestMove}(s,\mathtt{score}, p) \\= \hfill \{ a \mid a \in \mathtt{actions} \land \mathtt{MiniMax}(\mathtt{result}(s,a), (p + 1) \% 2 ) == \mathtt{score}\}.\mathtt{any}()$
-\\Die Funktion $\mathtt{getBestMove}$ ermittelt eine Menge aller Züge, welche den von $\mathtt{MiniMax}$ zurückgegeben Wert besitzen und wählt aus dieser Menge einen Zug aus.
-\\Der Spieler sucht durch diese Funktion den bestmöglichen Zug aus den verfügbaren Zügen ($\mathtt{actions}$), der ihm einen für seine Züge einen Vorteil schafft, aber gleichzeitig nur \mxZitat{schlechte} Zugmöglichkeiten für den Gegner generiert. Der Gegner kann dadurch aus allen ehemals möglichen Zügen nicht den optimalen Zug spielen, da dieser in der Menge der erlaubten Züge nun nicht mehr enthalten ist. Er wiederrum wählt aus den verfügbaren $\mathtt{actions}$ nach den gleichen Vorgaben seinen besten Zug aus.
-\vspace{0.5cm}\\ Die Strategie ist eine Tiefensuche und erkundet jeden Knoten zuerst bis zu den einzelnen Blättern bevor ein Nachbarknoten ausgewählt wird. Dies setzt das mindestens einmalige Durchlaufen des gesamten Suchbaums voraus. Bei einem durchschnittlichen Verzweigungsfaktor von $f$ bei einer Tiefe von $d$ resultiert daraus eine Komplexität von $\mathcal{O}(d\textsuperscript{f})$. Bei einem einmaligen Erkunden der Knoten können die Werte aus den Blättern rekursiv von den Blättern zu den Knoten aktualisiert werden. Dadurch muss im nächsten Zug nur das Minimum aus $\mathtt{actions}$ ermittelt werden, da alle Kindknoten schon evaluiert wurden. Für übliche Spiele kann die MiniMax-Strategie allerdings nicht verwendet werden, da die Komplexität zu hoch für eine akzeptable Antwortzeit ist und der benötigte Speicherplatz für die berechneten Zustände sehr schnell wächst.
+Die erste hier erläuterte Algorithmus ist der MiniMax Algorithmus. Für dessen Definition muss zunächst die folgenden Funktionen definiert sein:
+\begin{itemize}
+\item $\mathtt{player}: \mathtt{Q} \rightarrow \mathtt{Players}$
+\\Diese Funktion gibt für einen Zustand $\mathtt{s} \in \mathtt{Q}$ den Spieler zurück der an der Reihe ist.
+\item $\mathtt{other}: \mathtt{Players} \rightarrow \mathtt{Players}$ mit:
+\\$\mathtt{other}(\mathtt{s}) = \begin{cases}
+W & \, \text{wenn} \, \mathtt{player}(\mathtt{s}) = B \\
+B & \, \text{sonst}
+\end{cases}$
+\end{itemize}
+Der MiniMax Algorithmus definiert eine Funktion $\mathtt{MiniMax}$
+\\\begin{footnotesize}$\mathtt{MiniMax}(\mathtt{s}, \mathtt{p}) = \\ \begin{cases}
+\mathtt{utility}(\mathtt{s}, \mathtt{p}) \hspace{9cm} \, \text{wenn} \, \mathtt{terminalTest}(\mathtt{s})\\
+\mathtt{max}(\{-\mathtt{MiniMax}(\mathtt{s}_{\mathtt{new}}, \mathtt{other}(\mathtt{p})) \mid \mathtt{s}_{\mathtt{new}} \in \{\mathtt{result}(\mathtt{s}, \mathtt{m}) \mid \mathtt{m} \in \mathtt{actions}(\mathtt{s})\}\})  \, \hspace{1cm} \text{sonst}
+\end{cases}$
+\end{footnotesize}
+\vspace{0.5cm}
+\\die das bestmögliche Spielergebnis für den Spieler $\mathtt{p}$ im Zustand $\mathtt{s}$ berechnet.
+\\Nun kann die  Menge aller Züge, welche den von $\mathtt{MiniMax}$ zurückgegeben Ausgang besitzen, ermittelt werden. Der Algorithmus wählt dann aus dieser Menge einen Zug aus.
+\\Der Algorithmus versucht den Wert des Spielausgangs aus der eigenen Sicht zu maximieren. Es gilt also immer den Zug mit dem höchsten Wert durchzuführen. Da davon auszugehen ist, dass der Gegenspieler nach dem gleichen Prinzip vorgeht und es sich um ein Nullsummenspiel handelt kann die Wertigkeit eines Folgezuges für den aktuellen Spieler durch Multiplikation der Wertigkeit des Folgezuges aus Sicht des anderen Spielers mit $-1$ ermittelt werden. Da diese Wertigkeit ebenfalls mit der Funktion $\mathtt{MiniMax}$ ermittelt wird ergibt sich ein rekursiver Aufruf.
+\vspace{0.5cm}\\ Der Algorithmus ist damit eine Tiefensuche und erkundet jeden Knoten zuerst bis zu den einzelnen Blättern bevor an der letzten Verzweigung ein Nachbarknoten ausgewertet wird. Dies setzt das mindestens einmalige Durchlaufen des gesamten Suchbaums voraus. Für übliche Spiele kann die MiniMax-Strategie allerdings nicht verwendet werden, da es zu lange dauert den Suchbaum in einer akzeptablen Antwortzeit zu durchlaufen.
 
 \subsection{\abab}
 \label{ab-pruning}
-\authormax
 Der MiniMax Algorithmus berechnet nach dem Prinzip der Tiefensuche (\mxZitat{depth-first}) stets den kompletten \gtree. 
-\\Bei der Betrachtung des Entscheidungsverhaltens des Algorithmus fällt jedoch schnell auf, dass ein nicht unerheblicher Teil aller möglichen Züge durch einen menschlichen Spieler gar nicht erst in Betracht gezogen wird. Dies geschieht aufgrund der Tatsache, dass diese Züge in einem schlechteren Ergebnis resultieren würden als ein anderer letztendlich ausgewählter Zug.\newline
+\\Bei der Betrachtung des Entscheidungsverhaltens des Algorithmus fällt jedoch schnell auf, dass ein nicht unerheblicher Teil aller möglichen Züge durch einen menschlichen Spieler gar nicht erst in Betracht gezogen wird. Dies geschieht aufgrund der Tatsache, dass diese Züge in einem schlechteren Ergebnis resultieren würden als ein bereits betrachteter Zug.\newline
 Dem \abab\ (\abp) Algorithmus liegt der Gedanke zugrunde, dass die Zustände, die in einem realen Spiel nie ausgewählt würden, auch nicht berechnet werden müssen. Damit steht die dafür regulär erforderliche Rechenzeit und der entsprechende Speicher dafür zur Verfügung andere, vielversprechendere Zweige zu verfolgen.
 \subsubsection{Demonstration an einem Beispiel}
 \begin{figure}[ht!]
@@ -225,9 +243,9 @@ Betrachten wir nun den linken Baum in der zweiten Zeile:
 Im nachfolgenden \gtree\ wird der nächste Schritt verdeutlicht. Es wird der Knoten F betrachtet. Dieser hat einen Wert von 13. Am Zuge ist jedoch der zweite Spieler. Dieser wird, geht man davon aus, dass er ideal spielt, jedoch keinen Zug wählen, der ein besseres Ergebnis für den Gegner bringt als unbedingt nötig. Der bestmögliche Wert für den ersten Spieler bleibt damit 5.
 \\Nach der Auswertung des Knotens G steht fest, dass es keinen besseren und keinen schlechteren Wert aus Sicht des ersten Spielers gibt. Daraufhin wird die 5 auch als schlechtester Wert in $\alpha$ gespeichert. Ausgehend von A  ist der schlechteste Wert damit 5 ggf. kann jedoch noch ein besseres Ergebnis herbeigeführt werden. $\alpha$ wird entsprechend gesetzt und $\beta$ verbleibt undefiniert.\\
 Nun werden die Kindknoten von C betrachtet. Mit einem Wert von 3 wäre der Knoten H das bisher beste Ergebnis für die Wahl von C. Der Wert wird entsprechend gespeichert. Würde C gewählt gäbe man dem Gegenspieler die Chance ein im Vergleich zu der Wahl des Knotens B schlechteres Ergebnis herbeizuführen. Da das Ziel des Spielers jedoch ist, die eigenen Punkte zu maximieren, gilt es diese Chance gar nicht erst zu gewähren. Entsprechend wird die Auswertung der weiteren Knoten abgebrochen.\\
-Der Kindknoten K des Knotens D ist mit einem Wert von 42 vielversprechend und wird in $\beta$ gespeichert. Da dieser Wert größer ist als die gespeicherten 5 wird auch der entsprechende Wert von A aktualisiert. Der anschließend ausgewertete Knoten L ermöglicht nun ein schlechteres Ergebnis von 6 $\beta$, muss also aktualisiert werden. Der Knoten M liefert schließlich den schlechtesten Wert von 1. Da der Gegenspieler im Zweifel diesen Wert wählen würde, bleibt der bisher beste Wert das Ergebnis in E. In A wird der Spieler daher B auswählen.
+Der Kindknoten K des Knotens D ist mit einem Wert von 42 vielversprechend und wird in $\beta$ gespeichert. Damit kann der erste Spieler maximal einen Wert von 42 erreichen und dieser Wert daher auch als $\beta$ von A gespeichert. Der anschließend ausgewertete Knoten L ermöglicht nun ein schlechteres Ergebnis von 6 $\beta$, muss also aktualisiert werden. Der Knoten M liefert schließlich den schlechtesten Wert von 1. Da der Gegenspieler im Zweifel diesen Wert wählen würde, bleibt der bisher beste Wert das Ergebnis in E. In A wird der Spieler daher B auswählen.
 \vspace{0.5cm}\\ 
-Dieses einfache Beispiel zeigt bereits recht gut wie die Auswertung von weiteren Zweigen vermieden werden kann. In der Praktischen Anwendung befinden sich die wegfallenden Zustände häufig nicht nur in den Blättern des Baums sondern auch auf höheren Ebenen. Der eingesparte Aufwand wird dadurch häufig noch größer.  
+Dieses einfache Beispiel zeigt bereits recht gut wie die Auswertung von weiteren Zweigen vermieden werden kann. In der praktischen Anwendung befinden sich die wegfallenden Zustände häufig nicht nur in den Blättern des Baums sondern auch auf höheren Ebenen. Der eingesparte Aufwand wird dadurch häufig noch größer.  
 
 \subsubsection{Implementierung}
 \label{ab-basics-impl}
@@ -250,18 +268,18 @@ alphaBeta(State, player, alpha = -1, beta = 1) {
 \end{lstlisting}
 Bei der angegebenen Implementierung handelt es sich um eine rekursive Umsetzung. Nachfolgend sei das Programm erläutert:
 \begin{enumerate}
-\item Im Basisfall wurde bereits ein Blatt des Spielbaumes erreicht. Damit ist das Spiel bereits beendet. In diesem Fall kann mit $utility$ der Wert des Zustands $State$ für den entsprechenden Spieler $player$ zurückgegeben werden.
-\item In der Variable $val$ wird der maximale Wert aller von $State$ erreichbaren Zustände, sofern $player$ einen Zug ausführt, gespeichert.\\
-Da der Algorithmus per Definition alle Wertigkeiten kleiner $alpha$ ausschließen soll, kann die Variable mit $alpha$ initialisiert werden.
-\item Nun wird über alle Folgezustände $ns$ aus der Menge $nextStates(State, player)$ iteriert.
-\item Nun wird rekursiv jeder Zustand $ns$ ausgewertet. An dieser Stelle ist jedoch der andere Spieler an der Reihe. Entsprechend erfolgt dies für den anderen Spieler. Da es sich um ein Nullsummenspiel handelt ist der Wert eines Zustandes aus Sicht des Gegners von $player$ genau der negative Wert der Wertigkeit für $player$. Aus diesem Grund müssen die Rollen von $alpha$ und $beta$ vertauscht und außerdem die Vorzeichen invertiert werden.
-\item Da laut der Spezifikation des Algorithmus nur die Wertigkeiten von Zuständen berechnet werden sollen, in denen diese kleiner oder gleich $beta$ ist, wird die Auswertung aller Folgezustände mit einem $val$ der größer oder gleich $beta$ ist abgebrochen. In diesem Fall wird $val$ zurückgegeben.
-\item Wenn ein Folgezustand mit einem größeren Wert als $alpha$ gefunden wurde, kann $alpha$ auf den entsprechenden Wert erhöht werden. Sobald klar ist, dass der Wert $val$ erreicht werden kann, so sind Werte kleiner als $val$ nicht mehr relevant.  
+\item Im Basisfall wurde bereits ein Blatt des Spielbaumes erreicht. Damit ist das Spiel bereits beendet. In diesem Fall kann mit \code{utility} der Wert des Zustands \code{State} für den entsprechenden Spieler \code{player} zurückgegeben werden.
+\item In der Variable \code{val} wird der maximale Wert aller von \code{State} erreichbaren Zustände, sofern \code{player} einen Zug ausführt, gespeichert.\\
+Da der Algorithmus per Definition alle Wertigkeiten kleiner \code{alpha} ausschließen soll, kann die Variable mit \code{alpha} initialisiert werden.
+\item Nun wird über alle Folgezustände \code{ns} aus der Menge \code{nextStates(State, player)} iteriert.
+\item Nun wird rekursiv jeder Zustand \code{ns} ausgewertet. An dieser Stelle ist jedoch der andere Spieler an der Reihe. Entsprechend erfolgt dies für den anderen Spieler. Da es sich um ein Nullsummenspiel handelt, ist der Wert eines Zustandes aus Sicht des Gegners von \code{player} genau der negative Wert der Wertigkeit für \code{player}. Aus diesem Grund müssen die Rollen von \code{alpha} und \code{beta} vertauscht und außerdem die Vorzeichen invertiert werden.
+\item Da laut der Spezifikation des Algorithmus nur die Wertigkeiten von Zuständen berechnet werden sollen, in denen diese kleiner oder gleich \code{beta} ist, wird die Auswertung aller Folgezustände mit einem \code{val} der größer oder gleich \code{beta} ist abgebrochen. In diesem Fall wird \code{val} zurückgegeben.
+\item Wenn ein Folgezustand mit einem größeren Wert als \code{alpha} gefunden wurde, kann \code{alpha} auf den entsprechenden Wert erhöht werden. Sobald klar ist, dass der Wert \code{val} erreicht werden kann, so sind Werte kleiner als \code{val} nicht mehr relevant.  
  
 \end{enumerate}
 
 \subsubsection{Ordnung der Züge}
-Wie in obigem Beispiel an den Zweigen unter dem Knoten C zu sehen war kann, je nach der Reihenfolge in der die Folgezüge untersucht werden, die Auswertung eines Folgezustandes früher oder später abgebrochen werden. Optimalerweise werden die besten Züge, also jene Züge die einen möglichst frühen Abbruch der Betrachtung eines Knotens herbeiführen zuerst betrachtet. Um dies abschätzen zu können bedient man sich in der Praxis einer Heuristik, die Aussagen über die Güte eines Zuges im Vergleich zu den übrigen Zügen zulässt. Anhand dieser Heuristik kann dann die Reihenfolge der Auswertung einzelner Folgezustände dynamisch angepasst werden. In Abschnitt \nameref{Heuristiken} werden unterschiedliche Heuristiken erklärt.
+Wie in obigem Beispiel an den Zweigen unter dem Knoten C zu sehen war kann, je nach der Reihenfolge in der die Folgezüge untersucht werden, die Auswertung eines Folgezustandes früher oder später abgebrochen werden. Optimalerweise werden die besten Züge, also jene Züge, die einen möglichst frühen Abbruch der Betrachtung eines Knotens herbeiführen zuerst betrachtet. Um dies abschätzen zu können bedient man sich in der Praxis einer Heuristik, die Aussagen über die Güte eines Zuges im Vergleich zu den übrigen Zügen zulässt. Anhand dieser Heuristik kann dann die Reihenfolge der Auswertung einzelner Folgezustände dynamisch angepasst werden. In Abschnitt \nameref{Heuristiken} werden unterschiedliche Heuristiken erklärt.
 
 \subsection{Suboptimale Echtzeitentscheidungen}
 Selbst die gezeigte Verbesserung des MiniMax-Algorithmus besitzt noch einen wesentlichen Nachteil. Da es sich um einen \mxZitat{depth-first} Algorithmus handelt muss jeder Pfad bis zu einem Endzustand betrachtet werden um eine Aussage über den Wert des Zuges treffen zu können. Dem steht jedoch die Tatsache entgegen, dass in der Praxis eine Entscheidung möglichst schnell, idealer Weise innerhalb weniger Sekunden, getroffen werden soll. Hinzu kommt die Tatsache, dass viele Spiele unter Verwendung von derzeit erhältlicher Hardware (noch) nicht lösbar sind.\\
@@ -269,7 +287,7 @@ Es gilt also eine Möglichkeit zu finden, die Auswertung des kompletten Baumes z
 
 \subsubsection{Heuristiken}
 \label{Heuristiken}
-Dieses Problem lösen sogenannte Heuristiken. Dabei handelt es sich um eine Funktion, die versucht den Wert eines Spielzustandes anhand einzelner Eigenschaften des Zustandes anzunähern. Wie in Kapitel \ref{strat1} erläutert, hat ein Spieler der eine Ecke des Feldes besetzt in der Regel einen Vorteil. Ein solcher Zustand würde durch die Heuristik entsprechend besser bewertet werden.
+Dieses Problem lösen sogenannte Heuristiken. Dabei handelt es sich um eine Funktion, die versucht den Wert eines Spielzustandes anhand einzelner Eigenschaften des Zustandes anzunähern. Wie in Kapitel \ref{strat1} erläutert, hat ein Spieler der eine Ecke des Feldes besetzt, in der Regel einen Vorteil. Ein solcher Zustand würde durch die Heuristik entsprechend besser bewertet werden.
 \\Kommt eine Heuristik zur Anwendung, so ist die Genauigkeit, mit der diese den tatsächlichen Wert approximiert der wesentliche Aspekt der die Qualität des Spiel-Algorithmus ausmacht. Jedoch wird die Berechnung der Heuristik mit steigender Genauigkeit meist komplizierter und somit auch rechen- und damit zeitintensiver. Aus diesem Grund muss immer eine Abwägung aus Genauigkeit und Geschwindigkeit vorgenommen werden. 
 
 \subsubsection{Abschnittskriterium der Suche}
@@ -277,7 +295,6 @@ Dieses Problem lösen sogenannte Heuristiken. Dabei handelt es sich um eine Funk
 Gibt die Heuristik im Falle eines Endzustandes den Wert der Utility Funktion zurück, so kann die oben gezeigte Implementierung so angepasst werden, dass statt der Utility Funktion einfach die Heuristik ausgewertet wird. Dadurch muss nicht mehr der vollständige Zweig durchsucht werden und das Abbrechen nach einer gewissen Suchtiefe wird möglich.
  
 \subsubsection{Vorwärtsabschneiden}
-\authorpatrick
 Vorwärtsabschneiden (Forward Pruning) durchsucht nicht den kompletten \gtree , sondern durchsucht nur einen Teil. Eine Möglichkeit ist eine Strahlensuche, welche nur die \mxZitat{besten} Züge durchsucht (vgl. \cite{Russell.2016} S. 175). Die Züge mit einer geringen Erfolgswahrscheinlichkeit werden abgeschnitten und nicht bis zum Blattknoten evaluiert. Durch die Wahl des jeweiligen Zuges mit der höchsten Gewinnwahrscheinlichkeit können aber auch sehr gute bzw. schlechte Züge nicht berücksichtigt werden, wenn diese eine geringe Wahrscheinlichkeit besitzen. Durch das Abschneiden von Teilen des \gtree\ wird die Suchgeschwindigkeit deutlich erhöht. Der in dem \ot -Programm \mxZitat{Logistello} verwendete \mxZitat{Probcut} erzielt außerdem eine Gewinnwahrscheinlichkeit von 64\% gegenüber der ursprünglichen Version ohne Vorwärtsabschneiden (vgl. \cite{Russell.2016} S. 175).
 \subsubsection{Suche gegen Nachschlagen}
 \label{lookup}
@@ -290,26 +307,24 @@ Viele Spiele kann man in 3 Haupt-Spielabschnitte einteilen:
 In der Eröffnungsphase und in der Endphase gibt es im Vergleich zum Mittelspiel wenige Zugmöglichkeiten. Dadurch sinken der Verzweigungsfaktor und die generelle Anzahl der Folgezustände. In diesen Phasen können die optimalen Spielzüge einfacher berechnet werden. Eine weitere Möglichkeit besteht aus dem Nachschlagen des \states\ aus einer Lookup-Tabelle.
 \\Dies ist sinnvoll, da gewöhnlicherweise sehr viel Literatur über die Spieleröffnung des jeweiligen Spiels existiert.
 % Auch über die Endzustände in der Schlussphase des Spiels findet sich Literatur. 
-Das Mittelspiel jedoch hat zu viele Zugmöglichkeiten, um eine Tabelle der möglichen Spielzüge bis zum Spielende aufstellen zu können. Denn in diesem Spielabschnitt existieren üblicherweise 4 bis 12 Zugmöglichkeiten. Im Kapitel \ref{othello-eroff} werden die bekanntesten Eröffnungsstrategien aufgelistet.
+Das Mittelspiel jedoch hat zu viele Zugmöglichkeiten, um eine Tabelle der möglichen Spielzüge bis zum Spielende aufstellen zu können. Denn in diesem Spielabschnitt existieren üblicherweise 4 bis 12 Zugmöglichkeiten. Im Kapitel \ref{othello-eroff} werden beispielhaft einige bekannte Eröffnungszüge aufgelistet.
 \\Viele Spielstrategien wie beispielsweise die MiniMax-Strategie setzen den kompletten oder wenigstens einen großen Teil des Spielbaums voraus. Dieser kann entweder berechnet werden oder aus einer Lookup-Tabelle gelesen werden. Je nach Verzweigungsfaktor der einzelnen Spielzüge kann diese allerdings sehr groß sein. Selbst im späten Spielverlauf gibt es verschiedene Spiele, welche einen großen Spielbaum besitzen.
 \\Beispielsweise existieren für das Endspiel in Schach mit einem König, Läufer und Springer gegen einen König 3.494.568 mögliche Positionen (vgl. \cite{Russell.2016} S.176).
 \\Dies sind zu viele Möglichkeiten um alle speichern zu können, da noch sehr viel mehr Endspiel-Kombinationen als diese existieren.
-\\Anstatt die Spielzustände also zu speichern, können auch die verbleibenden Spielzustände berechnet werden. \ot\ besitzt gegenüber Schach den Vorteil, dass die Anzahl der Spielzüge auf 60 Züge begrenzt ist. Dadurch kann in der Endphase des Spiels ggf. der komplette verbleibende \gtree\ berechnet werden, da die Anzahl der möglichen Zugmöglichkeiten eingeschränkt wird.
-\\Bei der Berechnung der Spielzüge sind die Suchtiefe und der Verzweigungsfaktor entscheidend für die Berechnungsdauer. Aus diesem Grund können im Mittelspiel keine MiniMax-Algorithmen bis zu den Blattknoten des \gtrees\ ausgeführt werden, da die Berechnungsdauer auf ein nicht mehr vertretbares Maß steigen würde. Auch der Bedarf an Arbeitsspeicher würde entsprechend größer werden.
+\\Anstatt die Spielzustände also zu speichern, können auch die verbleibenden Spielzustände berechnet werden. \ot\ besitzt gegenüber Schach den Vorteil, dass die Anzahl der Spielzüge auf 60 Züge begrenzt ist. Dadurch kann in der Endphase des Spiels ggf. der komplette verbleibende Suchbaum berechnet werden, da die Anzahl der möglichen Zugmöglichkeiten eingeschränkt wird.
+\\Bei der Berechnung der Spielzüge sind die Suchtiefe und der Verzweigungsfaktor entscheidend für die Berechnungsdauer. Aus diesem Grund können im Mittelspiel keine MiniMax-Algorithmen bis zu den Blattknoten des Suchbaumes ausgeführt werden, da die Berechnungsdauer auf ein nicht mehr vertretbares Maß steigen würde.
 
 \section{\mc\ Algorithmus}
 \label{mc_algo}
-\authormax
-Im Gegensatz zu den bisher gezeigten Algorithmen verwendet der \mc\ Algorithmus einen stochastischen Ansatz, um einen Zug auszuwählen. Im nachfolgenden Abschnitt wird die Funktionsweise des \mc\ Algorithmus erklärt. Daran angeschlossen folgen Möglichkeiten strategische Überlegungen zum Spiel \ot\ einzubringen. Dabei sind die nachfolgenden Ausführungen stark angelehnt an jene von \cite{nijssen_2007}.
+Im Gegensatz zu den bisher gezeigten Algorithmen verwendet der \mc\ Algorithmus einen stochastischen Ansatz, um einen Zug auszuwählen. Im nachfolgenden Abschnitt wird die Funktionsweise des \mc\ Algorithmus erklärt. Daran angeschlossen folgen Möglichkeiten, strategische Überlegungen zum Spiel \ot\ einzubringen. Dabei sind die nachfolgenden Ausführungen stark angelehnt an jene von \cite{nijssen_2007}.
 \subsection{Algorithmus}
-Als Ausgangspunkt legt der \mc\ Algorithmus die Menge der Züge zugrunde, die ein Spieler unter Wahrung der Spielregeln wählen kann. Diese Züge seien nachfolgend Zug-Kandidaten genannt. Enthält die Menge keine Züge, so bleibt dem Spieler nichts anderes übrig als auszusetzen. Enthält die Menge nur einen Zug, so muss der Spieler diesen ausführen. Per Definition ist dies dann der bestmögliche Zug. Enthält die Menge hingegen mindestens zwei mögliche Züge, so gilt es den besten unter ihnen auszuwählen. Um den besten Zug zu ermitteln, wird das Spiel mehrfach, die Anzahl sei $N_{P}$, bis zum Ende simuliert. Während der Simulation wird jeder mögliche Zug gleich häufig gewählt. Der Rest des simulierten Spiels wird dann zufällig zu Ende gespielt. Sobald alle Durchgänge erfolgt sind, wird das durchschnittliche Ergebnis für jeden möglichen Zug berechnet. Dabei gibt es zwei Möglichkeiten dieses Ergebnis zu berechnen:\\
-Es kann die durchschnittliche Punktzahl am Ende eines Spieles nach der Wahl eines Zuges herangezogen werden. Alternativ kann auch die durchschnittliche Anzahl an nach der Wahl eines Zuges gewonnenen Spielen herangezogen werden. Der Unterschied im zweiten Ansatz besteht darin, dass bei dieser Variante nur unterschieden wird ob ein Spiel gewonnen oder verloren wurde, während der erste Ansatz auch die Höhe des Gewinns oder Verlustes beachtet.
-\\Jener Zug, der nun das beste Ergebnis verspricht wird gespielt.
+Als Ausgangspunkt legt der \mc\ Algorithmus die Menge der Züge zugrunde, die ein Spieler unter Wahrung der Spielregeln wählen kann. Diese Züge seien nachfolgend Zug-Kandidaten genannt. Enthält die Menge keine Züge, so bleibt dem Spieler nichts anderes übrig als auszusetzen. Enthält die Menge nur einen Zug, so muss der Spieler diesen ausführen. Per Definition ist dies dann der bestmögliche Zug. Enthält die Menge hingegen mindestens zwei mögliche Züge, so gilt es den besten unter ihnen auszuwählen. Um den besten Zug zu ermitteln, wird das Spiel mehrfach, die Anzahl sei $N_{P}$, bis zum Ende simuliert. Während der Simulation wird jeder mögliche Zug gleich häufig gewählt. Der Rest des simulierten Spiels wird dann zufällig zu Ende gespielt. Sobald alle Durchgänge erfolgt sind, wird das durchschnittliche Ergebnis für jeden möglichen Zug berechnet. Dazu wird die durchschnittliche Anzahl an nach der Wahl eines Zuges gewonnenen Spielen herangezogen.
+\\Jener Zug, der nun das beste Ergebnis verspricht, wird gespielt.
 \subsection{Überlegungen zu \ot}
 Bisher spielt der Algorithmus auf gut Glück ohne sich jeglicher Informationen des Spiels zu bedienen. In der Hoffnung das Spiel des Algorithmus zu verbessern, werden nun weitere Informationen zu \ot\ herangezogen. Hier sind zwei Möglichkeiten beschrieben, um dies zu erreichen:
 \paragraph{Vorverarbeitung (Präprozessor)}
-Wie in entsprechenden Kapiteln gezeigt, gibt es strategisch gute und strategisch eher schlechte Züge. In seiner Reinform betrachtet der \mc\ Algorithmus jedoch beide Arten von Zügen gleich stark. Die Idee der Methode der Vorverarbeitung besteht darin, schlechte Züge in einem Vorverarbeitungsschritt mittels eines Präprozessors auszuschließen, um diese in den Simulationen gar nicht erst zu spielen. Um zu entscheiden, welche Züge ausgeschlossen werden, werden die einzelnen Spielzustände nach Ausführung des Zuges bewertet. Dazu werden die im entsprechenden Kapitel beschriebenen Heuristiken herangezogen. Für die Entscheidung an sich kann nun zwischen zwei Strategien gewählt werden:\\
-Entweder kann eine feste Anzahl, diese sei $N_{S}$, an den besten bewerteten Züge ausgewählt werden oder alternativ eine variable Anzahl. Dies geschieht in dem der Durchschnitt aller Bewertungen bestimmt wird und nur jene Züge ausgewählt werden die eine gewisse Bewertung relativ zum Durchschnittswert haben. Dies wird in einer prozentualen Erfüllung des Durchschnittswertes, diese sei $p_{s}$, angegeben.
+Wie in jedem Spiel gibt es auch bei Othello strategisch gute und strategisch eher schlechte Züge. In seiner Reinform betrachtet der \mc\ Algorithmus jedoch beide Arten von Zügen gleich stark. Die Idee der Methode der Vorverarbeitung besteht darin, schlechte Züge in einem Vorverarbeitungsschritt mittels eines Präprozessors auszuschließen, um diese in den Simulationen gar nicht erst zu spielen. Um zu entscheiden, welche Züge ausgeschlossen werden, werden die einzelnen Spielzustände nach Ausführung des Zuges bewertet. Dazu werden, wie im Abschnitt \nameref{Heuristiken} erläutert, Heuristiken herangezogen. Für die Entscheidung an sich kann nun zwischen zwei Strategien gewählt werden:\\
+Entweder kann eine feste Anzahl, diese sei $N_{S}$, an den besten bewerteten Züge ausgewählt werden oder alternativ eine variable Anzahl. Dies geschieht, indem der Durchschnitt aller Bewertungen bestimmt wird und nur jene Züge ausgewählt werden die eine gewisse Bewertung relativ zum Durchschnittswert haben. Dies wird in einer prozentualen Erfüllung des Durchschnittswertes, diese sei $p_{s}$, angegeben.
 \paragraph{Pseudozufällige Zugauswahl}
 \label{Pseudornd-move-selection}
 In der Standardversion des \mc\ Algorithmus werden die simulierten Spiele nach der Wahl des ersten Zuges zufällig zu Ende gespielt. Dem hier beschriebenen Ansatz liegt die Idee zu Grunde auch in dieser Phase der Simulation einige Züge anderen gegenüber zu bevorzugen. Dies geschieht nach dem gleichen Prinzip wie im Abschnitt zur Vorverarbeitung beschrieben. Da es jedoch sehr zeitaufwändig ist, die Bewertung jedes einzelnen Spielzustandes innerhalb der Simulationen vorzunehmen, erfolgt dies nur bis zu einer bestimmten Tiefe. Diese sei $N_{d}$.

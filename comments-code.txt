@@ -1,0 +1,509 @@
+<!-- Wenn Sie in einer Datei (z.B. util.py) nur eine einzige Klasse haben und diese
+Klasse nur aus statischen Methoden besteht, dann ist das überstrukturiert.  Es
+ist dann besser, auf die Klasse zu verzichten und die statischen Methoden einfach
+als normale Funktionen zu definieren.  Schließlich programmieren wir nicht in
+Java. -->
+
+<!-- Zum Teil haben Sie Ihre Methoden überkommentiert.  Beispielsweise schreiben Sie in
+der Methode get_boolean_selection:
+
+   @staticmethod
+    def get_boolean_selection(description):
+        """
+        Asks the user to enter a yes/no value
+        """
+        # Print the description as prompt
+        print(description)
+        # Continue to prompt user while there is no valid selection
+        while True:
+            # Ask the user for an String input of a boolean value
+            entered_string = input(f"Please enter y/n\n")
+            # Check whether the given value is in the range
+            if entered_string.lower() in {"yes", "y", "j", "ja", "1"}:
+                return True
+            elif entered_string.lower() in {"no", "n", "nein", "0"}:
+                return False
+            else:
+                print("Invalid selection! Enter yes / no")
+
+Von all den Kommentaren, die Sie dort inline geschrieben haben, sind eigentlich nur zwei
+notwendig:
+1. Der Kommentar, der beschreibt, was die Methode macht.
+2. Der Kommentar über der while Schleife.
+Alle anderen Kommentare sind überflüssig, den was die Zeile jeweils unter den Kommentaren
+macht, ist offensichtlich.
+
+Das ist jetzt nicht weiter tragisch, denn mein Motto ist lieber ein Kommentar zu viel als
+zu wenig, aber Sie haben sich damit zuviel Arbeit gemacht.  -->
+
+<!-- Hier jetzt ein Beispiel für eine Funktion, wo mir die Dokumentation nicht ausreicht. Die Funktion
+get_sign befindet sich in der Datei heuristics.py:
+
+def get_sign(current_player, field_value):
+    """
+    Returns 
+      1: if the field value indicates the field is owned by the player
+      0: if the field value is unknown
+     -1: If the field value indicates the field is owned by the other player
+    """
+    if field_value == current_player:
+        return 1
+    elif field_value == Othello.other_player(current_player):
+        return -1
+    else:
+        return 0
+
+Sie müssen nicht schreiben, was die Funktion zurück liefert, denn das ist offensichtlich.
+Unklar ist, wie genau current_player und field_value kodiert sind.  Sind das Strings oder
+Zahlen?  Das hätten Sie erklären sollen. -->
+
+
+<!-- In der Datei constants.py definieren Sie:
+
+DIRECTIONS = {(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)}
+
+Ich hätte das wie folgt geschrieben:
+
+L = (-1,0,1)
+DIRECTIONS = {(a, b) for a in L for b in L if (a,b) != (0,0)}
+
+Es geht nicht darum, dass das kürzer ist, sondern darum, dass ich bei meiner Definition
+leichter sehen kann, dass es korrekt ist. -->
+
+
+<!-- In der Klasse Othello haben Sie die Funktion __hash__ wie folgt definiert:
+
+   def __hash__(self):
+        return (self._board.__str__() \
+               + str(self._current_player) \
+               + str(self._last_turn_passed)).__hash__()
+
+Warum wird hier auch die Variable _last_turn_passed berücksichtigt?  Für den
+Wert einer Stellung spielt diese Variable doch keine Rolle. -->
+
+<!-- Bei der Methode __eq__ der Klasse Othello schreiben Sie:
+
+    def __eq__(self, other):
+        if self.__hash__() == other.__hash__():
+            return True
+        else:
+            return False
+
+Einfacher wäre:
+
+    def __eq__(self, other):
+        return self.__hash__() == other.__hash__() -->
+
+
+<!-- In der Klasse Othello implementieren Sie die Methode init_copy:
+
+    def init_copy(self, board, current_player, last_turn_passed, game_is_over, fringe, turning_stones):
+        """
+        Used to initialize a copied game with the provided values
+        """
+        self._board = board
+        self._current_player = current_player
+        self._last_turn_passed = last_turn_passed
+        self._game_is_over = game_is_over
+        self._fringe = fringe
+        self._turning_stones = turning_stones
+
+Warum werden hier die Variablen _taken_moves und _turn_nr nicht gesetzt?
+
+Die gleiche Frage stellt sich auch bei der Methode deepcopy:
+
+def deepcopy(self):
+        """
+        Returns a deepcopy of the game.
+        copy.deepcopy(self) does not work properly because the rows in the boards won't be copied.
+        """
+        copied_game = Othello()
+        copied_game.init_copy(copy.deepcopy(self._board),
+                              copy.deepcopy(self._current_player),
+                              copy.deepcopy(self._last_turn_passed),
+                              copy.deepcopy(self._game_is_over),
+                              copy.deepcopy(self._fringe),
+                              copy.deepcopy(self._turning_stones))
+        return copied_game -->
+
+<!-- Bei der Methode _next_step in der Klasse Othello schreiben Sie:
+
+    new_position = (new_y, new_x) = (y + y_step, x + x_step)
+
+Also erst y-Koordinate, dann x-Koordinate.  Bei der Methode _update_fringe
+schreiben Sie dann aber:
+
+                (new_x, new_y) = next_step
+
+Also genau anders herum.  Das verwirrt. -->
+
+<!-- Sie haben in der Klasse Othello die beiden Methoden other_player und
+_next_player:
+
+    @staticmethod
+    def other_player(player):
+        """
+        Returns the other player. None if the given Player is unknown
+        """
+        if player == PLAYER_ONE:
+            return PLAYER_TWO
+        elif player == PLAYER_TWO:
+            return PLAYER_ONE
+        else:
+            return None
+
+    def _next_player(self):
+        """
+        Sets current player to the next player
+        """
+        if self._current_player == PLAYER_ONE:
+            self._current_player = PLAYER_TWO
+        elif self._current_player == PLAYER_TWO:
+            self._current_player = PLAYER_ONE
+
+Sie könnten die Methode _next_player auf die Methode other_player zurück führen:
+
+    def _next_player(self):
+    	self._current_player = other_player(self._current_player) -->
+
+<!-- In der Methode _compute_available_moves der Klasse Othello lautet der Kommentar:
+
+    def _compute_available_moves(self):
+        """
+        Computes the legal moves in the current state and stores them for later use.
+        """
+
+Hier fehlt mir die Information, dass diese Züge dann in dem Dictionary
+self._turning_stones abgelegt werden. -->
+
+<!-- In der Methode _compute_available_moves der Klasse Othello schreiben Sie:
+
+        # Get the symbol of the current player
+        own_symbol = self._current_player
+
+Der Kommentar ist falsch, denn self._current_player ist eine Zahl aus der Menge
+{1,2} und nicht ein Symbol wie "B" oder "W". -->
+
+<!-- Bei der Methode _update_fringe der Klasse Othello achreiben Sie:
+
+   def _update_fringe(self, position):
+        """
+        Adds the fields next to the given one to the fringe
+        """
+        # Look for neighbouring fields in each direction
+        for direction in DIRECTIONS:
+            # Get the neighbour in that direction
+            next_step = Othello._next_step(position, direction)
+            # Test whether the neighbour calculated is still on the board
+            if next_step is not None:
+                (new_x, new_y) = next_step
+                # Add the neighbor to the fringe if it is not occupied by a stone
+                if self._board[new_x][new_y] == EMPTY_CELL:
+                    self._fringe.add(next_step)
+
+    
+In dem ersten Kommentar fehlt mir die Information, dass position ein Paar der
+Form (x, y) ist. -->
+
+<!-- Bei der Methode _update_fringe der Klasse Othello achreiben Sie:
+
+    def play_position(self, position):
+        """
+        Play the given position as a move. Returns False if the move is illegal
+        """
+        # Check whether the move is in the set of legal moves
+        if position in self.get_available_moves():
+            # If yes play the move
+
+            # Access the coordinates in the tuple
+            (row, column) = position
+            # Get the Symbol of the current player
+            current_symbol = self._current_player
+            # Mark the given position as taken by the current player
+            self._board[row][column] = current_symbol
+            # Iterate over the set of stones turned by that move
+            for (row2, column2) in self._turning_stones[position]:
+                # Turn the stone. The field is now owned by the current player
+                self._board[row2][column2] = current_symbol
+            self._taken_moves.append(position)
+            self._turn_nr += 1
+            # The position is occupied now. Remove it from fringe
+            self._fringe.remove(position)
+            # Add the unoccupied neighbors of the position to the fringe.
+            self._update_fringe(position)
+            # Prepare the next turn
+            self._prepare_next_turn()
+            return True
+        else:
+            # If no return false
+            return False
+
+Was mich hier stört, ist dass hier zwei unterschiedliche Sachen gemischt werden.
+Einmal wird der Zug ausgeführt, zum andern wird geprüft, ob er überhaupt möglich
+ist.  Ich habe mir mal alle Stellen angeschaut, wo Sie diese Methode verwenden:
+Das Ergebnis, dass hier zurück gegeben wird, wird an keiner Stelle gelesen.
+Folglich könnten Sie den if-Test weglassen.  Außerdem können Sie Kommentare wie
+
+            # Prepare the next turn
+
+weglassen.  Ähnliches gilt für einen Kommentar wie:
+
+            # If no return false -->
+
+<!--Sie sollten nochmal komplett über das Programm drüber gehen und diese Art von
+Kommentaren löschen.  Viel wichtiger sind die Beschreibungen der Funktionen:
+Es sollte immer da stehen, was rein kommt, was raus kommt und welche
+Member-Variablen gegebenenfalls verändert werden. -->
+
+<!-- Bei der Methode set_available_moves in der Klasse Othello achreiben Sie:
+
+    def set_available_moves(self, moves: list):
+        """
+        Function will set the list of Elements as long as they are in the set right now
+        """
+
+Der Kommentar ist so nicht sehr erhellend.  Was wird hier gesetzt und 
+welche Menge meinen Sie, wenn Sie schreiben "in the set"? -->
+
+<!-- In der Klasse Random definieren Sie die Methode get_move wie folgt:
+
+    @staticmethod
+    def get_move(game_state: Othello):
+        """
+        interface function of all players
+        :param game_state: actual game state
+        :return: best move in available moves
+        """
+        # Get the legal moves
+        possible_moves = game_state.get_available_moves()
+        # Return a Random move
+        return possible_moves[rnd.randrange(len(possible_moves))]
+
+Der Kommentar ":return: best move in available moves" macht keinen Sinn.
+Sie berechnen ja nicht den besten Zug, sondern geben einfach irgendeinen zurück.
+Außerdem können Sie die letzte Zeile einfacher schreiben:
+
+        return rnd.choice(possible_moves) -->
+	
+<!-- In der Datei database.py implementieren Sie die Methoden
+translate_position_to_database und translate_database_to_positions wie folgt:
+
+    @staticmethod
+    def translate_database_to_positions(field_type):
+        return DATABASE_TO_POSITIONS[field_type]
+
+    @staticmethod
+    def translate_position_to_database(move):
+        return POSITION_TO_DATABASE[move]
+
+Solche Methoden blähen das Programm nur auf. -->
+
+<!-- In der Datei database.py implementieren Sie die Methode
+
+    def _create_new_database(self):
+        """
+        Reset stored played / won games
+        """
+        # write 1.0 in each cell of _data array
+        self._data = np.zeros(shape=(60, 9, 3), dtype='int64')
+        # save modified array
+        self.store_database()
+
+Der Kommentar "write 1.0 in each cell" ist falsch, denn die Methode np.zeros
+schreibt 0.0 in die Zellen.  Wenn Sie den Kommentar in
+
+        # write 0.0 in each cell of _data array
+
+ändern würden, dann wäre er zwar richtig, aber überflüssig: Es ist 
+nicht notwendig, dass Sie dokumentieren, was Bibliotheksaufrufe
+leisten, denn einerseits kennt jeder, der ernsthaft mit Numpy
+arbeitet, die Methode zeros, andererseits kann jemand, der es nicht
+weiß, dies sofort online nachschlagen. -->
+
+<!--
+In der Datei database.py implementieren Sie die Methode
+
+    def get_likelihood(self, move, turn_nr, current_player):
+        """
+        calculate chance of winning for given move and turn_number
+        :param move: move in available_moves
+        :param turn_nr: actual turn_number
+        :param current_player: actual player
+        :return: chance of winning for given field at the given turn number
+        """
+        # translate move to position in array
+        position = self.translate_position_to_database(move)
+        won_games_pl1, won_games_pl2, total_games_played = self._data[turn_nr][position]
+        if total_games_played == 0:
+            return 0
+        if current_player == PLAYER_ONE:
+            return won_games_pl1 / total_games_played
+        return won_games_pl2 / total_games_played
+
+Die Variablen-Name position ist irreführend, denn die Variable enthält
+tatsächlich einen Feld-Typen.
+
+In der Datei database.py implementieren Sie die Methode
+
+def update_fields_stats_for_single_game(self, moves, winner):
+        # update each move in game
+        for turn_nr in range(len(moves)):
+            # translate move 1,0 to position 8
+            position = self.translate_position_to_database(moves[turn_nr])
+            # update array at position position
+            self.update_field_stat(turn_nr, position, winner)
+            # update next move
+
+Diese Funktion könnten Sie schöner unter Verwendung der Funktion enumerate
+schreiben:
+
+def update_fields_stats_for_single_game(self, moves, winner):
+        # update each move in game
+        for turn_nr, move in enumerate(moves):
+            # translate move 1,0 to position 8
+            position = self.translate_position_to_database(move)
+            # update array at position position
+            self.update_field_stat(turn_nr, position, winner)
+            # update next move
+
+Außerdem ist unklar, wofür der letzte Kommentar steht.
+-->
+<!-- In der Datei database.py implementieren Sie die Funktion
+_play_n_random_games.  Diese Funktion <!--enthält keine Kommentare und
+sollte auf jeden Fall im Abschnitt 4.2.2 diskutiert werden. -->
+<!--
+In der Datei database.py implementieren Sie die Funktion
+
+    def train_db_multi_threaded(self, count):
+        number_of_processes = mp.cpu_count()
+        pool = mp.Pool(processes=number_of_processes)
+        list_of_stats = [pool.apply_async(self._play_n_random_games, args=(count // number_of_processes,))
+                         for _ in range(number_of_processes)]
+        for single_list in list_of_stats:
+            list_of_games = single_list.get()
+            for single_game in list_of_games:
+                moves, winner = single_game
+                self.update_fields_stats_for_single_game(moves, winner)
+
+Die zweite Zeile könnten Sie wie folgt vereinfachen:
+
+        pool = mp.Pool()
+
+Schließlich ist mp.cpu_count() der Default für den Parameter processes
+der Klasse Pool.
+
+Außerdem ist der Name der Variablen single_list irreführend, denn der
+Typ von single_list ist ja keine Liste, sondern ein Objekt der Klasse ApplyResult.
+
+In der Datei analyse_database.py definieren Sie die Klasse Analyse.  Hier fehlt
+mir ein Kommentra-String, der beschreibt, was die Aufgabe der Klasse ist und mir
+fehlt die Dokumentation der Member-Variablen.  Der Punkt ist, dass zunächst
+nicht klar ist, warum Sie einmal den Shape (60,9,3) und dann den Shape (60,8,8)
+haben.  Außerdem sind Variablennamen wie data und data2 nicht sehr
+aussagekräftig.  
+
+In der Funktion analyse definieren Sie eine Variable position. Die hat aber
+nichts mit einer Position auf dem Feld zu tun.  Gemeint ist vielmehr die
+Zugnummer.  Durch irreführende Variablennamen verringern Sie die Lesbarkeit
+Ihres Programms enorm.
+
+Statt
+
+      for field in moves:
+          self._data2[position][field[0]][field[1]] = "{:.2f}".format(a)
+
+ist es wesentlich lesbarer, wenn Sie schreiben:
+
+      for row, col in moves:
+          self._data2[position][row][col] = "{:.2f}".format(a)
+
+Die zweite for-Schleife innerhalb der äußeren for-Schleife hat die Form:
+
+    for cell in self._data[position]:
+        # set unused moves to 100 %
+        if cell[2] == 0:
+            a = 0
+            moves = Database.translate_database_to_positions(field_type)
+            for field in moves:
+                self._data2[position][field[0]][field[1]] = "{:.2f}".format(a)
+        field_type += 1
+
+
+Erst mal ist der Kommentar irreführend, denn wenn cell[2] == 0 ist, wird a ja
+auf 0 gesetzt und nich auf 100.  Damit wird dann auch
+
+    self._data2[position][field[0]][field[1]
+
+auf 0 gesetzt.  Das war es aber vorher schon! Damit ist die ganze Schleife
+überflüssig.
+
+Dann berechnen Sie das Minimum in der folgenden Zeile:
+
+            print(f"min: {np.min(self._data2[position])}")
+
+Das ist überflüssig, denn da muss immer 0 herauskommen.  Schließlich steht an
+der Positionen (3,3) doch immer der Wert 0, denn da kann kein Stein hingesetzt
+werden.
+
+Sie berechnen die Variable s2 wie folgt:
+
+            # calculate second sum of array
+            s2 = np.sum(self._data2[position])
+
+Obedrüber berechnen Sie s1 genauso.  Da sich zwischendurch self._data2 gar nicht
+ändern kann, müssen s1 und s2 immer gleich sein.
+
+Sie haben dann weiter unten noch eine dritte innere for-Schleife:
+
+    for cell in self._data[position]:
+        # set unused moves to average value to minimize error in variance
+        if cell[2] == 0:
+            moves = Database.translate_database_to_positions(field_type)
+            for field in moves:
+                self._data2[position][field[0]][field[1]] = "{:.2f}".format(0)
+        field_type += 1
+
+Auch hier stimmt der Kommentar nicht.  Außerdem ist auch diese Schleife
+wirkungslos, denn dort, wo Sie 0 reinschreiben, steht schon vorher eine 0!
+
+Am Ende findet sich die Zeile:
+
+     print(f"usual difference: {np.sqrt(np.var(self._data2[position], ddof=1))}")
+
+Was Sie mit "usual difference" meinen, ist die Standard-Abweichung (Englisch:
+standard deviation) dafür gibt es aber die Funktion np.std.  
+-->
+<!--
+Sie definieren die Klasse StoredMonteCarloHeuristic, die aber nur eine
+einzige statische Methode enthält.  So etwas ist überstrukturiert.
+
+Die Methode heuristic in dieser Klasse hat dann die Form:
+
+    def heuristic(current_player, game_state: Othello):
+        """
+        Calculates the value of game_state for current_player
+        """
+
+        moves = game_state.get_available_moves()
+        turn_nr = game_state.get_turn_nr()
+        move_probability = dict()
+
+        for move in moves:
+            move_probability[move] = database.db.get_likelihood(move, turn_nr, current_player)
+
+        selected_move = max(move_probability.items(), key=operator.itemgetter(1))[0]
+        return move_probability[selected_move]
+
+Da Sie am Ende nur die Wahrscheinlichkeit ausrechnen, können Sie sich
+das Dictionary sparen:
+
+    def heuristic(current_player, game_state: Othello):
+        """
+        Calculates the value of game_state for current_player
+        """
+
+        moves = game_state.get_available_moves()
+        turn_nr = game_state.get_turn_nr()
+
+        return max([database.db.get_likelihood(move, turn_nr, current_player) for move in moves])
+-->

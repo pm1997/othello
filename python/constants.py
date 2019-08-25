@@ -9,11 +9,11 @@ PRINT_SYMBOLS = {EMPTY_CELL: " ", PLAYER_ONE: "B", PLAYER_TWO: "W", None: "None"
 COLUMN_NAMES = {0: "a", 1: "b", 2: "c", 3: "d", 4: "e", 5: "f", 6: "g", 7: "h", 8: "i"}
 
 # Reverse of COLUMN_NAMES to match column name to a number
-COLUMN_NUMBERS = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7, "i": 8}
+COLUMN_NUMBERS = {name: number for number, name in COLUMN_NAMES.items()}
 
-# The move directions used to calculate the stones turned by a certain move
-# and the legality of that move respectively
-DIRECTIONS = {(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)}
+# The move directions used to calculate the stones turned by a certain move and the legality of that move respectively
+L = (-1, 0, 1)
+DIRECTIONS = {(a, b) for a in L for b in L if (a, b) != (0, 0)}
 
 # name of database file
 DATABASE_FILE_NAME = "database_moves.csv"
@@ -49,6 +49,6 @@ DATABASE_TO_POSITIONS = {0: [(0, 0), (0, 7), (7, 0), (7, 7)],
                           'X': [(3, 3), (3, 4), (4, 3), (4, 4)]}
 
 POSITION_TO_DATABASE = {}
-for (field_type, fields) in DATABASE_TO_POSITIONS.items():
+for (field_category, fields) in DATABASE_TO_POSITIONS.items():
     for field in fields:
-        POSITION_TO_DATABASE[field] = field_type
+        POSITION_TO_DATABASE[field] = field_category
