@@ -130,6 +130,7 @@ Neben den zuvor detailliert besprochenen, finden in der Implementierung noch die
 \item Konstanten in der Datei \code{constants.py}. Durch die Verwendung von Konstanten bspw. zur Symbolisierung von welchem Spieler ein Feld besetzt ist, wird einerseits von konkreten Werten abstrahiert und dadurch sind diese, sofern erforderlich einfach austauschbar. Andererseits wird eine gewisse Konsistenz, bspw. für Mapping-Funktionen zur Ausgabe, über das ganze Programm hinweg erreicht.
 \item Hilfsfunktionen in der Datei \code{util.py} werden dazu genutzt Werte vom Benutzer abzufragen.
 \end{enumerate}
+\newpage
 \section{Heuristiken}
 \label{heuristic}
 Wie im Abschnitt \ref{Heuristiken} besprochen werden für einige Algorithmen Funktionen zur Approximation des Wertes eines Spielzustandes benötigt. Im Rahmen dieser Arbeit wurden die folgenden Heuristiken implementiert:
@@ -180,7 +181,7 @@ Die Startwerte der Tupel sind jeweils \mxZitat{(0, 0, 0)}, da initial noch keine
 \label{para:train1}
 Nachdem die Datenbank im vorherigen Abschnitt initialisiert erstellt wurde, wird diese nun mit Spieldaten aus zufällig gespielten Spielen befüllt. Dies wird in der Funktion \code{train\_db\_multi\_threaded(self, count)} durchgeführt, welche \code{count} Spiele spielt und mit deren Ergebnisse die Datenbank  aktualisiert. Die \code{count} Spiele werden gleichmäßig auf alle Prozessoren aufgeteilt und in der Funktion \code{\_play\_n\_random\_games(count)} durchgeführt. In dieser Funktion spielen zwei \mxZitat{Random}-Agenten gegeneinander. Die daraus gewonnenen Spielinformationen (Zugreihenfolge, Gewinner des Spiels) werden von der Funktion \code{update\_fields\_\\stats\_for\_single\_game} verarbeitet. 
 \\In Listing \ref{lst:train1} ist das Spielen eines einzelnen zufälligen Spieles und den Aufruf der Funktion \code{update\_fields\_stats\_for\_single\_game} abgebildet. Das Listing ist eine Zusammenstellung von Auszügen der Funktionen \code{\_play\_n\_random\_games} und \code{train\_db\_multi\_threaded}. Zunächst wird ein Othello-Spiel initialisiert (Z. 1f.). Durch die Nutzung des im Kapitel \ref{agenten} näher erläuterten \mxZitat{Random}-Agenten wird ein komplettes Spiel durchgeführt (Z. 3f). Anschließend wird der Gewinner (Z. 5) und die Zugreihenfolge ermittelt (Z. 6). Die Funktion \code{update\_fields\_stats\_for\_""single\_game} verwendet diese beiden Parameter, um die Datenbank zu aktualisieren. Sie wird in Listing \ref{lst:train2} abgebildet.
-
+\newpage
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {Befüllen der Datenbank 1}, language = python, captionpos = t , numbers=left, label={lst:train1}]
 g = Othello()
 g.init_game()
@@ -251,7 +252,6 @@ In der Abbildung \ref{fig:cow1} wird deutlich, dass die Werte strategisch zugewi
 In dem Grundlagenkapitel \ref{lookup} wurden die Vor- und Nachteile von Suche vs. Nachschlagen beschrieben. In diesem Kapitel wird darauf aufbauend die Implementierung zur Verwendung von einer Eröffnungsbibliothek, in der zu Beginn des Spiels bewährte Züge nachgeschlagen werden können, erläutert. In dieser Arbeit wird ein solche Bibliothek synonym mit Spieltabellen und Startdatenbank bezeichnet, da diese als eine Arte Tabelle in einer Datenbank gespeichert werden.
 \\Für viele Spiele, beispielsweise für Schach, existieren umfangreiche Eröffnungsbibliotheken, welche bewährte Eröffnungszüge speichern. Für Othello existieren zwar viele Sammlungen von durchgeführten Spielen, jedoch sind den Verfassern nur wenige Eröffnungsspiele bekannt. In der hier präsentierten Implementierung werden die 77 Eröffnungszüge von Robert Gatliff \cite{open1} verwendet. Beschrieben werden diese jeweils durch eine Zugreihenfolge, z.B. \code{c4, c3, d3, c5, b2}. 
 \\Die zur Erreichung des aktuellen Spielzustandes gespielten Züge werden mit den gespeicherten Zugreihenfolgen verglichen. Wenn diese Reihenfolgen für eine oder mehrere gespeicherte Eröffnungen übereinstimmen, wird eine dieser Reihenfolgen ausgewählt und der nach dieser Reihenfolge nächste Zug gespielt. Die entsprechende Funktion \code{get\_available\_moves\_of\_start\_tables} ist in Listing \ref{lst:start2} abgebildet.
-\newpage
 \begin{lstlisting}[basicstyle=\footnotesize, caption = {Methode zur Bestimmung verfügbarer Startzüge }, language = python, captionpos = t , numbers=left, label={lst:start2}]
 def get_available_moves_of_start_tables(self, game: Othello):
 	if len(self._start_tables) == 0:

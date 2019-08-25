@@ -12,7 +12,7 @@ Nun gilt es die in Kapitel \ref{implementation} beschriebenen Agenten zu evaluie
 \begin{adjustbox}{max width=\textwidth}
 %\begin{center}
 \begin{tabular}{| c | c | c |} \hline
-\ac{Vgl} & Agent 1 & Agent 2 \\ \hline
+\acs{Vgl} & Agent 1 & Agent 2 \\ \hline
 \hline
 0  & Random                              & Random                              \\ \hline
 \hline
@@ -64,7 +64,7 @@ Zu jedem Vergleich wird die Anzahl der durchgeführten Spiele, sowie jeweils die
 \begin{table}[ht]
 \begin{center}
 \begin{tabu}{| c | c | c | c | c | c | c | c |} \hline
-\multirow{3}{*}{Vgl.} & \multirow{3}{*}{\shortstack{Anz.\\Spiele}} & \multicolumn{4}{c|}{Gewonnene Spiele} & \multicolumn{2}{c|}{$\varnothing$ Rechenzeit je Spiel [s]} \\ \cline{3-8}
+\multirow{3}{*}{\acs{Vgl}} & \multirow{3}{*}{\shortstack{Anz.\\Spiele}} & \multicolumn{4}{c|}{Gewonnene Spiele} & \multicolumn{2}{c|}{$\varnothing$ Rechenzeit je Spiel [s]} \\ \cline{3-8}
                       &                              & \multicolumn{2}{c|}{Agent 1} & \multicolumn{2}{c|}{Agent 2} & \multirow{2}{*}{Agent 1} & \multirow{2}{*}{Agent 2} \\ \cline{3-6}
                       &                              & Anz. & Anteil [\%]            & Anz. & Anteil [\%]            &                          &                          \\ \hline
 \hline
@@ -137,7 +137,9 @@ Dabei werden die Parameter wie folgt festgesetzt:
 Die ermittelte Suchtiefe (\code{\_search\_depth}) beträgt in diesem Fall \mxZitat{5}. Bei höheren Suchtiefen wird das Berechnungszeitlimit von fünf Minuten überschritten.
 \vspace{0.5cm}
 \\Neben Heuristiken kann die \abab\ Suche auch Monte Carlo zur Ermittlung des Spielzustandswertes nach der \abab\ Suche verwenden.
-\\\code{\_use\_monte\_carlo} wird dazu auf \mxZitat{True} gesetzt, die Option also aktiviert. \\\code{\_mc\_count} gibt dann die Anzahl der in den Blattknoten durchgeführten Monte Carlo Spiele an. Dieser Parameter wurde in diesem Fall auf $10$ gesetzt, da bereits die \abab\ Suche ohne eine Bewertung des Zustands mit Monte Carlo relativ lange dauert. Deshalb können in den Blattknoten im Vergleich zum reinen Monte Carlo Agenten nicht annähernd so viele Spiele durchgeführt werden.
+\\\code{\_use\_monte\_carlo} wird dazu auf \mxZitat{True} gesetzt, die Option also aktiviert.
+\vspace{0.25cm}
+\\\code{\_mc\_count} gibt dann die Anzahl der in den Blattknoten durchgeführten Monte Carlo Spiele an. Dieser Parameter wurde in diesem Fall auf $10$ gesetzt, da bereits die \abab\ Suche ohne eine Bewertung des Zustands mit Monte Carlo relativ lange dauert. Deshalb können in den Blattknoten im Vergleich zum reinen Monte Carlo Agenten nicht annähernd so viele Spiele durchgeführt werden.
 \\\code{\_search\_depth} wurde in diesem Fall durch empirisches Testen der Laufzeit auf \mxZitat{2} festgelegt. 
 
 \section{Evaluierung der Bedeutung verschiedener Feldkategorien}
