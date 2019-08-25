@@ -170,11 +170,15 @@ Das Spielfeld ist symmetrisch zum Mittelpunkt aufgebaut. Dies bedeutet, dass Zü
 \\\mxPicture{10cm}{symmetrie}{Symmetrie des Spielfeldes}{Symmetrie des Spielfeldes}{fig:sym1}{}
 \\Die Datenbank besteht aus 60 Zeilen und neun Spalten. Die dreidimensionale Struktur wird zweidimensional dargestellt. Die neun Spalten stellen o.g. Feldkategorien (\mxZitat{0} bis \mxZitat{8} ohne \mxZitat{X}) dar. Die c-te Spalte in der n-ten Zeile stellt die Gewinnwahrscheinlichkeiten des Spieles dar, gegeben, dass im n-ten Spielzug ein Feld der Feldkategorie c gespielt wird. Die genaue Zuordnung der Spielkategorien sind in der Abbildung \ref{fig:sym1} dargestellt.
 \\Die mathematische Formel dazu lautet:
+\\$\mathtt{category}: \mathtt{Moves} \rightarrow \{0,...,8\}$
+\\$\mathtt{database}: \mathtt{Q} \times \{0,...,8\} \rightarrow < \mathbb{N} ,\mathbb{N} ,\mathbb{N}>$
+\\$\mathtt{getProb}: < \mathbb{N} ,\mathbb{N} ,\mathbb{N}> \times\ \mathtt{Players} \rightarrow [0,1]$
+\\todo ..
 $database_{n,c} = P( \mathtt{win} \mid \mathtt{move}(n) \in c)$, wobei gilt:
 \begin{itemize}
 \item $\mathtt{move}(n)$ = Feld des n-ten Spielzuges
 \item $\mathtt{Moves}$ = Menge aller möglichen Spielfeldpositionen (Paare $\langle x ,y \rangle$)
-\item $\mathtt{c} \subset (\mathtt{Moves} \ \{\langle d,4 \rangle\,\langle e,4 \rangle\,\langle d,5 \rangle\,\langle e,5 \rangle\} )$ : $c$ ist eine echte Teilmenge der Spielfelder außer die Zentrumsfelder (Kategorie \mxZitat{X})
+\item $\mathtt{c} \subset (\mathtt{Moves} \setminus \{\langle d,4 \rangle\,\langle e,4 \rangle\,\langle d,5 \rangle\,\langle e,5 \rangle\} )$ : $c$ ist eine echte Teilmenge der Spielfelder außer die Zentrumsfelder (Kategorie \mxZitat{X})
 \end{itemize}
 Jede Zelle in dieser Tabelle enthält ein Tripel der Form \\$( \mathtt{won\_games\_player\_1}, \mathtt{won\_games\_player\_2}, \mathtt{total\_played\_games})$. 
 \\Die erste Komponente stellt die Anzahl der gewonnenen Spiele des ersten Spielers dar, die zweite Komponente speichert die Anzahl der Spiele, welche der zweite Spieler gewonnen hat und die dritte Komponente gibt die Gesamtanzahl der gespielten Spiele dieser Spielkategorie an. Die genaue Funktionsweise wird in Abschnitt \nameref{para:train1} erklärt.

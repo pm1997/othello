@@ -57,9 +57,9 @@ Bisher wurden lediglich die Agenten \mxZitat{\abp} untereinander bzw. sowohl die
 
 \paragraph{Ergebnisse der Vergleiche}
 \label{p:vgl-result}
-Um zum einen aussagekräftigen Ergebnis zu kommen, gilt es eine ausreichend große Anzahl von Spielen durchzuführen. Gleichzeitig steigt jedoch mit jedem weiteren Spiel die erforderliche Rechenzeit. Bei dem Versuch die Ziele von einer möglichst großen Spielzahl bei einer möglichst geringen Rechenzeit zu erreichen wurde mit verschiedenen Werten experimentiert. Zunächst wurden je Paarung 100 Spiele simuliert. Schnell stellte sich jedoch heraus, dass sich die Gewinnwahrscheinlichkeit für einzelne Agenten bei der Durchführung von 200 Spielen stark unterscheidet. Aus diesem Grund wurde für die Mehrzahl der in Tabelle \ref{tbl:cmp-agents} angegebenen Paarungen stattdessen 200 Spiele durchgeführt.
+Um zum einen aussagekräftigen Ergebnis zu kommen, gilt es eine ausreichend große Anzahl von Spielen durchzuführen. Gleichzeitig steigt jedoch mit jedem weiteren Spiel die erforderliche Rechenzeit. Bei dem Versuch das Ziel einer möglichst großen Spielzahl bei einer möglichst geringen Rechenzeit zu erreichen wurde mit verschiedenen Werten experimentiert. Zunächst wurden je Paarung 100 Spiele simuliert. Schnell stellte sich jedoch heraus, dass sich die Gewinnwahrscheinlichkeit für einzelne Agenten bei der Durchführung von 200 Spielen stark unterscheidet. Aus diesem Grund wurde für die Mehrzahl der in Tabelle \ref{tbl:cmp-agents} angegebenen Paarungen stattdessen 200 Spiele durchgeführt.
 
-Zu jedem \ac{Vgl} wird die Anzahl der durchgeführten Spiele, sowie jeweils die Gewinnwahrscheinlichkeit angegeben. Die Ergebnisse dieser Vergleiche finden sich in Tabelle \ref{tbl:cmp-results}:
+Zu jedem Vergleich wird die Anzahl der durchgeführten Spiele, sowie jeweils die Gewinnwahrscheinlichkeit, angegeben. Die Ergebnisse dieser Vergleiche finden sich in Tabelle \ref{tbl:cmp-results}:
 
 \begin{table}[ht]
 \begin{center}
@@ -130,11 +130,11 @@ Dabei werden die Parameter wie folgt festgesetzt:
 \begin{itemize}
 \item \code{\_use\_start\_libs}: $\mathtt{True}$
 \item \code{\_search\_depth}: $5$ bei Verwendung der Heuristiken, $2$ bei Verwendung von Monte Carlo
-\item \code{\_heuristic}: variert je nach Vergleich
-\item \code{\_use\_monte\_carlo}: variert je nach Vergleich
-\item \code{\_mc\_count}: variert je nach Vergleich
+\item \code{\_heuristic}: variiert je nach Vergleich
+\item \code{\_use\_monte\_carlo}: variiert je nach Vergleich
+\item \code{\_mc\_count}: variiert je nach Vergleich
 \end{itemize}
-\code{\_use\_start\_libs} wird auf \code{True} gesetzt, da so die Verwendung mehrerer Prozessorkerne aktiviert und damit die Ausführungszeit eines Spiels merklich verringert wird. Je nach Spielzug des Gegners können bis zu 21 Züge aus der Datenbank  gelesen und müssen nicht berechnet werden.
+\code{\_use\_start\_libs} wird auf \code{True} gesetzt, da so die ersten Züge nicht berechnet, sondern nachgeschlagen werden und die Ausführungszeit eines Spiels dadurch verringert wird. Je nach Spielzug des Gegners können bis zu 21 Züge aus der Datenbank  gelesen und müssen nicht berechnet werden.
 \\\code{\_heuristic} wurde jeweils gemäß der Tabelle \ref{tbl:cmp-agents} variiert, damit ein Vergleich der Heuristiken möglich ist. Bei der Verwendung einer Heuristik werden die Optionen die sich hinter den Parametern \code{\_use\_monte\_carlo} und \code{\_mc\_count} verbergen deaktiviert, \code{\_use\_monte\_carlo} wird dazu auf \mxZitat{False} gesetzt. 
 Die ermittelte Suchtiefe (\code{\_search\_depth}) beträgt in diesem Fall \mxZitat{5}. Bei höheren Suchtiefen wird das Berechnungszeitlimit von fünf Minuten überschritten.
 \vspace{0.5cm}
