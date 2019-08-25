@@ -268,13 +268,13 @@ alphaBeta(State, player, alpha = -1, beta = 1) {
 \end{lstlisting}
 Bei der angegebenen Implementierung handelt es sich um eine rekursive Umsetzung. Nachfolgend sei das Programm erläutert:
 \begin{enumerate}
-\item Im Basisfall wurde bereits ein Blatt des Spielbaumes erreicht. Damit ist das Spiel bereits beendet. In diesem Fall kann mit $utility$ der Wert des Zustands $State$ für den entsprechenden Spieler $player$ zurückgegeben werden.
-\item In der Variable $val$ wird der maximale Wert aller von $State$ erreichbaren Zustände, sofern $player$ einen Zug ausführt, gespeichert.\\
-Da der Algorithmus per Definition alle Wertigkeiten kleiner $alpha$ ausschließen soll, kann die Variable mit $alpha$ initialisiert werden.
-\item Nun wird über alle Folgezustände $ns$ aus der Menge $nextStates(State, player)$ iteriert.
-\item Nun wird rekursiv jeder Zustand $ns$ ausgewertet. An dieser Stelle ist jedoch der andere Spieler an der Reihe. Entsprechend erfolgt dies für den anderen Spieler. Da es sich um ein Nullsummenspiel handelt, ist der Wert eines Zustandes aus Sicht des Gegners von $player$ genau der negative Wert der Wertigkeit für $player$. Aus diesem Grund müssen die Rollen von $alpha$ und $beta$ vertauscht und außerdem die Vorzeichen invertiert werden.
-\item Da laut der Spezifikation des Algorithmus nur die Wertigkeiten von Zuständen berechnet werden sollen, in denen diese kleiner oder gleich $beta$ ist, wird die Auswertung aller Folgezustände mit einem $val$ der größer oder gleich $beta$ ist abgebrochen. In diesem Fall wird $val$ zurückgegeben.
-\item Wenn ein Folgezustand mit einem größeren Wert als $alpha$ gefunden wurde, kann $alpha$ auf den entsprechenden Wert erhöht werden. Sobald klar ist, dass der Wert $val$ erreicht werden kann, so sind Werte kleiner als $val$ nicht mehr relevant.  
+\item Im Basisfall wurde bereits ein Blatt des Spielbaumes erreicht. Damit ist das Spiel bereits beendet. In diesem Fall kann mit \code{utility} der Wert des Zustands \code{State} für den entsprechenden Spieler \code{player} zurückgegeben werden.
+\item In der Variable \code{val} wird der maximale Wert aller von \code{State} erreichbaren Zustände, sofern \code{player} einen Zug ausführt, gespeichert.\\
+Da der Algorithmus per Definition alle Wertigkeiten kleiner \code{alpha} ausschließen soll, kann die Variable mit \code{alpha} initialisiert werden.
+\item Nun wird über alle Folgezustände \code{ns} aus der Menge \code{nextStates(State, player)} iteriert.
+\item Nun wird rekursiv jeder Zustand \code{ns} ausgewertet. An dieser Stelle ist jedoch der andere Spieler an der Reihe. Entsprechend erfolgt dies für den anderen Spieler. Da es sich um ein Nullsummenspiel handelt, ist der Wert eines Zustandes aus Sicht des Gegners von \code{player} genau der negative Wert der Wertigkeit für \code{player}. Aus diesem Grund müssen die Rollen von \code{alpha} und \code{beta} vertauscht und außerdem die Vorzeichen invertiert werden.
+\item Da laut der Spezifikation des Algorithmus nur die Wertigkeiten von Zuständen berechnet werden sollen, in denen diese kleiner oder gleich \code{beta} ist, wird die Auswertung aller Folgezustände mit einem \code{val} der größer oder gleich \code{beta} ist abgebrochen. In diesem Fall wird \code{val} zurückgegeben.
+\item Wenn ein Folgezustand mit einem größeren Wert als \code{alpha} gefunden wurde, kann \code{alpha} auf den entsprechenden Wert erhöht werden. Sobald klar ist, dass der Wert \code{val} erreicht werden kann, so sind Werte kleiner als \code{val} nicht mehr relevant.  
  
 \end{enumerate}
 
