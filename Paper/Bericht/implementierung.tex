@@ -170,6 +170,10 @@ Das Spielfeld ist symmetrisch zum Mittelpunkt aufgebaut. Dies bedeutet, dass Zü
 \\\mxPicture{10cm}{symmetrie}{Symmetrie des Spielfeldes}{Symmetrie des Spielfeldes}{fig:sym1}{}
 \\Die Datenbank besteht aus 60 Zeilen und neun Spalten, da die dreidimensionale Struktur zweidimensional dargestellt wird. Die neun Spalten stellen o.g. Feldkategorien (\mxZitat{0} bis \mxZitat{8} ohne \mxZitat{X}) dar. Die c-te Spalte in der n-ten Zeile stellt die Gewinnwahrscheinlichkeiten des Spieles dar, gegeben, dass im n-ten Spielzug ein Feld der Feldkategorie c gespielt wird. Die genaue Zuordnung der Spielkategorien sind in der Abbildung \ref{fig:sym1} dargestellt.
 \\Die mathematische Formel dazu lautet:
+\\$\mathtt{category}: \mathtt{Moves} \rightarrow \{0,...,8\}$
+\\$\mathtt{database}: \mathtt{Q} \times \{0,...,8\} \rightarrow < \mathbb{N} ,\mathbb{N} ,\mathbb{N}>$
+\\$\mathtt{getProb}: < \mathbb{N} ,\mathbb{N} ,\mathbb{N}> \times\ \mathtt{Players} \rightarrow [0,1]$
+\\todo ..
 $database_{n,c} = P( \mathtt{win} \mid \mathtt{move}(n) \in c)$, wobei gilt:
 \begin{itemize}
 \item $\mathtt{move}(n)$ = Feld des n-ten Spielzuges
